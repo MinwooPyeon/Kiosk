@@ -1,0 +1,645 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 아이콘 -->
+    <string name="app_name">NENOON キオスク端末</string>
+
+    <!-- 스플래시 화면 -->
+    <string name="splash_description">視力検査・目の健康ソリューション</string>
+    <string name="splash_app_name">NENOON</string>
+
+    <!-- 토스트 -->
+    <string name="check_id_password">IDとパスワードを確認してください</string>
+    <string name="check_wifi">Wi-Fiが接続されているか確認してください</string>
+    <string name="check_id">IDを入力してください</string>
+    <string name="check_password">パスワードを入力してください</string>
+    <string name="ans_question">アンケートに回答してください</string>
+    <string name="cant_find_fitcare">Fitcare Heartoolアプリが見つかりません</string>
+    <string name="allow_system">システム設定変更の権限が許可されました</string>
+    <string name="not_allow_system">システム設定変更の権限が許可されていません</string>
+    <string name="allow_bluetooth">Bluetoothの権限が許可されました</string>
+    <string name="not_allow_bluetooth">Bluetoothの権限が許可されていません</string>
+    <string name="allow_camera">カメラの権限が許可されました</string>
+    <string name="not_allow_camera">カメラの権限が許可されていません</string>
+    <string name="not_exist_print">接続されたプリンターがありません</string>
+
+
+    <!-- 로그인 화면 -->
+    <string name="id_input">IDを入力してください</string>
+    <string name="pw_input">パスワードを入力してください</string>
+    <string name="start_without_signin">ログインせずにスタート</string>
+    <string name="signin">ログイン</string>
+    <string name="toast_input_id">IDを入力してください</string>
+    <string name="toast_input_pw">パスワードを入力してください</string>
+    <string name="toast_input_id_pw">IDとパスワードを確認してください</string>
+    <string name="toast_check_wifi">Wi-Fiが接続されているか確認してください</string>
+
+    <!-- 화면 보호기 화면 -->
+    <string name="screensaver_description1">画面を</string>
+    <string name="screensaver_description2">タッチ</string>
+    <string name="screensaver_description3">すると\n検査が始まります</string>
+
+    <!-- 권한 확인 화면 -->
+    <string name="permission_requirement">アプリの使用には\nアクセス許可が必要です</string>
+    <string name="permission_nextpage">権限がすべて設定されないと次の画面に移りません\nチェックされていない項目を選択すると、設定画面に移動します</string>
+    <string name="permission_setting_change">システム設定の変更</string>
+    <string name="permission_camera">カメラの権限</string>
+    <string name="permission_bluetooth">Bluetoothの権限</string>
+    <string name="permission_bluetooth_service">Bluetoothサービス</string>
+    <string name="permission_location">位置情報サービス</string>
+    <string name="permission_setting_change_detail">スクリーンセーバーの動画再生に利用</string>
+    <string name="permission_camera_detail">距離の測定のために利用</string>
+    <string name="permission_bluetooth_detail">プリンター接続のために利用</string>
+    <string name="permission_bluetooth_service_detail">プリンター接続のためのBluetoothの確認に利用</string>
+    <string name="permission_location_detail">Bluetoothを使用するために利用</string>
+
+    <!-- 첫 시작 화면 -->
+    <string name="intropage_appname">NENOON</string>
+    <string name="intropage_title">目の健康自己診断キオスク</string>
+    <string name="intropage_start_button">スタート</string>
+    <string name="intropage_description1">NENOONは矯正視力を測定します</string>
+    <string name="intropage_description2">日常の状態で検査を行ってください</string>
+
+    <!-- 문진표 작성 화면 -->
+    <string name="back">戻る</string>
+    <string name="survey_title">問診票</string>
+    <string name="survey_age">年齢</string>
+    <string name="survey_under9">9歳以下</string>
+    <string name="survey_10s">10歳～19歳</string>
+    <string name="survey_20s">20歳～29歳</string>
+    <string name="survey_30s">30歳～39歳</string>
+    <string name="survey_40s">40歳～49歳</string>
+    <string name="survey_50s">50歳～59歳</string>
+    <string name="survey_60s">60歳～69歳</string>
+    <string name="survey_above70">70歳以上</string>
+    <string name="survey_sex">性別</string>
+    <string name="survey_male">男性</string>
+    <string name="survey_female">女性</string>
+    <string name="survey_glasses">メガネ着用の有無</string>
+    <string name="yes">はい</string>
+    <string name="no">いいえ</string>
+    <string name="survey_surgery">目の手術の有無</string>
+    <string name="survey_none">なし</string>
+    <string name="survey_lasik_lasek">レーシック/ラセック</string>
+    <string name="survey_cataract">白内障</string>
+    <string name="survey_etc">その他</string>
+    <string name="survey_diabetes">糖尿病の有無</string>
+
+    <!-- 검사 목록 화면 -->
+    <string name="navigation_tosurvey_button">問診に戻る</string>
+    <string name="test_list_tittle">検査リスト</string>
+    <string name="test_list_description">検査項目を下から選択</string>
+    <string name="test_list_dialog_warning1">当該検査は既に完了しました\nまだ問診票を作成していない場合、正確な検査のために下の </string>
+    <string name="test_list_dialog_warning2">を選択してください\n\n検査を再度行う場合は、下の </string>
+    <string name="test_list_dialog_warning3">を選択してください</string>
+    <string name="test_list_dialog_warning4"></string>
+    <string name="test_list_dialog_re_button">再検査する</string>
+    <string name="test_list_dialog_cancel_button">キャンセル</string>
+    <string name="test_predescription_presbyopia_title1">老眼ピント調節力検査</string>
+    <string name="test_predescription_presbyopia_title2">\n(目の年齢検査)</string>
+    <string name="test_predescription_short_visual_acuity_title1">視力検査</string>
+    <string name="test_predescription_short_visual_acuity_title2">\n(近見)</string>
+    <string name="test_predescription_amsler_title1">アムスラーチャート</string>
+    <string name="test_predescription_amsler_title2">\n(黄斑変性検査)</string>
+    <string name="test_predescription_mchart_title1">M-CHARTS変視症</string>
+    <string name="test_predescription_mchart_title2">\n(黄斑変性検査)</string>
+    <string name="test_list_screen_warning1">NENOON アプリのすべての検査は自己検査であり</string>
+    <string name="test_list_screen_warning2">医学的な所見ではありませんので</string>
+    <string name="test_list_screen_warning3">正確な診断は病院で受けるようお願いします目の調子や周辺環境またはデバイスによって、検査の結果が変動する場合があります</string>
+
+    <!-- 목록 박스-->
+    <string name="box_time_required">所要時間</string>
+    <string name="box_approximate">約</string>
+    <string name="box_minute">分</string>
+
+    <!-- 설정 화면 -->
+    <string name="settings_title">設定</string>
+    <string name="settings_terms">利用規約</string>
+    <string name="settings_language">言語</string>
+    <string name="settings_senior">シニア向けリスト画面</string>
+    <string name="settings_signout">ログアウト</string>
+    <string name="setting_software_info">ソフトウェア情報</string>
+
+    <!-- 검사 화면 -->
+    <string name="presbyopia_name">老眼ピント調節力検査\n(目の年齢検査)</string>
+    <string name="presbyopia_name2">老眼ピント調節力検査</string>
+    <string name="visual_acuity_name">視力検査</string>
+    <string name="short_visual_acuity_name1">近見視力検査</string>
+    <string name="short_visual_acuity_name2">近見視力検査</string>
+    <string name="long_visual_acuity_name">遠見視力検査</string>
+    <string name="children_visual_acuity_name">子供視力検査</string>
+    <string name="macular_degeneration_name">黄斑変性検査</string>
+    <string name="amsler_grid_name">アムスラーチャート検査</string>
+    <string name="mchart_name">M-CHARTS変視症検査</string>
+
+    <!-- 노안 조절력 검사 -->
+    <!--    <string name="presbyopia_video_guide">次は検査方法の案内ビデオです</string>-->
+    <string name="presbyopia_video_guide_1">次は検査</string>
+    <string name="presbyopia_video_guide_2">方法の案内ビデオ</string>
+    <string name="presbyopia_video_guide_3">です</string>
+    <!--    <string name="presbyopia_video_guide_above">上のビデオは検査方法の案内ビデオです</string>-->
+    <string name="presbyopia_video_guide_above_1">上のビデオは検査</string>
+    <string name="presbyopia_video_guide_above_2">方法の案内ビデオ</string>
+    <string name="presbyopia_video_guide_above_3">です</string>
+    <!--    <string name="presbyopia_description1">画面からの距離を75～85cm\nに調整してください</string>-->
+    <string name="presbyopia_description1_1">画面からの距離を</string>
+    <string name="presbyopia_description1_3">\nに調整してください</string>
+    <!--    <string name="presbyopia_description2">少しずつ近づき時表がぼやける所で\n止まり、「次へ」を押してください</string>-->
+    <string name="presbyopia_description2_1">少しずつ近づき時表がぼやける所で\n止まり、</string>
+    <string name="presbyopia_description2_2">「次へ」</string>
+    <string name="presbyopia_description2_3">を押してください</string>
+    <string name="presbyopia_description3">下の点滅する時表を見つめてください</string>
+    <string name="presbyopia_under_25cm_description1">最初の測定では\n老眼の症状が見つかりませんでした\n下の次へを押してください</string>
+    <string name="presbyopia_under_25cm_description2">二度目の測定では\n老眼の症状が見つかりませんでした\n下の次へを押してください</string>
+    <string name="presbyopia_under_25cm_description3">最後の測定では\n老眼の症状が見つかりませんでした\n下の次へを押してください</string>
+    <string name="presbyopia_test_start1">調節力の検査を\n始めます</string>
+    <string name="presbyopia_test_start2">二回目の検査を\n始めます</string>
+    <string name="presbyopia_test_start3">最後の検査を\n始めます</string>
+    <string name="test_screen_current_distance">"現在の距離: "</string>
+    <string name="next">次へ</string>
+
+    <!-- 거리 조절 화면 -->
+    <string name="measuring_distance_description1">「検査スタート」ボタンを押してください</string>
+    <string name="measuring_distance_description2">目を隠したまま距離を確認してください</string>
+    <string name="measuring_distance_description3_cover_left">遮眼子で左目を隠してください</string>
+    <string name="measuring_distance_description4_cover_right">遮眼子で右目を隠してください</string>
+    <string name="measuring_distance_description5_face_center">顔を中央の図に合わせてください</string>
+    <string name="measuring_distance_description6_start">距離を</string>
+    <string name="measuring_distance_description6_end">に調整してください</string>
+    <string name="measuring_distance_start_button">検査スタート</string>
+
+    <!-- Dialog -->
+    <string name="dialog_description1_pickup1">この検査では専用のアイマスクを使用します</string>
+    <string name="dialog_description1_pickup2"></string>
+    <string name="dialog_description1_pickup3"></string>
+    <string name="dialog_description2_announcement2"></string>
+    <string name="dialog_description2_announcement3"></string>
+    <string name="dialog_description2_announcement1">音声ガイドを\n最後まで聞いてください</string>
+    <string name="dialog_description3_distance_further">もう少し遠くへ行ってください</string>
+    <string name="dialog_description4_closer">もう少し近くへ来てください</string>
+    <string name="confirm">確認しました</string>
+
+    <!-- 근거리 시력 검사 -->
+    <string name="visual_acuity_warning">上の図と同じものを\n下から選んでください</string>
+    <string name="visual_acuity_description">三つの視標のうち、上の視標と同じように見えるものを選択してください</string>
+    <string name="visual_acuity_undefinable">見えにくい</string>
+
+    <!-- 암슬러 차트 검사 -->
+    <string name="amsler_description1_blink">下のチャートの中央の点滅する点を見つめてください</string>
+    <!--    <string name="amsler_description2_distortion">黒く見えるか歪んでいる部分を選択してください\n見えない場合は、完了ボタンを押してください</string>-->
+    <string name="amsler_description2_distortion_1">黒く見えるか歪んでいる部分</string>
+    <string name="amsler_description2_distortion_2">を選択してください</string>
+    <string name="amsler_description2_distortion_3">\n見えない場合は</string>
+    <string name="amsler_description2_distortion_4">完了ボタンを押してください</string>
+    <string name="amsler_description3_center">中央の黒い点を見つめてください</string>
+    <string name="amsler_description4_gmp">真ん中の黒い点を見て、変形または不自然に見える部分を指で押して選択してください。選択を完了した場合、または不自然な部分がない場合は、下の「完了」ボタンを押してください。</string>
+    <string name="amsler_description4_gmp_1">真ん中の黒い点を見て、変形または</string>
+    <string name="amsler_description4_gmp_2">不自然に見える部分を指で押して選択してください。</string>
+    <string name="amsler_description4_gmp_3">選択を完了した場合、または不自然な部分がない場合は、</string>
+    <string name="amsler_description4_gmp_4">下の「完了」ボタンを押してください。</string>
+    <string name="amsler_complete_button">完了</string>
+
+    <!-- M-chart 검사 -->
+    <!--    <string name="mchart_test_description">下の線が真っすぐな線に見えるか、曲がっている線に見えるか選択してください</string>-->
+    <string name="mchart_test_description_1">下の線が</string>
+    <string name="mchart_test_description_2">真っすぐな線</string>
+    <string name="mchart_test_description_3">に見えるか、</string>
+    <string name="mchart_test_description_4">\n曲がっている線</string>
+    <string name="mchart_test_description_5">に見えるか選択してください</string>
+    <string name="mchart_test_content_straight">真っすぐな線</string>
+    <string name="mchart_test_content_bent">曲がっている線</string>
+
+    <!-- 검사 결과 화면 -->
+    <string name="result_toast_no_printer">接続されたプリンターがありません</string>
+    <string name="presbyopia_result_title">老眼ピント調節力検査の結果</string>
+    <string name="short_visual_acuity_result_title">近見視力検査の結果</string>
+    <string name="long_visual_acuity_result_title">遠見視力検査の結果</string>
+    <string name="children_visual_acuity_result_title">子供視力検査の結果</string>
+    <string name="amsler_grid_result_title">アムスラーチャート検査の結果</string>
+    <string name="mchart_result_title">M-CHARTS変視症検査の結果</string>
+    <string name="result_button1_print">結果をプリントする</string>
+    <string name="result_button2_back">検査リストに戻る</string>
+    <string name="result_dementia_back">初めて</string>
+
+    <!-- 노안 조절력 검사 결과 -->
+    <string name="presbyopia_result_description1_normal">老眼の症状は見つかりませんでした</string>
+    <string name="presbyopia_result_description">目の年齢は40歳以下です</string>
+    <string name="presbyopia_result_description2_eye_age">目の年齢は</string>
+    <string name="presbyopia_result_description3_under45">45歳以下です</string>
+    <string name="presbyopia_result_sub_description">25㎝以下の距離からも物が鮮明に見えます</string>
+    <string name="presbyopia_result_description_normal"> </string>
+    <string name="presbyopia_result_description1_abnormal">老眼の症状によって日常生活に支障をきたす場合があります</string>
+    <string name="presbyopia_result_description_abnormal_1">老眼の症状によって日常生活</string>
+    <string name="presbyopia_result_description_abnormal_2">に支障をきたす場合があります</string>
+    <string name="presbyopia_result_description2_abnormal">歳</string>
+    <string name="presbyopia_result_description3_abnormal">と推定されます</string>
+    <string name="presbyopia_result_sub_description1_approximate">約</string>
+    <string name="presbyopia_result_sub_description2_blur">cm以下の物体がぼやけて見えます</string>
+
+    <!-- 근거리 시력 검사 결과 -->
+    <string name="test_result_normal_case">異常がない場合</string>
+    <string name="test_result_normal_bottom">目に異常がない場合は下のような結果になります</string>
+    <string name="visual_acuity_result_description_higher">左・右 0.7以上</string>
+    <string name="test_result_my_result">あなたの結果</string>
+    <string name="test_result_left">左</string>
+    <string name="test_result_right">右</string>
+
+    <!-- 암슬러 차트 검사 결과 -->
+    <string name="test_result_normal_right">目に異常がない場合は右のような結果になります</string>
+
+    <!-- M-chart 검사 결과 -->
+    <string name="mchart_result_left_right">左・右</string>
+    <string name="mchart_result_vertical">垂直</string>
+    <string name="mchart_result_horizontal">水平</string>
+
+    <!-- TTS -->
+    <string name="tts_presbyopia_test_start1">調節力のテストを開始します。</string>
+    <string name="tts_presbyopia_test_start2">二回目のテストを開始します。</string>
+    <string name="tts_presbyopia_test_start3">最後のテストを開始します。</string>
+    <string name="tts_presbyopia_test_adjustment">画面から40~50cmの距離に調整してください。</string>
+    <string name="tts_presbyopia_test_guide_video">次は、検査方法の説明動画です。</string>
+    <string name="tts_presbyopia_test_slowly_like_video">少しずつ前に進み、下の映像のように時表がぼやけたら、停止し、下の\'次へ\'を押してください。</string>
+    <string name="tts_presbyopia_test_slowly">少しずつ前に進み、時表がぼやけたら、停止し、下の\'次へ\'を押してください。</string>
+    <string name="tts_presbyopia_test_start_after">検査を開始します。</string>
+    <string name="tts_presbyopia_test_no_problem1">最初の測定で老眼は確認されませんでした。下の\'次へ\'を押してください</string>
+    <string name="tts_presbyopia_test_no_problem2">二回目の測定で老眼は確認されませんでした。下の\'次へ\'を押してください</string>
+    <string name="tts_presbyopia_test_no_problem3">最後の測定で老眼は確認されませんでした。下の\'次へ\'を押してください</string>
+    <string name="tts_wait_for_result">結果が出るまで少々お待ちください</string>
+
+    <!-- TTS measure distance -->
+    <string name="tts_dialog">このテストでは、以下のような専用の目隠しを。使用します目隠しを拾ってください。</string>
+    <string name="tts_right_eye">右目の検査を開始します。</string>
+    <string name="tts_align_middle_center">画面を見て、あなたの顔を中央の画像に合わせてください。</string>
+    <string name="tts_cover_right_eye">目隠しで右目を覆ってください。</string>
+    <string name="tts_cover_left_eye">目隠しで左目を覆ってください。</string>
+    <string name="tts_cover_distance">目を覆ったまま距離を確認してください。</string>
+    <string name="tts_start_button">下の\'検査を開始\'ボタンを押してください。</string>
+    <string name="tts_right_align">右目の検査を行います画面を見て、顔を中央のイメージに合わせてください。</string>
+
+    <!-- TTS short visual acuity test -->
+    <string name="tts_short_visualacuity">検査を始めます。下の三つの視力表の中で、上の視力表と同じものを選んでください。視力表がはっきり見えない場合は、下の\'見えにくい\'ボタンを押してください。</string>
+
+    <!-- TTS Amsler Grid -->
+    <string name="tts_blink">グリッドの中央で点滅する点を見てください。</string>
+    <string name="tts_description">歪んで見える、または黒く見える部分を、手で押して選択してくださいすべての選択が完了したら、または異常な部分がなければ、下の\'完了\'ボタンを押してください。</string>
+    <string name="tts_start">検査を始めます。</string>
+    <string name="tts_end">検査が完了。しました結果が出るまで少々お待ちください。</string>
+
+    <!-- TTS MChart -->
+    <string name="tts_straight_or_bent">下の直線を見て、それがまっすぐに見えるか曲がって見えるかを選んでください。</string>
+
+    <!--프린터-->
+    <string name="printer_left_eye">左眼</string>
+    <string name="printer_right_eye">右眼</string>
+    <string name="printer_problem">異常</string>
+    <string name="printer_horizontal_normal">垂直：正常</string>
+    <string name="printer_horizontal_problem">垂直：異常</string>
+    <string name="printer_vertical_normal">水平：正常</string>
+    <string name="printer_vertical_problem">水平：異常</string>
+    <string name="printer_distance">通り:</string>
+    <string name="printer_age">年齢:</string>
+
+    <!-- 치매 자가진단 -->
+    <string name="dementia_title">認知症セルフチェック(SMCQ)</string>
+    <string name="dementia_survey_question0">自分の記憶力に問題があると思いますか？</string>
+    <string name="dementia_survey_question1">自分の記憶力が10年前より悪くなったと思いますか？</string>
+    <string name="dementia_survey_question2">自分の記憶力が同年代の他人に比べて悪いと思いますか？</string>
+    <string name="dementia_survey_question3">記憶力の低下によって日常生活に支障がありますか？</string>
+    <string name="dementia_survey_question4">最近起きたことを覚えることが難しいですか？</string>
+    <string name="dementia_survey_question5">数日前に交わした会話の内容を覚えることが難しいですか？</string>
+    <string name="dementia_survey_question6">数日前にした約束を覚えることが難しいですか？</string>
+    <string name="dementia_survey_question7">親しい人の名前を覚えることが難しいですか？</string>
+    <string name="dementia_survey_question8">物を置いた場所を覚えることが難しいですか？</string>
+    <string name="dementia_survey_question9">以前に比べて物をよくなくしますか？</string>
+    <string name="dementia_survey_question10">自宅の近くで道に迷ったことがありますか？</string>
+    <string name="dementia_survey_question11">お店で2～3種類の物を買う時、物の名前を覚えることが難しいですか？</string>
+    <string name="dementia_survey_question12">ガス栓の閉めや消灯を覚えることが難しいですか？</string>
+    <string name="dementia_survey_question13">よく使う電話番号(自分もしくは息子・娘の自宅)を覚えることが難しいですか？</string>
+    <string name="dementia_result_instruction">6点以上の場合は正確な診断を受けることをお勧めします</string>
+    <string name="dementia_result_wording1">自己診断の検査結果は</string>
+    <string name="dementia_result_wording2">個です</string>
+    <string name="dementia_result_wording3">運動と外部での社会活動を続け、認知症予防のための心得3.3.3を実践して認知症を予防しましょう</string>
+    <string name="dementia_result_wording4">お近くの保健所や認知症安心センターで、より正確な認知症検診を受けてください</string>
+    <string name="dementia_result_selection1">認知症予防のための心得3.3.3を詳しく見る</string>
+    <string name="dementia_result_selection2">韓国中央認知症センターのホームページ</string>
+    <string name="eye_test">AI目の健康自己診断</string>
+    <string name="dementia_test">認知症の自己診断</string>
+    <string name="call">家族との接続</string>
+    <string name="dementia_result_title">認知症の自己診断結果</string>
+    <string name="submit">記入完了</string>
+
+    <!--닥터피트니스안경-->
+    <string name="explore_presbyopia_glasses">老眼調節力トレーニング眼鏡について</string>
+    <string name="wear_the_glasses">提供された老眼鏡をかけて項目を選んでください</string>
+    <string name="presbyopia_glasses">老眼調節力トレーニング眼鏡</string>
+    <string name="concentration_glasses">集中力向上トレーニング眼鏡</string>
+    <string name="concentration_glasses_title">集中力向上トレーニング眼鏡</string>
+    <string name="presbyopia_glasses_result_title">老眼調節力トレーニング眼鏡の結果</string>
+    <string name="concentration_glasses_result_title">集中力向上トレーニング眼鏡の結果</string>
+    <string name="within_40cm">画面から40cm以内に近づいてください</string>
+    <string name="read_between">\n縞模様のパッチがテキストと平行になるように行間を読んでください</string>
+    <string name="compare_and_test">眼鏡をかけた状態とかけていない状態を比較してテストしてください</string>
+    <string name="presbyopia_glasses_chart">老眼調節力テストチャート</string>
+    <string name="not_visiable_test_complete">見えない（テスト完了）</string>
+    <string name="next_stage">次のステージ</string>
+    <string name="source">出典：眼鏡店提供の近視テストチャート</string>
+    <string name="stage">ステージ</string>
+    <string name="test_complete">テスト完了</string>
+    <string name="experience_glasses">\n老眼運動眼鏡の効果を体験しましたか？</string>
+    <string name="consistently_wear">老眼鏡を継続して着用することで、\n視力調節力を強化しましょう</string>
+    <string name="retest">再テスト</string>
+    <string name="to_beginning">最初から</string>
+    <string name="square_frame">\n四角いフレーム内でゆっくりと読んでください</string>
+    <string name="feel_more_immersive">\n文字がより鮮明になり、\n没入感を体験できます</string>
+    <string name="concentration_test_chart">集中力テストチャート</string>
+    <string name="test_over">テスト終了</string>
+    <string name="chart_en">英語チャート</string>
+    <string name="chart_ko">韓国語チャート</string>
+
+    <string name="blood_pressure_monitor_initial_instruction">"혈압계 연결을 시작합니다."</string>
+    <string name="blood_pressure_monitor_disconnected">"혈압계 연결이 끊어졌습니다. 다시 연결을 시도합니다."</string>
+    <string name="blood_pressure_monitor_connected">"혈압계가 연결되었습니다. 시작 버튼을 눌러주세요."</string>
+    <string name="blood_pressure_monitor_connection_failed">"혈압계 연결이 실패하였습니다.\n다시 시도해주세요."</string>
+    <string name="blood_pressure_monitor_title">혈압계 관리</string>
+    <string name="blood_pressure_monitor_image_content_description">혈압계</string>
+    <string name="blood_pressure_monitor_standby_instruction1">"혈압계 연결을 시작하려면\n"</string>
+    <string name="blood_pressure_monitor_standby_instruction2">"연결 시작 버튼"</string>
+    <string name="blood_pressure_monitor_standby_instruction3">"을 눌러주세요."</string>
+    <string name="blood_pressure_monitor_start_connection">연결 시작</string>
+    <string name="blood_pressure_monitor_searching_device">BP170B 혈압계 연결 시도 중...</string>
+    <string name="blood_pressure_monitor_retry_connection">연결 재시도</string>
+    <string name="blood_pressure_monitor_connecting">혈압계 연결 중...</string>
+    <string name="blood_pressure_monitor_device_connected">혈압계가 연결됨.</string>
+    <string name="blood_pressure_monitor_disconnect">연결 해제</string>
+    <string name="blood_pressure_monitor_connection_error">혈압계 연결 오류!</string>
+    <string name="blood_pressure_monitor_error_message">오류: %1$s</string>
+    <string name="blood_pressure_monitor_try_again">다시 시도</string>
+    <string name="blood_pressure_monitor_systolic">수축기</string>
+    <string name="blood_pressure_monitor_diastolic">이완기</string>
+    <string name="blood_pressure_monitor_heart_rate">심박수</string>
+    <string name="blood_pressure_monitor_select_device">혈압계를 선택해주세요:</string>
+    <string name="test_instructions">검사 방법 안내:</string>
+
+    <string name="dynamometer_initial_instruction">"악력계 연결 화면입니다. 연결 시작 버튼을 눌러주세요."</string>
+    <string name="dynamometer_searching_tts">"악력계를 탐색 중입니다. 악력계 전원버튼을 눌러주세요."</string>
+    <string name="dynamometer_connection_error_tts">"연결이 실패하였습니다. 다시 시도해 주세요."</string>
+    <string name="dynamometer_back_button_content_description">뒤로가기 버튼</string>
+    <string name="dynamometer_title">악력계 관리</string>
+    <string name="dynamometer_image_content_description">악력계</string>
+    <string name="dynamometer_standby_instruction1">"악력계 연결을 시작하려면\n"</string>
+    <string name="dynamometer_standby_instruction2">"연결 시작 버튼"</string>
+    <string name="dynamometer_standby_instruction3">"을 눌러주세요."</string>
+    <string name="dynamometer_start_connection">연결 시작</string>
+    <string name="dynamometer_select_device">악력계를 선택해주세요:</string>
+    <string name="dynamometer_unknown_device_name">알 수 없는 기기</string>
+    <string name="dynamometer_connecting">악력계 연결 중...</string>
+    <string name="dynamometer_searching">악력계 탐색 중...\n악력계 전원버튼을 눌러주세요</string>
+    <string name="dynamometer_not_connected_instruction">"악력계가 연결되지 않았습니다.\n악력계의 전원을 켜주세요."</string>
+    <string name="dynamometer_retry_connection">연결 재시도</string>
+    <string name="dynamometer_device_connected1">악력계가 연결됨.\n</string>
+    <string name="dynamometer_device_connected2">악력 검사 시작&#160;</string>
+    <string name="dynamometer_device_connected3">버튼을 눌러주세요.</string>
+    <string name="dynamometer_disconnect">연결 해제</string>
+    <string name="dynamometer_complete_connection">연결 완료</string>
+    <string name="dynamometer_connection_error">악력계 연결 오류!</string>
+    <string name="dynamometer_connection_error_details">기기가 연결되지 않았거나 통신에 문제가 발생했습니다.</string>
+    <string name="dynamometer_try_again">다시 시도</string>
+
+    <string name="bt_device_management_title">블루투스 기기 관리</string>
+    <string name="bt_device_management_bp_connected">혈압계 연결됨</string>
+    <string name="bt_device_management_bp_disconnected">혈압계 연결 안됨</string>
+    <string name="bt_device_management_manage_bp">혈압계 관리</string>
+    <string name="bt_device_management_dynamometer_connected">악력계 연결됨</string>
+    <string name="bt_device_management_dynamometer_disconnected">악력계 연결 안됨</string>
+    <string name="bt_device_management_manage_dynamometer">악력계 관리</string>
+
+    <string name="default_sign_in_manage_bt_devices">블루투스 기기 관리</string>
+    <string name="default_sign_in_qr_login">QR 로그인</string>
+    <string name="default_sign_in_face_recognition">얼굴인식 로그인</string>
+    <string name="default_sign_in_sign_up">회원가입</string>
+
+    <string name="qr_sign_in_title">QR 로그인</string>
+    <string name="qr_sign_in_scan_instruction">로그인용 QR 코드를 보여주세요.</string>
+    <string name="qr_sign_in_scanned_success">QR 코드를 스캔했습니다. 로그인 버튼을 누르세요.</string>
+    <string name="qr_sign_in_invalid_qr">유효하지 않은 QR 코드입니다. 다시 스캔해주세요.</string>
+    <string name="qr_sign_in_invalid_qr_toast">유효하지 않은 QR 코드입니다.</string>
+    <string name="qr_sign_in_camera_permission_error">카메라를 시작할 수 없습니다. 권한을 확인하세요.</string>
+    <string name="qr_sign_in_scanned_info_header">스캔된 정보</string>
+    <string name="qr_sign_in_id_label">아이디:</string>
+    <string name="qr_sign_in_password_label">비밀번호:</string>
+    <string name="qr_sign_in_rescan_button">다시 스캔</string>
+    <string name="qr_sign_in_login_button">로그인</string>
+    <string name="qr_sign_in_login_processing">로그인 처리 중...</string>
+    <string name="qr_sign_in_no_scanned_info_toast">스캔된 정보가 없습니다. QR 코드를 스캔해주세요.</string>
+    <string name="qr_sign_in_login_success_toast">로그인 성공!</string>
+
+    <string name="signin_vm_face_detection_status_looking">얼굴을 찾고 있습니다...</string>
+    <string name="signin_vm_validation_password_length">비밀번호는 8자 이상 32자 이하로 입력해주세요.</string>
+    <string name="signin_vm_validation_password_mismatch">비밀번호가 일치하지 않습니다.</string>
+    <string name="signin_vm_validation_email_invalid">유효한 이메일 주소를 입력해주세요.</string>
+    <string name="signin_vm_signup_validation_fill_all">모든 필수 정보를 올바르게 입력해주세요.</string>
+    <string name="signin_vm_signup_face_enrollment_required">회원가입을 위해 얼굴 등록이 필요합니다.</string>
+    <string name="signin_vm_face_processing">얼굴 정보를 처리 중...</string>
+    <string name="signin_vm_face_enrollment_ready">얼굴 등록 준비 완료!</string>
+    <string name="signin_vm_face_extraction_failed_retry">얼굴 정보를 추출할 수 없습니다. 다시 시도해주세요.</string>
+    <string name="signin_vm_face_recognition_failed_no_valid_face">얼굴 인식 실패: 유효한 얼굴을 찾을 수 없습니다.</string>
+    <string name="signin_vm_face_processing_error">얼굴 처리 중 오류 발생.</string>
+    <string name="signin_vm_face_recognition_error">얼굴 인식 중 오류 발생: %1$s</string>
+    <string name="signin_vm_face_recognizing">얼굴 인식 중...</string>
+    <string name="signin_vm_face_info_extraction_failed">얼굴 인식을 위한 정보를 추출할 수 없습니다.</string>
+    <string name="signin_vm_login_success">로그인 성공!\n환영합니다, %1$s님!</string>
+    <string name="signin_vm_face_no_match">일치하는 얼굴이 없습니다. 다시 시도해주세요.</string>
+    <string name="signin_vm_face_registration_in_progress">얼굴 정보 등록 중...</string>
+    <string name="signin_vm_face_registration_error_id_exists">오류: 사용자 ID \'%1$s\'는 이미 등록되어 있습니다.</string>
+    <string name="signin_vm_face_registration_success">얼굴이 성공적으로 등록되었습니다! 사용자: %1$s</string>
+    <string name="signin_vm_face_registration_extraction_failed">얼굴 정보 추출에 실패하여 등록할 수 없습니다.</string>
+
+    <string name="face_id_sign_in_title">얼굴 인식 로그인</string>
+
+    <string name="pulmonary_function_test">폐나이 측정</string>
+    <string name="pulmonary_function_test_result">폐나이 측정 결과</string>
+    <string name="pulmonary_capacity_label">폐활량</string>
+    <string name="pulmonary_power_label">폐근력</string>
+    <string name="pulmonary_status_label">폐상태</string>
+    <string name="pulmonary_age_label">폐나이</string>
+    <string name="pulmonary_age_format">%s 세</string>
+    <string name="pulmonary_age_short_format">%s 세</string>
+
+    <string name="pdf_print_job_name">Nenoon Result Sheet</string>
+    <string name="pdf_print_write_failed">Failed to write document: %1$s</string>
+    <string name="pdf_print_failed_generic">Print Failed</string>
+    <string name="pdf_overall_result_title">Overall Result</string>
+    <string name="pdf_label_name">Name: </string>
+    <string name="pdf_label_age">Age: </string>
+    <string name="pdf_label_date">Date: </string>
+    <string name="pdf_qr_code_label">Sign In QR Code</string>
+    <string name="pdf_test_not_conducted">Test Not Conducted</string>
+
+    <string name="pdf_visual_acuity_title">Visual Acuity\n (Left/Right)</string>
+    <string name="pdf_left_eye">Left Eye</string>
+    <string name="pdf_right_eye">Right Eye</string>
+    <string name="pdf_va_range_normal">0.8 or higher</string>
+    <string name="pdf_va_interp_normal">Normal range, no or minor early presbyopia symptoms</string>
+    <string name="pdf_va_recomm_normal">Regular check-ups recommended, lifestyle management needed to reduce eye fatigue</string>
+    <string name="pdf_va_range_mild">0.5 ~ 0.7</string>
+    <string name="pdf_va_interp_mild">Mild low vision, possible presbyopia or reduced accommodation</string>
+    <string name="pdf_va_recomm_mild">Consider glasses/reading glasses, improve lighting environment and recommend eye exercises</string>
+    <string name="pdf_va_range_moderate">0.4 or lower</string>
+    <string name="pdf_va_interp_moderate">Moderate or severe low vision or possible progression of presbyopia</string>
+    <string name="pdf_va_recomm_moderate">Professional ophthalmological examination required, essential to use low vision aids and improve living environment</string>
+
+    <string name="pdf_blood_pressure_title">Blood Pressure</string>
+    <string name="pdf_systolic">Systolic</string>
+    <string name="pdf_diastolic">Diastolic</string>
+    <string name="pdf_pulse_rate">Pulse Rate</string>
+    <string name="pdf_bp_range_normal">120/80 mmHg or lower</string>
+    <string name="pdf_bp_interp_normal">Normal Blood Pressure</string>
+    <string name="pdf_bp_recomm_normal">Maintain current lifestyle, regular measurement recommended</string>
+    <string name="pdf_bp_range_prehypertension">121-139 / 81-89 mmHg</string>
+    <string name="pdf_bp_interp_prehypertension">Prehypertension (Borderline Hypertension)</string>
+    <string name="pdf_bp_recomm_prehypertension">Reduce sodium intake, regular exercise, stress management, etc. Lifestyle improvement needed</string>
+    <string name="pdf_bp_range_hypertension">140/90 mmHg or higher</string>
+    <string name="pdf_bp_interp_hypertension">Suspected Hypertension or Hypertensive State</string>
+    <string name="pdf_bp_recomm_hypertension">Professional medical consultation recommended, medication may be needed</string>
+    <string name="pdf_bp_tip">Note: General classification reflecting recommendations from the Korean Society of Hypertension and WHO</string>
+
+    <string name="pdf_grip_strength_title">Grip Strength</string>
+    <string name="pdf_left_hand">Left Hand</string>
+    <string name="pdf_right_hand">Right Hand</string>
+    <string name="pdf_gs_range_normal">Male: 35kg or more / Female: 25kg or more</string>
+    <string name="pdf_gs_interp_normal">Normal muscle strength range</string>
+    <string name="pdf_gs_recomm_normal">Light weight training and aerobic exercise recommended to maintain muscle strength</string>
+    <string name="pdf_gs_range_mild">Male: 30-34kg / Female: 20-24kg</string>
+    <string name="pdf_gs_interp_mild">Possible early muscle weakness</string>
+    <string name="pdf_gs_recomm_mild">Grip exercises and upper body strengthening needed (using rubber balls, dumbbells, etc.)</string>
+    <string name="pdf_gs_range_moderate">Male: 29kg or lower / Female: 19kg or lower</string>
+    <string name="pdf_gs_interp_moderate">Muscle weakness or sarcopenia concern</string>
+    <string name="pdf_gs_recomm_moderate">Consider professional exercise program or detailed examination for sarcopenia, maintaining daily activity is important</string>
+    <string name="pdf_gs_tip">Note: Based on average grip strength standards for Koreans</string>
+
+    <string name="pdf_pulmonary_age_title">Pulmonary Age</string>
+    <string name="pdf_age_unit">years old</string>
+    <string name="pdf_pf_range_normal">Equal to or younger than actual age</string>
+    <string name="pdf_pf_interp_normal">Good lung function</string>
+    <string name="pdf_pf_recomm_normal">Maintain current condition, avoid smoking and continue regular aerobic exercise</string>
+    <string name="pdf_pf_range_mild">Actual age + 5~10 years</string>
+    <string name="pdf_pf_interp_mild">Possible mild lung function decline</string>
+    <string name="pdf_pf_recomm_mild">Start light breathing exercises (abdominal breathing, balloon blowing, etc.) and regular aerobic exercise</string>
+    <string name="pdf_pf_range_moderate">Actual age + 11 years or more</string>
+    <string name="pdf_pf_interp_moderate">Lung function decline or risk of lung disease</string>
+    <string name="pdf_pf_recomm_moderate">Professional consultation recommended, immediate smoking cessation if applicable, focus on lung exercises to improve lung capacity</string>
+    <string name="pdf_pf_tip">Note: Exhalation test (Spirometry) provides a simple lung function indicator, accurate diagnosis requires detailed lung function tests at a medical institution</string>
+
+    <string name="pdf_macular_degeneration_title">Macular Degeneration</string>
+    <string name="pdf_md_range_normal">No distortion/spots/blind spots (Normal)</string>
+    <string name="pdf_md_interp_normal">No signs of retinal abnormality</string>
+    <string name="pdf_md_recomm_normal">Maintain periodic (6 months~1 year) self-examination, lifestyle management such as blue light blocking recommended</string>
+    <string name="pdf_md_range_mild">Slight distortion or blurriness</string>
+    <string name="pdf_md_interp_mild">Early stage macular degeneration or subtle retinal abnormalities possible</string>
+    <string name="pdf_md_recomm_mild">Early detection stage, recommend detailed OCT (retinal tomography) examination at an ophthalmologist</string>
+    <string name="pdf_md_range_moderate">Clear line distortion, blind spots, central blurriness</string>
+    <string name="pdf_md_interp_moderate">Moderate or severe macular degeneration or possible retinal disease</string>
+    <string name="pdf_md_recomm_moderate">Immediate ophthalmological visit required, detailed examination and confirmation of treatment (for exclusion of high-risk diseases like wet macular degeneration)</string>
+    <string name="pdf_md_present">Present</string>
+    <string name="pdf_md_absent">Absent</string>
+    <string name="pdf_md_tip">Note: Amsler Grid, M-chart, etc., are used for self-diagnosis or primary discrimination</string>
+
+    <string name="grip_strength_test_instruction_tts">Please move to the dynamometer and measure your grip strength.</string>
+    <string name="grip_strength_start_test">Start Grip Strength Test</string>
+
+    <string name="grip_strength_ready_instruction_tts">Please prepare for grip strength measurement.</string>
+    <string name="grip_strength_right_hand_instruction_tts">Squeeze your right hand\nas hard as you can.</string>
+    <string name="grip_strength_right_hand_completed_tts">Right hand measurement complete. Taking a short break.</string>
+    <string name="grip_strength_left_hand_instruction_tts">Squeeze your left hand\nas hard as you can.</string>
+    <string name="grip_strength_left_hand_completed_tts">Left hand grip strength measurement finished. Retrieving results.</string>
+
+    <string name="grip_strength_right_hand_ready_text1">Hold the dynamometer with your&#160;</string>
+    <string name="grip_strength_right_hand_ready_text2">right hand</string>
+    <string name="grip_strength_right_hand_ready_text3">&#160;and prepare.</string>
+    <string name="grip_strength_right_hand_completed_text">Right hand measurement complete.</string>
+    <string name="grip_strength_right_hand_rest_text">Next is left hand grip strength measurement.</string>
+    <string name="grip_strength_left_hand_ready_text1">Hold the dynamometer with your&#160;</string>
+    <string name="grip_strength_left_hand_ready_text2">left hand</string>
+    <string name="grip_strength_left_hand_ready_text3">&#160;and prepare.</string>
+    <string name="grip_strength_left_hand_completed_text">Left hand grip strength measurement finished.</string>
+
+    <string name="grip_strength_countdown_start_text"> seconds until measurements begin.</string>
+    <string name="grip_strength_hold_instruction_text">Please hold firmly according to the handle guide.</string>
+    <string name="grip_strength_rest_instruction_text">Taking a short break.</string>
+    <string name="grip_strength_next_left_hand_text">Next is left hand grip strength measurement.</string>
+    <string name="grip_strength_fetching_results_text">Retrieving results.</string>
+
+    <string name="grip_strength_right_hand_value">Right Hand Grip: </string>
+    <string name="grip_strength_left_hand_value">Left Hand Grip: </string>
+    <string name="cancel">Cancel</string>
+    <string name="enter">Confirm</string>
+    <string name="password">Password</string>
+
+    <string name="visual_acuity_result_normal_heading">No Abnormal Findings</string>
+    <string name="visual_acuity_result_normal_body">Please continue to maintain good eye health.</string>
+    <string name="visual_acuity_result_abnormal_heading">Symptoms Suspected</string>
+    <string name="visual_acuity_result_abnormal_body">Consultation with a specialist is required.</string>
+
+    <string name="amsler_result_normal_heading">No Abnormal Findings</string>
+    <string name="amsler_result_normal_body">Please continue to maintain good eye health.</string>
+    <string name="amsler_result_abnormal_heading">Symptoms Suspected</string>
+    <string name="amsler_result_abnormal_body">Consultation with a specialist is required.</string>
+
+    <string name="mchart_result_normal_heading">No Abnormal Findings</string>
+    <string name="mchart_result_normal_body">Please continue to maintain good eye health.</string>
+    <string name="mchart_result_abnormal_heading">Symptoms Suspected</string>
+    <string name="mchart_result_abnormal_body">Consultation with a specialist is required.</string>
+
+    <string name="bp_result_normal_heading">Your blood pressure is within the recommended range.</string>
+    <string name="bp_result_normal_body">You are in good condition. Please continue to maintain healthy habits.</string>
+    <string name="bp_result_pre_hypertension_heading">Your blood pressure reading is slightly higher than normal.</string>
+    <string name="bp_result_pre_hypertension_body">The following lifestyle habits are recommended to prevent high blood pressure:</string>
+    <string name="bp_result_pre_hypertension_tip1">Eat less salt</string>
+    <string name="bp_result_pre_hypertension_tip2">Eat vegetables and fruits often</string>
+    <string name="bp_result_pre_hypertension_tip3">Quit smoking and limit alcohol</string>
+    <string name="bp_result_pre_hypertension_tip4">Do light exercise like walking</string>
+    <string name="bp_result_hypertension_heading">Your blood pressure reading is at a high level.</string>
+    <string name="bp_result_hypertension_body">Generally, this level recommends consultation with a medical professional and health management.</string>
+
+    <string name="grip_strength_m_30s_label">Average male grip strength (under 30s)</string>
+    <string name="grip_strength_m_30s_value">47.3kg</string>
+    <string name="grip_strength_m_40_50s_label">Average male grip strength (40s-50s)</string>
+    <string name="grip_strength_m_40_50s_value">45.5kg</string>
+    <string name="grip_strength_m_60s_label">Average male grip strength (60s)</string>
+    <string name="grip_strength_m_60s_value">40.9kg</string>
+    <string name="grip_strength_w_30s_label">Average female grip strength (under 30s)</string>
+    <string name="grip_strength_w_30s_value">27.4kg</string>
+    <string name="grip_strength_w_40_50s_label">Average female grip strength (40s-50s)</string>
+    <string name="grip_strength_w_40_50s_value">26.8kg</string>
+    <string name="grip_strength_w_60s_label">Average female grip strength (60s)</string>
+    <string name="grip_strength_w_60s_value">25.2kg</string>
+    <string name="grip_strength_result_body">※ The table above shows average values by age group provided by the Ministry of Culture, Sports and Tourism. We recommend continuous muscle maintenance and health management.</string>
+
+    <string name="location_signin">Organization Sign-In</string>
+
+    <string name="lung_age_test">Lung Age Test</string>
+    <string name="blood_pressure_and_grip_strength">Blood Pressure, Grip Strength</string>
+    <string name="test_predescription_blood_pressure_title1">Blood Pressure Test</string>
+    <string name="test_predescription_blood_pressure_title2"></string>
+    <string name="test_predescription_grip_strength_title1">Grip Strength Test</string>
+    <string name="test_predescription_grip_strength_title2"></string>
+    <string name="dynamometer_disconnected_tts">Dynamometer disconnected.</string>
+    <string name="account_management_title">Account Management</string>
+    <string name="qr_code_issue_button_text">Issue QR code for sign in</string>
+    <string name="face_enroll_button_text">Face Registration</string>
+    <string name="close_button_description">Close button</string>
+    <string name="qr_print_success">QR code print successful</string>
+    <string name="qr_print_fail">QR code print failed</string>
+    <string name="qr_generation_fail">QR code generation failed</string>
+    <string name="qr_not_signed_in">No user is logged in. Cannot issue QR code.</string>
+
+    <string name="qr_code_user_name">This is the sign in QR code for %1$s:</string>
+    <string name="qr_code_image_description">Generated QR Code</string>
+    <string name="not_signed_in_message">You are not signed in</string>
+    <string name="qr_code_print_button">Print QR Code</string>
+
+    <string name="captured_face_image_description">Captured Face</string>
+    <string name="face_enrollment_success">Face Registration Success</string>
+    <string name="enroll_my_face_button">Enroll My Face</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="location">Location</string>
+</resources>

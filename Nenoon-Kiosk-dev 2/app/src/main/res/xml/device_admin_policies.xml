@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<device-admin>
+    <uses-policies>
+        <limit-password />
+        <wipe-data />
+        <force-lock />
+        <reset-password />
+        <expire-password />
+        <encrypted-storage />
+        <disable-camera />
+        <disable-keyguard-features />
+        <set-user-restriction />
+        <set-global-setting />
+        <set-time />
+        <set-auto-time />
+    </uses-policies>
+</device-admin>

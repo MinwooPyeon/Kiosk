@@ -1,0 +1,99 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:padding="24dp">
+
+    <include layout="@layout/header_layout" android:id="@+id/header_container"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_fudo_test_image"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:orientation="horizontal"
+                android:background="#EBF961"
+                android:gravity="center"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:layout_marginBottom="32dp"
+                app:srcCompat="@drawable/ic_fudo_test"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="화면의 그림이 어떻게 보이시나요?"
+                    android:textColor="@android:color/white"
+                    android:textSize="30sp"
+                    android:layout_marginBottom="16dp"/>
+
+                <GridLayout
+                    android:id="@+id/rg_options_fudo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:columnCount="2"
+                    android:orientation="horizontal"
+                    android:rowCount="2">
+
+                        <RadioButton
+                            android:id="@+id/rb_both"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/white"
+                            android:text="원과 십자가가 모두 보임"
+                            android:textSize="24sp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:gravity="center_vertical"/>
+
+                        <RadioButton
+                            android:id="@+id/rb_circle_only"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/white"
+                            android:text="원만 보임"
+                            android:textSize="24sp"
+                            android:gravity="center_vertical"/>
+
+                        <RadioButton
+                            android:id="@+id/rb_cross_only"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/white"
+                            android:text="십자가만 보임"
+                            android:textSize="24sp"
+                            android:layout_marginBottom="16dp"
+                            android:gravity="center_vertical"/>
+
+                </GridLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_submit_fudo"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:text="다음"
+        android:background="@drawable/rounded_button_blue"
+        android:textColor="@android:color/white"
+        android:elevation="0dp"
+        android:layout_alignParentBottom="true"
+        android:textSize="32sp"
+        />
+</RelativeLayout>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="main">#ff1d71e1</color>
+    <color name="select">#331d71e1</color>
+    <color name="menu_disabled">#ff919191</color>
+    <color name="gray2">#ff878787</color>
+    <color name="disabled">#ffc3c3c3</color>
+    <color name="line">#ffebebeb</color>
+    <color name="gray1">#fff7f7f7</color>
+
+    <color name="warning">#ffFF8844</color>
+    <color name="error">#ffcc2222</color>
+
+<!--    사시측정용    -->
+    <color name="neNoon_blue">#4285F4</color>
+    <color name="light_gray">#F3F3F3</color>
+    <color name="primary">#6200EE</color>
+    <color name="primary_dark">#3700B3</color>
+    <color name="accent">#03DAC5</color>
+</resources>

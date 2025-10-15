@@ -1,0 +1,26 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="51.2dp"
+    android:height="51.2dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!--
+    [수정된 부분: 원]
+    - 기존의 fill 방식 대신 stroke(경로 두께)를 사용하여 원을 그립니다.
+    - 경로의 반지름을 22로, 경로의 두께(strokeWidth)를 4로 설정합니다.
+    - 이렇게 하면 경로 중심에서 양쪽으로 2씩 확장되어, 최종적인 원의 외경은 48(22*2 + 4)이 됩니다.
+    - 이 방식이 fillType="evenOdd"보다 더 명시적이고 정확한 크기를 보장합니다.
+    -->
+    <path
+        android:pathData="M 24, 24 m -22, 0 a 22,22 0 1,1 44,0 a 22,22 0 1,1 -44,0"
+        android:strokeWidth="4"
+        android:strokeColor="#15F915"/>
+
+    <!--
+    [기존과 동일: 십자가]
+    - 가로/세로 길이 16 (16->32), 두께 4 (22->26)
+    -->
+    <path
+        android:fillColor="#ea5821"
+        android:pathData="M22,16 V22 H16 V26 H22 V32 H26 V26 H32 V22 H26 V16 Z" />
+</vector>

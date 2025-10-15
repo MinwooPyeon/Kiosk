@@ -1,0 +1,117 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:padding="24dp">
+
+    <include layout="@layout/header_layout" android:id="@+id/header_container"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true">
+
+        <LinearLayout
+            android:id="@+id/fl_moons"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:orientation="horizontal"
+            android:background="#EBF961"
+            android:gravity="center"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:layout_marginBottom="32dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_left"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_fudo_moon_left"/>
+
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="match_parent"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_right"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_fudo_moon_right"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="24dp">
+
+            <TextView
+                android:id="@+id/tv_question"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="화면의 그림이 어떻게 보이시나요?"
+                android:textColor="@android:color/white"
+                android:textSize="30sp"
+                android:layout_marginBottom="16dp"/>
+
+            <GridLayout
+                android:id="@+id/rg_adjust"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:columnCount="2"
+                android:orientation="horizontal"
+                android:rowCount="2">
+
+                <RadioButton
+                    android:id="@+id/rb_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center_vertical"
+                    android:text="왼쪽 반달이 작음"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
+                    android:layout_marginBottom="16dp"/>
+
+                <RadioButton
+                    android:id="@+id/rb_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="오른쪽 반달이 작음"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
+                    android:layout_marginBottom="16dp"/>
+
+                <RadioButton
+                    android:id="@+id/rb_same"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="크기가 같다"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp" />
+            </GridLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_adjust_submit"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:text="다음"
+        android:background="@drawable/rounded_button_blue"
+        android:textColor="@android:color/white"
+        android:elevation="0dp"
+        android:textSize="32sp"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
