@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.test.result
+package com.pixelro.nenoonkiosk.user
 
 import android.graphics.Bitmap
 import android.util.Log
@@ -47,7 +47,6 @@ import com.pixelro.nenoonkiosk.feature.components.PrimaryButton
 import com.pixelro.nenoonkiosk.feature.components.ProgressIndicator
 import com.pixelro.nenoonkiosk.feature.components.StyledText
 import com.pixelro.nenoonkiosk.feature.components.TextStyle
-import com.pixelro.nenoonkiosk.user.SignInViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

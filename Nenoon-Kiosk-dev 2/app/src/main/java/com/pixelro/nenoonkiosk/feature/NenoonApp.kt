@@ -42,7 +42,7 @@ import com.pixelro.nenoonkiosk.test.gripStrength.GripStrengthTestContent
 import com.pixelro.nenoonkiosk.test.macular.amslergrid.AmslerGridTestContent
 import com.pixelro.nenoonkiosk.test.macular.mchart.MChartTestContent
 import com.pixelro.nenoonkiosk.test.presbyopia.PresbyopiaTestContent
-import com.pixelro.nenoonkiosk.test.result.AccountManagementScreen
+import com.pixelro.nenoonkiosk.user.AccountManagementScreen
 import com.pixelro.nenoonkiosk.test.visualacuity.children.ChildrenVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.test.visualacuity.longdistance.LongVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.test.visualacuity.shortdistance.ShortDistanceVisualAcuityTestContent
