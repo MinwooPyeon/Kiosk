@@ -54,7 +54,6 @@
             android:theme="@style/Theme.NenoonKiosk"
             android:configChanges="locale"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:taskAffinity="">
             <intent-filter>

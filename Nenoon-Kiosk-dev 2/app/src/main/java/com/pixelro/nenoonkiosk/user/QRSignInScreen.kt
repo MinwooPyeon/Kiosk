@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import com.pixelro.nenoonkiosk.data.StringProvider
+import com.pixelro.nenoonkiosk.util.StringProvider
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -41,10 +41,10 @@ import androidx.navigation.NavController
 import com.google.common.util.concurrent.ListenableFuture
 import com.pixelro.nenoonkiosk.QRManager.QRScannerAnalyzer
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.ui.components.PrimaryButton
-import com.pixelro.nenoonkiosk.ui.components.ProgressIndicator
-import com.pixelro.nenoonkiosk.ui.components.StyledText
-import com.pixelro.nenoonkiosk.ui.components.TextStyle
+import com.pixelro.nenoonkiosk.feature.components.PrimaryButton
+import com.pixelro.nenoonkiosk.feature.components.ProgressIndicator
+import com.pixelro.nenoonkiosk.feature.components.StyledText
+import com.pixelro.nenoonkiosk.feature.components.TextStyle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

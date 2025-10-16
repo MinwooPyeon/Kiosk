@@ -16,10 +16,10 @@ import com.mangoslab.nemonicsdk.NPrinter
 import com.mangoslab.nemonicsdk.constants.NPrinterType
 import com.pixelro.nenoonkiosk.QRManager.QrCodeGenerator
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.bTManager.PrinterManager
+import com.pixelro.nenoonkiosk.manager.PrinterManager
 import com.pixelro.nenoonkiosk.constants.AppConstants
-import com.pixelro.nenoonkiosk.data.SharedPreferencesManager
-import com.pixelro.nenoonkiosk.data.StringProvider
+import com.pixelro.nenoonkiosk.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.util.StringProvider
 import com.pixelro.nenoonkiosk.test.result.TestResultUtil
 import com.pixelro.nenoonkiosk.util.bitmapToFile
 import dagger.hilt.android.lifecycle.HiltViewModel

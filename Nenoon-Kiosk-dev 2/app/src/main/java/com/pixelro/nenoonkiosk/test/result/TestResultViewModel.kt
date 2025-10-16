@@ -13,8 +13,8 @@ import com.harang.data.model.SendPresbyopiaTestResultRequest
 import com.harang.data.model.SendPulmonaryFunctionTestResultRequest
 import com.harang.data.model.SendShortVisualAcuityTestResultRequest
 import com.harang.data.repository.TestResultRepository
-import com.pixelro.nenoonkiosk.data.SharedPreferencesManager
-import com.pixelro.nenoonkiosk.data.TestType
+import com.pixelro.nenoonkiosk.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.util.dataprovider.TestType
 import com.pixelro.nenoonkiosk.test.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.test.dementia.DementiaTestResult
 import com.pixelro.nenoonkiosk.test.gripStrength.GripStrengthTestResult
@@ -22,8 +22,6 @@ import com.pixelro.nenoonkiosk.test.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.test.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.test.presbyopia.PresbyopiaTestResult
 import com.pixelro.nenoonkiosk.test.pulmonaryFunction.PulmonaryFunctionTestResult
-import com.pixelro.nenoonkiosk.test.strabismus.FudoTestResult
-import com.pixelro.nenoonkiosk.test.strabismus.SawiTestResult
 import com.pixelro.nenoonkiosk.test.visualacuity.shortdistance.ShortVisualAcuityTestResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

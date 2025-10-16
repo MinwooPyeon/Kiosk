@@ -39,16 +39,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.TTS
-import com.pixelro.nenoonkiosk.bTManager.InGrip.DynamometerConnectionScreenState
-import com.pixelro.nenoonkiosk.bTManager.InGrip.InGripManager
-import com.pixelro.nenoonkiosk.bTManager.InGrip.InGripViewModel
-import com.pixelro.nenoonkiosk.data.StringProvider
-import com.pixelro.nenoonkiosk.ui.components.AccentedText
-import com.pixelro.nenoonkiosk.ui.components.BatteryStatus
-import com.pixelro.nenoonkiosk.ui.components.PrimaryButton
-import com.pixelro.nenoonkiosk.ui.components.ProgressIndicator
-import com.pixelro.nenoonkiosk.ui.components.StyledText
-import com.pixelro.nenoonkiosk.ui.components.TextStyle
+import com.pixelro.nenoonkiosk.feature.screen.iotdevice.InGrip.DynamometerConnectionScreenState
+import com.pixelro.nenoonkiosk.manager.InGripManager
+import com.pixelro.nenoonkiosk.feature.screen.iotdevice.InGrip.InGripViewModel
+import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.components.AccentedText
+import com.pixelro.nenoonkiosk.feature.components.BatteryStatus
+import com.pixelro.nenoonkiosk.feature.components.PrimaryButton
+import com.pixelro.nenoonkiosk.feature.components.ProgressIndicator
+import com.pixelro.nenoonkiosk.feature.components.StyledText
+import com.pixelro.nenoonkiosk.feature.components.TextStyle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 

@@ -41,12 +41,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.harang.data.repository.SignInRepository
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.data.StringProvider
-import com.pixelro.nenoonkiosk.ui.components.PrimaryButton
-import com.pixelro.nenoonkiosk.ui.components.ProgressIndicator
-import com.pixelro.nenoonkiosk.ui.components.StyledText
+import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.components.PrimaryButton
+import com.pixelro.nenoonkiosk.feature.components.ProgressIndicator
+import com.pixelro.nenoonkiosk.feature.components.StyledText
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -93,7 +92,7 @@ fun UserSignUpScreen(
     ) {
         if (!signupSuccess) {
 
-            StyledText(StringProvider.getString(R.string.user_signup_title), com.pixelro.nenoonkiosk.ui.components.TextStyle.Title)
+            StyledText(StringProvider.getString(R.string.user_signup_title), com.pixelro.nenoonkiosk.feature.components.TextStyle.Title)
 
             if (isSigningUp) {
                 Spacer(modifier = Modifier.weight(0.5f))
@@ -189,7 +188,7 @@ fun UserSignUpScreen(
             Spacer(modifier = Modifier.weight(0.5f))
 
             if (errorMessage != null) {
-                StyledText(errorMessage!!, com.pixelro.nenoonkiosk.ui.components.TextStyle.Error)
+                StyledText(errorMessage!!, com.pixelro.nenoonkiosk.feature.components.TextStyle.Error)
                 Spacer(modifier = Modifier.height(20.dp))
             }
 
@@ -306,7 +305,7 @@ private fun InputTextField(
                         contentAlignment = Alignment.CenterStart
                     ) {
                         if (value.isEmpty()) {
-                            StyledText(label, com.pixelro.nenoonkiosk.ui.components.TextStyle.Hint)
+                            StyledText(label, com.pixelro.nenoonkiosk.feature.components.TextStyle.Hint)
                         }
                         innerTextField()
                     }
@@ -317,7 +316,7 @@ private fun InputTextField(
         if (isError && errorMessage != null) {
             StyledText(
                 text = errorMessage,
-                style = com.pixelro.nenoonkiosk.ui.components.TextStyle.InputError,
+                style = com.pixelro.nenoonkiosk.feature.components.TextStyle.InputError,
                 modifier = Modifier.padding(start = 20.dp, top = 4.dp)
             )
         }

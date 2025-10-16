@@ -46,12 +46,12 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.TTS
-import com.pixelro.nenoonkiosk.data.AnimationProvider
-import com.pixelro.nenoonkiosk.data.StringProvider
-import com.pixelro.nenoonkiosk.data.TestType
-import com.pixelro.nenoonkiosk.facedetection.FaceDetection
-import com.pixelro.nenoonkiosk.facedetection.FaceDetectionViewModel
-import com.pixelro.nenoonkiosk.facedetection.MeasuringDistanceContent
+import com.pixelro.nenoonkiosk.util.AnimationProvider
+import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.screen.facedetection.FaceDetection
+import com.pixelro.nenoonkiosk.feature.screen.facedetection.FaceDetectionViewModel
+import com.pixelro.nenoonkiosk.feature.screen.facedetection.MeasuringDistanceContent
 import kotlin.math.tan
 
 @Composable

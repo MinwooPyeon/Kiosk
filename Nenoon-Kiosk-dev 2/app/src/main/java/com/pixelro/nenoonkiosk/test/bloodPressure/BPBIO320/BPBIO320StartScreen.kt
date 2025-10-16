@@ -27,15 +27,15 @@ import androidx.navigation.NavHostController
 import com.inbody.bpbio.IB_SDKConst
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.TTS
-import com.pixelro.nenoonkiosk.bTManager.BPBIO320.BPBIO320ViewModel
-import com.pixelro.nenoonkiosk.bTManager.BPBIO320.BloodPressureConnectionScreenState
-import com.pixelro.nenoonkiosk.data.StringProvider
+import com.pixelro.nenoonkiosk.feature.screen.iotdevice.BPBIO320.BPBIO320ViewModel
+import com.pixelro.nenoonkiosk.feature.screen.iotdevice.BPBIO320.BloodPressureConnectionScreenState
+import com.pixelro.nenoonkiosk.util.StringProvider
 import com.pixelro.nenoonkiosk.test.bloodPressure.BloodPressureTestScreen
-import com.pixelro.nenoonkiosk.ui.components.AccentedText
-import com.pixelro.nenoonkiosk.ui.components.PrimaryButton
-import com.pixelro.nenoonkiosk.ui.components.ProgressIndicator
-import com.pixelro.nenoonkiosk.ui.components.StyledText
-import com.pixelro.nenoonkiosk.ui.components.TextStyle
+import com.pixelro.nenoonkiosk.feature.components.AccentedText
+import com.pixelro.nenoonkiosk.feature.components.PrimaryButton
+import com.pixelro.nenoonkiosk.feature.components.ProgressIndicator
+import com.pixelro.nenoonkiosk.feature.components.StyledText
+import com.pixelro.nenoonkiosk.feature.components.TextStyle
 import kotlinx.coroutines.delay
 
 @SuppressLint("MissingPermission")

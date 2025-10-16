@@ -1,0 +1,393 @@
+package com.pixelro.nenoonkiosk.feature.screen
+
+import android.content.Context
+import android.os.Build
+import android.speech.tts.TextToSpeech
+import androidx.annotation.RequiresApi
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.pixelro.nenoonkiosk.NenoonViewModel
+import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.TTS
+import com.pixelro.nenoonkiosk.constants.NavConstants
+import com.pixelro.nenoonkiosk.constants.GlobalValue
+import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.components.Advertisement
+import com.pixelro.nenoonkiosk.feature.components.SettingsButton
+import com.pixelro.nenoonkiosk.feature.components.SurveyRecommendationDialog
+import com.pixelro.nenoonkiosk.feature.components.TestSelectionButton
+import kotlinx.coroutines.delay
+
+//원하는 검사 항목 선택하는 뷰
+@RequiresApi(Build.VERSION_CODES.S)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@Composable
+fun ExternalDeviceTestListScreen(
+    checkIsTestDone: (TestType) -> Boolean,
+    toTestScreen: (TestType) -> Unit,
+    toIntroScreen: () -> Unit,
+    toSettingsScreen: () -> Unit,
+    isBloodPressureDone: Boolean,
+    isGripStrengthDone: Boolean,
+    viewModel: NenoonViewModel
+) {
+    val context = LocalContext.current
+    val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
+    val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
+    val warningTextSize = if (savedLanguage == "ru") 10.sp else 16.sp
+
+    val pagerState = rememberPagerState(
+        initialPage = 50000
+    )
+    val isDescriptionShowing = remember { mutableStateOf(true) }
+    LaunchedEffect(true) {
+        TTS.tts.stop()
+        TTS.speechTTS(StringProvider.getString(R.string.select_test_tts), TextToSpeech.QUEUE_ADD)
+        while(true) {
+            delay(5000)
+            pagerState.animateScrollToPage(
+                page = (pagerState.currentPage + 1),
+                animationSpec = tween(1000)
+            )
+            for (i in 1..3) {
+                isDescriptionShowing.value = false
+                delay(250)
+                isDescriptionShowing.value = true
+                delay(250)
+            }
+        }
+    }
+    var isDialogShowing by remember { mutableStateOf(false) }
+    var selectedTest by remember { mutableStateOf(TestType.None) }
+    val transition = rememberInfiniteTransition(label = "")
+    val shiftVal by transition.animateFloat(
+        initialValue = 0f, targetValue = 20f, animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 2000
+            },
+            repeatMode = RepeatMode.Reverse
+        ), label = ""
+    )
+    val isSeniorValue by viewModel.isSenior.collectAsState()
+
+    /**
+     * dialog 버튼 작용
+     */
+    if (isDialogShowing) {
+        SurveyRecommendationDialog(
+            onDismissRequest = {
+                isDialogShowing = false
+            },
+            toTestScreen = toTestScreen,
+            toIntroScreen = toIntroScreen,
+            selectedTest = selectedTest
+        )
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                color = Color(0xffffffff)
+            )
+    ) {
+        /**
+         * 상단 바
+         */
+        Box(
+            modifier = Modifier
+                .padding(
+                    start = 40.dp,
+                    top = (GlobalValue.statusBarPadding + 20).dp,
+                    end = 40.dp,
+                    bottom = 20.dp
+                )
+                .fillMaxWidth()
+                .height(40.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        toIntroScreen()
+                    },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .width(28.dp),
+                    painter = painterResource(id = R.drawable.icon_back_black),
+                    contentDescription = ""
+                )
+                Text(
+                    text = StringProvider.getString(
+                        R.string.navigation_tosurvey_button),
+                    fontSize = if (savedLanguage == "es")
+                    {
+                        12.sp
+                    }
+                    else
+                    {
+                        24.sp
+                    },
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = StringProvider.getString(
+                        R.string.test_list_tittle),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            SettingsButton(toSettingsScreen)
+
+        }
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(
+                    color = Color(0xffebebeb)
+                )
+        )
+
+        /**
+         * 광고 표시 여부
+         */
+        when (isSeniorValue) {
+            true -> {
+
+            }
+            false -> {
+                HorizontalPager(
+                    contentPadding = PaddingValues(start = 40.dp, top = 20.dp, end = 40.dp, bottom = 20.dp),
+                    pageSpacing = 40.dp,
+                    state = pagerState,
+                    pageCount = 100000,
+                ) {
+                    Advertisement(it)
+                }
+            }
+        }
+        Box(
+            modifier = Modifier
+                .padding(start = 40.dp, end = 40.dp, bottom = 20.dp)
+                .fillMaxWidth()
+                .height(80.dp),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            if (isDescriptionShowing.value) {
+                Text(
+                    modifier = Modifier
+                        .offset(x = 0.dp, y = shiftVal.dp),
+                    text = StringProvider.getString(
+                        R.string.test_list_description),
+                    fontSize = if (savedLanguage=="es")
+                    {
+                        20.sp
+                    }
+                    else
+                    {
+                        38.sp
+                    }
+                    ,
+                    fontWeight = FontWeight.ExtraBold,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        Box() {
+            /**
+             * 검사 목록 내용
+             */
+            Column(
+                modifier = Modifier
+            ) {
+                val modifier = Modifier
+                    .weight(1f)
+                /**
+                 * 검사 항목 박스 내용
+                 * 혈압 검사
+                 */
+                TestSelectionButton(
+                    modifier = modifier,
+                    title1 = StringProvider.getString(
+                        R.string.test_predescription_blood_pressure_title1),
+                    title2 = StringProvider.getString(
+                        R.string.test_predescription_blood_pressure_title2),
+                    onClickMethod = {
+                        selectedTest = TestType.BloodPressure
+                        if (checkIsTestDone(TestType.BloodPressure)) {
+                            isDialogShowing = true
+                        } else {
+                            toTestScreen(TestType.BloodPressure)
+                        }
+                    },
+                    alignment = Alignment.CenterStart,
+                    isDone = isBloodPressureDone,
+                    isSenior = isSeniorValue,
+                    time = 2,
+                    large = true,
+                )
+                Spacer(
+                    modifier = Modifier
+                        .height(20.dp)
+                )
+                /**
+                 * 검사 항목 박스 내용
+                 * 악력 검사
+                 */
+                TestSelectionButton(
+                    modifier = modifier,
+                    title1 = StringProvider.getString(
+                        R.string.test_predescription_grip_strength_title1),
+                    title2 = StringProvider.getString(
+                        R.string.test_predescription_grip_strength_title2),
+                    onClickMethod = {
+                        selectedTest = TestType.GripStrength
+                        if (checkIsTestDone(TestType.GripStrength)) {
+                            isDialogShowing = true
+                        } else {
+                            toTestScreen(TestType.GripStrength)
+                        }
+                    },
+                    alignment = Alignment.CenterStart,
+                    isDone = isGripStrengthDone,
+                    isSenior = isSeniorValue,
+                    time = 2,
+                    large = true,
+                )
+
+                Spacer(
+                    modifier = Modifier
+                        .height(20.dp)
+                )
+
+                /**
+                 * 하단 경고문
+                 *
+                 *
+                 */
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.BottomCenter
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(
+                                start = 40.dp,
+                                bottom = (GlobalValue.navigationBarPadding + 40).dp
+                            )
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .padding(end = 20.dp)
+                                .width(44.dp),
+                            painter = painterResource(id = R.drawable.icon_warning),
+                            contentDescription = ""
+                        )
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = 40.dp),
+                            text = buildAnnotatedString {
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = Color(0xff999999),
+                                        fontSize = warningTextSize
+                                    )
+                                ) {
+                                    append(StringProvider.getString(
+                                        R.string.test_list_screen_warning1,
+
+                                        ))
+                                }
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = Color(0xffff0000),
+                                        fontSize = warningTextSize,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                ) {
+                                    append(StringProvider.getString(
+                                        R.string.test_list_screen_warning2,
+
+                                        ))
+                                }
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = Color(0xff999999),
+                                        fontSize = warningTextSize
+                                    )
+                                ) {
+                                    append(StringProvider.getString(
+                                        R.string.test_list_screen_warning3,
+
+                                        ))
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}

@@ -13,8 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pixelro.nenoonkiosk.data.TestType
-import com.pixelro.nenoonkiosk.facedetection.MeasuringDistanceContent
+import com.pixelro.nenoonkiosk.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.screen.facedetection.MeasuringDistanceContent
 import com.pixelro.nenoonkiosk.test.visualacuity.VisualAcuityTestResult
 import com.pixelro.nenoonkiosk.test.visualacuity.VisualAcuityViewModel
 import com.pixelro.nenoonkiosk.test.visualacuity.VisualAcuityTestCommonContent

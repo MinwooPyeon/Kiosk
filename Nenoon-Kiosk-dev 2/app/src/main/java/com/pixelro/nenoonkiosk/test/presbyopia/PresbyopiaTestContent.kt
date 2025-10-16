@@ -51,9 +51,9 @@ import androidx.media3.ui.PlayerView
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.TTS
 import com.pixelro.nenoonkiosk.constants.NavConstants
-import com.pixelro.nenoonkiosk.data.StringProvider
-import com.pixelro.nenoonkiosk.facedetection.FaceDetection
-import com.pixelro.nenoonkiosk.facedetection.FaceDetectionViewModel
+import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.screen.facedetection.FaceDetection
+import com.pixelro.nenoonkiosk.feature.screen.facedetection.FaceDetectionViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt

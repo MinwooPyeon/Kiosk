@@ -10,8 +10,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.pixelro.nenoonkiosk.bTManager.InGrip.InGripManager
-import com.pixelro.nenoonkiosk.bTManager.InGrip.InGripViewModel
+import com.pixelro.nenoonkiosk.manager.InGripManager
+import com.pixelro.nenoonkiosk.feature.screen.iotdevice.InGrip.InGripViewModel
 import com.pixelro.nenoonkiosk.constants.NavConstants
 import com.pixelro.nenoonkiosk.user.SignInViewModel
 import kotlinx.coroutines.flow.collectLatest

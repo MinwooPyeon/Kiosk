@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.ExoPlayer
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.TTS
-import com.pixelro.nenoonkiosk.data.StringProvider
+import com.pixelro.nenoonkiosk.util.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

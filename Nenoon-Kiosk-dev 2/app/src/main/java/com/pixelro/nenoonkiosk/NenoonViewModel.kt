@@ -27,12 +27,12 @@ import com.google.android.gms.location.LocationSettingsResponse
 import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.tasks.Task
 import com.pixelro.nenoonkiosk.constants.DebugConstants
-import com.pixelro.nenoonkiosk.data.GlobalValue
-import com.pixelro.nenoonkiosk.data.SharedPreferencesManager
-import com.pixelro.nenoonkiosk.data.TestType
+import com.pixelro.nenoonkiosk.constants.GlobalValue
+import com.pixelro.nenoonkiosk.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.util.dataprovider.TestType
 import com.pixelro.nenoonkiosk.exerciseglasses.concentration_exercise.ConcentrationExerciseResult
 import com.pixelro.nenoonkiosk.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResult
-import com.pixelro.nenoonkiosk.survey.datatype.SurveyGlass
+import com.pixelro.nenoonkiosk.feature.screen.survey.surveytype.SurveyGlass
 import com.pixelro.nenoonkiosk.test.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.test.dementia.DementiaTestResult
 import com.pixelro.nenoonkiosk.test.dementia.DementiaViewModel

@@ -22,10 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.TTS
-import com.pixelro.nenoonkiosk.data.StringProvider
-import com.pixelro.nenoonkiosk.ui.components.IconTextButton
-import com.pixelro.nenoonkiosk.ui.components.StyledText
-import com.pixelro.nenoonkiosk.ui.components.TextStyle
+import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.components.IconTextButton
+import com.pixelro.nenoonkiosk.feature.components.StyledText
+import com.pixelro.nenoonkiosk.feature.components.TextStyle
 
 @Composable
 fun BloodPressureErrorScreen(

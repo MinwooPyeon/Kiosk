@@ -2,7 +2,7 @@ package com.pixelro.nenoonkiosk
 
 import android.app.Application
 import android.content.Context
-import com.pixelro.nenoonkiosk.bTManager.PrinterManager
+import com.pixelro.nenoonkiosk.manager.PrinterManager
 import dagger.hilt.android.HiltAndroidApp
 //
 

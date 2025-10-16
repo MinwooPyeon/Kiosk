@@ -38,10 +38,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.constants.NavConstants
-import com.pixelro.nenoonkiosk.data.StringProvider
-import com.pixelro.nenoonkiosk.ui.components.Logo
-import com.pixelro.nenoonkiosk.ui.components.PrimaryButton
-import com.pixelro.nenoonkiosk.ui.components.StyledText
+import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.components.Logo
+import com.pixelro.nenoonkiosk.feature.components.PrimaryButton
+import com.pixelro.nenoonkiosk.feature.components.StyledText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -93,7 +93,7 @@ fun LocationSignInScreen(
 
             StyledText(
                 text = StringProvider.getString(R.string.location_signin),
-                style = com.pixelro.nenoonkiosk.ui.components.TextStyle.Message,
+                style = com.pixelro.nenoonkiosk.feature.components.TextStyle.Message,
                 fontWeight = FontWeight.SemiBold,
             )
 

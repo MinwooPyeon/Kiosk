@@ -33,10 +33,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.constants.NavConstants
-import com.pixelro.nenoonkiosk.data.StringProvider
-import com.pixelro.nenoonkiosk.ui.components.PrimaryButton
-import com.pixelro.nenoonkiosk.ui.screen.TermsOfServiceCheckboxes
-import com.pixelro.nenoonkiosk.ui.screen.TermsOfServiceTable
+import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.components.PrimaryButton
+import com.pixelro.nenoonkiosk.feature.screen.TermsOfServiceCheckboxes
+import com.pixelro.nenoonkiosk.feature.screen.TermsOfServiceTable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

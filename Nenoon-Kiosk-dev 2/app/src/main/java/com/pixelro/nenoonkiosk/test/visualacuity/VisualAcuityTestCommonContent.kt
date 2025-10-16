@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.TTS
-import com.pixelro.nenoonkiosk.data.AnimationProvider
-import com.pixelro.nenoonkiosk.data.StringProvider
-import com.pixelro.nenoonkiosk.facedetection.FaceDetection
+import com.pixelro.nenoonkiosk.util.AnimationProvider
+import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.screen.facedetection.FaceDetection
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

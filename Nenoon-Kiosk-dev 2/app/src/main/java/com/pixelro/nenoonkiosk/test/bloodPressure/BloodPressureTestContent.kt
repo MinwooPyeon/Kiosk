@@ -10,11 +10,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.inbody.bpbio.IB_SDKConst
-import com.pixelro.nenoonkiosk.bTManager.BP170B.BP170BManager
-import com.pixelro.nenoonkiosk.bTManager.BP170B.BP170BViewModel
-import com.pixelro.nenoonkiosk.bTManager.BPBIO320.BPBIO320ViewModel
+import com.pixelro.nenoonkiosk.manager.BP170BManager
+import com.pixelro.nenoonkiosk.feature.screen.iotdevice.BP170B.BP170BViewModel
+import com.pixelro.nenoonkiosk.feature.screen.iotdevice.BPBIO320.BPBIO320ViewModel
 import com.pixelro.nenoonkiosk.constants.NavConstants
-import com.pixelro.nenoonkiosk.data.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.user.SignInViewModel
 import com.pixelro.nenoonkiosk.test.bloodPressure.BP170B.BP170BInProgressScreen
 import com.pixelro.nenoonkiosk.test.bloodPressure.BP170B.BP170BStartScreen

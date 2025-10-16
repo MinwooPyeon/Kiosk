@@ -7,9 +7,9 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.data.ColorProvider
-import com.pixelro.nenoonkiosk.data.StringProvider
-import com.pixelro.nenoonkiosk.data.TestType
+import com.pixelro.nenoonkiosk.util.ColorProvider
+import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.util.dataprovider.TestType
 import com.pixelro.nenoonkiosk.test.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.test.dementia.DementiaTestResult
 import com.pixelro.nenoonkiosk.test.macular.amslergrid.AmslerGridTestResult

@@ -4,7 +4,7 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.data.StringProvider
+import com.pixelro.nenoonkiosk.util.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

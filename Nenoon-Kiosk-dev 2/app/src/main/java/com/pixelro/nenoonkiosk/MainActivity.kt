@@ -56,15 +56,15 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.pixelro.nenoonkiosk.bTManager.PrinterManager
+import com.pixelro.nenoonkiosk.manager.PrinterManager
 import com.pixelro.nenoonkiosk.constants.AppConstants
 import com.pixelro.nenoonkiosk.constants.DebugConstants
 import com.pixelro.nenoonkiosk.constants.NavConstants
-import com.pixelro.nenoonkiosk.data.GlobalValue
-import com.pixelro.nenoonkiosk.data.SharedPreferencesManager
-import com.pixelro.nenoonkiosk.data.StringProvider
-import com.pixelro.nenoonkiosk.ui.NenoonApp
-import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
+import com.pixelro.nenoonkiosk.constants.GlobalValue
+import com.pixelro.nenoonkiosk.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.NenoonApp
+import com.pixelro.nenoonkiosk.feature.theme.NenoonKioskTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

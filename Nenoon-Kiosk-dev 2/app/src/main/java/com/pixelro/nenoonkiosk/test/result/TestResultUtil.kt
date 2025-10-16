@@ -6,9 +6,9 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Typeface
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.data.SharedPreferencesManager
-import com.pixelro.nenoonkiosk.data.StringProvider
-import com.pixelro.nenoonkiosk.data.TestType
+import com.pixelro.nenoonkiosk.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.util.dataprovider.TestType
 import com.pixelro.nenoonkiosk.test.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.test.dementia.DementiaTestResult
 import com.pixelro.nenoonkiosk.test.gripStrength.GripStrengthTestResult

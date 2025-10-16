@@ -24,15 +24,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.TTS
-import com.pixelro.nenoonkiosk.bTManager.BP170B.BP170BManager
-import com.pixelro.nenoonkiosk.bTManager.BP170B.BP170BViewModel
-import com.pixelro.nenoonkiosk.data.StringProvider
+import com.pixelro.nenoonkiosk.manager.BP170BManager
+import com.pixelro.nenoonkiosk.feature.screen.iotdevice.BP170B.BP170BViewModel
+import com.pixelro.nenoonkiosk.util.StringProvider
 import com.pixelro.nenoonkiosk.test.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.test.bloodPressure.BloodPressureTestScreen
-import com.pixelro.nenoonkiosk.ui.components.PrimaryButton
-import com.pixelro.nenoonkiosk.ui.components.ProgressIndicator
-import com.pixelro.nenoonkiosk.ui.components.StyledText
-import com.pixelro.nenoonkiosk.ui.components.TextStyle
+import com.pixelro.nenoonkiosk.feature.components.PrimaryButton
+import com.pixelro.nenoonkiosk.feature.components.ProgressIndicator
+import com.pixelro.nenoonkiosk.feature.components.StyledText
+import com.pixelro.nenoonkiosk.feature.components.TextStyle
 
 enum class BpMeasurementScreenState {
     Measuring,

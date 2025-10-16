@@ -3,7 +3,7 @@ package com.pixelro.nenoonkiosk.exerciseglasses.presbyopia_exercise
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.data.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.manager.SharedPreferencesManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
