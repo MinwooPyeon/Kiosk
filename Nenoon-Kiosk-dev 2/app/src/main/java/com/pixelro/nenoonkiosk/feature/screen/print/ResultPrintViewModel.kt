@@ -246,7 +246,7 @@ class ResultPrintViewModel @Inject constructor(
         }
         val titlePaint = Paint().apply {
             color = ColorProvider.getColor(R.color.black)
-            Paint.setTypeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             textSize = 12.5f
         }
         val notTestedPaint = Paint().apply {
@@ -276,7 +276,7 @@ class ResultPrintViewModel @Inject constructor(
 
         val mainTitlePaint = Paint().apply {
             color = ColorProvider.getColor(R.color.black)
-            Paint.setTypeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             textSize = 20f
             textAlign = Paint.Align.CENTER
         }
@@ -338,7 +338,7 @@ class ResultPrintViewModel @Inject constructor(
             val qrLabelPaint = Paint().apply {
                 color = Color.BLACK
                 textSize = 10f
-                Paint.setTypeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
+                typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
                 textAlign = Paint.Align.CENTER
             }
             val qrLabelX = qrCodeX + scaledQrCode.width / 2f
@@ -510,7 +510,7 @@ class ResultPrintViewModel @Inject constructor(
             textSize = 8f
         }
         val headerPaint = Paint(textPaint).apply {
-            Paint.setTypeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         }
         val linePaint = Paint().apply {
             color = Color.DKGRAY
