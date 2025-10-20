@@ -380,7 +380,7 @@ class SignInViewModel @Inject constructor(
                         tempFaceEmbedding = embedding
                         _lastDetectedFaceBitmap.update { oldBitmap ->
                             oldBitmap?.recycle()
-                            faceBitmap.copy(faceBitmap.config, true)
+                            faceBitmap.config?.let { faceBitmap.copy(it, true) }
                         }
                         _isFaceEnrollmentDataReady.update { true }
                         Log.d("SignInViewModel", "Face embedding temporarily stored.")

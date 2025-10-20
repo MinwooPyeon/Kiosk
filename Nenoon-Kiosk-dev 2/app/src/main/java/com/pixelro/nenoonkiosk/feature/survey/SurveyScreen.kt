@@ -11,7 +11,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Indication
-import androidx.compose.foundation.IndicationInstance
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -1199,40 +1198,4 @@ fun SurveyScreen(
     }
 }
 
-object MyIndication: Indication {
 
-    val animateWidth = Animatable(
-        initialValue = 100f,
-)
-    private class DefaultDebugIndicationInstance(
-        private val isPressed: State<Boolean>,
-        private val isHovered: State<Boolean>,
-        private val isFocused: State<Boolean>,
-    ) : IndicationInstance {
-        override fun ContentDrawScope.drawIndication() {
-            drawContent()
-            if (isPressed.value) {
-                drawRect(
-                    color = Color.Red.copy(alpha = 1.0f),
-                    size = size,
-                )
-            } else if (isHovered.value || isFocused.value) {
-                drawRect(
-                    color = Color.Red.copy(alpha = 0.1f),
-                    size = size
-                )
-            }
-        }
-    }
-    @Composable
-    override fun rememberUpdatedInstance(interactionSource: InteractionSource): IndicationInstance {
-        val isPressed = interactionSource.collectIsPressedAsState()
-        val isHovered = interactionSource.collectIsHoveredAsState()
-        val isFocused = interactionSource.collectIsFocusedAsState()
-        return remember(interactionSource) {
-            DefaultDebugIndicationInstance(isPressed, isHovered, isFocused)
-        }
-    }
-
-
-}

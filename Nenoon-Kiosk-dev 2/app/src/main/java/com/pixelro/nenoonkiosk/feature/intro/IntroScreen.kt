@@ -39,7 +39,6 @@ import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
-import com.pixelro.nenoonkiosk.ui.theme.cafe24Family
 
 //시작 버튼 있는 화면
 @Composable
@@ -116,7 +115,6 @@ fun IntroScreen(
             Text(
                 text = StringProvider.getString(R.string.intropage_appname, ),
                 fontSize = 60.sp,
-                fontFamily = cafe24Family,
 
                 textAlign = TextAlign.Center,
                 color = Color(0xFF1D71E1)
@@ -124,7 +122,6 @@ fun IntroScreen(
             Text(
                 text = StringProvider.getString(R.string.intropage_title, ),
                 fontSize = 36.sp,
-                fontFamily = cafe24Family,
 
                 textAlign = TextAlign.Center,
                 color = Color(0xFF1D71E1),
@@ -139,7 +136,6 @@ fun IntroScreen(
                     .fillMaxWidth(),
                 text = "${AppConstants.APP_VERSION}",
                 fontSize = 20.sp,
-                fontFamily = cafe24Family,
                 textAlign = TextAlign.End,
                 color = Color(0xff848484)
             )

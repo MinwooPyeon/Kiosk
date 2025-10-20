@@ -10,3 +10,6 @@ val Purple500 = Color(0xFF6200EE)
 val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
 val SignatureColor = Color(0xff1d71e1)
+
+val NEURAL200 = Color(0xFFB5B5B5)
+val neNoon_blue = Color(0xFF1D71E1)

@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.ui.theme.nanumSquareNeoFamily
 
 
 const val LARGE_SCALE = 1.5f
@@ -135,8 +134,7 @@ fun TestSelectionButton(
                 color = when (isDone) {
                     true -> Color(0xff999999)
                     false -> Color(0xff000000)
-                },
-                fontFamily = nanumSquareNeoFamily,
+                }
             )
 
             if (icon != null) {

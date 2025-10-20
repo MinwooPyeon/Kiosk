@@ -9,7 +9,6 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
-import com.example.strabismustest.ui.theme.StrabismusTestTheme
 
 class FilterInstructionFragment : Fragment() {
 
@@ -39,32 +38,32 @@ class FilterInstructionFragment : Fragment() {
                 val isWearingGlasses = arguments?.getBoolean(ARG_IS_WEARING_GLASSES) ?: false
                 var showDialog by remember { mutableStateOf(false) }
 
-                StrabismusTestTheme {
-                    FilterInstructionScreen(
-                        testType = testType,
-                        isWearingGlasses = isWearingGlasses,
-                        onNextClicked = {
-                            when (testType) {
-                                TEST_TYPE_SAWI -> {
-                                    navController.navigate("sawi_question")
-                                }
-                                TEST_TYPE_FUDO -> {
-                                    navController.navigate("fudo_question")
-                                }
-                            }
-                        },
-                        onBackClicked = {
-                            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                        },
-                    )
-
-                    if (showDialog) {
-                        when (testType) {
-                            TEST_TYPE_SAWI -> SawiHowToDialog(onDismissRequest = { showDialog = false })
-                            TEST_TYPE_FUDO -> FudoHowToDialog(onDismissRequest = { showDialog = false })
-                        }
-                    }
-                }
+//                StrabismusTestTheme {
+//                    FilterInstructionScreen(
+//                        testType = testType,
+//                        isWearingGlasses = isWearingGlasses,
+//                        onNextClicked = {
+//                            when (testType) {
+//                                TEST_TYPE_SAWI -> {
+//                                    navController.navigate("sawi_question")
+//                                }
+//                                TEST_TYPE_FUDO -> {
+//                                    navController.navigate("fudo_question")
+//                                }
+//                            }
+//                        },
+//                        onBackClicked = {
+//                            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+//                        },
+//                    )
+//
+//                    if (showDialog) {
+//                        when (testType) {
+//                            TEST_TYPE_SAWI -> SawiHowToDialog(onDismissRequest = { showDialog = false })
+//                            TEST_TYPE_FUDO -> FudoHowToDialog(onDismissRequest = { showDialog = false })
+//                        }
+//                    }
+//                }
             }
         }
     }

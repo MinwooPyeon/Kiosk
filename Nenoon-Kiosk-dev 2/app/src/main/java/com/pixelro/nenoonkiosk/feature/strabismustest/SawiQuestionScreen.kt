@@ -17,11 +17,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.strabismustest.ui.theme.StrabismusTestTheme
-import com.example.strabismustest.ui.theme.neNoon_blue
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -178,17 +177,5 @@ fun SawiQuestionScreen(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
-@Composable
-fun SawiQuestionScreenPreview() {
-    StrabismusTestTheme {
-        SawiQuestionScreen(
-            testType = FilterInstructionFragment.TEST_TYPE_SAWI,
-            onNextClicked = {},
-            onBackClicked = {},
-        )
     }
 }
