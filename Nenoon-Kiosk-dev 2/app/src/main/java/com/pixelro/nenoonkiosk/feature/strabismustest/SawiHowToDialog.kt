@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.strabismustest.ui.theme.neNoon_blue
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.StringProvider
 
 @Composable
 fun SawiHowToDialog(onDismissRequest: () -> Unit) {

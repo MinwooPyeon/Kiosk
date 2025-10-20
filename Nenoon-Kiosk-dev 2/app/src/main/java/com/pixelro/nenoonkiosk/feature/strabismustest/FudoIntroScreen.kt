@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.strabismustest.ui.theme.neNoon_blue
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.theme.NenoonKioskTheme
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)

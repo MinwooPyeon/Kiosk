@@ -30,10 +30,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.strabismustest.ui.theme.neNoon_blue
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.TTS
-import com.pixelro.nenoonkiosk.util.StringProvider
-import com.pixelro.nenoonkiosk.util.StringProviderForSawi
-import com.pixelro.nenoonkiosk.test.strabismus.StrabismusPrintHelper
+import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.StringProviderForSawi
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.StrabismusPrintHelper
 import kotlin.math.abs
 
 @Composable

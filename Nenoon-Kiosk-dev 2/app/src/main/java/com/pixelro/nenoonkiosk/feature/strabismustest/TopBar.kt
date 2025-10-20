@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.StringProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

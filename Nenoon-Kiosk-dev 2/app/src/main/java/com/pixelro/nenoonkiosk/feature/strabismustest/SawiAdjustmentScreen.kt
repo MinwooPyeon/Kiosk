@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.strabismustest.ui.theme.neNoon_blue
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.TTS
-import com.pixelro.nenoonkiosk.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.core.util.StringProvider
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
