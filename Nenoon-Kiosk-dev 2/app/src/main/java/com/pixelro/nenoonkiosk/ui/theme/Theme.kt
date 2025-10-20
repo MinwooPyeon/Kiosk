@@ -10,8 +10,9 @@ import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme =
     lightColorScheme(
-        // 앱의 주요 브랜드 색상, 주요 액션 버튼 등에 사용
-
+        primary = neNoon_blue,
+        background = White,
+        surface = White,
     )
 
 // Dark Mode 대응 안 할 예정
@@ -23,9 +24,9 @@ private val DarkColorScheme =
 @Composable
 fun NenoonKioskTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
-        LightColorScheme
-    } else {
         DarkColorScheme
+    } else {
+        LightColorScheme
     }
 
     MaterialTheme(
