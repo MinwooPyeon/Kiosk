@@ -68,7 +68,9 @@ fun CategoryListScreen(
 ) {
     val context = LocalContext.current
     val pagerState = rememberPagerState(
-        initialPage = 50000
+        initialPage = Int.MAX_VALUE / 2,
+        initialPageOffsetFraction = 0f,
+        pageCount = { Int.MAX_VALUE }
     )
     val isDescriptionShowing = remember { mutableStateOf(true) }
     LaunchedEffect(true) {

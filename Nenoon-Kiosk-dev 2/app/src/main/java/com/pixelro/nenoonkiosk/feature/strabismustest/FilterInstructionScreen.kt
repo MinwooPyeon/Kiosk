@@ -15,10 +15,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.strabismustest.ui.theme.neNoon_blue
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.ui.theme.NEURAL200
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,7 +85,7 @@ fun FilterInstructionScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(96.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = neNoon_blue),
+                    colors = ButtonDefaults.buttonColors(containerColor = NEURAL200),
                     shape = RoundedCornerShape( 12.dp)
                 ) {
                     Text(StringProvider.getString(R.string.common_next), fontSize = 36.sp, color = Color.White)

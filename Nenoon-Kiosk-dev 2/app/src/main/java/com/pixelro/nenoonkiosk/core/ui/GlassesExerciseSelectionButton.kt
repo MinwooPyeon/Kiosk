@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.ui.theme.nanumSquareNeoFamily
 
 
 @Composable
@@ -61,8 +60,7 @@ fun GlassesExerciseSelectionButton(
                     .padding(start = 28.dp, top = 30.dp),
                 fontSize = 40.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xff000000),
-                fontFamily = nanumSquareNeoFamily
+                color = Color(0xff000000)
             )
             Image(
                 modifier = Modifier

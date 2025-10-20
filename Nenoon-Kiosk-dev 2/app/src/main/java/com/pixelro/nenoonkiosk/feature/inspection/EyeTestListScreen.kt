@@ -83,7 +83,9 @@ fun EyeTestListScreen(
     val warningTextSize = if (savedLanguage == "ru") 10.sp else 16.sp
 
     val pagerState = rememberPagerState(
-        initialPage = 50000
+        initialPage = Int.MAX_VALUE / 2,
+        initialPageOffsetFraction = 0f,
+        pageCount = { Int.MAX_VALUE }
     )
     val isDescriptionShowing = remember { mutableStateOf(true) }
     LaunchedEffect(true) {
@@ -218,7 +220,6 @@ fun EyeTestListScreen(
                     contentPadding = PaddingValues(start = 40.dp, top = 20.dp, end = 40.dp, bottom = 20.dp),
                     pageSpacing = 40.dp,
                     state = pagerState,
-                    pageCount = 100000,
                 ) {
                     Advertisement(it)
                 }

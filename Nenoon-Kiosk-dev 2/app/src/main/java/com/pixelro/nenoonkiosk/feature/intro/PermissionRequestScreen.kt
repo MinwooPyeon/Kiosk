@@ -1,6 +1,7 @@
 package com.pixelro.nenoonkiosk.feature.intro
 
 import android.Manifest
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
@@ -53,7 +54,6 @@ import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.ui.theme.nanumSquareNeoFamily
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -116,7 +116,7 @@ fun PermissionRequestScreen(
     val bluetoothServiceRequestLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { activityResult ->
-        if (activityResult.resultCode == ComponentActivity.RESULT_OK)
+        if (activityResult.resultCode == Activity.RESULT_OK)
             Log.d("bluetoothServiceRequest", "bluetooth service accepted")
         else {
             Log.d("bluetoothServiceRequest", "bluetooth service denied")
@@ -140,8 +140,7 @@ fun PermissionRequestScreen(
             Text(
                 text = "앱 사용을 위해\n접근 권한 허용이 필요해요",
                 fontSize = 36.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = nanumSquareNeoFamily
+                fontWeight = FontWeight.Bold
             )
             Text(
                 modifier = Modifier

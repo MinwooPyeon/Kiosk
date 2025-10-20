@@ -110,7 +110,7 @@ fun FaceUpdateScreen(
                 modifier = Modifier.fillMaxSize(),
                 onFaceDetected = { faceBitmap ->
                     liveCameraBitmap?.recycle()
-                    liveCameraBitmap = faceBitmap.copy(faceBitmap.config, true)
+                    liveCameraBitmap = faceBitmap.config?.let { faceBitmap.copy(it, true) }
                     faceBitmap.recycle()
                 },
                 onDetectionStatus = { status ->

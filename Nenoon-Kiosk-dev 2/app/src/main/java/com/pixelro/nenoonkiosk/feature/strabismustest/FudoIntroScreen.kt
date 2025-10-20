@@ -3,20 +3,19 @@ package com.pixelro.nenoonkiosk.feature.strabismustest
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.strabismustest.ui.theme.neNoon_blue
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
+import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +37,7 @@ fun FudoIntroScreen(
                 title = { Text("") },
                 navigationIcon = {
                     IconButton(onClick = onBackClicked) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = StringProvider.getString(R.string.common_back_content_desc))
+                        Icon(painterResource(R.drawable.icon_back_black), contentDescription = StringProvider.getString(R.string.common_back_content_desc))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
