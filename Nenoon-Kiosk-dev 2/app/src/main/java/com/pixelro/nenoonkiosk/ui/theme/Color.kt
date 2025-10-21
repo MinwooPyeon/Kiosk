@@ -3,13 +3,12 @@ package com.pixelro.nenoonkiosk.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val Black = Color(0xff000000)
-val SignatureBlue = Color(0xff1d71e1)
 val White = Color(0xffffffff)
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
-val SignatureColor = Color(0xff1d71e1)
 
 val NEURAL200 = Color(0xFFB5B5B5)
+
 val neNoon_blue = Color(0xFF1D71E1)
+val Gray=Color(0xFF8F8F8F)
+val LightGray=Color(0xFFD9D9D9)
+val Red=Color(0xFFFF1111)
+val LightBlue=Color(0xFFE0EFFF)

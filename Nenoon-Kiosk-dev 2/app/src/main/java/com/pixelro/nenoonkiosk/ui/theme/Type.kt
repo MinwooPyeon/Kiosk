@@ -16,71 +16,64 @@ val defaultFont =
         Font(R.font.koddi_extrabold, FontWeight.ExtraBold),
     )
 
+// Custom text styles
+val selectLargeTextStyle =
+    TextStyle(
+        fontFamily = defaultFont,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 60.sp,
+        letterSpacing = 0.5.sp,
+    )
+
+val titleTextStyle =
+    TextStyle(
+        fontFamily = defaultFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 48.sp,
+        letterSpacing = 0.5.sp,
+    )
+
+val bodyTextStyle =
+    TextStyle(
+        fontFamily = defaultFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 40.sp,
+        letterSpacing = 0.5.sp,
+    )
+
+val buttonTextStyle =
+    TextStyle(
+        fontFamily = defaultFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 38.sp,
+        letterSpacing = 0.5.sp,
+    )
+
+val inputTextStyle =
+    TextStyle(
+        fontFamily = defaultFont,
+        fontWeight = FontWeight.Normal,
+        fontSize = 36.sp,
+        letterSpacing = 0.5.sp,
+    )
+
+val topBackButtonTextStyle =
+    TextStyle(
+        fontFamily = defaultFont,
+        fontWeight = FontWeight.Normal,
+        fontSize = 36.sp,
+        letterSpacing = 0.5.sp,
+    )
+
 val Typography =
     Typography(
-        displayLarge =
-            TextStyle(
-                fontFamily = defaultFont,
-                fontWeight = FontWeight.Normal,
-                fontSize = 56.sp,
-                letterSpacing = 0.5.sp,
-            ),
-        headlineLarge =
-            TextStyle(
-                fontFamily = defaultFont,
-                fontWeight = FontWeight.Normal,
-                fontSize = 40.sp,
-                letterSpacing = 0.5.sp,
-            ),
-        headlineMedium =
-            TextStyle(
-                fontFamily = defaultFont,
-                fontWeight = FontWeight.Normal,
-                fontSize = 36.sp,
-                letterSpacing = 0.5.sp,
-            ),
-        headlineSmall =
-            TextStyle(
-                fontFamily = defaultFont,
-                fontWeight = FontWeight.Normal,
-                fontSize = 32.sp,
-                letterSpacing = 0.5.sp,
-            ),
-        titleLarge =
-            TextStyle(
-                fontFamily = defaultFont,
-                fontWeight = FontWeight.Normal,
-                fontSize = 28.sp,
-                letterSpacing = 0.5.sp,
-            ),
-        titleMedium =
-            TextStyle(
-                fontFamily = defaultFont,
-                fontWeight = FontWeight.Normal,
-                fontSize = 24.sp,
-                letterSpacing = 0.5.sp,
-            ),
-        titleSmall =
-            TextStyle(
-                fontFamily = defaultFont,
-                fontWeight = FontWeight.Normal,
-                fontSize = 20.sp,
-                letterSpacing = 0.5.sp,
-            ),
-        bodyLarge =
-            TextStyle(
-                fontFamily = defaultFont,
-                fontWeight = FontWeight.Normal,
-                fontSize = 18.sp,
-                letterSpacing = 0.5.sp,
-            ),
-        bodyMedium =
-            TextStyle(
-                fontFamily = defaultFont,
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
-                letterSpacing = 0.5.sp,
-            ),
+        displayLarge = selectLargeTextStyle,
+        headlineLarge = titleTextStyle,
+        headlineMedium = bodyTextStyle,
+        titleLarge = buttonTextStyle,
+        titleMedium = inputTextStyle,
+        bodyLarge = inputTextStyle,
+        bodyMedium = topBackButtonTextStyle,
         bodySmall =
             TextStyle(
                 fontFamily = defaultFont,
