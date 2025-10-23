@@ -32,17 +32,16 @@ fun SignInScreen(
     signInViewModel: SignInViewModel,
     navController: NavController,
 ) {
-
     val signInNavController = rememberNavController()
     val isLocationSignedIn by signInViewModel.isLocationSignedIn.collectAsState()
     var isFaceIdTermsOfServiceAccepted by remember { mutableStateOf(false) }
 
     NavHost(
         navController = signInNavController,
-        startDestination = SignInScreenState.LocationSignIn.name
+        startDestination = SignInScreenState.LocationSignIn.name,
     ) {
         composable(
-            SignInScreenState.LocationSignIn.name
+            SignInScreenState.LocationSignIn.name,
         ) {
             LaunchedEffect(Unit) {
                 isFaceIdTermsOfServiceAccepted = false
@@ -59,7 +58,7 @@ fun SignInScreen(
             BackHandler(true) {}
         }
         composable(
-            SignInScreenState.UserSignIn.name
+            SignInScreenState.UserSignIn.name,
         ) {
             LaunchedEffect(Unit) {
                 isFaceIdTermsOfServiceAccepted = false
@@ -73,7 +72,7 @@ fun SignInScreen(
             BackHandler(true) {}
         }
         composable(
-            SignInScreenState.SignUp.name
+            SignInScreenState.SignUp.name,
         ) {
             UserSignUpScreen(
                 updateIsSignedIn = { navController.navigate(NavConstants.ROUTE_INTRO) },
@@ -89,18 +88,18 @@ fun SignInScreen(
             )
         }
         composable(
-            SignInScreenState.SignUpTermsOfService.name
+            SignInScreenState.SignUpTermsOfService.name,
         ) {
-            SignUpTermsOfServiceScreen(
+            signUpTermsOfServiceScreen(
                 onTermsAccepted = {
                     signInNavController.popBackStack(SignInScreenState.UserSignIn.name, false)
                     signInNavController.navigate(SignInScreenState.SignUp.name)
                 },
-                onTermsRejected = { signInNavController.popBackStack(SignInScreenState.UserSignIn.name, false) }
+                onTermsRejected = { signInNavController.popBackStack(SignInScreenState.UserSignIn.name, false) },
             )
         }
         composable(
-            SignInScreenState.FaceIdTermsOfService.name
+            SignInScreenState.FaceIdTermsOfService.name,
         ) {
             FaceIdTermsOfServiceScreen(
                 onTermsAccepted = {
@@ -108,11 +107,11 @@ fun SignInScreen(
                     signInNavController.navigate(SignInScreenState.FaceEnrollment.name)
                     isFaceIdTermsOfServiceAccepted = true
                 },
-                onTermsRejected = { signInNavController.popBackStack(SignInScreenState.UserSignIn.name, false) }
+                onTermsRejected = { signInNavController.popBackStack(SignInScreenState.UserSignIn.name, false) },
             )
         }
         composable(
-            SignInScreenState.QR.name
+            SignInScreenState.QR.name,
         ) {
             QRSignInScreen(
                 updateIsSignedIn = { navController.navigate(NavConstants.ROUTE_INTRO) },
@@ -121,19 +120,22 @@ fun SignInScreen(
             )
         }
         composable(
-            SignInScreenState.FaceId.name
+            SignInScreenState.FaceId.name,
         ) {
             FaceIdSignInScreen(
                 updateIsSignedIn = { success ->
-                    if (success) navController.navigate(NavConstants.ROUTE_INTRO)
-                    else signInNavController.popBackStack(SignInScreenState.UserSignIn.name, false)
+                    if (success) {
+                        navController.navigate(NavConstants.ROUTE_INTRO)
+                    } else {
+                        signInNavController.popBackStack(SignInScreenState.UserSignIn.name, false)
+                    }
                 },
                 signInViewModel = signInViewModel,
                 navController = signInNavController,
             )
         }
         composable(
-            SignInScreenState.FaceEnrollment.name
+            SignInScreenState.FaceEnrollment.name,
         ) {
             FaceEnrollmentScreen(
                 signInViewModel = signInViewModel,
@@ -141,9 +143,9 @@ fun SignInScreen(
             )
         }
         composable(
-            SignInScreenState.IdPassword.name
+            SignInScreenState.IdPassword.name,
         ) {
-            IdPasswordSignInScreen (
+            IdPasswordSignInScreen(
                 updateIsSignedIn = { navController.navigate(NavConstants.ROUTE_INTRO) },
                 signInViewModel = signInViewModel,
                 navController = signInNavController,

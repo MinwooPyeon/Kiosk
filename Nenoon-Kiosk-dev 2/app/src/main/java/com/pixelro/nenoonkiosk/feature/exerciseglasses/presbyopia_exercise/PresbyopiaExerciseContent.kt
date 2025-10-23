@@ -44,7 +44,7 @@ import kotlin.math.roundToInt
 @Composable
 fun PresbyopiaExerciseContent(
     toResultScreen: (PresbyopiaExerciseResult) -> Unit,
-    presbyopiaExerciseViewModel: PresbyopiaExerciseViewModel = hiltViewModel()
+    presbyopiaExerciseViewModel: PresbyopiaExerciseViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(true) {
         presbyopiaExerciseViewModel.init()
@@ -54,21 +54,23 @@ fun PresbyopiaExerciseContent(
         presbyopiaExerciseViewModel.isMChartContentVisible.collectAsState().value
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                color = Color(0xff000000)
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(
+                    color = Color(0xff000000),
+                ),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
             contentAlignment = Alignment.TopCenter,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
         ) {
             PresbyopiaexerciseContent(
                 mChartContentVisibleState = presbyopiaExerciseContentVisibleState,
-                toResultScreen = toResultScreen
+                toResultScreen = toResultScreen,
             )
         }
     }
@@ -80,14 +82,13 @@ fun PresbyopiaexerciseContent(
     mChartContentVisibleState: MutableTransitionState<Boolean>,
     toResultScreen: (PresbyopiaExerciseResult) -> Unit,
     presbyopiaExerciseViewModel: PresbyopiaExerciseViewModel = hiltViewModel(),
-    faceDetectionViewModel: FaceDetectionViewModel = hiltViewModel()
+    faceDetectionViewModel: FaceDetectionViewModel = hiltViewModel(),
 ) {
     AnimatedVisibility(
         visibleState = mChartContentVisibleState,
         enter = AnimationProvider.enterTransition,
-        exit = AnimationProvider.exitTransition
+        exit = AnimationProvider.exitTransition,
     ) {
-
         val context = LocalContext.current
         val coroutineScope = rememberCoroutineScope()
         val isTesting = presbyopiaExerciseViewModel.isTesting.collectAsState().value
@@ -99,180 +100,203 @@ fun PresbyopiaexerciseContent(
         val currentLevel = presbyopiaExerciseViewModel.currentLevel.collectAsState().value
         val imageId = presbyopiaExerciseViewModel.mChartImageId.collectAsState().value
         Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                modifier = Modifier
-                    .padding(top = 20.dp, bottom = 20.dp),
-//                text = "화면에 40cm 이내로 가깝게 오세요.\n줄무늬 패치를 글씨와 평행시켜\n 줄 사이로 읽어주세요.",
-                text = StringProvider.getString(R.string.within_40cm, ) + StringProvider.getString(
-                    R.string.read_between,
-                    
-                ),
+                modifier =
+                    Modifier
+                        .padding(top = 20.dp, bottom = 20.dp),
+                //                text = "화면에 40cm 이내로 가깝게 오세요.\n줄무늬 패치를 글씨와 평행시켜\n 줄 사이로 읽어주세요.",
+                text =
+                    StringProvider.getString(R.string.within_40cm) +
+                        StringProvider.getString(
+                            R.string.read_between,
+                        ),
                 fontSize = 35.sp,
                 color = Color(0xffffffff),
                 fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
             Text(
-                modifier = Modifier
-                    .padding(top = 20.dp, bottom = 20.dp),
-                text = StringProvider.getString(R.string.compare_and_test, ),
+                modifier =
+                    Modifier
+                        .padding(top = 20.dp, bottom = 20.dp),
+                text = StringProvider.getString(R.string.compare_and_test),
                 fontSize = 30.sp,
                 color = Color(0xffffffff),
                 fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
             Column(
-                modifier = Modifier
-                    .width(700.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier =
+                    Modifier
+                        .width(700.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .background(
-                            color = Color(0xffffffff),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .fillMaxWidth()
-                        .width(700.dp)
-                        .height(420.dp)
+                    modifier =
+                        Modifier
+                            .background(
+                                color = Color(0xffffffff),
+                                shape = RoundedCornerShape(12.dp),
+                            )
+                            .fillMaxWidth()
+                            .width(700.dp)
+                            .height(420.dp),
                 ) {
                     Image(
-                        modifier = Modifier
-                            .padding(5.dp)
-                            .fillMaxSize(),
+                        modifier =
+                            Modifier
+                                .padding(5.dp)
+                                .fillMaxSize(),
                         painter = painterResource(id = imageId),
-                        contentDescription = ""
+                        contentDescription = "",
                     )
                 }
             }
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 20.dp, bottom = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(top = 20.dp, bottom = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
                     verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     Box(
-                        modifier = Modifier
-                            .padding(
-                                start = 20.dp,
-                                end = 10.dp,
-                                bottom = 10.dp
-                            )
-                            .width(340.dp)
-                            .height(120.dp)
-                            .clip(
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .background(
-                                color = Color(0xffffffff),
-                                shape = RoundedCornerShape(8.dp),
-                            )
-                            .clickable {
-                                presbyopiaExerciseViewModel.updatePresbyopiaExerciseValue()
-                                toResultScreen(presbyopiaExerciseViewModel.getPresbyopiaExerciseResult())
-                            },
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier
+                                .padding(
+                                    start = 20.dp,
+                                    end = 10.dp,
+                                    bottom = 10.dp,
+                                )
+                                .width(340.dp)
+                                .height(120.dp)
+                                .clip(
+                                    shape = RoundedCornerShape(8.dp),
+                                )
+                                .background(
+                                    color = Color(0xffffffff),
+                                    shape = RoundedCornerShape(8.dp),
+                                )
+                                .clickable {
+                                    presbyopiaExerciseViewModel.updatePresbyopiaExerciseValue()
+                                    toResultScreen(presbyopiaExerciseViewModel.getPresbyopiaExerciseResult())
+                                },
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            modifier = Modifier
-                                .padding(bottom = 4.dp),
-                            text = StringProvider.getString(
-                                R.string.not_visiable_test_complete,
-                                
-                            ),
+                            modifier =
+                                Modifier
+                                    .padding(bottom = 4.dp),
+                            text =
+                                StringProvider.getString(
+                                    R.string.not_visiable_test_complete,
+                                ),
                             fontSize = 30.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xffB90000)
+                            color = Color(0xffB90000),
                         )
                     }
                     Box(
-                        modifier = Modifier
-                            .padding(
-                                start = 10.dp,
-                                end = 20.dp,
-                                bottom = 10.dp
-                            )
-                            .width(340.dp)
-                            .height(120.dp)
-                            .clip(
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .background(
-                                color = Color(0xffffffff),
-                                shape = RoundedCornerShape(8.dp),
-                            )
-                            .clickable {
-                                if (currentLevel >= 8) {
-                                    presbyopiaExerciseViewModel.updatePresbyopiaExerciseValue()
-                                    toResultScreen(presbyopiaExerciseViewModel.getPresbyopiaExerciseResult())
-                                } else {
-                                    presbyopiaExerciseViewModel.updateCurrentLevel(currentLevel + 1)
-                                }
-                            },
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier
+                                .padding(
+                                    start = 10.dp,
+                                    end = 20.dp,
+                                    bottom = 10.dp,
+                                )
+                                .width(340.dp)
+                                .height(120.dp)
+                                .clip(
+                                    shape = RoundedCornerShape(8.dp),
+                                )
+                                .background(
+                                    color = Color(0xffffffff),
+                                    shape = RoundedCornerShape(8.dp),
+                                )
+                                .clickable {
+                                    if (currentLevel >= 8) {
+                                        presbyopiaExerciseViewModel.updatePresbyopiaExerciseValue()
+                                        toResultScreen(presbyopiaExerciseViewModel.getPresbyopiaExerciseResult())
+                                    } else {
+                                        presbyopiaExerciseViewModel.updateCurrentLevel(currentLevel + 1)
+                                    }
+                                },
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            modifier = Modifier
-                                .padding(bottom = 4.dp),
-                            text = StringProvider.getString(
-                                R.string.next_stage,
-                                
-                            ),
+                            modifier =
+                                Modifier
+                                    .padding(bottom = 4.dp),
+                            text =
+                                StringProvider.getString(
+                                    R.string.next_stage,
+                                ),
                             fontSize = 30.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xff000000)
+                            color = Color(0xff000000),
                         )
                     }
                 }
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        modifier = Modifier
-                            .padding(bottom = 4.dp),
-                        text = "※" + StringProvider.getString(
-                            R.string.source),
+                        modifier =
+                            Modifier
+                                .padding(bottom = 4.dp),
+                        text =
+                            "※" +
+                                StringProvider.getString(
+                                    R.string.source,
+                                ),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Color(0xff999999)
+                        color = Color(0xff999999),
                     )
                 }
                 Column(
-                    modifier = Modifier
-                        .padding(20.dp)
-                        .fillMaxSize(),
+                    modifier =
+                        Modifier
+                            .padding(20.dp)
+                            .fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Center,
                 ) {
                     Text(
-                        modifier = Modifier
-                            .padding(bottom = 10.dp),
-                        text = StringProvider.getString(
-                            R.string.test_screen_current_distance),
+                        modifier =
+                            Modifier
+                                .padding(bottom = 10.dp),
+                        text =
+                            StringProvider.getString(
+                                R.string.test_screen_current_distance,
+                            ),
                         fontSize = 24.sp,
-                        color = Color(0xffffffff)
+                        color = Color(0xffffffff),
                     )
                     Text(
-                        modifier = Modifier
-                            .padding(bottom = 10.dp),
+                        modifier =
+                            Modifier
+                                .padding(bottom = 10.dp),
                         text = "${(faceDetectionViewModel.screenToFaceDistance.collectAsState().value / 10).roundToInt()}cm",
                         fontSize = 100.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Color(0xffffffff)
+                        color = Color(0xffffffff),
                     )
                 }
             }

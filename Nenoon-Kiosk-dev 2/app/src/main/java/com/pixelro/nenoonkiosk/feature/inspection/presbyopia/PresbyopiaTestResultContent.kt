@@ -23,11 +23,8 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
 @Composable
-fun PresbyopiaTestResultContent(
-    testResult: PresbyopiaTestResult
-) {
-    Box(
-    ) {
+fun PresbyopiaTestResultContent(testResult: PresbyopiaTestResult) {
+    Box {
         //            AndroidView(
         //                modifier = Modifier
         //                    .fillMaxWidth()
@@ -51,15 +48,15 @@ fun PresbyopiaTestResultContent(
         //
         //                    val dataset1 = LineDataSet(allEntries, "Label1")
         //                    dataset1.color = 0xff0000ff.toInt()
-        ////                dataset1.setCircleColor(0xff0000ff.toInt())
+        // //                dataset1.setCircleColor(0xff0000ff.toInt())
         //                    dataset1.setDrawCircleHole(false)
         //                    dataset1.setDrawCircles(false)
-        ////                dataset1.circleRadius = 4f
+        // //                dataset1.circleRadius = 4f
         //                    dataset1.setDrawValues(false)
         //
         //                    val dataset2 = LineDataSet(entries2, "Label2")
         //                    dataset2.color = 0xff0000ff.toInt()
-        ////                dataset2.setCircleColor(0xff0000ff.toInt())
+        // //                dataset2.setCircleColor(0xff0000ff.toInt())
         //                    dataset2.setDrawCircleHole(false)
         //                    dataset2.setDrawCircles(false)
         //                    dataset2.setDrawFilled(true)
@@ -67,21 +64,21 @@ fun PresbyopiaTestResultContent(
         //                    dataset2.fillColor = 0xff0000ff.toInt()
         //                    dataset2.lineWidth = 6f
         //
-        ////                    val dataset3 = LineDataSet(startEntry, "Label3")
-        ////                    dataset3.valueTextSize = 20f
-        ////                    dataset3.circleRadius = 8f
-        ////                    dataset3.setCircleColor(0xff0000ff.toInt())
-        ////                    dataset3.setDrawCircleHole(false)
-        ////                    val dataset4 = LineDataSet(midEntry, "Label4")
-        ////                    dataset4.valueTextSize = 20f
-        ////                    dataset4.circleRadius = 8f
-        ////                    dataset4.setCircleColor(0xff0000ff.toInt())
-        ////                    dataset4.setDrawCircleHole(false)
-        ////                    val dataset5 = LineDataSet(endEntry, "Label5")
-        ////                    dataset5.valueTextSize = 20f
-        ////                    dataset5.circleRadius = 8f
-        ////                    dataset5.setCircleColor(0xff0000ff.toInt())
-        ////                    dataset5.setDrawCircleHole(false)
+        // //                    val dataset3 = LineDataSet(startEntry, "Label3")
+        // //                    dataset3.valueTextSize = 20f
+        // //                    dataset3.circleRadius = 8f
+        // //                    dataset3.setCircleColor(0xff0000ff.toInt())
+        // //                    dataset3.setDrawCircleHole(false)
+        // //                    val dataset4 = LineDataSet(midEntry, "Label4")
+        // //                    dataset4.valueTextSize = 20f
+        // //                    dataset4.circleRadius = 8f
+        // //                    dataset4.setCircleColor(0xff0000ff.toInt())
+        // //                    dataset4.setDrawCircleHole(false)
+        // //                    val dataset5 = LineDataSet(endEntry, "Label5")
+        // //                    dataset5.valueTextSize = 20f
+        // //                    dataset5.circleRadius = 8f
+        // //                    dataset5.setCircleColor(0xff0000ff.toInt())
+        // //                    dataset5.setDrawCircleHole(false)
         //
         //                    val xAxis = lineChart.xAxis
         //                    xAxis.setDrawGridLines(false)
@@ -97,19 +94,19 @@ fun PresbyopiaTestResultContent(
         //                    leftAxis.axisMaximum = 60f
         //                    leftAxis.textSize = 20f
         //                    leftAxis.valueFormatter = ChartValueFormatter()
-        ////            leftAxis.setGridDashedLine(DashPathEffect(floatArrayOf(2f), 2f))
+        // //            leftAxis.setGridDashedLine(DashPathEffect(floatArrayOf(2f), 2f))
         //
         //                    val rightAxis = lineChart.axisRight
         //                    rightAxis.setDrawAxisLine(false)
         //                    rightAxis.setDrawGridLines(false)
         //                    rightAxis.setDrawLabels(false)
-        ////            rightAxis.enableGridDashedLine(10f, 4f, 1f)
+        // //            rightAxis.enableGridDashedLine(10f, 4f, 1f)
         //
         //                    val lineData = LineData(dataset1)
-        ////                    lineData.addDataSet(dataset2)
-        ////                    lineData.addDataSet(dataset3)
-        ////                    lineData.addDataSet(dataset4)
-        ////                    lineData.addDataSet(dataset5)
+        // //                    lineData.addDataSet(dataset2)
+        // //                    lineData.addDataSet(dataset3)
+        // //                    lineData.addDataSet(dataset4)
+        // //                    lineData.addDataSet(dataset5)
         //                    lineChart.data = lineData
         //                    lineChart.setTouchEnabled(false)
         //                    lineChart.legend.isEnabled = false
@@ -120,13 +117,13 @@ fun PresbyopiaTestResultContent(
         //                    lineChart
         //                }
         //            )
-        ////            Text(
-        ////                modifier = Modifier
-        ////                    .padding(start = 40.dp, top = 230.dp),
-        ////                text = StringProvider.getString(R.string.result_screen_distance),
-        ////                fontSize = 20.sp,
-        ////                textAlign = TextAlign.Center
-        ////            )
+        // //            Text(
+        // //                modifier = Modifier
+        // //                    .padding(start = 40.dp, top = 230.dp),
+        // //                text = StringProvider.getString(R.string.result_screen_distance),
+        // //                fontSize = 20.sp,
+        // //                textAlign = TextAlign.Center
+        // //            )
         //            Text(
         //                modifier = Modifier
         //                    .padding(start = 380.dp, top = 360.dp),
@@ -137,70 +134,81 @@ fun PresbyopiaTestResultContent(
         //        }
     }
     Column(
-        modifier = Modifier
-            .padding(40.dp)
-            .fillMaxWidth()
-            .background(
-                color = Color(0xfff7f7f7),
-                shape = RoundedCornerShape(8.dp)
-            )
-            .padding(40.dp)
+        modifier =
+            Modifier
+                .padding(40.dp)
+                .fillMaxWidth()
+                .background(
+                    color = Color(0xfff7f7f7),
+                    shape = RoundedCornerShape(8.dp),
+                )
+                .padding(40.dp),
     ) {
         Text(
-            text = buildAnnotatedString {
-                if (testResult.avgDistance.toInt()==25)
-                {
-                    append(StringProvider.getString(
-                        R.string.presbyopia_result_description))
-                }
-                else
-                {
-
-                    append(StringProvider.getString(
-                        R.string.presbyopia_result_description2_eye_age))
-                    withStyle(
-                        style = SpanStyle(
-                            color = Color(0xff1d71e1),
-                            fontWeight = FontWeight.Bold
-                        )
-                    ) {
+            text =
+                buildAnnotatedString {
+                    if (testResult.avgDistance.toInt() == 25) {
                         append(
-                            " " + (testResult.age - 2) + " ~ " + (testResult.age + 2) + StringProvider.getString(
-                                R.string.presbyopia_result_description2_abnormal,
-                                
+                            StringProvider.getString(
+                                R.string.presbyopia_result_description,
+                            ),
+                        )
+                    } else {
+                        append(
+                            StringProvider.getString(
+                                R.string.presbyopia_result_description2_eye_age,
+                            ),
+                        )
+                        withStyle(
+                            style =
+                                SpanStyle(
+                                    color = Color(0xff1d71e1),
+                                    fontWeight = FontWeight.Bold,
+                                ),
+                        ) {
+                            append(
+                                " " + (testResult.age - 2) + " ~ " + (testResult.age + 2) +
+                                    StringProvider.getString(
+                                        R.string.presbyopia_result_description2_abnormal,
+                                    ),
                             )
+                        }
+                        append(
+                            StringProvider.getString(
+                                R.string.presbyopia_result_description3_abnormal,
+                            ),
                         )
                     }
-                    append(StringProvider.getString(
-                        R.string.presbyopia_result_description3_abnormal))
-                }
-            }
-            ,
+                },
             fontSize = 32.sp,
             fontWeight = FontWeight.Medium,
         )
         Text(
-            text = buildAnnotatedString {
-                append(StringProvider.getString(
-                    R.string.presbyopia_result_sub_description1_approximate,
-                    
-                ) + " ")
-                withStyle(
-                    style = SpanStyle(
-                        color = Color(0xff1d71e1),
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.ExtraBold
-                    )
-                ) {
+            text =
+                buildAnnotatedString {
                     append(
-                        String.format("%.1f", testResult.avgDistance)
+                        StringProvider.getString(
+                            R.string.presbyopia_result_sub_description1_approximate,
+                        ) + " ",
                     )
-                }
-                append(StringProvider.getString(
-                    R.string.presbyopia_result_sub_description2_blur,
-                    
-                ))
-            },
+                    withStyle(
+                        style =
+                            SpanStyle(
+                                color = Color(0xff1d71e1),
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                            ),
+                    ) {
+                        append(
+                            String.format("%.1f", testResult.avgDistance),
+                        )
+                    }
+                    append(
+                        StringProvider.getString(
+                            R.string.presbyopia_result_sub_description2_blur,
+                        ),
+                    )
+                },
             fontSize = 24.sp,
             fontWeight = FontWeight.Medium,
         )
@@ -209,32 +217,35 @@ fun PresbyopiaTestResultContent(
     }
 }
 
-//@Preview(name = "S6Lite", device = "spec:shape=Normal,width=1200,height=2000,unit=px,dpi=224", showBackground = true)
+// @Preview(name = "S6Lite", device = "spec:shape=Normal,width=1200,height=2000,unit=px,dpi=224", showBackground = true)
 @Preview(device = "id:Galaxy S6 Lite", fontScale = 1.1f)
 @Composable
 fun ResultScreenPreview() {
     NenoonKioskTheme {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
             PresbyopiaTestResultContent(
-                testResult = PresbyopiaTestResult(
-                    age = 45,
-                    firstDistance = 20f,
-                    secondDistance = 20f,
-                    thirdDistance = 20f,
-                    avgDistance = 20f
-                )
+                testResult =
+                    PresbyopiaTestResult(
+                        age = 45,
+                        firstDistance = 20f,
+                        secondDistance = 20f,
+                        thirdDistance = 20f,
+                        avgDistance = 20f,
+                    ),
             )
             PresbyopiaTestResultContent(
-                testResult = PresbyopiaTestResult(
-                    age = 46,
-                    firstDistance = 40f,
-                    secondDistance = 40f,
-                    thirdDistance = 40f,
-                    avgDistance = 43f
-                )
+                testResult =
+                    PresbyopiaTestResult(
+                        age = 46,
+                        firstDistance = 40f,
+                        secondDistance = 40f,
+                        thirdDistance = 40f,
+                        avgDistance = 43f,
+                    ),
             )
         }
     }

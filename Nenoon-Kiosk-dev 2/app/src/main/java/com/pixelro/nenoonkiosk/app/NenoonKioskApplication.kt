@@ -18,12 +18,14 @@ class NenoonKioskApplication : Application() {
         // Disconnect the printer when the app is terminated
         PrinterManager.disconnectPrinter()
     }
+
     init {
         instance = this
     }
 
     companion object {
         lateinit var instance: NenoonKioskApplication
+
         fun applicationContext(): Context {
             return instance.applicationContext
         }

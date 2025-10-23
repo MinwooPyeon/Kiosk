@@ -27,23 +27,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
+import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
 
-//검사할 때 뷰
+// 검사할 때 뷰
 @SuppressLint("NewApi")
 @Composable
 fun TestScreen(
     viewModel: NenoonViewModel,
     navController: NavHostController,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-
     val selectedTestType = viewModel.selectedTestType.collectAsState().value
 
     BackHandler(enabled = true) {
@@ -66,132 +65,143 @@ fun TestScreen(
     }
     val context = LocalContext.current
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier =
+            Modifier
+                .fillMaxSize(),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    color = when (selectedTestType) {
-                        TestType.Dementia, TestType.GripStrength, TestType.BloodPressure -> Color(0xffffffff)
-                        else -> Color(0xff000000)
-                    }
-                ),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        color =
+                            when (selectedTestType) {
+                                TestType.Dementia, TestType.GripStrength, TestType.BloodPressure -> Color(0xffffffff)
+                                else -> Color(0xff000000)
+                            },
+                    ),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             /**
              * 상단 바
              */
             Box(
-                modifier = Modifier
-                    .padding(
-                        start = 40.dp,
-                        top = (GlobalValue.statusBarPadding + 20).dp,
-                        end = 40.dp,
-                        bottom = 20.dp
-                    )
-                    .fillMaxWidth()
-                    .height(40.dp)
+                modifier =
+                    Modifier
+                        .padding(
+                            start = 40.dp,
+                            top = (GlobalValue.statusBarPadding + 20).dp,
+                            end = 40.dp,
+                            bottom = 20.dp,
+                        )
+                        .fillMaxWidth()
+                        .height(40.dp),
             ) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.CenterStart
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
+                    contentAlignment = Alignment.CenterStart,
                 ) {
                     Image(
-                        modifier = Modifier
-                            .width(32.dp)
-                            .clickable {
-                                when (selectedTestType) {
-                                    TestType.Dementia -> {
-                                        navController.popBackStack(NavConstants.ROUTE_CATEGORY_LIST, false)
+                        modifier =
+                            Modifier
+                                .width(32.dp)
+                                .clickable {
+                                    when (selectedTestType) {
+                                        TestType.Dementia -> {
+                                            navController.popBackStack(NavConstants.ROUTE_CATEGORY_LIST, false)
+                                        }
+                                        TestType.GripStrength, TestType.BloodPressure -> {
+                                            navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false)
+                                        }
+                                        TestType.Presbyopia_Glasses, TestType.Concentration_Glasses -> {
+                                            navController.popBackStack(NavConstants.ROUTE_EXERCISE_LIST, false)
+                                        }
+                                        else -> {
+                                            TTS.tts.stop()
+                                            navController.popBackStack(NavConstants.ROUTE_TEST_LIST, false)
+                                        }
                                     }
-                                    TestType.GripStrength, TestType.BloodPressure -> {
-                                        navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false)
-                                    }
-                                    TestType.Presbyopia_Glasses, TestType.Concentration_Glasses -> {
-                                        navController.popBackStack(NavConstants.ROUTE_EXERCISE_LIST, false)
-                                    }
-                                    else -> {
-                                        TTS.tts.stop()
-                                        navController.popBackStack(NavConstants.ROUTE_TEST_LIST, false)
-                                    }
+                                },
+                        painter =
+                            when (selectedTestType) {
+                                TestType.Dementia, TestType.GripStrength, TestType.BloodPressure -> {
+                                    painterResource(id = R.drawable.close_button_black)
                                 }
+                                else -> painterResource(id = R.drawable.close_button)
                             },
-                        painter =when (selectedTestType) {
-                            TestType.Dementia, TestType.GripStrength, TestType.BloodPressure -> {
-                                painterResource(id = R.drawable.close_button_black)
-                            }
-                            else -> painterResource(id = R.drawable.close_button)
-                        },
-                        contentDescription = ""
+                        contentDescription = "",
                     )
                 }
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = when (selectedTestType) {
-                            TestType.Presbyopia -> StringProvider.getString(
-                                R.string.presbyopia_name,
-                                
-                            )
-                            TestType.ShortDistanceVisualAcuity -> StringProvider.getString(
-                                R.string.short_visual_acuity_name2,
-                                
-                            )
-                            TestType.LongDistanceVisualAcuity -> StringProvider.getString(
-                                R.string.long_visual_acuity_name,
-                                
-                            )
-                            TestType.ChildrenVisualAcuity -> StringProvider.getString(
-                                R.string.children_visual_acuity_name,
-                                
-                            )
-                            TestType.AmslerGrid -> StringProvider.getString(
-                                R.string.amsler_grid_name,
-                                
-                            )
-                            TestType.MChart -> StringProvider.getString(
-                                R.string.mchart_name,
-                                
-                            )
-                            TestType.Dementia -> StringProvider.getString(
-                                R.string.dementia_title,
-                                
-                            )
-                            TestType.Presbyopia_Glasses -> StringProvider.getString(
-                                R.string.presbyopia_glasses,
-                                
-                            )
-                            TestType.Concentration_Glasses -> StringProvider.getString(
-                                R.string.concentration_glasses_title,
-                                
-                            )
-                            TestType.GripStrength -> StringProvider.getString(R.string.grip_strength_test)
-                            TestType.BloodPressure -> StringProvider.getString(R.string.blood_pressure_test)
-                            else -> ""
-                        },
-                        color = when (selectedTestType) {
-                            TestType.Dementia, TestType.GripStrength, TestType.BloodPressure -> Color(0xff000000)
-                            else -> Color(0xffffffff)
-                        },
+                        text =
+                            when (selectedTestType) {
+                                TestType.Presbyopia ->
+                                    StringProvider.getString(
+                                        R.string.presbyopia_name,
+                                    )
+                                TestType.ShortDistanceVisualAcuity ->
+                                    StringProvider.getString(
+                                        R.string.short_visual_acuity_name2,
+                                    )
+                                TestType.LongDistanceVisualAcuity ->
+                                    StringProvider.getString(
+                                        R.string.long_visual_acuity_name,
+                                    )
+                                TestType.ChildrenVisualAcuity ->
+                                    StringProvider.getString(
+                                        R.string.children_visual_acuity_name,
+                                    )
+                                TestType.AmslerGrid ->
+                                    StringProvider.getString(
+                                        R.string.amsler_grid_name,
+                                    )
+                                TestType.MChart ->
+                                    StringProvider.getString(
+                                        R.string.mchart_name,
+                                    )
+                                TestType.Dementia ->
+                                    StringProvider.getString(
+                                        R.string.dementia_title,
+                                    )
+                                TestType.Presbyopia_Glasses ->
+                                    StringProvider.getString(
+                                        R.string.presbyopia_glasses,
+                                    )
+                                TestType.Concentration_Glasses ->
+                                    StringProvider.getString(
+                                        R.string.concentration_glasses_title,
+                                    )
+                                TestType.GripStrength -> StringProvider.getString(R.string.grip_strength_test)
+                                TestType.BloodPressure -> StringProvider.getString(R.string.blood_pressure_test)
+                                else -> ""
+                            },
+                        color =
+                            when (selectedTestType) {
+                                TestType.Dementia, TestType.GripStrength, TestType.BloodPressure -> Color(0xff000000)
+                                else -> Color(0xffffffff)
+                            },
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
                     )
                 }
             }
             Spacer(
-                modifier = Modifier
-                    .padding(bottom = 5.dp, start = 5.dp, end = 5.dp)
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(
-                        color = Color(0xff000000)
-                    )
+                modifier =
+                    Modifier
+                        .padding(bottom = 5.dp, start = 5.dp, end = 5.dp)
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(
+                            color = Color(0xff000000),
+                        ),
             )
             /**
              * 검사 내용

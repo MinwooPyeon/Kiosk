@@ -26,11 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
+import com.pixelro.nenoonkiosk.core.util.StringProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 fun FaceIdSignInScreen(
     signInViewModel: SignInViewModel,
     navController: NavController,
-    updateIsSignedIn: (Boolean) -> Unit
+    updateIsSignedIn: (Boolean) -> Unit,
 ) {
     val faceRecognitionStatus by signInViewModel.faceDetectionStatus.collectAsState()
     val isProcessingFace by signInViewModel.isProcessingFace.collectAsState()
@@ -67,36 +67,40 @@ fun FaceIdSignInScreen(
     }
 
     Column(
-        modifier = Modifier
-            .padding(40.dp)
-            .fillMaxSize(),
+        modifier =
+            Modifier
+                .padding(40.dp)
+                .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         StyledText(
             StringProvider.getString(R.string.face_id_sign_in_title),
             style = TextStyle.Title,
             textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 40.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 40.dp),
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(16.dp))
-                .align(Alignment.CenterHorizontally)
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.7f)
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(16.dp))
+                    .align(Alignment.CenterHorizontally),
         ) {
             CameraPreview(
                 modifier = Modifier.fillMaxSize(),
                 onFaceDetected = { faceBitmap ->
                     if (!isProcessingFace && !isSignedIn && attemptsLeft > 0 &&
-                        System.currentTimeMillis() - previousAttemptTime > AppConstants.FACE_ID_INTERVAL) {
+                        System.currentTimeMillis() - previousAttemptTime > AppConstants.FACE_ID_INTERVAL
+                    ) {
                         previousAttemptTime = System.currentTimeMillis()
                         coroutineScope.launch(Dispatchers.Main) {
                             signInViewModel.userSignInWithFace(faceBitmap, updateIsSignedIn).also { success ->
@@ -113,7 +117,7 @@ fun FaceIdSignInScreen(
                 },
                 onDetectionStatus = { status ->
                     liveFaceDetectionStatus = status
-                }
+                },
             )
         }
 
@@ -124,7 +128,9 @@ fun FaceIdSignInScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         if (attemptsLeft > 0) {
-            StyledText(faceRecognitionStatus + " (${AppConstants.FACE_ID_MAX_ATTEMPTS-attemptsLeft+1}/${AppConstants.FACE_ID_MAX_ATTEMPTS})")
+            StyledText(
+                faceRecognitionStatus + " (${AppConstants.FACE_ID_MAX_ATTEMPTS - attemptsLeft + 1}/${AppConstants.FACE_ID_MAX_ATTEMPTS})",
+            )
         } else {
             StyledText(StringProvider.getString(R.string.signin_vm_face_no_match), TextStyle.Error)
         }

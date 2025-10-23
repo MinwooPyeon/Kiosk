@@ -8,7 +8,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 
-
 val defaultFont =
     FontFamily(
         Font(R.font.koddi_regular, FontWeight.Normal),
@@ -103,5 +102,3 @@ val Typography =
                 letterSpacing = 0.5.sp,
             ),
     )
-
-

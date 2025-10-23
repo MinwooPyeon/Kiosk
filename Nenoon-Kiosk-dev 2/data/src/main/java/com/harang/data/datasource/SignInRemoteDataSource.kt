@@ -16,17 +16,16 @@ import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 
 class SignInRemoteDataSource(
-    private val api: NenoonKioskApi
+    private val api: NenoonKioskApi,
 ) {
-
     suspend fun locationSignIn(
         id: String,
-        pw: String
+        pw: String,
     ): SendLocationSignInDataResponse? {
         return try {
             api.sendLocationSignInData(
                 id = id,
-                pw = pw
+                pw = pw,
             ).body()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -39,12 +38,13 @@ class SignInRemoteDataSource(
         pw: String,
     ): SendUserSignInDataResponse? {
         return try {
-            val data = api.sendUserSignInData(
-                SendUserSignInDataRequest (
-                    loginId = id,
-                    password = pw,
-                )
-            ).body()
+            val data =
+                api.sendUserSignInData(
+                    SendUserSignInDataRequest(
+                        loginId = id,
+                        password = pw,
+                    ),
+                ).body()
             data
         } catch (e: Exception) {
             e.printStackTrace()
@@ -88,7 +88,7 @@ class SignInRemoteDataSource(
                 SendUserFaceSignInDataRequest(
                     vector = vector,
                     threshold = threshold,
-                )
+                ),
             ).body()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -101,12 +101,11 @@ class SignInRemoteDataSource(
         vector: String,
     ): SendUserFaceUpdateDataResponse? {
         return try {
-
             api.updateFaceData(
                 token = token,
                 SendUserFaceUpdateDataRequest(
                     vector = vector,
-                )
+                ),
             ).body()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -114,13 +113,10 @@ class SignInRemoteDataSource(
         }
     }
 
-    suspend fun updateQrCode(
-        qrCode: MultipartBody.Part,
-    ): SendUserQrCodeUpdateDataResponse? {
+    suspend fun updateQrCode(qrCode: MultipartBody.Part): SendUserQrCodeUpdateDataResponse? {
         return try {
-
             api.updateQrCode(
-                qrCode = qrCode
+                qrCode = qrCode,
             ).body()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -128,13 +124,10 @@ class SignInRemoteDataSource(
         }
     }
 
-    suspend fun getQrCode(
-        filename: String,
-    ): ResponseBody? {
+    suspend fun getQrCode(filename: String): ResponseBody? {
         return try {
-
             api.getQrCode(
-                filename = filename
+                filename = filename,
             ).body()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -142,14 +135,12 @@ class SignInRemoteDataSource(
         }
     }
 
-    suspend fun getQrUrl(
-        token: String,
-    ): SendUserQrCodeUrlResponse? {
+    suspend fun getQrUrl(token: String): SendUserQrCodeUrlResponse? {
         return try {
-
-            val data = api.getQrUrl(
-                token = token
-            ).body()
+            val data =
+                api.getQrUrl(
+                    token = token,
+                ).body()
             data
         } catch (e: Exception) {
             e.printStackTrace()
@@ -157,13 +148,12 @@ class SignInRemoteDataSource(
         }
     }
 
-    suspend fun getUserProfile(
-        token: String,
-    ): GetUserProfileResponse? {
+    suspend fun getUserProfile(token: String): GetUserProfileResponse? {
         return try {
-            val data = api.getUserProfile(
-                token = token
-            ).body()
+            val data =
+                api.getUserProfile(
+                    token = token,
+                ).body()
             data
         } catch (e: Exception) {
             e.printStackTrace()

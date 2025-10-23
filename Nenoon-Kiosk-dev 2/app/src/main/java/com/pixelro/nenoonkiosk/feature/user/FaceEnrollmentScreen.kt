@@ -25,18 +25,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
+import com.pixelro.nenoonkiosk.core.util.StringProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
 fun FaceEnrollmentScreen(
     signInViewModel: SignInViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     val context = LocalContext.current
     val faceDetectionStatus by signInViewModel.faceDetectionStatus.collectAsState()
@@ -51,11 +51,12 @@ fun FaceEnrollmentScreen(
     }
 
     Column(
-        modifier = Modifier
-            .padding(40.dp)
-            .fillMaxSize(),
+        modifier =
+            Modifier
+                .padding(40.dp)
+                .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         StyledText(
             text = StringProvider.getString(R.string.user_signup_title),
@@ -64,11 +65,12 @@ fun FaceEnrollmentScreen(
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .aspectRatio(1f)
-                .clip(MaterialTheme.shapes.medium)
-                .align(Alignment.CenterHorizontally)
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.7f)
+                    .aspectRatio(1f)
+                    .clip(MaterialTheme.shapes.medium)
+                    .align(Alignment.CenterHorizontally),
         ) {
             CameraPreview(
                 modifier = Modifier.fillMaxSize(),
@@ -81,7 +83,7 @@ fun FaceEnrollmentScreen(
                 },
                 onDetectionStatus = { status ->
                     signInViewModel.updateFaceDetectionStatus(status)
-                }
+                },
             )
 
             lastDetectedFaceBitmap?.let { bitmap ->
@@ -89,10 +91,11 @@ fun FaceEnrollmentScreen(
                     Image(
                         bitmap = bitmap.asImageBitmap(),
                         contentDescription = StringProvider.getString(R.string.captured_face_image_description),
-                        modifier = Modifier
-                            .size(150.dp)
-                            .align(Alignment.BottomEnd)
-                            .padding(16.dp)
+                        modifier =
+                            Modifier
+                                .size(150.dp)
+                                .align(Alignment.BottomEnd)
+                                .padding(16.dp),
                     )
                 }
             }
@@ -111,7 +114,7 @@ fun FaceEnrollmentScreen(
                     TextStyle.Success
                 } else {
                     TextStyle.Message
-                }
+                },
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -128,7 +131,7 @@ fun FaceEnrollmentScreen(
                             }
                         }
                     }
-                }
+                },
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -137,7 +140,7 @@ fun FaceEnrollmentScreen(
                 text = StringProvider.getString(R.string.back),
                 onClick = {
                     navController.popBackStack(SignInScreenState.UserSignIn.name, false)
-                }
+                },
             )
         }
     }

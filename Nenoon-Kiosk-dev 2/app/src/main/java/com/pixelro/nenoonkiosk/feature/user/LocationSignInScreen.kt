@@ -40,10 +40,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
-import com.pixelro.nenoonkiosk.core.ui.StyledText
+import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.ui.theme.NEURAL200
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,32 +60,34 @@ fun LocationSignInScreen(
     val coroutineScope = rememberCoroutineScope()
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-    if(isPortrait) {
+    if (isPortrait) {
         Box {
             Column(
-                modifier = Modifier
-                    .padding(40.dp)
-                    .fillMaxSize(),
+                modifier =
+                    Modifier
+                        .padding(40.dp)
+                        .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                verticalArrangement = Arrangement.Top,
             ) {
-
                 Row(
                     horizontalArrangement = Arrangement.End,
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
                 ) {
                     Image(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) {
-                                navController.navigate(NavConstants.ROUTE_SETTINGS)
-                            },
+                        modifier =
+                            Modifier
+                                .size(40.dp)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() },
+                                ) {
+                                    navController.navigate(NavConstants.ROUTE_SETTINGS)
+                                },
                         painter = painterResource(id = R.drawable.icon_settings),
-                        contentDescription = ""
+                        contentDescription = "",
                     )
                 }
 
@@ -107,23 +108,26 @@ fun LocationSignInScreen(
                 BasicTextField(
                     value = id,
                     onValueChange = { id = it },
-                    textStyle = TextStyle(
-                        fontSize = 36.sp
-                    ),
+                    textStyle =
+                        TextStyle(
+                            fontSize = 36.sp,
+                        ),
                     decorationBox = { innerTextField ->
                         Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(80.dp)
-                                .border(
-                                    border = BorderStroke(
-                                        width = 1.dp,
-                                        color = Color(0xffc3c3c3)
-                                    ),
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                                .padding(start = 20.dp),
-                            contentAlignment = Alignment.CenterStart
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(80.dp)
+                                    .border(
+                                        border =
+                                            BorderStroke(
+                                                width = 1.dp,
+                                                color = Color(0xffc3c3c3),
+                                            ),
+                                        shape = RoundedCornerShape(8.dp),
+                                    )
+                                    .padding(start = 20.dp),
+                            contentAlignment = Alignment.CenterStart,
                         ) {
                             if (id.isEmpty()) {
                                 Text(
@@ -135,38 +139,43 @@ fun LocationSignInScreen(
                             innerTextField()
                         }
                     },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next
-                    )
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                        ),
                 )
 
                 Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(20.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(20.dp),
                 )
 
                 BasicTextField(
                     value = password,
                     onValueChange = { password = it },
                     visualTransformation = PasswordVisualTransformation(),
-                    textStyle = TextStyle(
-                        fontSize = 36.sp
-                    ),
+                    textStyle =
+                        TextStyle(
+                            fontSize = 36.sp,
+                        ),
                     decorationBox = { innerTextField ->
                         Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(80.dp)
-                                .border(
-                                    border = BorderStroke(
-                                        width = 1.dp,
-                                        color = Color(0xffc3c3c3)
-                                    ),
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                                .padding(start = 20.dp),
-                            contentAlignment = Alignment.CenterStart
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(80.dp)
+                                    .border(
+                                        border =
+                                            BorderStroke(
+                                                width = 1.dp,
+                                                color = Color(0xffc3c3c3),
+                                            ),
+                                        shape = RoundedCornerShape(8.dp),
+                                    )
+                                    .padding(start = 20.dp),
+                            contentAlignment = Alignment.CenterStart,
                         ) {
                             if (password.isEmpty()) {
                                 Text(
@@ -178,15 +187,17 @@ fun LocationSignInScreen(
                             innerTextField()
                         }
                     },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done
-                    )
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Done,
+                        ),
                 )
 
                 Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(20.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(20.dp),
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -196,7 +207,7 @@ fun LocationSignInScreen(
                     onClick = {
                         signInViewModel.locationSignInSkip(updateIsSignedIn)
                         signInNavController.navigate(SignInScreenState.UserSignIn.name)
-                    }
+                    },
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -206,9 +217,11 @@ fun LocationSignInScreen(
                     onClick = {
                         if (!signInViewModel.validateLocationSignIn(
                                 id,
-                                password
+                                password,
                             )
-                        ) return@PrimaryButton
+                        ) {
+                            return@PrimaryButton
+                        }
                         coroutineScope.launch(Dispatchers.Main) {
                             signInViewModel.locationSignIn(id, password, updateIsSignedIn)
                                 .also { success ->
@@ -219,11 +232,10 @@ fun LocationSignInScreen(
                                     }
                                 }
                         }
-                    }
+                    },
                 )
             }
         }
-    }else{
-
+    } else {
     }
 }

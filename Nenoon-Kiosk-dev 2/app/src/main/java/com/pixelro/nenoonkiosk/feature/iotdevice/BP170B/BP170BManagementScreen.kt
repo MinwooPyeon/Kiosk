@@ -35,15 +35,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.manager.BP170BManager
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
-import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.manager.BP170BManager
 import com.pixelro.nenoonkiosk.core.ui.AccentedText
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
 
 enum class BP170BConnectionScreenState {
     Standby,
@@ -51,7 +51,7 @@ enum class BP170BConnectionScreenState {
     DeviceSelection,
     Connecting,
     Connected,
-    ConnectionError
+    ConnectionError,
 }
 
 @SuppressLint("MissingPermission")
@@ -59,7 +59,7 @@ enum class BP170BConnectionScreenState {
 @Composable
 fun BP170BConnectionScreen(
     navController: NavHostController,
-    viewModel: BP170BViewModel = hiltViewModel()
+    viewModel: BP170BViewModel = hiltViewModel(),
 ) {
     var bp170bConnectionScreenState by rememberSaveable { mutableStateOf(BP170BConnectionScreenState.Standby) }
 
@@ -115,47 +115,61 @@ fun BP170BConnectionScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(40.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-
-        StyledText(StringProvider.getString(
-            R.string.blood_pressure_monitor_title), TextStyle.Title)
+        StyledText(
+            StringProvider.getString(
+                R.string.blood_pressure_monitor_title,
+            ),
+            TextStyle.Title,
+        )
 
         Image(
             painter = painterResource(R.drawable.blood_pressure_icon),
-            contentDescription = StringProvider.getString(
-                R.string.blood_pressure_monitor_image_content_description),
-            modifier = Modifier.weight(1f)
+            contentDescription =
+                StringProvider.getString(
+                    R.string.blood_pressure_monitor_image_content_description,
+                ),
+            modifier = Modifier.weight(1f),
         )
 
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
+            verticalArrangement = Arrangement.Bottom,
         ) {
             when (bp170bConnectionScreenState) {
                 BP170BConnectionScreenState.Standby -> {
                     AccentedText(
-                        prefix = StringProvider.getString(
-                            R.string.blood_pressure_monitor_standby_instruction1),
-                        accent = StringProvider.getString(
-                            R.string.blood_pressure_monitor_standby_instruction2),
-                        suffix = StringProvider.getString(
-                            R.string.blood_pressure_monitor_standby_instruction3),
+                        prefix =
+                            StringProvider.getString(
+                                R.string.blood_pressure_monitor_standby_instruction1,
+                            ),
+                        accent =
+                            StringProvider.getString(
+                                R.string.blood_pressure_monitor_standby_instruction2,
+                            ),
+                        suffix =
+                            StringProvider.getString(
+                                R.string.blood_pressure_monitor_standby_instruction3,
+                            ),
                     )
                     PrimaryButton(
                         onClick = {
                             viewModel.startScan()
                             bp170bConnectionScreenState = BP170BConnectionScreenState.Scanning
                         },
-                        text = StringProvider.getString(
-                            R.string.blood_pressure_monitor_start_connection),
-                        modifier = Modifier.padding(top = 120.dp, bottom = 20.dp)
+                        text =
+                            StringProvider.getString(
+                                R.string.blood_pressure_monitor_start_connection,
+                            ),
+                        modifier = Modifier.padding(top = 120.dp, bottom = 20.dp),
                     )
                 }
 
@@ -165,34 +179,38 @@ fun BP170BConnectionScreen(
                         onClick = {
                             viewModel.startScan()
                         },
-                        text = StringProvider.getString(
-                            R.string.blood_pressure_monitor_retry_connection),
-                        modifier = Modifier.padding(top = 120.dp, bottom = 20.dp)
+                        text =
+                            StringProvider.getString(
+                                R.string.blood_pressure_monitor_retry_connection,
+                            ),
+                        modifier = Modifier.padding(top = 120.dp, bottom = 20.dp),
                     )
                 }
 
                 BP170BConnectionScreenState.DeviceSelection -> {
                     StyledText(
                         StringProvider.getString(
-                            R.string.blood_pressure_monitor_select_device),
-                        TextStyle.Message
+                            R.string.blood_pressure_monitor_select_device,
+                        ),
+                        TextStyle.Message,
                     )
                     LazyColumn(
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.Start,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 20.dp)
-                            .weight(1f)
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 20.dp)
+                                .weight(1f),
                     ) {
                         items(availableDevices) { device ->
                             ListItem(
                                 text = {
                                     StyledText(
-                                        text = device.name ?: StringProvider.getString(
-                                            R.string.dynamometer_unknown_device_name,
-                                            
-                                        ),
+                                        text =
+                                            device.name ?: StringProvider.getString(
+                                                R.string.dynamometer_unknown_device_name,
+                                            ),
                                         textAlign = TextAlign.Start,
                                     )
                                 },
@@ -203,17 +221,18 @@ fun BP170BConnectionScreen(
                                         textAlign = TextAlign.Start,
                                     )
                                 },
-                                modifier = Modifier
-                                    .border(
-                                        width = 1.dp,
-                                        color = colorResource(R.color.gray2),
-                                        shape = RoundedCornerShape(8.dp)
-                                    )
-                                    .clickable {
-                                        viewModel.connectToDevice(device)
-                                        bp170bConnectionScreenState =
-                                            BP170BConnectionScreenState.Connecting
-                                    }
+                                modifier =
+                                    Modifier
+                                        .border(
+                                            width = 1.dp,
+                                            color = colorResource(R.color.gray2),
+                                            shape = RoundedCornerShape(8.dp),
+                                        )
+                                        .clickable {
+                                            viewModel.connectToDevice(device)
+                                            bp170bConnectionScreenState =
+                                                BP170BConnectionScreenState.Connecting
+                                        },
                             )
                         }
                     }
@@ -222,9 +241,11 @@ fun BP170BConnectionScreen(
                             viewModel.startScan()
                             bp170bConnectionScreenState = BP170BConnectionScreenState.Scanning
                         },
-                        text = StringProvider.getString(
-                            R.string.blood_pressure_monitor_retry_connection),
-                        modifier = Modifier.padding(top = 20.dp, bottom = 20.dp)
+                        text =
+                            StringProvider.getString(
+                                R.string.blood_pressure_monitor_retry_connection,
+                            ),
+                        modifier = Modifier.padding(top = 20.dp, bottom = 20.dp),
                     )
                 }
 
@@ -234,8 +255,10 @@ fun BP170BConnectionScreen(
 
                 BP170BConnectionScreenState.Connected -> {
                     StyledText(
-                        text = StringProvider.getString(
-                            R.string.blood_pressure_monitor_device_connected),
+                        text =
+                            StringProvider.getString(
+                                R.string.blood_pressure_monitor_device_connected,
+                            ),
                     )
                     PrimaryButton(
                         onClick = {
@@ -243,16 +266,20 @@ fun BP170BConnectionScreen(
                             bp170bConnectionScreenState = BP170BConnectionScreenState.Standby
                             TTS.speechTTS("장치 연결을 해제합니다.", TextToSpeech.QUEUE_ADD) // Hardcoded TTS
                         },
-                        text = StringProvider.getString(
-                            R.string.blood_pressure_monitor_disconnect),
-                        modifier = Modifier.padding(top = 120.dp, bottom = 20.dp)
+                        text =
+                            StringProvider.getString(
+                                R.string.blood_pressure_monitor_disconnect,
+                            ),
+                        modifier = Modifier.padding(top = 120.dp, bottom = 20.dp),
                     )
                 }
 
                 BP170BConnectionScreenState.ConnectionError -> {
                     StyledText(
-                        text = StringProvider.getString(
-                            R.string.blood_pressure_monitor_connection_failed),
+                        text =
+                            StringProvider.getString(
+                                R.string.blood_pressure_monitor_connection_failed,
+                            ),
                         style = TextStyle.Error,
                     )
                     PrimaryButton(
@@ -260,9 +287,11 @@ fun BP170BConnectionScreen(
                             viewModel.startScan()
                             bp170bConnectionScreenState = BP170BConnectionScreenState.Scanning
                         },
-                        text = StringProvider.getString(
-                            R.string.blood_pressure_monitor_try_again),
-                        modifier = Modifier.padding(top = 120.dp, bottom = 20.dp)
+                        text =
+                            StringProvider.getString(
+                                R.string.blood_pressure_monitor_try_again,
+                            ),
+                        modifier = Modifier.padding(top = 120.dp, bottom = 20.dp),
                     )
                 }
             }
@@ -272,7 +301,7 @@ fun BP170BConnectionScreen(
                     TTS.tts.stop()
                     navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
                 },
-                text = StringProvider.getString(R.string.back, )
+                text = StringProvider.getString(R.string.back),
             )
         }
     }

@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.harang.data.vo.Constants
 
 class SharedPreferencesDataSource constructor(
-    private val context: Context
+    private val context: Context,
 ) {
     private val pref: SharedPreferences = context.getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
     private val editor = pref.edit()
@@ -21,12 +21,18 @@ class SharedPreferencesDataSource constructor(
         editor.commit()
     }
 
-    private fun putStringAndCommit(key: String, string: String) {
+    private fun putStringAndCommit(
+        key: String,
+        string: String,
+    ) {
         editor.putString(key, string)
         editor.commit()
     }
 
-    private fun putIntAndCommit(key: String, int: Int) {
+    private fun putIntAndCommit(
+        key: String,
+        int: Int,
+    ) {
         editor.putInt(key, int)
         editor.commit()
     }
@@ -50,11 +56,17 @@ class SharedPreferencesDataSource constructor(
         }
     }
 
-    fun putString(key: String, value: String) {
+    fun putString(
+        key: String,
+        value: String,
+    ) {
         putStringAndCommit(key, value)
     }
 
-    fun putInt(key: String, value: Int) {
+    fun putInt(
+        key: String,
+        value: Int,
+    ) {
         putIntAndCommit(key, value)
     }
 

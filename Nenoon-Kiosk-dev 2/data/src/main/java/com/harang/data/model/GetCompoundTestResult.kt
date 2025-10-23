@@ -9,7 +9,7 @@ data class GetCompoundTestResult(
     @SerializedName("createAt")
     val createAt: String?,
     @SerializedName("data")
-    val data: CompoundTestResultData?
+    val data: CompoundTestResultData?,
 ) : Serializable
 
 data class CompoundTestResultData(
@@ -18,7 +18,7 @@ data class CompoundTestResultData(
     @SerializedName("totalCount")
     val totalCount: Int?,
     @SerializedName("message")
-    val message: String?
+    val message: String?,
 ) : Serializable
 
 data class CompoundTestResultAPI(
@@ -49,7 +49,7 @@ data class CompoundTestResultAPI(
     @SerializedName("strabismus")
     val strabismus: Any?,
     @SerializedName("pulmonary")
-    val pulmonary: PulmonaryTestResultAPI?
+    val pulmonary: PulmonaryTestResultAPI?,
 ) : Serializable
 
 data class DementiaTestResultAPI(
@@ -59,7 +59,7 @@ data class DementiaTestResultAPI(
     @SerializedName("dementiaQuestion2") val dementiaQuestion2: String?,
     @SerializedName("dementiaQuestion3") val dementiaQuestion3: String?,
     @SerializedName("dementiaQuestion4") val dementiaQuestion4: String?,
-    @SerializedName("dementiaQuestion5") val dementiaQuestion5: String?
+    @SerializedName("dementiaQuestion5") val dementiaQuestion5: String?,
 ) : Serializable
 
 data class BloodPressureTestResultAPI(
@@ -67,14 +67,14 @@ data class BloodPressureTestResultAPI(
     @SerializedName("createAt") val createAt: String?,
     @SerializedName("systolic") val systolic: Double?,
     @SerializedName("diastolic") val diastolic: Double?,
-    @SerializedName("pulseRate") val pulseRate: Double?
+    @SerializedName("pulseRate") val pulseRate: Double?,
 ) : Serializable
 
 data class GripStrengthTestResultAPI(
     @SerializedName("tid") val tid: Int?,
     @SerializedName("createAt") val createAt: String?,
     @SerializedName("leftGrip") val leftGrip: Double?,
-    @SerializedName("rightGrip") val rightGrip: Double?
+    @SerializedName("rightGrip") val rightGrip: Double?,
 ) : Serializable
 
 data class PresbyopiaTestResultAPI(
@@ -84,14 +84,14 @@ data class PresbyopiaTestResultAPI(
     @SerializedName("distance2") val distance2: Double?,
     @SerializedName("distance3") val distance3: Double?,
     @SerializedName("distanceAvg") val distanceAvg: Double?,
-    @SerializedName("presbyopiaAge") val presbyopiaAge: Int?
+    @SerializedName("presbyopiaAge") val presbyopiaAge: Int?,
 ) : Serializable
 
 data class AmslerTestResultAPI(
     @SerializedName("tid") val tid: Int?,
     @SerializedName("createAt") val createAt: String?,
     @SerializedName("leftMacularLoc") val leftMacularLoc: String?,
-    @SerializedName("rightMacularLoc") val rightMacularLoc: String?
+    @SerializedName("rightMacularLoc") val rightMacularLoc: String?,
 ) : Serializable
 
 data class MChartsTestResultAPI(
@@ -100,14 +100,14 @@ data class MChartsTestResultAPI(
     @SerializedName("leftEyeVer") val leftEyeVer: String?,
     @SerializedName("rightEyeVer") val rightEyeVer: String?,
     @SerializedName("leftEyeHor") val leftEyeHor: String?,
-    @SerializedName("rightEyeHor") val rightEyeHor: String?
+    @SerializedName("rightEyeHor") val rightEyeHor: String?,
 ) : Serializable
 
 data class SightTestResultAPI(
     @SerializedName("tid") val tid: Int?,
     @SerializedName("createAt") val createAt: String?,
     @SerializedName("leftSight") val leftSight: String?,
-    @SerializedName("rightSight") val rightSight: String?
+    @SerializedName("rightSight") val rightSight: String?,
 ) : Serializable
 
 data class PulmonaryTestResultAPI(
@@ -115,5 +115,5 @@ data class PulmonaryTestResultAPI(
     @SerializedName("createAt") val createAt: String?,
     @SerializedName("pulmonaryPower") val pulmonaryPower: Double?,
     @SerializedName("pulmonaryCapacity") val pulmonaryCapacity: Double?,
-    @SerializedName("pulmonaryAge") val pulmonaryAge: Int?
+    @SerializedName("pulmonaryAge") val pulmonaryAge: Int?,
 ) : Serializable

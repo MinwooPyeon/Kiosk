@@ -9,5 +9,5 @@ data class GetPastSurveyId(
     @SerializedName("createAt")
     val createAt: String,
     @SerializedName("data")
-    val data: Map<String, Any>
+    val data: Map<String, Any>,
 ) : Serializable

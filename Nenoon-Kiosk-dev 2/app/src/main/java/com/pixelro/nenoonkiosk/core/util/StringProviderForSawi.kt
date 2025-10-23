@@ -5,7 +5,7 @@ import com.pixelro.nenoonkiosk.app.NenoonKioskApplication
 object StringProviderForSawi {
     fun getString(
         id: Int,
-        vararg formatArgs: Any?
+        vararg formatArgs: Any?,
     ): String {
         val context = NenoonKioskApplication.Companion.applicationContext()
         val configuration = context.resources.configuration

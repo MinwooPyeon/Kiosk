@@ -10,9 +10,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.pixelro.nenoonkiosk.core.manager.InGripManager
-import com.pixelro.nenoonkiosk.feature.iotdevice.InGrip.InGripViewModel
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
+import com.pixelro.nenoonkiosk.core.manager.InGripManager
+import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripViewModel
 import com.pixelro.nenoonkiosk.feature.user.SignInViewModel
 import kotlinx.coroutines.flow.collectLatest
 
@@ -20,7 +20,7 @@ enum class GripStrengthTestScreen {
     Start,
     Instructions,
     InProgress,
-    Error
+    Error,
 }
 
 @Composable
@@ -31,7 +31,6 @@ fun GripStrengthTestContent(
     gripStrengthViewModel: InGripViewModel = hiltViewModel(),
     signInViewModel: SignInViewModel,
 ) {
-
 //    toResultScreen(gripStrengthViewModel.getGripStrengthData())
 
     val localNavController = rememberNavController()
@@ -60,13 +59,13 @@ fun GripStrengthTestContent(
             GripStrengthStartScreen(
                 navController = localNavController,
                 viewModel = gripStrengthViewModel,
-                onBack = { navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false) }
+                onBack = { navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false) },
             )
         }
         composable(GripStrengthTestScreen.Instructions.name) {
             GripStrengthInstructionsScreen(
                 navController = localNavController,
-                viewModel = gripStrengthViewModel
+                viewModel = gripStrengthViewModel,
             )
         }
         composable(GripStrengthTestScreen.InProgress.name) {
@@ -76,7 +75,7 @@ fun GripStrengthTestContent(
             GripStrengthInProgressScreen(
                 navController = localNavController,
                 viewModel = gripStrengthViewModel,
-                toResultScreen = toResultScreen
+                toResultScreen = toResultScreen,
             )
         }
         composable(GripStrengthTestScreen.Error.name) {
@@ -90,7 +89,7 @@ fun GripStrengthTestContent(
                 },
                 navController = localNavController,
                 isSignedIn = isSignedIn,
-                viewModel = gripStrengthViewModel
+                viewModel = gripStrengthViewModel,
             )
         }
     }

@@ -29,13 +29,13 @@ fun InstructionItem(
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Icon(
                 painter = painterResource(R.drawable.check_circle_filled),
                 contentDescription = null,
                 tint = colorResource(R.color.main),
-                modifier = Modifier.size(64.dp)
+                modifier = Modifier.size(64.dp),
             )
             Spacer(modifier = Modifier.width(8.dp))
             StyledText(
@@ -43,7 +43,7 @@ fun InstructionItem(
                 style = TextStyle.Message,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start,
-                modifier = Modifier.padding(bottom = 4.dp)
+                modifier = Modifier.padding(bottom = 4.dp),
             )
         }
         if (instructionText != null) {

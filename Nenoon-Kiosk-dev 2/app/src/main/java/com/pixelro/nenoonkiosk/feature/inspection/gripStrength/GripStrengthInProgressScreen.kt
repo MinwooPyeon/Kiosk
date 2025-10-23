@@ -28,15 +28,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.manager.InGripManager
-import com.pixelro.nenoonkiosk.feature.iotdevice.InGrip.InGripViewModel
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.AccentStyle
 import com.pixelro.nenoonkiosk.core.ui.AccentedText
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripViewModel
 import kotlinx.coroutines.delay
 import kotlin.math.round
 
@@ -72,20 +72,22 @@ fun GripStrengthInProgressScreen(
     fun startGripMeasurementTimer() {
         countdownValue = 10
         gripMeasurementTimer?.cancel()
-        gripMeasurementTimer = object : CountDownTimer(10000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                countdownValue = (millisUntilFinished / 1000).toInt() + 1
-            }
-
-            override fun onFinish() {
-                InGripManager.sendResultCommand()
-                testState = if (testState == TestState.RightHand) {
-                    TestState.RightHandCompleted
-                } else {
-                    TestState.LeftHandCompleted
+        gripMeasurementTimer =
+            object : CountDownTimer(10000, 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    countdownValue = (millisUntilFinished / 1000).toInt() + 1
                 }
-            }
-        }.start()
+
+                override fun onFinish() {
+                    InGripManager.sendResultCommand()
+                    testState =
+                        if (testState == TestState.RightHand) {
+                            TestState.RightHandCompleted
+                        } else {
+                            TestState.LeftHandCompleted
+                        }
+                }
+            }.start()
     }
 
     DisposableEffect(Unit) {
@@ -126,7 +128,7 @@ fun GripStrengthInProgressScreen(
             TestState.LeftHandCompleted -> {
                 TTS.speechTTS(
                     StringProvider.getString(R.string.grip_strength_left_hand_completed_tts),
-                    TextToSpeech.QUEUE_ADD
+                    TextToSpeech.QUEUE_ADD,
                 )
                 delay(5000)
                 viewModel.setGripValues(rightGripValue, leftGripValue)
@@ -142,14 +144,14 @@ fun GripStrengthInProgressScreen(
     }
 
     Column(
-        modifier = Modifier
-            .padding(40.dp)
-            .fillMaxSize()
-            .background(Color.White),
+        modifier =
+            Modifier
+                .padding(40.dp)
+                .fillMaxSize()
+                .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
-
         Spacer(modifier = Modifier.weight(1f))
 
         if (testState == TestState.LeftHandReady) {
@@ -166,13 +168,14 @@ fun GripStrengthInProgressScreen(
             )
         } else {
             StyledText(
-                text = when (testState) {
-                    TestState.RightHandCompleted -> StringProvider.getString(R.string.grip_strength_right_hand_completed_text)
-                    TestState.LeftHandCompleted -> StringProvider.getString(R.string.grip_strength_left_hand_completed_text)
-                    TestState.RightHand -> StringProvider.getString(R.string.grip_strength_right_hand_instruction_tts)
-                    TestState.LeftHand -> StringProvider.getString(R.string.grip_strength_left_hand_instruction_tts)
-                    else -> ""
-                },
+                text =
+                    when (testState) {
+                        TestState.RightHandCompleted -> StringProvider.getString(R.string.grip_strength_right_hand_completed_text)
+                        TestState.LeftHandCompleted -> StringProvider.getString(R.string.grip_strength_left_hand_completed_text)
+                        TestState.RightHand -> StringProvider.getString(R.string.grip_strength_right_hand_instruction_tts)
+                        TestState.LeftHand -> StringProvider.getString(R.string.grip_strength_left_hand_instruction_tts)
+                        else -> ""
+                    },
             )
         }
         Spacer(modifier = Modifier.height(64.dp))
@@ -189,25 +192,32 @@ fun GripStrengthInProgressScreen(
                         TTS.stopTTS()
                         InGripManager.sendInitializeCommand()
                         if (testState == TestState.RightHandReady) {
-                            TTS.speechTTS(StringProvider.getString(R.string.grip_strength_right_hand_instruction_tts), TextToSpeech.QUEUE_ADD)
+                            TTS.speechTTS(
+                                StringProvider.getString(R.string.grip_strength_right_hand_instruction_tts),
+                                TextToSpeech.QUEUE_ADD,
+                            )
                             testState = TestState.RightHand
                         } else {
-                            TTS.speechTTS(StringProvider.getString(R.string.grip_strength_left_hand_instruction_tts), TextToSpeech.QUEUE_ADD)
+                            TTS.speechTTS(
+                                StringProvider.getString(R.string.grip_strength_left_hand_instruction_tts),
+                                TextToSpeech.QUEUE_ADD,
+                            )
                             testState = TestState.LeftHand
                         }
                         startGripMeasurementTimer()
-                    }
+                    },
                 )
             }
             TestState.RightHand, TestState.LeftHand -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
                 ) {
                     StyledText(
                         text = "$countdownValue",
-                        style = TextStyle.BigNumber
+                        style = TextStyle.BigNumber,
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -217,7 +227,7 @@ fun GripStrengthInProgressScreen(
                     prefix = StringProvider.getString(R.string.grip_strength_right_hand_value),
                     accent = " ${round(animatedRightGrip * 10.0f) / 10.0f}kg",
                     suffix = "",
-                    accentStyle = AccentStyle.Blue
+                    accentStyle = AccentStyle.Blue,
                 )
                 Spacer(modifier = Modifier.weight(1f))
             }
@@ -226,7 +236,7 @@ fun GripStrengthInProgressScreen(
                     prefix = StringProvider.getString(R.string.grip_strength_left_hand_value),
                     accent = " ${round(animatedLeftGrip * 10.0f) / 10.0f}kg",
                     suffix = "",
-                    accentStyle = AccentStyle.Blue
+                    accentStyle = AccentStyle.Blue,
                 )
                 Spacer(modifier = Modifier.weight(1f))
             }

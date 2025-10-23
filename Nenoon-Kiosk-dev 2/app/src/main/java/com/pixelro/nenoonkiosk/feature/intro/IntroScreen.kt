@@ -36,26 +36,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
+import com.pixelro.nenoonkiosk.core.util.StringProvider
 
-//시작 버튼 있는 화면
+// 시작 버튼 있는 화면
 @Composable
 fun IntroScreen(
     toSurveyScreen: () -> Unit,
-    toSettingsScreen: () -> Unit
+    toSettingsScreen: () -> Unit,
 ) {
     val transition = rememberInfiniteTransition()
     val alphaVal by transition.animateFloat(
-        initialValue = 1f, targetValue = 0f, animationSpec = infiniteRepeatable(
-            animation = keyframes {
-                durationMillis = 700
-            },
-            repeatMode = RepeatMode.Reverse
-        )
+        initialValue = 1f,
+        targetValue = 0f,
+        animationSpec =
+            infiniteRepeatable(
+                animation =
+                    keyframes {
+                        durationMillis = 700
+                    },
+                repeatMode = RepeatMode.Reverse,
+            ),
     )
     val logoClickedCount = remember { mutableStateOf(0) }
+
     /**
      * 맥박수 연결
      */
@@ -78,136 +83,145 @@ fun IntroScreen(
         }
     }
     Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxSize(),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             /**
              * 상단 바
              */
             Box(
-                modifier = Modifier
-                    .padding(
-                        start = 40.dp,
-                        end = 40.dp,
-                        bottom = 20.dp
-                    )
-                    .fillMaxWidth()
-                    .height(40.dp)
+                modifier =
+                    Modifier
+                        .padding(
+                            start = 40.dp,
+                            end = 40.dp,
+                            bottom = 20.dp,
+                        )
+                        .fillMaxWidth()
+                        .height(40.dp),
             ) {
-
                 SettingsButton(toSettingsScreen)
-
             }
             /**
              * 로고
              */
             Logo()
             Spacer(
-                modifier = Modifier
-                    .height(40.dp)
+                modifier =
+                    Modifier
+                        .height(40.dp),
             )
             Text(
-                text = StringProvider.getString(R.string.intropage_appname, ),
+                text = StringProvider.getString(R.string.intropage_appname),
                 fontSize = 60.sp,
-
-                textAlign = TextAlign.Center,
-                color = Color(0xFF1D71E1)
-            )
-            Text(
-                text = StringProvider.getString(R.string.intropage_title, ),
-                fontSize = 36.sp,
-
                 textAlign = TextAlign.Center,
                 color = Color(0xFF1D71E1),
-                modifier = Modifier.padding(horizontal = 40.dp)
+            )
+            Text(
+                text = StringProvider.getString(R.string.intropage_title),
+                fontSize = 36.sp,
+                textAlign = TextAlign.Center,
+                color = Color(0xFF1D71E1),
+                modifier = Modifier.padding(horizontal = 40.dp),
             )
             /**
              * 버전 표시
              */
             Text(
-                modifier = Modifier
-                    .padding(top = 20.dp, end = 50.dp)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .padding(top = 20.dp, end = 50.dp)
+                        .fillMaxWidth(),
                 text = "${AppConstants.APP_VERSION}",
                 fontSize = 20.sp,
                 textAlign = TextAlign.End,
-                color = Color(0xff848484)
+                color = Color(0xff848484),
             )
             Spacer(
-                modifier = Modifier
-                    .height(150.dp)
+                modifier =
+                    Modifier
+                        .height(150.dp),
             )
             /**
              * 시작 버튼
              */
             Box(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
+                contentAlignment = Alignment.Center,
             ) {
                 Box(
-                    modifier = Modifier
-                        .width(520.dp)
-                        .height(240.dp)
-                        .alpha(alphaVal)
-                        .border(
-                            border = BorderStroke(20.dp, Color(0xFF1D71E1)),
-                            shape = RoundedCornerShape(26.dp)
-                        )
+                    modifier =
+                        Modifier
+                            .width(520.dp)
+                            .height(240.dp)
+                            .alpha(alphaVal)
+                            .border(
+                                border = BorderStroke(20.dp, Color(0xFF1D71E1)),
+                                shape = RoundedCornerShape(26.dp),
+                            ),
                 )
                 Box(
-                    modifier = Modifier
-                        .width(440.dp)
-                        .height(160.dp)
-                        .clip(
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .background(
-                            color = Color(0xFF1D71E1),
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .clickable {
-                            toSurveyScreen()
-                        },
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .width(440.dp)
+                            .height(160.dp)
+                            .clip(
+                                shape = RoundedCornerShape(8.dp),
+                            )
+                            .background(
+                                color = Color(0xFF1D71E1),
+                                shape = RoundedCornerShape(8.dp),
+                            )
+                            .clickable {
+                                toSurveyScreen()
+                            },
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = StringProvider.getString(
-                            R.string.intropage_start_button),
+                        text =
+                            StringProvider.getString(
+                                R.string.intropage_start_button,
+                            ),
                         fontSize = 75.sp,
                         color = Color(0xFFFFFFFF),
-                        fontWeight = FontWeight.ExtraBold
+                        fontWeight = FontWeight.ExtraBold,
                     )
                 }
             }
 
             Text(
-                modifier = Modifier
-                    .padding(top = 50.dp),
-                text = StringProvider.getString(
-                    R.string.intropage_description1,
-                    
-                ),
+                modifier =
+                    Modifier
+                        .padding(top = 50.dp),
+                text =
+                    StringProvider.getString(
+                        R.string.intropage_description1,
+                    ),
                 fontSize = 28.sp,
                 color = Color(0xFF1D71E1),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
             Text(
-                modifier = Modifier
-                    .padding(top = 5.dp),
-                text = StringProvider.getString(
-                    R.string.intropage_description2,
-                    
-                ),
+                modifier =
+                    Modifier
+                        .padding(top = 5.dp),
+                text =
+                    StringProvider.getString(
+                        R.string.intropage_description2,
+                    ),
                 fontSize = 28.sp,
                 color = Color(0xFF1D71E1),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
     }

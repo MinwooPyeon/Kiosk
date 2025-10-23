@@ -3,7 +3,6 @@ package com.harang.data.model
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-
 // API 응답 데이터 클래스
 data class SendUserTestResultResponse(
     @SerializedName("responseId")
@@ -11,13 +10,13 @@ data class SendUserTestResultResponse(
     @SerializedName("createAt")
     val createAt: String,
     @SerializedName("data")
-    val data: Map<String, Any>
+    val data: Map<String, Any>,
 ) : Serializable
 
 // 시력 검사 데이터 클래스
 data class SightTestResult(
     @SerializedName("testType") val testType: String,
-    @SerializedName("testData") val testData: SightTestData
+    @SerializedName("testData") val testData: SightTestData,
 )
 
 data class SightTestData(
@@ -36,13 +35,13 @@ data class SightTestData(
     @SerializedName("test7") val test7: String,
     @SerializedName("test8") val test8: String,
     @SerializedName("test9") val test9: String,
-    @SerializedName("test10") val test10: String
+    @SerializedName("test10") val test10: String,
 )
 
 // 노안 검사 데이터 클래스
 data class PresbyopiaTestResult(
     @SerializedName("testType") val testType: String,
-    @SerializedName("testData") val testData: PresbyopiaTestData
+    @SerializedName("testData") val testData: PresbyopiaTestData,
 )
 
 data class PresbyopiaTestData(
@@ -59,13 +58,13 @@ data class PresbyopiaTestData(
     @SerializedName("presbyopia7") val presbyopia7: String,
     @SerializedName("presbyopia8") val presbyopia8: String,
     @SerializedName("presbyopia9") val presbyopia9: String,
-    @SerializedName("presbyopia10") val presbyopia10: String
+    @SerializedName("presbyopia10") val presbyopia10: String,
 )
 
 // M차트 검사 데이터 클래스
 data class MchartsTestResult(
     @SerializedName("testType") val testType: String,
-    @SerializedName("testData") val testData: MchartsTestData
+    @SerializedName("testData") val testData: MchartsTestData,
 )
 
 data class MchartsTestData(
@@ -83,13 +82,13 @@ data class MchartsTestData(
     @SerializedName("mChart7") val mChart7: String,
     @SerializedName("mChart8") val mChart8: String,
     @SerializedName("mChart9") val mChart9: String,
-    @SerializedName("mChart10") val mChart10: String
+    @SerializedName("mChart10") val mChart10: String,
 )
 
 // 암슬러 격자 검사 데이터 클래스
 data class AmslerTestResult(
     @SerializedName("testType") val testType: String,
-    @SerializedName("testData") val testData: AmslerTestData
+    @SerializedName("testData") val testData: AmslerTestData,
 )
 
 data class AmslerTestData(
@@ -105,25 +104,25 @@ data class AmslerTestData(
     @SerializedName("Amsler7") val amsler7: String,
     @SerializedName("Amsler8") val amsler8: String,
     @SerializedName("Amsler9") val amsler9: String,
-    @SerializedName("Amsler10") val amsler10: String
+    @SerializedName("Amsler10") val amsler10: String,
 )
 
 // 혈압 측정 데이터 클래스
 data class BloodPressureTestResult(
     @SerializedName("testType") val testType: String,
-    @SerializedName("testData") val testData: BloodPressureTestData
+    @SerializedName("testData") val testData: BloodPressureTestData,
 )
 
 data class BloodPressureTestData(
     @SerializedName("systolic") val systolic: Double,
     @SerializedName("diastolic") val diastolic: Double,
-    @SerializedName("pulse_rate") val pulseRate: Double
+    @SerializedName("pulse_rate") val pulseRate: Double,
 )
 
 // 치매 진단 데이터 클래스
 data class DementiaTestResult(
     @SerializedName("testType") val testType: String,
-    @SerializedName("testData") val testData: DementiaTestData
+    @SerializedName("testData") val testData: DementiaTestData,
 )
 
 data class DementiaTestData(
@@ -140,28 +139,28 @@ data class DementiaTestData(
     @SerializedName("dementia_question11") val dementiaQuestion11: String,
     @SerializedName("dementia_question12") val dementiaQuestion12: String,
     @SerializedName("dementia_question13") val dementiaQuestion13: String,
-    @SerializedName("dementia_question14") val dementiaQuestion14: String
+    @SerializedName("dementia_question14") val dementiaQuestion14: String,
 )
 
 // 악력 측정 데이터 클래스
 data class GripStrengthTestResult(
     @SerializedName("testType") val testType: String,
-    @SerializedName("testData") val testData: GripStrengthTestData
+    @SerializedName("testData") val testData: GripStrengthTestData,
 )
 
 data class GripStrengthTestData(
     @SerializedName("left_grip") val leftGrip: Double,
-    @SerializedName("right_grip") val rightGrip: Double
+    @SerializedName("right_grip") val rightGrip: Double,
 )
 
 // 폐기능 측정 데이터 클래스
 data class PulmonaryTestResult(
     @SerializedName("testType") val testType: String,
-    @SerializedName("testData") val testData: PulmonaryTestData
+    @SerializedName("testData") val testData: PulmonaryTestData,
 )
 
 data class PulmonaryTestData(
     @SerializedName("pulmonaryPower") val pulmonaryPower: Double,
     @SerializedName("pulmonaryCapacity") val pulmonaryCapacity: Double,
-    @SerializedName("pulmonaryAge") val pulmonaryAge: Int
+    @SerializedName("pulmonaryAge") val pulmonaryAge: Int,
 )

@@ -8,9 +8,7 @@ data class User(
     val age: Double? = null,
     val gender: String? = null,
     val surveyId: String? = null,
-
     val faceIdAgreed: Boolean = false,
-
     val accessToken: String? = null,
     val refreshToken: String? = null,
 )

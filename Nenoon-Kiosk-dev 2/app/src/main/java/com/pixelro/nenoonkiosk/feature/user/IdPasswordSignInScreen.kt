@@ -37,10 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
+import com.pixelro.nenoonkiosk.core.util.StringProvider
 import kotlinx.coroutines.launch
 
 @Composable
@@ -64,11 +64,12 @@ fun IdPasswordSignInScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(40.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = if (signupSuccess) Arrangement.Center else Arrangement.Top
+        verticalArrangement = if (signupSuccess) Arrangement.Center else Arrangement.Top,
     ) {
         StyledText(StringProvider.getString(R.string.id_pw_sign_in_title), com.pixelro.nenoonkiosk.core.ui.TextStyle.Title)
 
@@ -76,7 +77,7 @@ fun IdPasswordSignInScreen(
             value = id,
             onValueChange = { id = it },
             label = StringProvider.getString(R.string.id_pw_sign_in_id_hint),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         )
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -90,7 +91,14 @@ fun IdPasswordSignInScreen(
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
                         painter = painterResource(if (passwordVisible) R.drawable.icon_visibility_on else R.drawable.icon_visibility_off),
-                        contentDescription = if (passwordVisible) StringProvider.getString(R.string.id_pw_sign_in_pw_hide) else StringProvider.getString(R.string.id_pw_sign_in_pw_show)
+                        contentDescription =
+                            if (passwordVisible) {
+                                StringProvider.getString(
+                                    R.string.id_pw_sign_in_pw_hide,
+                                )
+                            } else {
+                                StringProvider.getString(R.string.id_pw_sign_in_pw_show)
+                            },
                     )
                 }
             },
@@ -106,7 +114,7 @@ fun IdPasswordSignInScreen(
         if (signInError) {
             StyledText(
                 text = StringProvider.getString(R.string.toast_input_id_pw),
-                style = com.pixelro.nenoonkiosk.core.ui.TextStyle.Error
+                style = com.pixelro.nenoonkiosk.core.ui.TextStyle.Error,
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -123,7 +131,7 @@ fun IdPasswordSignInScreen(
                     }
                 }
             },
-            enabled = id.isNotBlank() && password.isNotBlank()
+            enabled = id.isNotBlank() && password.isNotBlank(),
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -132,7 +140,7 @@ fun IdPasswordSignInScreen(
             text = StringProvider.getString(R.string.button_back),
             onClick = {
                 navController.popBackStack(SignInScreenState.UserSignIn.name, false)
-            }
+            },
         )
     }
 }
@@ -147,35 +155,38 @@ private fun InputTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
     trailingIcon: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
-    errorMessage: String? = null
+    errorMessage: String? = null,
 ) {
     Column(modifier = modifier) {
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            textStyle = TextStyle(
-                fontSize = 30.sp,
-            ),
+            textStyle =
+                TextStyle(
+                    fontSize = 30.sp,
+                ),
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
             decorationBox = { innerTextField ->
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(80.dp)
-                        .border(
-                            border = BorderStroke(
-                                width = 1.dp,
-                                color = colorResource(if (isError) R.color.error else R.color.gray2)
-                            ),
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(start = 20.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(80.dp)
+                            .border(
+                                border =
+                                    BorderStroke(
+                                        width = 1.dp,
+                                        color = colorResource(if (isError) R.color.error else R.color.gray2),
+                                    ),
+                                shape = RoundedCornerShape(8.dp),
+                            )
+                            .padding(start = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(
                         modifier = Modifier.weight(1f),
-                        contentAlignment = Alignment.CenterStart
+                        contentAlignment = Alignment.CenterStart,
                     ) {
                         if (value.isEmpty()) {
                             StyledText(label, com.pixelro.nenoonkiosk.core.ui.TextStyle.Hint)
@@ -184,13 +195,13 @@ private fun InputTextField(
                     }
                     trailingIcon?.invoke()
                 }
-            }
+            },
         )
         if (isError && errorMessage != null) {
             StyledText(
                 text = errorMessage,
                 style = com.pixelro.nenoonkiosk.core.ui.TextStyle.InputError,
-                modifier = Modifier.padding(start = 20.dp, top = 4.dp)
+                modifier = Modifier.padding(start = 20.dp, top = 4.dp),
             )
         }
     }

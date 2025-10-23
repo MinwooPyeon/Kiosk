@@ -50,11 +50,12 @@ fun GlassInstructionScreen(
         TTS.speechTTS(StringProvider.getString(R.string.tts_glass_instruction), TextToSpeech.QUEUE_FLUSH)
     }
 
-    val headerTitle = when (testType) {
-        "sawi" -> StringProvider.getString(R.string.sawi_question_title)
-        "fudo" -> StringProvider.getString(R.string.fudo_question_title)
-        else -> StringProvider.getString(R.string.glass_instruction_title)
-    }
+    val headerTitle =
+        when (testType) {
+            "sawi" -> StringProvider.getString(R.string.sawi_question_title)
+            "fudo" -> StringProvider.getString(R.string.fudo_question_title)
+            else -> StringProvider.getString(R.string.glass_instruction_title)
+        }
     var showHowToDialog by remember { mutableStateOf(false) }
 
     if (showHowToDialog) {
@@ -79,64 +80,70 @@ fun GlassInstructionScreen(
                         Text(StringProvider.getString(R.string.common_test_guide), color = Color.White, fontSize = 24.sp)
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Black
-                )
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = Color.Black,
+                    ),
             )
         },
         bottomBar = {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.Black)
-                    .padding(start = 24.dp, end = 24.dp, top = 24.dp,bottom = 24.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .background(Color.Black)
+                        .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 24.dp),
             ) {
                 Button(
                     onClick = onYesClicked,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(96.dp),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(96.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = neNoon_blue),
-                    shape = RoundedCornerShape( 12.dp)
+                    shape = RoundedCornerShape(12.dp),
                 ) {
                     Text(StringProvider.getString(R.string.common_yes), fontSize = 36.sp, color = Color.White)
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(
                     onClick = onNoClicked,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(96.dp),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(96.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                    shape = RoundedCornerShape( 12.dp)
+                    shape = RoundedCornerShape(12.dp),
                 ) {
                     Text(StringProvider.getString(R.string.common_no), fontSize = 36.sp, color = neNoon_blue)
                 }
             }
-        }
+        },
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .background(Color.Black)
-                .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(Color.Black)
+                    .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(50.dp))
             Text(
                 text = StringProvider.getString(R.string.glass_instruction_main_text),
                 color = Color.White,
                 fontSize = 48.sp,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.height(50.dp))
             Image(
                 painter = painterResource(id = R.drawable.glassimage),
                 contentDescription = "Glass Image",
-                modifier = Modifier
-                    .width(1000.dp)
-                    .height(1100.dp)
+                modifier =
+                    Modifier
+                        .width(1000.dp)
+                        .height(1100.dp),
             )
         }
     }

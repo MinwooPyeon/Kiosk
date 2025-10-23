@@ -24,21 +24,21 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.inbody.bpbio.IB_SDKConst
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestScreen
+import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 enum class BpMeasurementScreenState {
     Measuring,
-    Completed
+    Completed,
 }
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -123,12 +123,13 @@ fun BPBIO320InProgressScreen(
     }
 
     Column(
-        modifier = Modifier
-            .padding(40.dp)
-            .fillMaxSize()
-            .background(Color.White),
+        modifier =
+            Modifier
+                .padding(40.dp)
+                .fillMaxSize()
+                .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         when (currentMeasurementScreenState) {
             BpMeasurementScreenState.Measuring -> {
@@ -145,7 +146,7 @@ fun BPBIO320InProgressScreen(
                         Log.e("BP170BInProgress", "Manual termination")
                         error()
                     },
-                    text = StringProvider.getString(R.string.bpbio320_measurement_stop)
+                    text = StringProvider.getString(R.string.bpbio320_measurement_stop),
                 )
             }
 
@@ -167,7 +168,7 @@ fun BPBIO320InProgressScreen(
                                 error()
                             }
                     },
-                    text = StringProvider.getString(R.string.bpbio320_check_result)
+                    text = StringProvider.getString(R.string.bpbio320_check_result),
                 )
             }
         }

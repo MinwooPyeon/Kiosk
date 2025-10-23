@@ -42,10 +42,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
+import com.pixelro.nenoonkiosk.core.util.StringProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -84,14 +84,14 @@ fun UserSignUpScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(40.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = if (signupSuccess) Arrangement.Center else Arrangement.Top
+        verticalArrangement = if (signupSuccess) Arrangement.Center else Arrangement.Top,
     ) {
         if (!signupSuccess) {
-
             StyledText(StringProvider.getString(R.string.user_signup_title), com.pixelro.nenoonkiosk.core.ui.TextStyle.Title)
 
             if (isSigningUp) {
@@ -103,7 +103,7 @@ fun UserSignUpScreen(
                     value = id,
                     onValueChange = { id = it },
                     label = StringProvider.getString(R.string.user_signup_input_id_hint),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 )
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -111,7 +111,7 @@ fun UserSignUpScreen(
                     value = name,
                     onValueChange = { name = it },
                     label = StringProvider.getString(R.string.user_signup_input_name_hint),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 )
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -123,12 +123,13 @@ fun UserSignUpScreen(
                             if (it.isNotBlank()) signInViewModel.validateEmail(it) else null
                     },
                     label = StringProvider.getString(R.string.user_signup_input_email_hint),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Email
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Email,
+                        ),
                     isError = emailError != null,
-                    errorMessage = emailError
+                    errorMessage = emailError,
                 )
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -144,20 +145,27 @@ fun UserSignUpScreen(
                     },
                     label = StringProvider.getString(R.string.user_signup_input_password_hint),
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Password
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Password,
+                        ),
                     trailingIcon = {
                         IconButton(onClick = { passwordVisible = !passwordVisible }) {
                             Icon(
-                                painter = painterResource(if (passwordVisible) R.drawable.icon_visibility_on else R.drawable.icon_visibility_off),
-                                contentDescription = StringProvider.getString(if (passwordVisible) R.string.user_signup_password_hide_cd else R.string.user_signup_password_show_cd)
+                                painter =
+                                    painterResource(
+                                        if (passwordVisible) R.drawable.icon_visibility_on else R.drawable.icon_visibility_off,
+                                    ),
+                                contentDescription =
+                                    StringProvider.getString(
+                                        if (passwordVisible) R.string.user_signup_password_hide_cd else R.string.user_signup_password_show_cd,
+                                    ),
                             )
                         }
                     },
                     isError = passwordError != null,
-                    errorMessage = passwordError
+                    errorMessage = passwordError,
                 )
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -169,20 +177,27 @@ fun UserSignUpScreen(
                     },
                     label = StringProvider.getString(R.string.user_signup_input_confirm_password_hint),
                     visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done,
-                        keyboardType = KeyboardType.Password
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Done,
+                            keyboardType = KeyboardType.Password,
+                        ),
                     trailingIcon = {
                         IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
                             Icon(
-                                painter = painterResource(if (confirmPasswordVisible) R.drawable.icon_visibility_on else R.drawable.icon_visibility_off),
-                                contentDescription = StringProvider.getString(if (confirmPasswordVisible) R.string.user_signup_password_hide_cd else R.string.user_signup_password_show_cd)
+                                painter =
+                                    painterResource(
+                                        if (confirmPasswordVisible) R.drawable.icon_visibility_on else R.drawable.icon_visibility_off,
+                                    ),
+                                contentDescription =
+                                    StringProvider.getString(
+                                        if (confirmPasswordVisible) R.string.user_signup_password_hide_cd else R.string.user_signup_password_show_cd,
+                                    ),
                             )
                         }
                     },
                     isError = confirmPasswordError != null,
-                    errorMessage = confirmPasswordError
+                    errorMessage = confirmPasswordError,
                 )
             }
             Spacer(modifier = Modifier.weight(0.5f))
@@ -199,12 +214,13 @@ fun UserSignUpScreen(
                     isSigningUp = true
                     coroutineScope.launch {
                         delay(1000L)
-                        val result = signInViewModel.userSignUp(
-                            id = id,
-                            password = password,
-                            name = name,
-                            email = email
-                        )
+                        val result =
+                            signInViewModel.userSignUp(
+                                id = id,
+                                password = password,
+                                name = name,
+                                email = email,
+                            )
                         if (result != null) {
                             signInViewModel.generateAndPrintQrCode(id, password)
                             signupSuccess = true
@@ -215,12 +231,13 @@ fun UserSignUpScreen(
                         isSigningUp = false
                     }
                 },
-                enabled = id.isNotBlank() &&
+                enabled =
+                    id.isNotBlank() &&
                         password.isNotBlank() &&
                         name.isNotBlank() &&
                         passwordError == null &&
                         confirmPasswordError == null &&
-                        (email.isBlank() || emailError == null)
+                        (email.isBlank() || emailError == null),
             )
             Spacer(modifier = Modifier.height(20.dp))
         }
@@ -228,19 +245,21 @@ fun UserSignUpScreen(
         if (signupSuccess && generatedQrBitmap != null) {
             Spacer(modifier = Modifier.weight(1f))
             Column(
-                modifier = Modifier
-                    .weight(4f)
-                    .padding(20.dp)
-                    .fillMaxSize(),
+                modifier =
+                    Modifier
+                        .weight(4f)
+                        .padding(20.dp)
+                        .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
                 Image(
                     bitmap = generatedQrBitmap!!.asImageBitmap(),
                     contentDescription = StringProvider.getString(R.string.user_signup_qr_image_cd),
-                    modifier = Modifier
-                        .size(400.dp)
-                        .padding(bottom = 32.dp)
+                    modifier =
+                        Modifier
+                            .size(400.dp)
+                            .padding(bottom = 32.dp),
                 )
                 StyledText(StringProvider.getString(R.string.user_signup_qr_description))
             }
@@ -250,7 +269,7 @@ fun UserSignUpScreen(
                 onClick = {
                     toFaceEnrollmentScreen()
                 },
-                enabled = !isFaceEnrollmentDataReady
+                enabled = !isFaceEnrollmentDataReady,
             )
             Spacer(modifier = Modifier.height(20.dp))
         }
@@ -259,7 +278,7 @@ fun UserSignUpScreen(
             text = StringProvider.getString(R.string.user_signup_back_button),
             onClick = {
                 navController.popBackStack(SignInScreenState.UserSignIn.name, false)
-            }
+            },
         )
     }
 }
@@ -274,35 +293,38 @@ private fun InputTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
     trailingIcon: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
-    errorMessage: String? = null
+    errorMessage: String? = null,
 ) {
     Column(modifier = modifier) {
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            textStyle = TextStyle(
-                fontSize = 30.sp,
-            ),
+            textStyle =
+                TextStyle(
+                    fontSize = 30.sp,
+                ),
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
             decorationBox = { innerTextField ->
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(80.dp)
-                        .border(
-                            border = BorderStroke(
-                                width = 1.dp,
-                                color = colorResource(if (isError) R.color.error else R.color.gray2)
-                            ),
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(start = 20.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(80.dp)
+                            .border(
+                                border =
+                                    BorderStroke(
+                                        width = 1.dp,
+                                        color = colorResource(if (isError) R.color.error else R.color.gray2),
+                                    ),
+                                shape = RoundedCornerShape(8.dp),
+                            )
+                            .padding(start = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(
                         modifier = Modifier.weight(1f),
-                        contentAlignment = Alignment.CenterStart
+                        contentAlignment = Alignment.CenterStart,
                     ) {
                         if (value.isEmpty()) {
                             StyledText(label, com.pixelro.nenoonkiosk.core.ui.TextStyle.Hint)
@@ -311,13 +333,13 @@ private fun InputTextField(
                     }
                     trailingIcon?.invoke()
                 }
-            }
+            },
         )
         if (isError && errorMessage != null) {
             StyledText(
                 text = errorMessage,
                 style = com.pixelro.nenoonkiosk.core.ui.TextStyle.InputError,
-                modifier = Modifier.padding(start = 20.dp, top = 4.dp)
+                modifier = Modifier.padding(start = 20.dp, top = 4.dp),
             )
         }
     }

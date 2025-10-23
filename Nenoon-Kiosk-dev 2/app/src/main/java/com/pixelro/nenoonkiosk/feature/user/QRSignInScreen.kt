@@ -32,19 +32,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.google.common.util.concurrent.ListenableFuture
-import com.pixelro.nenoonkiosk.core.util.qr.QRScannerAnalyzer
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.qr.QRScannerAnalyzer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -108,11 +108,12 @@ fun QRSignInScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(40.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         StyledText(StringProvider.getString(R.string.qr_sign_in_title), TextStyle.Title)
 
@@ -120,61 +121,68 @@ fun QRSignInScreen(
 
         if (isScanning || signInFailed) {
             AndroidView(
-                modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(16.dp)),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(0.7f)
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(16.dp)),
                 factory = { ctx ->
                     PreviewView(ctx).apply {
                         this.scaleType = PreviewView.ScaleType.FILL_CENTER
-                        layoutParams = LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT
-                        )
+                        layoutParams =
+                            LinearLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                            )
 
                         val cameraProvider = ProcessCameraProvider.getInstance(ctx)
                         cameraProviderFutureState.value = cameraProvider
 
                         cameraProvider.addListener({
                             val actualCameraProvider = cameraProvider.get()
-                            val preview = Preview.Builder().build().also {
-                                it.setSurfaceProvider(this.surfaceProvider)
-                            }
-
-                            val imageAnalysis = ImageAnalysis.Builder()
-                                .setTargetResolution(Size(640, 480))
-                                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                                .build()
-                                .also {
-                                    it.setAnalyzer(cameraExecutor, QRScannerAnalyzer { result ->
-                                        if (isScanning) {
-                                            isScanning = false
-                                            signInFailed = false
-
-                                            ContextCompat.getMainExecutor(context).execute {
-                                                actualCameraProvider.unbindAll()
-                                            }
-
-                                            try {
-                                                val json = JSONObject(result)
-                                                scannedId = json.getString("id")
-                                                scannedPassword = json.getString("pw")
-                                                signInMessage = StringProvider.getString(R.string.qr_sign_in_scanned_success)
-                                            } catch (e: Exception) {
-                                                signInMessage = StringProvider.getString(R.string.qr_sign_in_invalid_qr)
-                                                isScanning = true
-                                                ContextCompat.getMainExecutor(context).execute {
-                                                    actualCameraProvider.bindToLifecycle(
-                                                        lifecycleOwner,
-                                                        CameraSelector.DEFAULT_FRONT_CAMERA,
-                                                        preview,
-                                                        it
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    })
+                            val preview =
+                                Preview.Builder().build().also {
+                                    it.setSurfaceProvider(this.surfaceProvider)
                                 }
+
+                            val imageAnalysis =
+                                ImageAnalysis.Builder()
+                                    .setTargetResolution(Size(640, 480))
+                                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                                    .build()
+                                    .also {
+                                        it.setAnalyzer(
+                                            cameraExecutor,
+                                            QRScannerAnalyzer { result ->
+                                                if (isScanning) {
+                                                    isScanning = false
+                                                    signInFailed = false
+
+                                                    ContextCompat.getMainExecutor(context).execute {
+                                                        actualCameraProvider.unbindAll()
+                                                    }
+
+                                                    try {
+                                                        val json = JSONObject(result)
+                                                        scannedId = json.getString("id")
+                                                        scannedPassword = json.getString("pw")
+                                                        signInMessage = StringProvider.getString(R.string.qr_sign_in_scanned_success)
+                                                    } catch (e: Exception) {
+                                                        signInMessage = StringProvider.getString(R.string.qr_sign_in_invalid_qr)
+                                                        isScanning = true
+                                                        ContextCompat.getMainExecutor(context).execute {
+                                                            actualCameraProvider.bindToLifecycle(
+                                                                lifecycleOwner,
+                                                                CameraSelector.DEFAULT_FRONT_CAMERA,
+                                                                preview,
+                                                                it,
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                        )
+                                    }
 
                             try {
                                 actualCameraProvider.unbindAll()
@@ -182,7 +190,7 @@ fun QRSignInScreen(
                                     lifecycleOwner,
                                     CameraSelector.DEFAULT_FRONT_CAMERA,
                                     preview,
-                                    imageAnalysis
+                                    imageAnalysis,
                                 )
                             } catch (exc: Exception) {
                                 Log.e("CAMERA_BIND", StringProvider.getString(R.string.qr_sign_in_camera_bind_fail), exc)
@@ -193,10 +201,15 @@ fun QRSignInScreen(
                             }
                         }, ContextCompat.getMainExecutor(ctx))
                     }
-                }
+                },
             )
         } else if (isUserSignedIn && userData?.name?.isNotEmpty() == true && !signInFailed) {
-            StyledText(StringProvider.getString(R.string.qr_sign_in_login_success, userData?.name ?: StringProvider.getString(R.string.default_user_name)))
+            StyledText(
+                StringProvider.getString(
+                    R.string.qr_sign_in_login_success,
+                    userData?.name ?: StringProvider.getString(R.string.default_user_name),
+                ),
+            )
         } else {
             ProgressIndicator()
         }
@@ -207,7 +220,7 @@ fun QRSignInScreen(
             text = if (!(isUserSignedIn && userData?.name?.isNotEmpty() == true && !signInFailed)) signInMessage else "",
             textAlign = TextAlign.Center,
             style = TextStyle.Message,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(120.dp))

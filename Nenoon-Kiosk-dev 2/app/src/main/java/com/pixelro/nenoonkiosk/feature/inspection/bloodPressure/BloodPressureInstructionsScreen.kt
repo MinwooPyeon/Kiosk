@@ -18,17 +18,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.InstructionItem
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.TtsWarning
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
 @Composable
 fun BloodPressureInstructionsScreen(navController: NavHostController) {
-
     var ttsSpeaking by remember { mutableStateOf(false) }
     val ttsWarningActive = MutableStateFlow(false)
 
@@ -42,40 +41,43 @@ fun BloodPressureInstructionsScreen(navController: NavHostController) {
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(40.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(40.dp),
     ) {
         InstructionItem(
             titleText = StringProvider.getString(R.string.bpbio320_instructions_step1_title),
-            instructionText = StringProvider.getString(R.string.bpbio320_instructions_step1_text)
+            instructionText = StringProvider.getString(R.string.bpbio320_instructions_step1_text),
         )
         Spacer(modifier = Modifier.height(40.dp))
         InstructionItem(
             titleText = StringProvider.getString(R.string.bpbio320_instructions_step2_title),
             prefix = StringProvider.getString(R.string.bpbio320_instructions_step2_prefix),
             accent = StringProvider.getString(R.string.bpbio320_instructions_step2_accent),
-            suffix = StringProvider.getString(R.string.bpbio320_instructions_step2_suffix)
+            suffix = StringProvider.getString(R.string.bpbio320_instructions_step2_suffix),
         )
         Spacer(modifier = Modifier.height(40.dp))
         InstructionItem(
             titleText = StringProvider.getString(R.string.bpbio320_instructions_step3_title),
             prefix = StringProvider.getString(R.string.bpbio320_instructions_step3_prefix),
             accent = StringProvider.getString(R.string.bpbio320_instructions_step3_accent),
-            suffix = StringProvider.getString(R.string.bpbio320_instructions_step3_suffix)
+            suffix = StringProvider.getString(R.string.bpbio320_instructions_step3_suffix),
         )
 
         Spacer(modifier = Modifier.weight(2f))
         PrimaryButton(
             onClick = {
-                if (ttsSpeaking) ttsWarningActive.update { true }
-                else navController.navigate(BloodPressureTestScreen.InProgress.name)
+                if (ttsSpeaking) {
+                    ttsWarningActive.update { true }
+                } else {
+                    navController.navigate(BloodPressureTestScreen.InProgress.name)
+                }
             },
             text = StringProvider.getString(R.string.bpbio320_start_test_button),
         )
     }
 
     TtsWarning(ttsWarningActive)
-
 }

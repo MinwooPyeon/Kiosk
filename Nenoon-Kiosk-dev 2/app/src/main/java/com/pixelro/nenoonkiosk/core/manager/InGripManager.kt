@@ -23,7 +23,6 @@ import java.nio.charset.StandardCharsets
 import java.util.UUID
 
 object InGripManager {
-
     private const val TAG = "DynamometerManager"
     private const val SCAN_DURATION = 15000L
 
@@ -39,9 +38,10 @@ object InGripManager {
     private var writeCharacteristic: BluetoothGattCharacteristic? = null
     private var readCharacteristic: BluetoothGattCharacteristic? = null
 
-    private val _connectionState = MutableStateFlow<BluetoothConnectionState>(
-        BluetoothConnectionState.DISCONNECTED
-    )
+    private val _connectionState =
+        MutableStateFlow<BluetoothConnectionState>(
+            BluetoothConnectionState.DISCONNECTED,
+        )
     val connectionState: StateFlow<BluetoothConnectionState> = _connectionState
 
     private val _dataReceived = MutableStateFlow<Double?>(null)
@@ -71,16 +71,21 @@ object InGripManager {
         _availableDevices.value = emptyList() // clear previous results
         Log.d(TAG, "Starting Bluetooth LE scan for InBodyHGS devices.")
         isScanning = true
-        val deviceListener = object : BluetoothAdapter.LeScanCallback {
-            override fun onLeScan(device: BluetoothDevice, rssi: Int, scanRecord: ByteArray?) {
-                if (device.name?.startsWith("InBodyHGS") == true && !_availableDevices.value.contains(device)) {
-                    Log.d(TAG, "Found InBodyHGS device: ${device.name} - ${device.address}")
-                    managerScope.launch {
-                        _availableDevices.value += device
+        val deviceListener =
+            object : BluetoothAdapter.LeScanCallback {
+                override fun onLeScan(
+                    device: BluetoothDevice,
+                    rssi: Int,
+                    scanRecord: ByteArray?,
+                ) {
+                    if (device.name?.startsWith("InBodyHGS") == true && !_availableDevices.value.contains(device)) {
+                        Log.d(TAG, "Found InBodyHGS device: ${device.name} - ${device.address}")
+                        managerScope.launch {
+                            _availableDevices.value += device
+                        }
                     }
                 }
             }
-        }
         bluetoothAdapter?.startLeScan(deviceListener)
         managerScope.launch {
             delay(SCAN_DURATION)
@@ -114,266 +119,279 @@ object InGripManager {
         bluetoothGatt = device.connectGatt(appContext, false, gattCallback)
     }
 
-    private val gattCallback = object : BluetoothGattCallback() {
-        @SuppressLint("MissingPermission")
-        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-            super.onConnectionStateChange(gatt, status, newState)
-            managerScope.launch {
-                when (newState) {
-                    BluetoothProfile.STATE_CONNECTED -> {
-                        Log.d(TAG, "Connected to GATT server.")
-                        _connectionState.value = BluetoothConnectionState.CONNECTED
-                        gatt?.discoverServices()
-                    }
-
-                    BluetoothProfile.STATE_DISCONNECTED -> {
-                        Log.d(TAG, "Disconnected from GATT server.")
-                        _connectionState.value = BluetoothConnectionState.DISCONNECTED
-                        closeGatt()
-                        device = null
-                    }
-
-                    else -> {
-                        Log.w(TAG, "Connection state changed with status $status")
-                        _connectionState.value =
-                            BluetoothConnectionState.ERROR("GATT connection error with status $status")
-                        closeGatt()
-                        device = null
-                    }
-                }
-            }
-        }
-
-        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-            super.onServicesDiscovered(gatt, status)
-            managerScope.launch {
-                when (status) {
-                    BluetoothGatt.GATT_SUCCESS -> {
-                        Log.i(TAG, "GATT services discovered")
-                        gatt?.getService(SERVICE_UUID)?.let { service ->
-                            writeCharacteristic = service.getCharacteristic(
-                                WRITE_CHARACTERISTIC_UUID
-                            )
-                            readCharacteristic = service.getCharacteristic(READ_CHARACTERISTIC_UUID)
-                            enableNotifications(readCharacteristic)
-                        } ?: run {
-                            Log.e(TAG, "Nordic UART Service not found")
-                            _connectionState.value =
-                                BluetoothConnectionState.ERROR("Nordic UART Service not found")
-                        }
-                    }
-
-                    else -> {
-                        Log.w(TAG, "GATT service discovery failed with status $status")
-                        _connectionState.value =
-                            BluetoothConnectionState.ERROR("GATT service discovery failed with status $status")
-                        closeGatt()
-                    }
-                }
-            }
-        }
-
-        private fun parseInBodyHGSData(
-            receivedBytes: ByteArray?,
-            source: String = "unknown"
-        ): Double? {
-            if (receivedBytes == null || receivedBytes.size < 4) {
-                Log.w(TAG, "Received $source value is null or too short.")
-                return null
-            }
-
-            if (receivedBytes[0].toUByte().toInt() != 0x02 ||
-                receivedBytes[receivedBytes.size - 1].toUByte().toInt() != 0x03
+    private val gattCallback =
+        object : BluetoothGattCallback() {
+            @SuppressLint("MissingPermission")
+            override fun onConnectionStateChange(
+                gatt: BluetoothGatt?,
+                status: Int,
+                newState: Int,
             ) {
-                Log.w(TAG, "Malformed InBodyHGS response ($source): Missing STX or ETX.")
-                return null
-            }
-
-            val commandByte = receivedBytes[1].toUByte().toInt()
-            val dataBytes = receivedBytes.copyOfRange(2, receivedBytes.size - 1)
-
-            if (dataBytes.isEmpty()) {
-                Log.w(TAG, "DATA section is empty for $source.")
-                return null
-            }
-
-            when (commandByte) {
-                0x62 -> {
-                    val statusByte = dataBytes[0].toUByte().toInt()
-                    var measurementResult = ""
-                    var parsedGripStrength: Double? = null
-
-                    when (statusByte) {
-                        0x30 -> {
-                            if (dataBytes.size > 3 && dataBytes[1].toUByte()
-                                    .toInt() == 0x1B && dataBytes[dataBytes.size - 1].toUByte()
-                                    .toInt() == 0x1B
-                            ) {
-                                val gripValueBytes = dataBytes.copyOfRange(2, dataBytes.size - 1)
-                                measurementResult = String(gripValueBytes, StandardCharsets.UTF_8)
-                            } else {
-                                Log.w(TAG, "Unexpected format for 'Measuring' status ($source).")
-                                measurementResult = "Unknown (Measuring)"
-                            }
+                super.onConnectionStateChange(gatt, status, newState)
+                managerScope.launch {
+                    when (newState) {
+                        BluetoothProfile.STATE_CONNECTED -> {
+                            Log.d(TAG, "Connected to GATT server.")
+                            _connectionState.value = BluetoothConnectionState.CONNECTED
+                            gatt?.discoverServices()
                         }
 
-                        0x31 -> {
-                            if (dataBytes.size > 3 && dataBytes[1].toUByte()
-                                    .toInt() == 0x1B && dataBytes[dataBytes.size - 1].toUByte()
-                                    .toInt() == 0x1B
-                            ) {
-                                val gripValueBytes = dataBytes.copyOfRange(2, dataBytes.size - 1)
-                                measurementResult = String(gripValueBytes, StandardCharsets.UTF_8)
-                            } else {
-                                Log.w(
-                                    TAG,
-                                    "Unexpected format for 'Measurement completed' status ($source)."
-                                )
-                                measurementResult = "Unknown (Completed)"
-                            }
+                        BluetoothProfile.STATE_DISCONNECTED -> {
+                            Log.d(TAG, "Disconnected from GATT server.")
+                            _connectionState.value = BluetoothConnectionState.DISCONNECTED
+                            closeGatt()
+                            device = null
                         }
 
-                        0x32 -> {
-                            if (dataBytes.size >= 6 && dataBytes[1].toUByte()
-                                    .toInt() == 0x1B && dataBytes[dataBytes.size - 1].toUByte()
-                                    .toInt() == 0x1B
-                            ) {
-                                val errorCodeBytes = dataBytes.copyOfRange(2, dataBytes.size - 1)
-                                measurementResult =
-                                    "Error Code: ${String(errorCodeBytes, StandardCharsets.UTF_8)}"
-                            } else {
-                                Log.w(TAG, "Unexpected format for 'Error' status ($source).")
-                                measurementResult = "Unknown (Error)"
+                        else -> {
+                            Log.w(TAG, "Connection state changed with status $status")
+                            _connectionState.value =
+                                BluetoothConnectionState.ERROR("GATT connection error with status $status")
+                            closeGatt()
+                            device = null
+                        }
+                    }
+                }
+            }
+
+            override fun onServicesDiscovered(
+                gatt: BluetoothGatt?,
+                status: Int,
+            ) {
+                super.onServicesDiscovered(gatt, status)
+                managerScope.launch {
+                    when (status) {
+                        BluetoothGatt.GATT_SUCCESS -> {
+                            Log.i(TAG, "GATT services discovered")
+                            gatt?.getService(SERVICE_UUID)?.let { service ->
+                                writeCharacteristic =
+                                    service.getCharacteristic(
+                                        WRITE_CHARACTERISTIC_UUID,
+                                    )
+                                readCharacteristic = service.getCharacteristic(READ_CHARACTERISTIC_UUID)
+                                enableNotifications(readCharacteristic)
+                            } ?: run {
+                                Log.e(TAG, "Nordic UART Service not found")
+                                _connectionState.value =
+                                    BluetoothConnectionState.ERROR("Nordic UART Service not found")
                             }
                         }
 
                         else -> {
-                            measurementResult = "N/A"
+                            Log.w(TAG, "GATT service discovery failed with status $status")
+                            _connectionState.value =
+                                BluetoothConnectionState.ERROR("GATT service discovery failed with status $status")
+                            closeGatt()
                         }
                     }
-
-                    val resultString = "Status: ${
-                        when (statusByte) {
-                            0x30 -> "Measuring"
-                            0x31 -> "Measurement completed"
-                            0x32 -> "Error"
-                            else -> "Unknown Status (0x${statusByte.toString(16).uppercase()})"
-                        }
-                    }, Result: $measurementResult"
-                    Log.d(TAG, "Parsed InBodyHGS data ($source): $resultString")
-
-                    if (statusByte == 0x31 || statusByte == 0x30) {
-                        try {
-                            val rawGripValue = measurementResult.toDoubleOrNull()
-                            if (rawGripValue != null) {
-                                val gripStrengthKg = rawGripValue / 10.0
-                                Log.d(TAG, "Grip Strength ($source): $gripStrengthKg kg")
-                                parsedGripStrength = gripStrengthKg
-                            } else {
-                                Log.w(
-                                    TAG,
-                                    "Could not parse grip strength from $source: $measurementResult"
-                                )
-                            }
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Error parsing grip strength from $source: ${e.message}")
-                        }
-                    }
-                    return parsedGripStrength
                 }
+            }
 
-                0x60 -> {
-                    if (dataBytes.isEmpty()) {
-                        Log.w(TAG, "STATUS DATA section is empty for $source.")
-                        return null
-                    }
-                    val batteryLevelByte = dataBytes[0].toUByte().toInt()
-                    val batteryStatus: String
-                    val batteryValue: Double?
-
-                    when (batteryLevelByte) {
-                        0x30 -> {
-                            batteryStatus = "Battery needs to be replaced"
-                            batteryValue = 0.0
-                        }
-
-                        0x31 -> {
-                            batteryStatus = "Enough battery"
-                            batteryValue = 100.0
-                        }
-
-                        else -> {
-                            batteryStatus = "Unknown Battery Status (0x${
-                                batteryLevelByte.toString(16).uppercase()
-                            })"
-                            batteryValue = null
-                        }
-                    }
-                    Log.d(
-                        TAG,
-                        "Parsed InBodyHGS STATUS data ($source): Battery Level: $batteryStatus"
-                    )
-
-                    return batteryValue
-                }
-
-                else -> {
-                    Log.w(
-                        TAG,
-                        "Unknown command byte received: 0x${
-                            commandByte.toString(16).uppercase()
-                        } from $source."
-                    )
+            private fun parseInBodyHGSData(
+                receivedBytes: ByteArray?,
+                source: String = "unknown",
+            ): Double? {
+                if (receivedBytes == null || receivedBytes.size < 4) {
+                    Log.w(TAG, "Received $source value is null or too short.")
                     return null
                 }
-            }
-        }
 
-        override fun onCharacteristicRead(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic,
-            status: Int
-        ) {
-            super.onCharacteristicRead(gatt, characteristic, status)
-            managerScope.launch {
-                when (status) {
-                    BluetoothGatt.GATT_SUCCESS -> {
-                        val gripStrength = parseInBodyHGSData(characteristic.value, "read")
-                        _dataReceived.value = gripStrength
+                if (receivedBytes[0].toUByte().toInt() != 0x02 ||
+                    receivedBytes[receivedBytes.size - 1].toUByte().toInt() != 0x03
+                ) {
+                    Log.w(TAG, "Malformed InBodyHGS response ($source): Missing STX or ETX.")
+                    return null
+                }
+
+                val commandByte = receivedBytes[1].toUByte().toInt()
+                val dataBytes = receivedBytes.copyOfRange(2, receivedBytes.size - 1)
+
+                if (dataBytes.isEmpty()) {
+                    Log.w(TAG, "DATA section is empty for $source.")
+                    return null
+                }
+
+                when (commandByte) {
+                    0x62 -> {
+                        val statusByte = dataBytes[0].toUByte().toInt()
+                        var measurementResult = ""
+                        var parsedGripStrength: Double? = null
+
+                        when (statusByte) {
+                            0x30 -> {
+                                if (dataBytes.size > 3 && dataBytes[1].toUByte()
+                                        .toInt() == 0x1B && dataBytes[dataBytes.size - 1].toUByte()
+                                        .toInt() == 0x1B
+                                ) {
+                                    val gripValueBytes = dataBytes.copyOfRange(2, dataBytes.size - 1)
+                                    measurementResult = String(gripValueBytes, StandardCharsets.UTF_8)
+                                } else {
+                                    Log.w(TAG, "Unexpected format for 'Measuring' status ($source).")
+                                    measurementResult = "Unknown (Measuring)"
+                                }
+                            }
+
+                            0x31 -> {
+                                if (dataBytes.size > 3 && dataBytes[1].toUByte()
+                                        .toInt() == 0x1B && dataBytes[dataBytes.size - 1].toUByte()
+                                        .toInt() == 0x1B
+                                ) {
+                                    val gripValueBytes = dataBytes.copyOfRange(2, dataBytes.size - 1)
+                                    measurementResult = String(gripValueBytes, StandardCharsets.UTF_8)
+                                } else {
+                                    Log.w(
+                                        TAG,
+                                        "Unexpected format for 'Measurement completed' status ($source).",
+                                    )
+                                    measurementResult = "Unknown (Completed)"
+                                }
+                            }
+
+                            0x32 -> {
+                                if (dataBytes.size >= 6 && dataBytes[1].toUByte()
+                                        .toInt() == 0x1B && dataBytes[dataBytes.size - 1].toUByte()
+                                        .toInt() == 0x1B
+                                ) {
+                                    val errorCodeBytes = dataBytes.copyOfRange(2, dataBytes.size - 1)
+                                    measurementResult =
+                                        "Error Code: ${String(errorCodeBytes, StandardCharsets.UTF_8)}"
+                                } else {
+                                    Log.w(TAG, "Unexpected format for 'Error' status ($source).")
+                                    measurementResult = "Unknown (Error)"
+                                }
+                            }
+
+                            else -> {
+                                measurementResult = "N/A"
+                            }
+                        }
+
+                        val resultString = "Status: ${
+                            when (statusByte) {
+                                0x30 -> "Measuring"
+                                0x31 -> "Measurement completed"
+                                0x32 -> "Error"
+                                else -> "Unknown Status (0x${statusByte.toString(16).uppercase()})"
+                            }
+                        }, Result: $measurementResult"
+                        Log.d(TAG, "Parsed InBodyHGS data ($source): $resultString")
+
+                        if (statusByte == 0x31 || statusByte == 0x30) {
+                            try {
+                                val rawGripValue = measurementResult.toDoubleOrNull()
+                                if (rawGripValue != null) {
+                                    val gripStrengthKg = rawGripValue / 10.0
+                                    Log.d(TAG, "Grip Strength ($source): $gripStrengthKg kg")
+                                    parsedGripStrength = gripStrengthKg
+                                } else {
+                                    Log.w(
+                                        TAG,
+                                        "Could not parse grip strength from $source: $measurementResult",
+                                    )
+                                }
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Error parsing grip strength from $source: ${e.message}")
+                            }
+                        }
+                        return parsedGripStrength
                     }
-                    BluetoothGatt.GATT_FAILURE -> {
-                        Log.w(TAG, "Characteristic read failed with status $status")
+
+                    0x60 -> {
+                        if (dataBytes.isEmpty()) {
+                            Log.w(TAG, "STATUS DATA section is empty for $source.")
+                            return null
+                        }
+                        val batteryLevelByte = dataBytes[0].toUByte().toInt()
+                        val batteryStatus: String
+                        val batteryValue: Double?
+
+                        when (batteryLevelByte) {
+                            0x30 -> {
+                                batteryStatus = "Battery needs to be replaced"
+                                batteryValue = 0.0
+                            }
+
+                            0x31 -> {
+                                batteryStatus = "Enough battery"
+                                batteryValue = 100.0
+                            }
+
+                            else -> {
+                                batteryStatus = "Unknown Battery Status (0x${
+                                    batteryLevelByte.toString(16).uppercase()
+                                })"
+                                batteryValue = null
+                            }
+                        }
+                        Log.d(
+                            TAG,
+                            "Parsed InBodyHGS STATUS data ($source): Battery Level: $batteryStatus",
+                        )
+
+                        return batteryValue
+                    }
+
+                    else -> {
+                        Log.w(
+                            TAG,
+                            "Unknown command byte received: 0x${
+                                commandByte.toString(16).uppercase()
+                            } from $source.",
+                        )
+                        return null
+                    }
+                }
+            }
+
+            override fun onCharacteristicRead(
+                gatt: BluetoothGatt?,
+                characteristic: BluetoothGattCharacteristic,
+                status: Int,
+            ) {
+                super.onCharacteristicRead(gatt, characteristic, status)
+                managerScope.launch {
+                    when (status) {
+                        BluetoothGatt.GATT_SUCCESS -> {
+                            val gripStrength = parseInBodyHGSData(characteristic.value, "read")
+                            _dataReceived.value = gripStrength
+                        }
+                        BluetoothGatt.GATT_FAILURE -> {
+                            Log.w(TAG, "Characteristic read failed with status $status")
+                            _connectionState.value =
+                                BluetoothConnectionState.ERROR("Characteristic read failed with status $status")
+                        }
+                    }
+                }
+            }
+
+            override fun onCharacteristicChanged(
+                gatt: BluetoothGatt?,
+                characteristic: BluetoothGattCharacteristic,
+            ) {
+                super.onCharacteristicChanged(gatt, characteristic)
+                managerScope.launch {
+                    val data = parseInBodyHGSData(characteristic.value, "change")
+                    _dataReceived.value = data
+                }
+            }
+
+            override fun onDescriptorWrite(
+                gatt: BluetoothGatt?,
+                descriptor: BluetoothGattDescriptor?,
+                status: Int,
+            ) {
+                super.onDescriptorWrite(gatt, descriptor, status)
+                managerScope.launch {
+                    if (status == BluetoothGatt.GATT_SUCCESS) {
+                        Log.d(TAG, "Descriptor write success")
+                    } else {
+                        Log.e(TAG, "Descriptor write failed, status: $status")
                         _connectionState.value =
-                            BluetoothConnectionState.ERROR("Characteristic read failed with status $status")
+                            BluetoothConnectionState.ERROR("Descriptor write failed, status: $status")
                     }
                 }
             }
         }
-
-        override fun onCharacteristicChanged(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic,
-        ) {
-            super.onCharacteristicChanged(gatt, characteristic)
-            managerScope.launch {
-                val data = parseInBodyHGSData(characteristic.value, "change")
-                _dataReceived.value = data
-            }
-        }
-
-        override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
-            super.onDescriptorWrite(gatt, descriptor, status)
-            managerScope.launch {
-                if (status == BluetoothGatt.GATT_SUCCESS) {
-                    Log.d(TAG, "Descriptor write success")
-                } else {
-                    Log.e(TAG, "Descriptor write failed, status: $status")
-                    _connectionState.value =
-                        BluetoothConnectionState.ERROR("Descriptor write failed, status: $status")
-                }
-            }
-        }
-    }
 
     @SuppressLint("MissingPermission")
     private fun enableNotifications(characteristic: BluetoothGattCharacteristic?) {
@@ -431,33 +449,39 @@ object InGripManager {
 
     fun sendStatusCommand() {
         Log.d(TAG, "Sending STATUS command")
-        writeCommand(byteArrayOf(0x02, 0x60.toByte(), 0x03))  // STATUS command
+        writeCommand(byteArrayOf(0x02, 0x60.toByte(), 0x03)) // STATUS command
     }
 
-    fun sendDeviceSetupCommand(unit: Byte, sound: Byte) {
+    fun sendDeviceSetupCommand(
+        unit: Byte,
+        sound: Byte,
+    ) {
         Log.d(TAG, "Sending SETUP command")
         writeCommand(byteArrayOf(0x02, 0x61.toByte(), unit, 0x1B, sound, 0x1B, 0x03)) // DEVICE SETUP command
     }
 
     fun sendResultCommand() {
         Log.d(TAG, "Sending RESULT command")
-        writeCommand(byteArrayOf(0x02, 0x62.toByte(), 0x03))  // RESULT command
+        writeCommand(byteArrayOf(0x02, 0x62.toByte(), 0x03)) // RESULT command
     }
 
     fun sendInitializeCommand() {
         Log.d(TAG, "Sending INITIALIZE command")
-        writeCommand(byteArrayOf(0x02, 0x63.toByte(), 0x03))  // INITIALIZE command
+        writeCommand(byteArrayOf(0x02, 0x63.toByte(), 0x03)) // INITIALIZE command
     }
 
     fun sendPowerOffCommand() {
         Log.d(TAG, "Sending POWER OFF command")
-        writeCommand(byteArrayOf(0x02, 0x70.toByte(), 0x03))  // POWER OFF command
+        writeCommand(byteArrayOf(0x02, 0x70.toByte(), 0x03)) // POWER OFF command
     }
 
     sealed class BluetoothConnectionState {
         object DISCONNECTED : BluetoothConnectionState()
+
         object CONNECTING : BluetoothConnectionState()
+
         object CONNECTED : BluetoothConnectionState()
+
         data class ERROR(val message: String) : BluetoothConnectionState()
     }
 }

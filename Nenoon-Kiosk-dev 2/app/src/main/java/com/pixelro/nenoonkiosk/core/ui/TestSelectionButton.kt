@@ -35,7 +35,6 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 
-
 const val LARGE_SCALE = 1.5f
 
 @Composable
@@ -61,134 +60,171 @@ fun TestSelectionButton(
     val approximateTextSize = if (savedLanguage == "ru" || savedLanguage == "en") 24.sp else 30.sp
     Card(
         elevation = CardDefaults.cardElevation(0.dp),
-        modifier = modifier
-            .padding(start = 40.dp, end = 40.dp)
-            .fillMaxWidth()
-            .border(
-                border = BorderStroke(1.dp, Color(0xffc3c3c3)),
-                shape = RoundedCornerShape(8.dp)
+        modifier =
+            modifier
+                .padding(start = 40.dp, end = 40.dp)
+                .fillMaxWidth()
+                .border(
+                    border = BorderStroke(1.dp, Color(0xffc3c3c3)),
+                    shape = RoundedCornerShape(8.dp),
+                ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = Color(0xFFFFFFFF),
             ),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFFFFFFF),
-        ),
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable(
-                    enabled = enabled
-                ) {
-                    onClickMethod()
-                },
-            contentAlignment = alignment
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .clickable(
+                        enabled = enabled,
+                    ) {
+                        onClickMethod()
+                    },
+            contentAlignment = alignment,
         ) {
             Text(
-                text = buildAnnotatedString {
-                    /**
-                     * 제목 1
-                     * 검은색
-                     */
-                    withStyle(
-                        style = SpanStyle(color = Color(if (enabled) 0xff000000 else 0xffaaaaaa))
-                    ) {
-                        append(title1)
-                    }
+                text =
+                    buildAnnotatedString {
+                        /**
+                         * 제목 1
+                         * 검은색
+                         */
+                        withStyle(
+                            style = SpanStyle(color = Color(if (enabled) 0xff000000 else 0xffaaaaaa)),
+                        ) {
+                            append(title1)
+                        }
 
-                    /**
-                     * 제목 2
-                     * 파란색
-                     */
-                    withStyle(
-                        style = SpanStyle(color = Color(0xff1d71e1))
-                    ) {
-                        append(title2)
-                    }
-                },
-                modifier = Modifier
-                    .align(
-                        if (icon != null) Alignment.CenterEnd
-                        else Alignment.CenterStart
-                    )
-                    .padding(
-                        start =
-                            if (time != 0) 28.dp
-                            else 0.dp,
-                        end =
-                            if (icon != null) 40.dp
-                            else 0.dp
-                    ),
-                fontSize = when (isSenior) {
-                    true ->
-                        if (savedLanguage == "ru" || savedLanguage == "es" || savedLanguage == "en")
-                            if (time != 0) 35.sp
-                            else 25.sp
-                        else 50.sp * (if (large) LARGE_SCALE else 1f)
+                        /**
+                         * 제목 2
+                         * 파란색
+                         */
+                        withStyle(
+                            style = SpanStyle(color = Color(0xff1d71e1)),
+                        ) {
+                            append(title2)
+                        }
+                    },
+                modifier =
+                    Modifier
+                        .align(
+                            if (icon != null) {
+                                Alignment.CenterEnd
+                            } else {
+                                Alignment.CenterStart
+                            },
+                        )
+                        .padding(
+                            start =
+                                if (time != 0) {
+                                    28.dp
+                                } else {
+                                    0.dp
+                                },
+                            end =
+                                if (icon != null) {
+                                    40.dp
+                                } else {
+                                    0.dp
+                                },
+                        ),
+                fontSize =
+                    when (isSenior) {
+                        true ->
+                            if (savedLanguage == "ru" || savedLanguage == "es" || savedLanguage == "en") {
+                                if (time != 0) {
+                                    35.sp
+                                } else {
+                                    25.sp
+                                }
+                            } else {
+                                50.sp * (if (large) LARGE_SCALE else 1f)
+                            }
 
-                    false ->
-                        if (savedLanguage == "ru" || savedLanguage == "es" || savedLanguage == "en")
-                            if (time != 0) 35.sp
-                            else 25.sp
-                        else 40.sp * (if (large) LARGE_SCALE else 1f)
-                },
+                        false ->
+                            if (savedLanguage == "ru" || savedLanguage == "es" || savedLanguage == "en") {
+                                if (time != 0) {
+                                    35.sp
+                                } else {
+                                    25.sp
+                                }
+                            } else {
+                                40.sp * (if (large) LARGE_SCALE else 1f)
+                            }
+                    },
                 fontWeight = FontWeight.ExtraBold,
-                color = when (isDone) {
-                    true -> Color(0xff999999)
-                    false -> Color(0xff000000)
-                }
+                color =
+                    when (isDone) {
+                        true -> Color(0xff999999)
+                        false -> Color(0xff000000)
+                    },
             )
 
             if (icon != null) {
                 Image(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .padding(vertical = 10.dp)
-                        .align(Alignment.CenterStart),
+                    modifier =
+                        Modifier
+                            .width(200.dp)
+                            .padding(vertical = 10.dp)
+                            .align(Alignment.CenterStart),
                     painter = painterResource(id = icon),
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
 
             if (time != 0) {
                 Image(
-                    modifier = Modifier
-                        .padding(end = 40.dp)
-                        .rotate(180f)
-                        .align(Alignment.CenterEnd),
+                    modifier =
+                        Modifier
+                            .padding(end = 40.dp)
+                            .rotate(180f)
+                            .align(Alignment.CenterEnd),
                     painter = painterResource(id = R.drawable.icon_back_black),
-                    contentDescription = ""
+                    contentDescription = "",
                 )
             }
             when (time) {
                 0 -> {}
-                else -> Column(
-                    modifier = Modifier
-                        .padding(end = 120.dp)
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .width(150.dp),
-                        text = StringProvider.getString(
-                            R.string.box_time_required),
-                        fontSize = boxTimeTextSize * (if (large) LARGE_SCALE else 1f),
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Medium
-                    )
-                    Text(
-                        modifier = Modifier
-                            .width(150.dp),
-                        text = StringProvider.getString(
-                            R.string.box_approximate) + " ${time} " + StringProvider.getString(
-                            R.string.box_minute),
-                        fontSize = approximateTextSize * (if (large) LARGE_SCALE else 1f),
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                else ->
+                    Column(
+                        modifier =
+                            Modifier
+                                .padding(end = 120.dp)
+                                .fillMaxSize(),
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Text(
+                            modifier =
+                                Modifier
+                                    .width(150.dp),
+                            text =
+                                StringProvider.getString(
+                                    R.string.box_time_required,
+                                ),
+                            fontSize = boxTimeTextSize * (if (large) LARGE_SCALE else 1f),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Medium,
+                        )
+                        Text(
+                            modifier =
+                                Modifier
+                                    .width(150.dp),
+                            text =
+                                StringProvider.getString(
+                                    R.string.box_approximate,
+                                ) + " $time " +
+                                    StringProvider.getString(
+                                        R.string.box_minute,
+                                    ),
+                            fontSize = approximateTextSize * (if (large) LARGE_SCALE else 1f),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
             }
-
         }
     }
 }

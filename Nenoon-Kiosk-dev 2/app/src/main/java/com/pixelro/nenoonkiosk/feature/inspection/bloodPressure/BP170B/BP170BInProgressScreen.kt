@@ -24,20 +24,20 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.manager.BP170BManager
-import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BViewModel
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestScreen
+import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BViewModel
 
 enum class BpMeasurementScreenState {
     Measuring,
-    Completed
+    Completed,
 }
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -88,7 +88,10 @@ fun BP170BInProgressScreen(
     // Effect to observe bloodPressureResult for measurement completion
     LaunchedEffect(bloodPressureResult) {
         bloodPressureResult?.let { result ->
-            Log.d("BP170BInProgress", "Blood pressure result received: SBP=${result.systolic}, DBP=${result.diastolic}, Pulse=${result.pulseRate}")
+            Log.d(
+                "BP170BInProgress",
+                "Blood pressure result received: SBP=${result.systolic}, DBP=${result.diastolic}, Pulse=${result.pulseRate}",
+            )
             if (isResultValid(result) && errorMessage.isNullOrBlank() && connectionState !is BP170BManager.BluetoothConnectionState.ERROR) {
                 currentMeasurementScreenState = BpMeasurementScreenState.Completed
                 isMeasurementInProgress = false // Ensure measurement state is off
@@ -104,7 +107,10 @@ fun BP170BInProgressScreen(
 
     // Main logic for screen state transitions based on all observed states
     LaunchedEffect(isMeasurementInProgress, errorMessage, connectionState, bloodPressureResult) {
-        Log.d("BP170BInProgress", "State Update - InProgress: $isMeasurementInProgress, Result: ${bloodPressureResult != null}, Error: $errorMessage, Connection: $connectionState")
+        Log.d(
+            "BP170BInProgress",
+            "State Update - InProgress: $isMeasurementInProgress, Result: ${bloodPressureResult != null}, Error: $errorMessage, Connection: $connectionState",
+        )
 
         if (bloodPressureResult != null) {
             // Measurement is complete if we have a valid result
@@ -146,12 +152,13 @@ fun BP170BInProgressScreen(
     }
 
     Column(
-        modifier = Modifier
-            .padding(40.dp)
-            .fillMaxSize()
-            .background(Color.White),
+        modifier =
+            Modifier
+                .padding(40.dp)
+                .fillMaxSize()
+                .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         when (currentMeasurementScreenState) {
             BpMeasurementScreenState.Measuring -> {
@@ -196,7 +203,7 @@ fun BP170BInProgressScreen(
                             }
                         }
                     },
-                    text = StringProvider.getString(R.string.bp170b_check_results)
+                    text = StringProvider.getString(R.string.bp170b_check_results),
                 )
             }
         }

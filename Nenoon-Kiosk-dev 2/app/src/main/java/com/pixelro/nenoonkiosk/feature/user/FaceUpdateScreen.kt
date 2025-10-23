@@ -32,18 +32,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
+import com.pixelro.nenoonkiosk.core.util.StringProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
 fun FaceUpdateScreen(
     signInViewModel: SignInViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     val context = LocalContext.current
     val faceDetectionStatus by signInViewModel.faceDetectionStatus.collectAsState()
@@ -68,15 +68,16 @@ fun FaceUpdateScreen(
     }
 
     LaunchedEffect(isFaceEnrollmentDataReady, faceDetectionStatus, faceEnrollAttempted) {
-        currentScreenStatus = if (isFaceEnrollmentDataReady) {
-            StringProvider.getString(R.string.user_face_update_ready_status)
-        } else if (!faceEnrollAttempted && faceDetectionStatus.isEmpty()) {
-            StringProvider.getString(R.string.user_face_update_scan_prompt)
-        } else if (faceDetectionStatus.isNotEmpty()) {
-            faceDetectionStatus
-        } else {
-            StringProvider.getString(R.string.user_face_update_retry_scan)
-        }
+        currentScreenStatus =
+            if (isFaceEnrollmentDataReady) {
+                StringProvider.getString(R.string.user_face_update_ready_status)
+            } else if (!faceEnrollAttempted && faceDetectionStatus.isEmpty()) {
+                StringProvider.getString(R.string.user_face_update_scan_prompt)
+            } else if (faceDetectionStatus.isNotEmpty()) {
+                faceDetectionStatus
+            } else {
+                StringProvider.getString(R.string.user_face_update_retry_scan)
+            }
     }
 
     DisposableEffect(Unit) {
@@ -87,11 +88,12 @@ fun FaceUpdateScreen(
     }
 
     Column(
-        modifier = Modifier
-            .padding(40.dp)
-            .fillMaxSize(),
+        modifier =
+            Modifier
+                .padding(40.dp)
+                .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         StyledText(
             text = StringProvider.getString(R.string.user_face_update_title),
@@ -100,11 +102,12 @@ fun FaceUpdateScreen(
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .aspectRatio(1f)
-                .clip(MaterialTheme.shapes.medium)
-                .align(Alignment.CenterHorizontally)
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.7f)
+                    .aspectRatio(1f)
+                    .clip(MaterialTheme.shapes.medium)
+                    .align(Alignment.CenterHorizontally),
         ) {
             CameraPreview(
                 modifier = Modifier.fillMaxSize(),
@@ -115,7 +118,7 @@ fun FaceUpdateScreen(
                 },
                 onDetectionStatus = { status ->
                     signInViewModel.updateFaceDetectionStatus(status)
-                }
+                },
             )
 
             lastDetectedFaceBitmap?.let { bitmap ->
@@ -123,10 +126,11 @@ fun FaceUpdateScreen(
                     Image(
                         bitmap = bitmap.asImageBitmap(),
                         contentDescription = StringProvider.getString(R.string.user_face_update_captured_face_description),
-                        modifier = Modifier
-                            .size(150.dp)
-                            .align(Alignment.BottomEnd)
-                            .padding(16.dp)
+                        modifier =
+                            Modifier
+                                .size(150.dp)
+                                .align(Alignment.BottomEnd)
+                                .padding(16.dp),
                     )
                 }
             }
@@ -135,25 +139,27 @@ fun FaceUpdateScreen(
 
         StyledText(
             text = currentScreenStatus,
-            style = if (isFaceEnrollmentDataReady) {
-                TextStyle.Success
-            } else if (faceDetectionStatus.isEmpty()) {
-                TextStyle.Error
-            } else {
-                TextStyle.Message
-            },
-            textAlign = TextAlign.Center
+            style =
+                if (isFaceEnrollmentDataReady) {
+                    TextStyle.Success
+                } else if (faceDetectionStatus.isEmpty()) {
+                    TextStyle.Error
+                } else {
+                    TextStyle.Message
+                },
+            textAlign = TextAlign.Center,
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
         Column {
             PrimaryButton(
-                text = if (!faceEnrollAttempted) {
-                    StringProvider.getString(R.string.user_face_update_capture_button)
-                } else {
-                    StringProvider.getString(R.string.user_face_update_recapture_button)
-                },
+                text =
+                    if (!faceEnrollAttempted) {
+                        StringProvider.getString(R.string.user_face_update_capture_button)
+                    } else {
+                        StringProvider.getString(R.string.user_face_update_recapture_button)
+                    },
                 onClick = {
                     if (liveCameraBitmap != null && !isProcessingFace) {
                         faceEnrollAttempted = true
@@ -180,7 +186,7 @@ fun FaceUpdateScreen(
                         }
                     }
                 },
-                enabled = isFaceEnrollmentDataReady && !isProcessingFace
+                enabled = isFaceEnrollmentDataReady && !isProcessingFace,
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -190,7 +196,7 @@ fun FaceUpdateScreen(
                 onClick = {
                     signInViewModel.resetFaceEnrollmentData()
                     navController.popBackStack(NavConstants.ROUTE_ACCOUNT_MANAGEMENT, false)
-                }
+                },
             )
         }
     }

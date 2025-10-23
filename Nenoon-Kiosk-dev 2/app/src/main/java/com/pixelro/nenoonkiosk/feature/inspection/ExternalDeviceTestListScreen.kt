@@ -50,20 +50,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
-import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.Advertisement
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
 import com.pixelro.nenoonkiosk.core.ui.TestSelectionButton
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
 import kotlinx.coroutines.delay
 
-//원하는 검사 항목 선택하는 뷰
+// 원하는 검사 항목 선택하는 뷰
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
@@ -74,27 +74,28 @@ fun ExternalDeviceTestListScreen(
     toSettingsScreen: () -> Unit,
     isBloodPressureDone: Boolean,
     isGripStrengthDone: Boolean,
-    viewModel: NenoonViewModel
+    viewModel: NenoonViewModel,
 ) {
     val context = LocalContext.current
     val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
     val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
     val warningTextSize = if (savedLanguage == "ru") 10.sp else 16.sp
 
-    val pagerState = rememberPagerState(
-        initialPage = Int.MAX_VALUE / 2,
-        initialPageOffsetFraction = 0f,
-        pageCount = { Int.MAX_VALUE }
-    )
+    val pagerState =
+        rememberPagerState(
+            initialPage = Int.MAX_VALUE / 2,
+            initialPageOffsetFraction = 0f,
+            pageCount = { Int.MAX_VALUE },
+        )
     val isDescriptionShowing = remember { mutableStateOf(true) }
     LaunchedEffect(true) {
         TTS.tts.stop()
         TTS.speechTTS(StringProvider.getString(R.string.select_test_tts), TextToSpeech.QUEUE_ADD)
-        while(true) {
+        while (true) {
             delay(5000)
             pagerState.animateScrollToPage(
                 page = (pagerState.currentPage + 1),
-                animationSpec = tween(1000)
+                animationSpec = tween(1000),
             )
             for (i in 1..3) {
                 isDescriptionShowing.value = false
@@ -108,12 +109,17 @@ fun ExternalDeviceTestListScreen(
     var selectedTest by remember { mutableStateOf(TestType.None) }
     val transition = rememberInfiniteTransition(label = "")
     val shiftVal by transition.animateFloat(
-        initialValue = 0f, targetValue = 20f, animationSpec = infiniteRepeatable(
-            animation = keyframes {
-                durationMillis = 2000
-            },
-            repeatMode = RepeatMode.Reverse
-        ), label = ""
+        initialValue = 0f,
+        targetValue = 20f,
+        animationSpec =
+            infiniteRepeatable(
+                animation =
+                    keyframes {
+                        durationMillis = 2000
+                    },
+                repeatMode = RepeatMode.Reverse,
+            ),
+        label = "",
     )
     val isSeniorValue by viewModel.isSenior.collectAsState()
 
@@ -127,84 +133,91 @@ fun ExternalDeviceTestListScreen(
             },
             toTestScreen = toTestScreen,
             toIntroScreen = toIntroScreen,
-            selectedTest = selectedTest
+            selectedTest = selectedTest,
         )
     }
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                color = Color(0xffffffff)
-            )
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(
+                    color = Color(0xffffffff),
+                ),
     ) {
         /**
          * 상단 바
          */
         Box(
-            modifier = Modifier
-                .padding(
-                    start = 40.dp,
-                    top = (GlobalValue.statusBarPadding + 20).dp,
-                    end = 40.dp,
-                    bottom = 20.dp
-                )
-                .fillMaxWidth()
-                .height(40.dp)
+            modifier =
+                Modifier
+                    .padding(
+                        start = 40.dp,
+                        top = (GlobalValue.statusBarPadding + 20).dp,
+                        end = 40.dp,
+                        bottom = 20.dp,
+                    )
+                    .fillMaxWidth()
+                    .height(40.dp),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        toIntroScreen()
-                    },
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier
+                        .fillMaxHeight()
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                        ) {
+                            toIntroScreen()
+                        },
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .width(28.dp),
+                    modifier =
+                        Modifier
+                            .padding(top = 4.dp)
+                            .width(28.dp),
                     painter = painterResource(id = R.drawable.icon_back_black),
-                    contentDescription = ""
+                    contentDescription = "",
                 )
                 Text(
-                    text = StringProvider.getString(
-                        R.string.navigation_tosurvey_button),
-                    fontSize = if (savedLanguage == "es")
-                    {
-                        12.sp
-                    }
-                    else
-                    {
-                        24.sp
-                    },
-                    fontWeight = FontWeight.Medium
+                    text =
+                        StringProvider.getString(
+                            R.string.navigation_tosurvey_button,
+                        ),
+                    fontSize =
+                        if (savedLanguage == "es") {
+                            12.sp
+                        } else {
+                            24.sp
+                        },
+                    fontWeight = FontWeight.Medium,
                 )
             }
             Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .fillMaxSize(),
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = StringProvider.getString(
-                        R.string.test_list_tittle),
+                    text =
+                        StringProvider.getString(
+                            R.string.test_list_tittle,
+                        ),
                     fontSize = 24.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
                 )
             }
             SettingsButton(toSettingsScreen)
-
         }
         Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(
-                    color = Color(0xffebebeb)
-                )
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(
+                        color = Color(0xffebebeb),
+                    ),
         )
 
         /**
@@ -212,7 +225,6 @@ fun ExternalDeviceTestListScreen(
          */
         when (isSeniorValue) {
             true -> {
-
             }
             false -> {
                 HorizontalPager(
@@ -225,52 +237,58 @@ fun ExternalDeviceTestListScreen(
             }
         }
         Box(
-            modifier = Modifier
-                .padding(start = 40.dp, end = 40.dp, bottom = 20.dp)
-                .fillMaxWidth()
-                .height(80.dp),
-            contentAlignment = Alignment.TopCenter
+            modifier =
+                Modifier
+                    .padding(start = 40.dp, end = 40.dp, bottom = 20.dp)
+                    .fillMaxWidth()
+                    .height(80.dp),
+            contentAlignment = Alignment.TopCenter,
         ) {
             if (isDescriptionShowing.value) {
                 Text(
-                    modifier = Modifier
-                        .offset(x = 0.dp, y = shiftVal.dp),
-                    text = StringProvider.getString(
-                        R.string.test_list_description),
-                    fontSize = if (savedLanguage=="es")
-                    {
-                        20.sp
-                    }
-                    else
-                    {
-                        38.sp
-                    }
-                    ,
+                    modifier =
+                        Modifier
+                            .offset(x = 0.dp, y = shiftVal.dp),
+                    text =
+                        StringProvider.getString(
+                            R.string.test_list_description,
+                        ),
+                    fontSize =
+                        if (savedLanguage == "es") {
+                            20.sp
+                        } else {
+                            38.sp
+                        },
                     fontWeight = FontWeight.ExtraBold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             }
         }
 
-        Box() {
+        Box {
             /**
              * 검사 목록 내용
              */
             Column(
-                modifier = Modifier
+                modifier = Modifier,
             ) {
-                val modifier = Modifier
-                    .weight(1f)
+                val modifier =
+                    Modifier
+                        .weight(1f)
                 /**
                  * 검사 항목 박스 내용
                  * 혈압 검사
                  */
                 TestSelectionButton(
                     modifier = modifier,
-                    title1 = StringProvider.getString(
-                        R.string.test_predescription_blood_pressure_title1),
-                    title2 = StringProvider.getString(
-                        R.string.test_predescription_blood_pressure_title2),
+                    title1 =
+                        StringProvider.getString(
+                            R.string.test_predescription_blood_pressure_title1,
+                        ),
+                    title2 =
+                        StringProvider.getString(
+                            R.string.test_predescription_blood_pressure_title2,
+                        ),
                     onClickMethod = {
                         selectedTest = TestType.BloodPressure
                         if (checkIsTestDone(TestType.BloodPressure)) {
@@ -286,8 +304,9 @@ fun ExternalDeviceTestListScreen(
                     large = true,
                 )
                 Spacer(
-                    modifier = Modifier
-                        .height(20.dp)
+                    modifier =
+                        Modifier
+                            .height(20.dp),
                 )
                 /**
                  * 검사 항목 박스 내용
@@ -295,10 +314,14 @@ fun ExternalDeviceTestListScreen(
                  */
                 TestSelectionButton(
                     modifier = modifier,
-                    title1 = StringProvider.getString(
-                        R.string.test_predescription_grip_strength_title1),
-                    title2 = StringProvider.getString(
-                        R.string.test_predescription_grip_strength_title2),
+                    title1 =
+                        StringProvider.getString(
+                            R.string.test_predescription_grip_strength_title1,
+                        ),
+                    title2 =
+                        StringProvider.getString(
+                            R.string.test_predescription_grip_strength_title2,
+                        ),
                     onClickMethod = {
                         selectedTest = TestType.GripStrength
                         if (checkIsTestDone(TestType.GripStrength)) {
@@ -315,8 +338,9 @@ fun ExternalDeviceTestListScreen(
                 )
 
                 Spacer(
-                    modifier = Modifier
-                        .height(20.dp)
+                    modifier =
+                        Modifier
+                            .height(20.dp),
                 )
 
                 /**
@@ -325,66 +349,77 @@ fun ExternalDeviceTestListScreen(
                  *
                  */
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.BottomCenter
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
+                    contentAlignment = Alignment.BottomCenter,
                 ) {
                     Row(
-                        modifier = Modifier
-                            .padding(
-                                start = 40.dp,
-                                bottom = (GlobalValue.navigationBarPadding + 40).dp
-                            )
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier =
+                            Modifier
+                                .padding(
+                                    start = 40.dp,
+                                    bottom = (GlobalValue.navigationBarPadding + 40).dp,
+                                )
+                                .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Image(
-                            modifier = Modifier
-                                .padding(end = 20.dp)
-                                .width(44.dp),
+                            modifier =
+                                Modifier
+                                    .padding(end = 20.dp)
+                                    .width(44.dp),
                             painter = painterResource(id = R.drawable.icon_warning),
-                            contentDescription = ""
+                            contentDescription = "",
                         )
                         Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(end = 40.dp),
-                            text = buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        color = Color(0xff999999),
-                                        fontSize = warningTextSize
-                                    )
-                                ) {
-                                    append(StringProvider.getString(
-                                        R.string.test_list_screen_warning1,
-
-                                        ))
-                                }
-                                withStyle(
-                                    style = SpanStyle(
-                                        color = Color(0xffff0000),
-                                        fontSize = warningTextSize,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                ) {
-                                    append(StringProvider.getString(
-                                        R.string.test_list_screen_warning2,
-
-                                        ))
-                                }
-                                withStyle(
-                                    style = SpanStyle(
-                                        color = Color(0xff999999),
-                                        fontSize = warningTextSize
-                                    )
-                                ) {
-                                    append(StringProvider.getString(
-                                        R.string.test_list_screen_warning3,
-
-                                        ))
-                                }
-                            }
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(end = 40.dp),
+                            text =
+                                buildAnnotatedString {
+                                    withStyle(
+                                        style =
+                                            SpanStyle(
+                                                color = Color(0xff999999),
+                                                fontSize = warningTextSize,
+                                            ),
+                                    ) {
+                                        append(
+                                            StringProvider.getString(
+                                                R.string.test_list_screen_warning1,
+                                            ),
+                                        )
+                                    }
+                                    withStyle(
+                                        style =
+                                            SpanStyle(
+                                                color = Color(0xffff0000),
+                                                fontSize = warningTextSize,
+                                                fontWeight = FontWeight.Bold,
+                                            ),
+                                    ) {
+                                        append(
+                                            StringProvider.getString(
+                                                R.string.test_list_screen_warning2,
+                                            ),
+                                        )
+                                    }
+                                    withStyle(
+                                        style =
+                                            SpanStyle(
+                                                color = Color(0xff999999),
+                                                fontSize = warningTextSize,
+                                            ),
+                                    ) {
+                                        append(
+                                            StringProvider.getString(
+                                                R.string.test_list_screen_warning3,
+                                            ),
+                                        )
+                                    }
+                                },
                         )
                     }
                 }

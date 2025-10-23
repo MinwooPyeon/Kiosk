@@ -23,11 +23,11 @@ import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.DebugConstants
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
+import com.pixelro.nenoonkiosk.core.util.StringProvider
 
 @Composable
 fun UserSignInScreen(
@@ -35,78 +35,81 @@ fun UserSignInScreen(
     signInNavController: NavController,
     navController: NavController,
 ) {
-
     Column(
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
-
         Row(
             horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 40.dp, end = 40.dp, top = 40.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 40.dp, end = 40.dp, top = 40.dp),
         ) {
             Image(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        navController.navigate(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT)
-                    },
-                painter = painterResource(id = R.drawable.bluetooth_settings_icon),
-                contentDescription = ""
-            )
-
-            if (DebugConstants.ENABLE_ADMIN_PAGE) {
-
-                Spacer(
-                    modifier = Modifier
-                        .width(40.dp)
-                )
-
-                Image(
-                    modifier = Modifier
+                modifier =
+                    Modifier
                         .size(40.dp)
                         .clickable(
                             indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
+                            interactionSource = remember { MutableInteractionSource() },
                         ) {
-                            navController.navigate(NavConstants.ROUTE_ADMIN_PAGE)
+                            navController.navigate(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT)
                         },
+                painter = painterResource(id = R.drawable.bluetooth_settings_icon),
+                contentDescription = "",
+            )
+
+            if (DebugConstants.ENABLE_ADMIN_PAGE) {
+                Spacer(
+                    modifier =
+                        Modifier
+                            .width(40.dp),
+                )
+
+                Image(
+                    modifier =
+                        Modifier
+                            .size(40.dp)
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() },
+                            ) {
+                                navController.navigate(NavConstants.ROUTE_ADMIN_PAGE)
+                            },
                     painter = painterResource(id = R.drawable.data_icon),
-                    contentDescription = ""
+                    contentDescription = "",
                 )
             }
 
             Spacer(
-                modifier = Modifier
-                    .width(40.dp)
+                modifier =
+                    Modifier
+                        .width(40.dp),
             )
 
             Image(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        navController.navigate(NavConstants.ROUTE_SETTINGS)
-                    },
+                modifier =
+                    Modifier
+                        .size(40.dp)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                        ) {
+                            navController.navigate(NavConstants.ROUTE_SETTINGS)
+                        },
                 painter = painterResource(id = R.drawable.icon_settings),
-                contentDescription = ""
+                contentDescription = "",
             )
         }
 
         Column(
-            modifier = Modifier
-                .padding(start = 40.dp, end = 40.dp, bottom = 40.dp)
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .padding(start = 40.dp, end = 40.dp, bottom = 40.dp)
+                    .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
-
             Spacer(modifier = Modifier.weight(1f))
             Logo()
             Spacer(modifier = Modifier.weight(1f))
@@ -123,7 +126,7 @@ fun UserSignInScreen(
                 text = StringProvider.getString(R.string.id_pw_sign_in),
                 onClick = {
                     signInNavController.navigate(SignInScreenState.IdPassword.name)
-                }
+                },
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -132,7 +135,7 @@ fun UserSignInScreen(
                 text = StringProvider.getString(R.string.default_sign_in_qr_login),
                 onClick = {
                     signInNavController.navigate(SignInScreenState.QR.name)
-                }
+                },
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -141,7 +144,7 @@ fun UserSignInScreen(
                 text = StringProvider.getString(R.string.default_sign_in_face_recognition),
                 onClick = {
                     signInNavController.navigate(SignInScreenState.FaceId.name)
-                }
+                },
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -151,7 +154,7 @@ fun UserSignInScreen(
                 onClick = {
                     signInViewModel.userSignInSkip()
                     navController.navigate(NavConstants.ROUTE_TERMS_OF_SERVICE)
-                }
+                },
             )
 
             Spacer(modifier = Modifier.weight(0.5f))
@@ -160,7 +163,7 @@ fun UserSignInScreen(
                 text = StringProvider.getString(R.string.default_sign_in_sign_up),
                 onClick = {
                     signInNavController.navigate(SignInScreenState.SignUpTermsOfService.name)
-                }
+                },
             )
         }
     }

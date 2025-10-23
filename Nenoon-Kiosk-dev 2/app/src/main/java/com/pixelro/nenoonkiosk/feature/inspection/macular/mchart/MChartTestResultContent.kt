@@ -27,199 +27,233 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 @Composable
 fun MChartTestResultContent(
     testResult: MChartTestResult,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     val result = testResult
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            modifier = Modifier
-                .padding(start = 40.dp, top = 40.dp)
-                .fillMaxWidth(),
-            text = StringProvider.getString(R.string.test_result_my_result, ),
+            modifier =
+                Modifier
+                    .padding(start = 40.dp, top = 40.dp)
+                    .fillMaxWidth(),
+            text = StringProvider.getString(R.string.test_result_my_result),
             fontSize = 28.sp,
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.Medium,
         )
         Row(
-            modifier = Modifier
-                .padding(start = 40.dp, top = 20.dp, end = 40.dp)
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .padding(start = 40.dp, top = 20.dp, end = 40.dp)
+                    .fillMaxWidth(),
         ) {
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(200.dp)
-                    .background(
-                        color = Color(0xfff7f9f9),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(20.dp)
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .height(200.dp)
+                        .background(
+                            color = Color(0xfff7f9f9),
+                            shape = RoundedCornerShape(8.dp),
+                        )
+                        .padding(20.dp),
             ) {
                 Text(
-                    text = StringProvider.getString(
-                        R.string.test_result_left),
+                    text =
+                        StringProvider.getString(
+                            R.string.test_result_left,
+                        ),
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
                 )
                 /**
                  * 왼쪽 눈 검사 결과
                  */
                 Box(
-                    modifier = Modifier
-                        .padding(top = 20.dp)
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.CenterStart
+                    modifier =
+                        Modifier
+                            .padding(top = 20.dp)
+                            .fillMaxWidth(),
+                    contentAlignment = Alignment.CenterStart,
                 ) {
                     Text(
-                        modifier = Modifier
-                            .background(
-                                color = Color(0xffdcebff),
-                                shape = RoundedCornerShape(4.dp)
-                            )
-                            .padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 4.dp),
-                        text = StringProvider.getString(
-                            R.string.mchart_result_vertical),
+                        modifier =
+                            Modifier
+                                .background(
+                                    color = Color(0xffdcebff),
+                                    shape = RoundedCornerShape(4.dp),
+                                )
+                                .padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 4.dp),
+                        text =
+                            StringProvider.getString(
+                                R.string.mchart_result_vertical,
+                            ),
                         color = Color(0xff1d71e1),
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
                     )
                     Box(
-                        modifier = Modifier
-                            .padding(end = 20.dp)
-                            .fillMaxWidth(),
-                        contentAlignment = Alignment.CenterEnd
+                        modifier =
+                            Modifier
+                                .padding(end = 20.dp)
+                                .fillMaxWidth(),
+                        contentAlignment = Alignment.CenterEnd,
                     ) {
                         Text(
-                            modifier = Modifier
-                                .padding(start = 100.dp),
+                            modifier =
+                                Modifier
+                                    .padding(start = 100.dp),
                             text = "${String.format("%.1f", testResult.leftEyeVertical.toFloat() / 10)}°",
                             fontSize = 30.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         )
                     }
                 }
                 Box(
-                    modifier = Modifier
-                        .padding(top = 20.dp)
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.CenterStart
+                    modifier =
+                        Modifier
+                            .padding(top = 20.dp)
+                            .fillMaxWidth(),
+                    contentAlignment = Alignment.CenterStart,
                 ) {
                     Text(
-                        modifier = Modifier
-                            .background(
-                                color = Color(0xfffff8de),
-                                shape = RoundedCornerShape(4.dp)
-                            )
-                            .padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 4.dp),
-                        text = StringProvider.getString(
-                            R.string.mchart_result_horizontal),
+                        modifier =
+                            Modifier
+                                .background(
+                                    color = Color(0xfffff8de),
+                                    shape = RoundedCornerShape(4.dp),
+                                )
+                                .padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 4.dp),
+                        text =
+                            StringProvider.getString(
+                                R.string.mchart_result_horizontal,
+                            ),
                         color = Color(0xffffb800),
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
                     )
                     Box(
-                        modifier = Modifier
-                            .padding(end = 20.dp)
-                            .fillMaxWidth(),
-                        contentAlignment = Alignment.CenterEnd
+                        modifier =
+                            Modifier
+                                .padding(end = 20.dp)
+                                .fillMaxWidth(),
+                        contentAlignment = Alignment.CenterEnd,
                     ) {
                         Text(
-                            modifier = Modifier
-                                .padding(start = 100.dp),
+                            modifier =
+                                Modifier
+                                    .padding(start = 100.dp),
                             text = "${String.format("%.1f", testResult.leftEyeHorizontal.toFloat() / 10)}°",
                             fontSize = 30.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         )
                     }
                 }
             }
             Spacer(
-                modifier = Modifier
-                    .width(20.dp)
+                modifier =
+                    Modifier
+                        .width(20.dp),
             )
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(200.dp)
-                    .background(
-                        color = Color(0xfff7f9f9),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(20.dp)
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .height(200.dp)
+                        .background(
+                            color = Color(0xfff7f9f9),
+                            shape = RoundedCornerShape(8.dp),
+                        )
+                        .padding(20.dp),
             ) {
                 Text(
-                    text = StringProvider.getString(
-                        R.string.test_result_right),
+                    text =
+                        StringProvider.getString(
+                            R.string.test_result_right,
+                        ),
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
                 )
                 /**
                  * 오른쪽 눈 검사 결과
                  */
                 Box(
-                    modifier = Modifier
-                        .padding(top = 20.dp)
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.CenterStart
+                    modifier =
+                        Modifier
+                            .padding(top = 20.dp)
+                            .fillMaxWidth(),
+                    contentAlignment = Alignment.CenterStart,
                 ) {
                     Text(
-                        modifier = Modifier
-                            .background(
-                                color = Color(0xffdcebff),
-                                shape = RoundedCornerShape(4.dp)
-                            )
-                            .padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 4.dp),
-                        text = StringProvider.getString(
-                            R.string.mchart_result_vertical),
+                        modifier =
+                            Modifier
+                                .background(
+                                    color = Color(0xffdcebff),
+                                    shape = RoundedCornerShape(4.dp),
+                                )
+                                .padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 4.dp),
+                        text =
+                            StringProvider.getString(
+                                R.string.mchart_result_vertical,
+                            ),
                         color = Color(0xff1d71e1),
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
                     )
                     Box(
-                        modifier = Modifier
-                            .padding(end = 20.dp)
-                            .fillMaxWidth(),
-                        contentAlignment = Alignment.CenterEnd
+                        modifier =
+                            Modifier
+                                .padding(end = 20.dp)
+                                .fillMaxWidth(),
+                        contentAlignment = Alignment.CenterEnd,
                     ) {
                         Text(
-                            modifier = Modifier
-                                .padding(start = 100.dp),
+                            modifier =
+                                Modifier
+                                    .padding(start = 100.dp),
                             text = "${String.format("%.1f", testResult.rightEyeVertical.toFloat() / 10)}°",
                             fontSize = 30.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         )
                     }
                 }
                 Box(
-                    modifier = Modifier
-                        .padding(top = 20.dp)
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.CenterStart
+                    modifier =
+                        Modifier
+                            .padding(top = 20.dp)
+                            .fillMaxWidth(),
+                    contentAlignment = Alignment.CenterStart,
                 ) {
                     Text(
-                        modifier = Modifier
-                            .background(
-                                color = Color(0xfffff8de),
-                                shape = RoundedCornerShape(4.dp)
-                            )
-                            .padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 4.dp),
-                        text = StringProvider.getString(
-                            R.string.mchart_result_horizontal),
+                        modifier =
+                            Modifier
+                                .background(
+                                    color = Color(0xfffff8de),
+                                    shape = RoundedCornerShape(4.dp),
+                                )
+                                .padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 4.dp),
+                        text =
+                            StringProvider.getString(
+                                R.string.mchart_result_horizontal,
+                            ),
                         color = Color(0xffffb800),
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
                     )
                     Box(
-                        modifier = Modifier
-                            .padding(end = 20.dp)
-                            .fillMaxWidth(),
-                        contentAlignment = Alignment.CenterEnd
+                        modifier =
+                            Modifier
+                                .padding(end = 20.dp)
+                                .fillMaxWidth(),
+                        contentAlignment = Alignment.CenterEnd,
                     ) {
                         Text(
-                            modifier = Modifier
-                                .padding(start = 100.dp),
+                            modifier =
+                                Modifier
+                                    .padding(start = 100.dp),
                             text = "${String.format("%.1f", testResult.rightEyeHorizontal.toFloat() / 10)}°",
                             fontSize = 30.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         )
                     }
                 }
@@ -232,12 +266,13 @@ fun MChartTestResultContent(
 @Composable
 fun MChartTestResultContentScreenPreview() {
     MChartTestResultContent(
-        testResult = MChartTestResult(
-            leftEyeVertical = 0,
-            leftEyeHorizontal = 0,
-            rightEyeVertical = 0,
-            rightEyeHorizontal = 0,
-        ),
-        navController = NavHostController(LocalContext.current)
+        testResult =
+            MChartTestResult(
+                leftEyeVertical = 0,
+                leftEyeHorizontal = 0,
+                rightEyeVertical = 0,
+                rightEyeHorizontal = 0,
+            ),
+        navController = NavHostController(LocalContext.current),
     )
 }

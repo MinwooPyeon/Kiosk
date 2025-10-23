@@ -20,9 +20,8 @@ class MyFaceAnalyzer(
     val updateTextRecognitionData: (Rect?) -> Unit,
     val updateIsFaceDetected: (Boolean) -> Unit,
     val updateIsNenoonTextDetected: (Boolean) -> Unit,
-    private val executor: Executor
+    private val executor: Executor,
 ) : ImageAnalysis.Analyzer {
-
     private var lastAnalysisTime = -1L
 
     private val realTimeOpts =
@@ -70,7 +69,6 @@ class MyFaceAnalyzer(
             }.addOnCompleteListener {
             }
 
-
             /**
              * Face Detection
              */
@@ -84,13 +82,13 @@ class MyFaceAnalyzer(
                      * 인식 허용 박스 사이즈
                      */
                     if (leftEyePosition != null && rightEyePosition != null) {
-                        if ((leftEyePosition.x > 260f)
-                            && (leftEyePosition.x < 544f)
-                            && (rightEyePosition.x < 804f)
-                            && (rightEyePosition.x > 544f)
-                            && (leftEyePosition.y > 400f)
-                            && (rightEyePosition.y > 400f)
-                            && ((rightEyePosition.x - leftEyePosition.x) > 100f)
+                        if ((leftEyePosition.x > 260f) &&
+                            (leftEyePosition.x < 544f) &&
+                            (rightEyePosition.x < 804f) &&
+                            (rightEyePosition.x > 544f) &&
+                            (leftEyePosition.y > 400f) &&
+                            (rightEyePosition.y > 400f) &&
+                            ((rightEyePosition.x - leftEyePosition.x) > 100f)
                         ) {
                             centerFace = face
                             break
@@ -119,7 +117,7 @@ class MyFaceAnalyzer(
                             rotY,
                             rotZ,
                             leftEyeOpenProbability,
-                            rightEyeOpenProbability
+                            rightEyeOpenProbability,
                         )
                         return@addOnSuccessListener
                     } else {

@@ -12,7 +12,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object FaceRecognizerModule {
-
     @Provides
     @Singleton
     fun provideFaceRecognizer(application: Application): FaceRecognizer {
