@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.user
+package com.pixelro.nenoonkiosk.feature.auth
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable

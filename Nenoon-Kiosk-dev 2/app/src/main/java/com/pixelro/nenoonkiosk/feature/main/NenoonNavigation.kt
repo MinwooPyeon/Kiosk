@@ -66,11 +66,11 @@ import com.pixelro.nenoonkiosk.feature.undeveloped.EntriesScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.ExerciseListScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.SoftwareInfoScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.VideoTelephonyScreen
-import com.pixelro.nenoonkiosk.feature.user.AccountManagementScreen
-import com.pixelro.nenoonkiosk.feature.user.FaceIdTermsOfServiceScreen
-import com.pixelro.nenoonkiosk.feature.user.FaceUpdateScreen
-import com.pixelro.nenoonkiosk.feature.user.SignInScreen
-import com.pixelro.nenoonkiosk.feature.user.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.AccountManagementScreen
+import com.pixelro.nenoonkiosk.feature.auth.FaceIdTermsOfServiceScreen
+import com.pixelro.nenoonkiosk.feature.auth.FaceUpdateScreen
+import com.pixelro.nenoonkiosk.feature.auth.SignInScreen
+import com.pixelro.nenoonkiosk.feature.auth.SignInViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

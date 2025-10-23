@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.user
+package com.pixelro.nenoonkiosk.feature.auth
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border

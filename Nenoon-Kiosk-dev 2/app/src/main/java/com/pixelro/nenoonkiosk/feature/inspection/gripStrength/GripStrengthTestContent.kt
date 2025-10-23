@@ -13,7 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.manager.InGripManager
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripViewModel
-import com.pixelro.nenoonkiosk.feature.user.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.SignInViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 enum class GripStrengthTestScreen {
