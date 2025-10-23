@@ -5,51 +5,97 @@ import kotlinx.serialization.Serializable
 
 sealed interface Route : NavKey {
     @Serializable
-    data object Login : Route
+    data object Splash : Route
 
     @Serializable
-    data object SignUp : Route
+    data object ScreenSaver : Route
 
     @Serializable
-    data class BookDetail(val isbn: String? = null, val bookId: Long? = null) : Route
+    data object Permission : Route
 
     @Serializable
-    data class Celebration(val nickname: String) : Route
+    data object Entries : Route
 
     @Serializable
-    data object Setting : Route
+    data object SignIn : Route
+
+    @Serializable
+    data object Intro : Route
+
+    @Serializable
+    data object Survey : Route
+
+    @Serializable
+    data object SoftwareInfo : Route
+
+    @Serializable
+    data object TermsOfService : Route
+
+    @Serializable
+    data object ResultPrint : Route
+
+    @Serializable
+    data object Settings : Route
+
+    @Serializable
+    data object Contact : Route
+
+    @Serializable
+    data object Videotelephony : Route
+
+    @Serializable
+    data object BTDeviceManagement : Route
 }
 
-sealed interface MyGlimsRoute : Route {
+sealed interface TestRoute : Route {
+    @Serializable
+    data object TestList : TestRoute
 
     @Serializable
-    data object Liked : MyGlimsRoute
+    data object ExerciseList : TestRoute
 
     @Serializable
-    data object Upload : MyGlimsRoute
+    data object CategoryList : TestRoute
+
+    @Serializable
+    data object ExternalDeviceTestList : TestRoute
+
+    @Serializable
+    data object StrabismusTestList : TestRoute
+
+    @Serializable
+    data object TestContent : TestRoute
+
+    @Serializable
+    data object TestResult : TestRoute
 }
 
-sealed interface UpdateInfoRoute : Route {
+sealed interface DeviceConnectRoute : Route {
     @Serializable
-    data object Personal : UpdateInfoRoute
+    data object InGripConnect : DeviceConnectRoute
 
     @Serializable
-    data object Password : UpdateInfoRoute
+    data object BPBIO320Connect : DeviceConnectRoute
+
+    @Serializable
+    data object BP170BConnect : DeviceConnectRoute
 }
 
-sealed interface BottomTabRoute : NavKey {
+sealed interface AdminRoute : Route {
     @Serializable
-    data object Home : BottomTabRoute
+    data object AdminPage : AdminRoute
 
     @Serializable
-    data object Search : BottomTabRoute
+    data object AccountManagement : AdminRoute
 
     @Serializable
-    data class Post(val bookId: Long = -1) : BottomTabRoute
+    data object FaceUpdate : AdminRoute
 
     @Serializable
-    data class Shorts(val quoteId: Long = -1) : BottomTabRoute
+    data object FaceUpdateTermsOfService : AdminRoute
+}
 
-    @Serializable
-    data object Profile : BottomTabRoute
+object SharedPreferencesConstants {
+    const val PREFERENCE_NAME = "nenoon_kiosk_shared_preferences"
+    const val PREFERENCE_VIDEO_URI = "video_uri"
 }

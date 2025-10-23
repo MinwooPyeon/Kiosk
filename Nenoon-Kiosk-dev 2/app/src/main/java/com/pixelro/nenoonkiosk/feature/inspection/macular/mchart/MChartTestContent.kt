@@ -36,7 +36,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.datasource.RawResourceDataSource
 import androidx.media3.ui.AspectRatioFrameLayout
@@ -65,9 +65,11 @@ fun MChartTestContent(
         }
     }
     val measuringDistanceContentVisibleState = remember { MutableTransitionState(true) }
-    measuringDistanceContentVisibleState.targetState = mChartViewModel.isMeasuringDistanceContentVisible.collectAsState().value
+    measuringDistanceContentVisibleState.targetState =
+        mChartViewModel.isMeasuringDistanceContentVisible.collectAsState().value
     val mChartContentVisibleState = remember { MutableTransitionState(false) }
-    mChartContentVisibleState.targetState = mChartViewModel.isMChartContentVisible.collectAsState().value
+    mChartContentVisibleState.targetState =
+        mChartViewModel.isMChartContentVisible.collectAsState().value
 
     Column(
         modifier =
@@ -189,9 +191,9 @@ fun MChartContent(
                         ) {
                             append(
                                 " " +
-                                    StringProvider.getString(
-                                        R.string.mchart_test_description_4,
-                                    ),
+                                        StringProvider.getString(
+                                            R.string.mchart_test_description_4,
+                                        ),
                             )
                         }
                         append(
@@ -237,7 +239,11 @@ fun MChartContent(
                                     resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                                     player = exoPlayer
                                     exoPlayer.setMediaItem(
-                                        MediaItem.fromUri(RawResourceDataSource.buildRawResourceUri(R.raw.mchart_video_2)),
+                                        MediaItem.fromUri(
+                                            RawResourceDataSource.buildRawResourceUri(
+                                                R.raw.mchart_video_2
+                                            )
+                                        ),
                                     )
                                     exoPlayer.prepare()
                                     exoPlayer.pause()
@@ -329,7 +335,9 @@ fun MChartContent(
                                             mChartViewModel.updateLeftHorizontalValue()
                                             mChartViewModel.toNextMChartTest()
                                             mChartViewModel.updateIsMChartContentVisible(false)
-                                            mChartViewModel.updateIsMeasuringDistanceContentVisible(true)
+                                            mChartViewModel.updateIsMeasuringDistanceContentVisible(
+                                                true
+                                            )
                                         } else if (isVertical) {
                                             mChartViewModel.updateRightVerticalValue()
                                             mChartViewModel.updateCurrentLevel(0)
@@ -444,9 +452,9 @@ fun MChartContent(
                                 ) {
                                     append(
                                         " " +
-                                            StringProvider.getString(
-                                                R.string.presbyopia_video_guide_2,
-                                            ),
+                                                StringProvider.getString(
+                                                    R.string.presbyopia_video_guide_2,
+                                                ),
                                     )
                                 }
                                 append(

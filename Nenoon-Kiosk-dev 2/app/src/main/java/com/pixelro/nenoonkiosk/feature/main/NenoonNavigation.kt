@@ -17,15 +17,20 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
 import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.auth.AccountManagementScreen
+import com.pixelro.nenoonkiosk.feature.auth.FaceIdTermsOfServiceScreen
+import com.pixelro.nenoonkiosk.feature.auth.FaceUpdateScreen
+import com.pixelro.nenoonkiosk.feature.auth.SignInScreen
+import com.pixelro.nenoonkiosk.feature.auth.SignInViewModel
 import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListScreen
 import com.pixelro.nenoonkiosk.feature.exerciseglasses.concentration_exercise.ConcentrationExerciseContent
 import com.pixelro.nenoonkiosk.feature.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseContent
@@ -66,14 +71,11 @@ import com.pixelro.nenoonkiosk.feature.undeveloped.EntriesScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.ExerciseListScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.SoftwareInfoScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.VideoTelephonyScreen
-import com.pixelro.nenoonkiosk.feature.auth.AccountManagementScreen
-import com.pixelro.nenoonkiosk.feature.auth.FaceIdTermsOfServiceScreen
-import com.pixelro.nenoonkiosk.feature.auth.FaceUpdateScreen
-import com.pixelro.nenoonkiosk.feature.auth.SignInScreen
-import com.pixelro.nenoonkiosk.feature.auth.SignInViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+
+// Route가 되어야함.
 @SuppressLint("RestrictedApi")
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalAnimationApi::class)
@@ -82,7 +84,7 @@ fun nenoonApp(
     viewModel: NenoonViewModel = hiltViewModel(),
     bloodPressureMonitorViewModel: BPBIO320ViewModel = hiltViewModel(),
     signInViewModel: SignInViewModel = hiltViewModel(),
-    navController: NavHostController = rememberAnimatedNavController(),
+    navController: NavHostController = rememberNavController(),
 ) {
     val selectedTest = viewModel.selectedTestType.collectAsState().value
     val isScreenSaving = viewModel.isScreenSaving.collectAsState().value
@@ -132,9 +134,9 @@ fun nenoonApp(
 
                 val allGranted =
                     viewModel.isWriteSettingsPermissionGranted.value &&
-                        viewModel.isCameraPermissionGranted.value &&
-                        viewModel.isBluetoothPermissionsGranted.value &&
-                        viewModel.isBlueToothOn.value
+                            viewModel.isCameraPermissionGranted.value &&
+                            viewModel.isBluetoothPermissionsGranted.value &&
+                            viewModel.isBlueToothOn.value
 
                 if (allGranted) {
                     // 모든 권한이 있으면 로그인 화면으로 바로 이동
@@ -217,7 +219,12 @@ fun nenoonApp(
                     navController.popBackStack(NavConstants.ROUTE_ACCOUNT_MANAGEMENT, false)
                     navController.navigate(NavConstants.ROUTE_FACE_UPDATE)
                 },
-                onTermsRejected = { navController.popBackStack(NavConstants.ROUTE_ACCOUNT_MANAGEMENT, false) },
+                onTermsRejected = {
+                    navController.popBackStack(
+                        NavConstants.ROUTE_ACCOUNT_MANAGEMENT,
+                        false
+                    )
+                },
             )
         }
 
@@ -705,7 +712,10 @@ fun nenoonApp(
         ) {
             when (viewModel.selectedTestType.collectAsState().value) {
                 TestType.Presbyopia -> viewModel.updateIsPresbyopiaTestDone(true)
-                TestType.ShortDistanceVisualAcuity -> viewModel.updateIsShortVisualAcuityTestDone(true)
+                TestType.ShortDistanceVisualAcuity -> viewModel.updateIsShortVisualAcuityTestDone(
+                    true
+                )
+
                 TestType.AmslerGrid -> viewModel.updateIsAmslerGridTestDone(true)
                 TestType.MChart -> viewModel.updateIsMChartTestDone(true)
                 TestType.BloodPressure -> viewModel.updateIsBloodPressureTestDone(true)
