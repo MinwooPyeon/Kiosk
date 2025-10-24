@@ -12,7 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
 import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuityTestCommonContent
