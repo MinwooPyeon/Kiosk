@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.user
+package com.pixelro.nenoonkiosk.feature.auth
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -46,6 +46,7 @@ import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -53,7 +54,7 @@ import kotlinx.coroutines.launch
 fun UserSignUpScreen(
     updateIsSignedIn: (Boolean) -> Unit,
     toFaceEnrollmentScreen: () -> Unit,
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
     navController: NavController,
 ) {
     var id by rememberSaveable { mutableStateOf("") }
@@ -62,8 +63,8 @@ fun UserSignUpScreen(
     var email by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
     var isFaceEnrollmentTermsOfServiceAccepted by rememberSaveable { mutableStateOf(false) }
-    val isFaceEnrollmentDataReady by signInViewModel.isFaceEnrollmentDataReady.collectAsState()
-    val generatedQrBitmap by signInViewModel.accountQrCode.collectAsState()
+    val isFaceEnrollmentDataReady by loginViewModel.isFaceEnrollmentDataReady.collectAsState()
+    val generatedQrBitmap by loginViewModel.accountQrCode.collectAsState()
     var isSigningUp by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
@@ -120,7 +121,7 @@ fun UserSignUpScreen(
                     onValueChange = {
                         email = it
                         emailError =
-                            if (it.isNotBlank()) signInViewModel.validateEmail(it) else null
+                            if (it.isNotBlank()) loginViewModel.validateEmail(it) else null
                     },
                     label = StringProvider.getString(R.string.user_signup_input_email_hint),
                     keyboardOptions =
@@ -137,10 +138,10 @@ fun UserSignUpScreen(
                     value = password,
                     onValueChange = {
                         password = it
-                        passwordError = signInViewModel.validatePassword(it)
+                        passwordError = loginViewModel.validatePassword(it)
                         if (confirmPassword.isNotBlank()) {
                             confirmPasswordError =
-                                signInViewModel.validateConfirmPassword(it, confirmPassword)
+                                loginViewModel.validateConfirmPassword(it, confirmPassword)
                         }
                     },
                     label = StringProvider.getString(R.string.user_signup_input_password_hint),
@@ -173,7 +174,7 @@ fun UserSignUpScreen(
                     value = confirmPassword,
                     onValueChange = {
                         confirmPassword = it
-                        confirmPasswordError = signInViewModel.validateConfirmPassword(password, it)
+                        confirmPasswordError = loginViewModel.validateConfirmPassword(password, it)
                     },
                     label = StringProvider.getString(R.string.user_signup_input_confirm_password_hint),
                     visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -215,14 +216,14 @@ fun UserSignUpScreen(
                     coroutineScope.launch {
                         delay(1000L)
                         val result =
-                            signInViewModel.userSignUp(
+                            loginViewModel.userSignUp(
                                 id = id,
                                 password = password,
                                 name = name,
                                 email = email,
                             )
                         if (result != null) {
-                            signInViewModel.generateAndPrintQrCode(id, password)
+                            loginViewModel.generateAndPrintQrCode(id, password)
                             signupSuccess = true
                         } else {
                             errorMessage = StringProvider.getString(R.string.user_signup_error_signup_failed)

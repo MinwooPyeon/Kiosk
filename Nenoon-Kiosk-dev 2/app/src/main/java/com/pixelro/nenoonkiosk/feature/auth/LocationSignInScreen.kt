@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.user
+package com.pixelro.nenoonkiosk.feature.auth
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
@@ -43,6 +43,7 @@ import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.ui.theme.NEURAL200
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,7 +51,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LocationSignInScreen(
     updateIsSignedIn: (Boolean) -> Unit,
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
     signInNavController: NavController,
     navController: NavController,
 ) {
@@ -205,7 +206,7 @@ fun LocationSignInScreen(
                 PrimaryButton(
                     text = StringProvider.getString(R.string.start_without_signin),
                     onClick = {
-                        signInViewModel.locationSignInSkip(updateIsSignedIn)
+                        loginViewModel.locationSignInSkip(updateIsSignedIn)
                         signInNavController.navigate(SignInScreenState.UserSignIn.name)
                     },
                 )
@@ -215,7 +216,7 @@ fun LocationSignInScreen(
                 PrimaryButton(
                     text = StringProvider.getString(R.string.signin),
                     onClick = {
-                        if (!signInViewModel.validateLocationSignIn(
+                        if (!loginViewModel.validateLocationSignIn(
                                 id,
                                 password,
                             )
@@ -223,7 +224,7 @@ fun LocationSignInScreen(
                             return@PrimaryButton
                         }
                         coroutineScope.launch(Dispatchers.Main) {
-                            signInViewModel.locationSignIn(id, password, updateIsSignedIn)
+                            loginViewModel.locationSignIn(id, password, updateIsSignedIn)
                                 .also { success ->
                                     if (success) {
                                         signInNavController.navigate(SignInScreenState.UserSignIn.name)

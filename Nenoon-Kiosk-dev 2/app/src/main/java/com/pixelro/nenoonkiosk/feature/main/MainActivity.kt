@@ -337,7 +337,6 @@ fun PasswordDialog(
     onPasswordEntered: (String) -> Unit,
 ) {
     var passwordInput by remember { mutableStateOf("") }
-    val context = LocalContext.current // Context is not used in this specific composable, but useful if you need Toast here
 
     AlertDialog(
         onDismissRequest = onDismiss,

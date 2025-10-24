@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.user
+package com.pixelro.nenoonkiosk.feature.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,19 +31,20 @@ import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun FaceIdSignInScreen(
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
     navController: NavController,
     updateIsSignedIn: (Boolean) -> Unit,
 ) {
-    val faceRecognitionStatus by signInViewModel.faceDetectionStatus.collectAsState()
-    val isProcessingFace by signInViewModel.isProcessingFace.collectAsState()
-    val isSignedIn by signInViewModel.isUserSignedIn.collectAsState()
+    val faceRecognitionStatus by loginViewModel.faceDetectionStatus.collectAsState()
+    val isProcessingFace by loginViewModel.isProcessingFace.collectAsState()
+    val isSignedIn by loginViewModel.isUserSignedIn.collectAsState()
 
     var liveFaceDetectionStatus by remember { mutableStateOf("") }
     var attemptsLeft by remember { mutableStateOf(AppConstants.FACE_ID_MAX_ATTEMPTS) }
@@ -103,7 +104,7 @@ fun FaceIdSignInScreen(
                     ) {
                         previousAttemptTime = System.currentTimeMillis()
                         coroutineScope.launch(Dispatchers.Main) {
-                            signInViewModel.userSignInWithFace(faceBitmap, updateIsSignedIn).also { success ->
+                            loginViewModel.userSignInWithFace(faceBitmap, updateIsSignedIn).also { success ->
                                 if (success) {
                                     delay(3000)
                                     updateIsSignedIn(true)

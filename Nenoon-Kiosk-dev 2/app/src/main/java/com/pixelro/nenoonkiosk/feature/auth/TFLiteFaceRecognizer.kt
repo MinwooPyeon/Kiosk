@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.user
+package com.pixelro.nenoonkiosk.feature.auth
 
 import android.app.Application
 import android.content.res.AssetManager
@@ -24,9 +24,7 @@ import org.tensorflow.lite.Interpreter.Options as InterpreterOptions
 @Singleton
 class TFLiteFaceRecognizer
     @Inject
-    constructor(
-        private val application: Application,
-    ) : FaceRecognizer {
+    constructor() : FaceRecognizer {
         private val TAG = "TFLiteFaceRecognizer"
 
         private var interpreter: Interpreter? = null

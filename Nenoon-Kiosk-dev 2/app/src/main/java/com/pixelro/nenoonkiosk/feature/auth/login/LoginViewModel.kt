@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.user
+package com.pixelro.nenoonkiosk.feature.auth.login
 
 import android.app.Application
 import android.graphics.Bitmap
@@ -20,9 +20,11 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.bitmapToFile
 import com.pixelro.nenoonkiosk.core.util.qr.QRCodeGenerator
+import com.pixelro.nenoonkiosk.feature.auth.FaceRecognizer
 import com.pixelro.nenoonkiosk.feature.inspection.result.TestResultUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -38,18 +40,14 @@ import javax.inject.Inject
 import kotlin.collections.iterator
 
 @HiltViewModel
-class SignInViewModel
+class LoginViewModel
     @Inject
     constructor(
         application: Application,
         private val signInRepository: SignInRepository,
+        private val navigator: Navigator,
         val faceRecognizer: FaceRecognizer,
     ) : AndroidViewModel(application) {
-        private val _locationStrId = MutableStateFlow<String?>(null)
-        val locationStrId: StateFlow<String?> = _locationStrId.asStateFlow()
-
-        private val _locationId = MutableStateFlow<Long?>(null)
-        val locationId: StateFlow<Long?> = _locationId.asStateFlow()
 
         private val _userId = MutableStateFlow<String?>(null)
         val userId: StateFlow<String?> = _userId.asStateFlow()
@@ -63,7 +61,8 @@ class SignInViewModel
         private val _isUserSignedIn = MutableStateFlow(false)
         val isUserSignedIn: StateFlow<Boolean> = _isUserSignedIn.asStateFlow()
 
-        private val _faceDetectionStatus = MutableStateFlow(StringProvider.getString(R.string.signin_vm_face_detection_status_looking))
+        private val _faceDetectionStatus =
+            MutableStateFlow(StringProvider.getString(R.string.signin_vm_face_detection_status_looking))
         val faceDetectionStatus: StateFlow<String> = _faceDetectionStatus.asStateFlow()
 
         private val _isProcessingFace = MutableStateFlow(false)
@@ -119,7 +118,6 @@ class SignInViewModel
         }
 
         fun resetAllViewModelData() {
-            _locationStrId.update { null }
             _userId.update { null }
             _isLocationSignedIn.update { false }
             _isUserSignedIn.update { false }
@@ -253,8 +251,6 @@ class SignInViewModel
                     signInRepository.updateLocationId((result.data["pid"] as Double).toInt())
                     signInRepository.updateScreenSaverVideoURI(result.data["video"] as String)
                     _isLocationSignedIn.update { true }
-                    _locationStrId.update { id }
-                    _locationId.update { AppConstants.DEFAULT_LOCATION_ID.toLong() } // TODO TEMP
                     updateIsSignedIn(true)
                     return true
                 } else {
@@ -272,11 +268,12 @@ class SignInViewModel
         @OptIn(UnstableApi::class)
         fun locationSignInSkip(updateIsSignedIn: (Boolean) -> Unit) {
             _isLocationSignedIn.update { true }
-            _locationId.update { AppConstants.DEFAULT_LOCATION_ID.toLong() }
             updateIsSignedIn(true)
             viewModelScope.launch(Dispatchers.IO) {
                 signInRepository.updateLocationId(AppConstants.DEFAULT_LOCATION_ID)
-                signInRepository.updateScreenSaverVideoURI(RawResourceDataSource.buildRawResourceUri(R.raw.ad_sub).toString())
+                signInRepository.updateScreenSaverVideoURI(
+                    RawResourceDataSource.buildRawResourceUri(
+                        R.raw.ad_sub).toString())
             }
         }
 
@@ -306,7 +303,13 @@ class SignInViewModel
                 } else if (_locationId.value != null) {
                     val qrCode = generateQrCode(id, password)
                     if (qrCode != null) {
-                        val qrUrl = signInRepository.updateQrCode(bitmapToFile(getApplication(), qrCode, "qr-image.jpg"))
+                        val qrUrl = signInRepository.updateQrCode(
+                            bitmapToFile(
+                                getApplication(),
+                                qrCode,
+                                "qr-image.jpg"
+                            )
+                        )
                         if (qrUrl != null) {
                             val res =
                                 signInRepository.userSignUp(
@@ -314,7 +317,7 @@ class SignInViewModel
                                     pw = password,
                                     name = name,
                                     email = if (email.isNullOrBlank()) AppConstants.DEFAULT_EMAIL else email,
-                                    pid = _locationId.value!!,
+                                    pid = 0L,
                                     vector = tempFaceEmbedding.contentToString(),
                                     qrUrl = qrUrl,
                                 )
@@ -408,7 +411,11 @@ class SignInViewModel
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        Log.e("SignInViewModel", "Error processing face for embedding: ${e.message}", e)
+                        Log.e(
+                            "SignInViewModel",
+                            "Error processing face for embedding: ${e.message}",
+                            e
+                        )
                         _faceDetectionStatus.update { StringProvider.getString(R.string.signin_vm_face_processing_error) }
                         _isFaceEnrollmentDataReady.update { false }
                     }
@@ -421,6 +428,7 @@ class SignInViewModel
             }
         }
 
+    // FaceIdSingin Screen
         suspend fun userSignInWithFace(
             faceBitmap: Bitmap,
             updateIsSignedIn: (Boolean) -> Unit,
@@ -530,6 +538,8 @@ class SignInViewModel
             }
         }
 
+
+    // Face Enrollment
         suspend fun updateFace(userId: String? = null): Boolean {
             if (tempFaceEmbedding != null) {
                 if (AppConstants.MANAGE_USERS_INTERNALLY) {
@@ -632,9 +642,15 @@ class SignInViewModel
                 val bm = TestResultUtil.formatQrCode(qrImg = qrImg, logoImg = logoImg)
 
                 nPrinterController.print(
-                    NPrintInfo(NPrinter(printerType ?: NPrinterType.NEMONIC_MIP201, "Printer", printerMacAddress), bm).apply {
-                        copies = 1
-                        isEnableDither = true
+                    NPrintInfo(
+                        NPrinter(
+                            printerType ?: NPrinterType.NEMONIC_MIP201,
+                            "Printer",
+                            printerMacAddress
+                        ), bm
+                    ).apply {
+                        NPrintInfo.setCopies = 1
+                        NPrintInfo.setEnableDither = true
                     },
                 )
 
