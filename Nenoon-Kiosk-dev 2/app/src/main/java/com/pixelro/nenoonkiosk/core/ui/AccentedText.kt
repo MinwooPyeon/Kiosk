@@ -26,7 +26,7 @@ enum class AccentStyle {
 const val ACCENT_SCALE = 1.0f
 
 @Composable
-fun AccentedText (
+fun AccentedText(
     prefix: String,
     accent: String,
     suffix: String,
@@ -36,7 +36,6 @@ fun AccentedText (
     fontWeight: FontWeight? = null,
     modifier: Modifier = Modifier,
 ) {
-
     val context = LocalContext.current
     val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
     val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
@@ -50,52 +49,58 @@ fun AccentedText (
             else -> 42.sp
         } * if (savedLanguage == "en") 0.8f else 1f
 
-    val defaultStyle = SpanStyle(
-        fontSize = fontSize,
-        fontWeight =
-            fontWeight ?:
-            when (style) {
-                TextStyle.Title -> FontWeight.SemiBold
-                TextStyle.Success, TextStyle.Error, TextStyle.BigNumber -> FontWeight.Bold
-                else -> FontWeight.Normal
-            },
-        color =
-            when (style) {
-                TextStyle.Hint -> colorResource(R.color.gray2)
-                TextStyle.Success, TextStyle.BigNumber -> colorResource(R.color.main)
-                TextStyle.Error, TextStyle.InputError -> colorResource(R.color.error)
-                else -> colorResource(R.color.black)
-            },
-    )
+    val defaultStyle =
+        SpanStyle(
+            fontSize = fontSize,
+            fontWeight =
+                fontWeight
+                    ?: when (style) {
+                        TextStyle.Title -> FontWeight.SemiBold
+                        TextStyle.Success, TextStyle.Error, TextStyle.BigNumber -> FontWeight.Bold
+                        else -> FontWeight.Normal
+                    },
+            color =
+                when (style) {
+                    TextStyle.Hint -> colorResource(R.color.gray2)
+                    TextStyle.Success, TextStyle.BigNumber -> colorResource(R.color.main)
+                    TextStyle.Error, TextStyle.InputError -> colorResource(R.color.error)
+                    else -> colorResource(R.color.black)
+                },
+        )
 
     Text(
-        text = buildAnnotatedString {
-            withStyle(defaultStyle) {
-                append(prefix)
-            }
-            withStyle(SpanStyle(
-                fontSize = defaultStyle.fontSize * ACCENT_SCALE,
-                fontWeight = FontWeight.Bold,
-                color =
-                    when (accentStyle) {
-                        AccentStyle.Red -> colorResource(R.color.error)
-                        AccentStyle.Blue -> colorResource(R.color.main)
-                    }
-            )) {
-                append(accent)
-            }
-            withStyle(defaultStyle) {
-                append(suffix)
-            }
-        },
-        textAlign = textAlign,
-        modifier = modifier
-            .padding(
-                vertical = when (style) {
-                    TextStyle.Title -> 40.dp
-                    TextStyle.InputError -> 2.dp
-                    else -> 0.dp
+        text =
+            buildAnnotatedString {
+                withStyle(defaultStyle) {
+                    append(prefix)
                 }
-            )
+                withStyle(
+                    SpanStyle(
+                        fontSize = defaultStyle.fontSize * ACCENT_SCALE,
+                        fontWeight = FontWeight.Bold,
+                        color =
+                            when (accentStyle) {
+                                AccentStyle.Red -> colorResource(R.color.error)
+                                AccentStyle.Blue -> colorResource(R.color.main)
+                            },
+                    ),
+                ) {
+                    append(accent)
+                }
+                withStyle(defaultStyle) {
+                    append(suffix)
+                }
+            },
+        textAlign = textAlign,
+        modifier =
+            modifier
+                .padding(
+                    vertical =
+                        when (style) {
+                            TextStyle.Title -> 40.dp
+                            TextStyle.InputError -> 2.dp
+                            else -> 0.dp
+                        },
+                ),
     )
 }

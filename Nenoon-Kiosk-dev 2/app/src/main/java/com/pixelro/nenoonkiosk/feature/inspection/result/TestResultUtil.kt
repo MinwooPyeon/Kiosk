@@ -26,7 +26,7 @@ object TestResultUtil {
         testType: TestType,
         testResult: Any?,
         logoImg: Bitmap,
-        qrImg: Bitmap
+        qrImg: Bitmap,
     ): Bitmap {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         paint.color = 0xff000000.toInt()
@@ -46,64 +46,90 @@ object TestResultUtil {
 //                canvas.drawBitmap(qrImg, 0f, 0f, null)
 
 //                canvas.drawText("조절력 검사", 300f, baseline, paint)
-                canvas.drawText(StringProvider.getString(
-                    R.string.presbyopia_name2,
-                    
-                ), 300f, baseline, paint)
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.presbyopia_name2,
+                    ),
+                    300f,
+                    baseline,
+                    paint,
+                )
 
                 paint.typeface = Typeface.DEFAULT_BOLD
                 if (testResult.firstDistance.toInt() == 25 && testResult.secondDistance.toInt() == 25 && testResult.thirdDistance.toInt() == 25) {
-                        canvas.drawText(StringProvider.getString(
-                            R.string.presbyopia_result_description1_normal), 300f, baseline + 160f, paint)
-                        canvas.drawText(StringProvider.getString(
-                            R.string.presbyopia_result_description), 300f, baseline + 200f, paint)
-                    } else {
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.presbyopia_result_description1_normal,
+                        ),
+                        300f,
+                        baseline + 160f,
+                        paint,
+                    )
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.presbyopia_result_description,
+                        ),
+                        300f,
+                        baseline + 200f,
+                        paint,
+                    )
+                } else {
                     when (testResult.firstDistance.toInt() == 25 || testResult.secondDistance.toInt() == 25 || testResult.thirdDistance.toInt() == 25) {
                         true -> {
-                            canvas.drawText(StringProvider.getString(
-                                R.string.presbyopia_result_description1_normal,
-                                
-                            ), 300f, baseline + 160f, paint)
+                            canvas.drawText(
+                                StringProvider.getString(
+                                    R.string.presbyopia_result_description1_normal,
+                                ),
+                                300f,
+                                baseline + 160f,
+                                paint,
+                            )
                             canvas.drawText(
                                 StringProvider.getString(
                                     R.string.presbyopia_result_description2_eye_age,
-                                    
-                                ) + " " + (testResult.age - 2) + " ~ " + (testResult.age + 2) + StringProvider.getString(
-                                    R.string.presbyopia_result_description2_abnormal,
-                                    
-                                ) + StringProvider.getString(
-                                    R.string.presbyopia_result_description3_abnormal,
-                                    
-                                ),
+                                ) + " " + (testResult.age - 2) + " ~ " + (testResult.age + 2) +
+                                    StringProvider.getString(
+                                        R.string.presbyopia_result_description2_abnormal,
+                                    ) +
+                                    StringProvider.getString(
+                                        R.string.presbyopia_result_description3_abnormal,
+                                    ),
                                 300f,
                                 baseline + 200f,
-                                paint
+                                paint,
                             )
                         }
 
                         false -> {
-                            canvas.drawText(StringProvider.getString(
-                                R.string.presbyopia_result_description_abnormal_1,
-                                
-                            ), 300f, baseline + 160f, paint)
-                            canvas.drawText(StringProvider.getString(
-                                R.string.presbyopia_result_description_abnormal_2,
-                                
-                            ), 300f, baseline + 200f, paint)
+                            canvas.drawText(
+                                StringProvider.getString(
+                                    R.string.presbyopia_result_description_abnormal_1,
+                                ),
+                                300f,
+                                baseline + 160f,
+                                paint,
+                            )
+                            canvas.drawText(
+                                StringProvider.getString(
+                                    R.string.presbyopia_result_description_abnormal_2,
+                                ),
+                                300f,
+                                baseline + 200f,
+                                paint,
+                            )
                             canvas.drawText(
                                 StringProvider.getString(
                                     R.string.presbyopia_result_description2_eye_age,
-                                    
-                                ) + " " + (testResult.age - 2) + " ~ " + (testResult.age + 2) + StringProvider.getString(
-                                    R.string.presbyopia_result_description2_abnormal,
-                                    
-                                ) + StringProvider.getString(
-                                    R.string.presbyopia_result_description3_abnormal,
-                                    
-                                ),
+                                ) + " " + (testResult.age - 2) + " ~ " + (testResult.age + 2) +
+                                    StringProvider.getString(
+                                        R.string.presbyopia_result_description2_abnormal,
+                                    ) +
+                                    StringProvider.getString(
+                                        R.string.presbyopia_result_description3_abnormal,
+                                    ),
                                 300f,
                                 baseline + 240f,
-                                paint
+                                paint,
                             )
                         }
                     }
@@ -128,19 +154,31 @@ object TestResultUtil {
 
 //                canvas.drawBitmap(qrImg, 0f, 0f, null)
 
-                canvas.drawText(StringProvider.getString(
-                    R.string.short_visual_acuity_name2,
-                    
-                ), 300f, baseline, paint)
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.short_visual_acuity_name2,
+                    ),
+                    300f,
+                    baseline,
+                    paint,
+                )
 
-                canvas.drawText(StringProvider.getString(
-                    R.string.printer_left_eye,
-                    
-                ), 150f, baseline + 60f, paint)
-                canvas.drawText(StringProvider.getString(
-                    R.string.printer_right_eye,
-                    
-                ), 450f, baseline + 60f, paint)
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.printer_left_eye,
+                    ),
+                    150f,
+                    baseline + 60f,
+                    paint,
+                )
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.printer_right_eye,
+                    ),
+                    450f,
+                    baseline + 60f,
+                    paint,
+                )
 
                 paint.typeface = Typeface.DEFAULT_BOLD
 
@@ -236,19 +274,31 @@ object TestResultUtil {
 
 //                canvas.drawBitmap(qrImg, 0f, 0f, null)
 
-                canvas.drawText(StringProvider.getString(
-                    R.string.amsler_grid_name,
-                    
-                ), 300f, baseline, paint)
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.amsler_grid_name,
+                    ),
+                    300f,
+                    baseline,
+                    paint,
+                )
 
-                canvas.drawText(StringProvider.getString(
-                    R.string.printer_left_eye,
-                    
-                ), 150f, baseline + 60f, paint)
-                canvas.drawText(StringProvider.getString(
-                    R.string.printer_right_eye,
-                    
-                ), 450f, baseline + 60f, paint)
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.printer_left_eye,
+                    ),
+                    150f,
+                    baseline + 60f,
+                    paint,
+                )
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.printer_right_eye,
+                    ),
+                    450f,
+                    baseline + 60f,
+                    paint,
+                )
 
                 paint.style = Paint.Style.STROKE
                 paint.strokeWidth = 4f
@@ -276,77 +326,185 @@ object TestResultUtil {
                 paint.style = Paint.Style.FILL
                 paint.typeface = Typeface.DEFAULT_BOLD
                 if (testResult.leftEyeDisorderType[0] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 70f, baseline + 160f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        70f,
+                        baseline + 160f,
+                        paint,
+                    )
                 }
                 if (testResult.leftEyeDisorderType[1] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 150f, baseline + 160f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        150f,
+                        baseline + 160f,
+                        paint,
+                    )
                 }
                 if (testResult.leftEyeDisorderType[2] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 230f, baseline + 160f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        230f,
+                        baseline + 160f,
+                        paint,
+                    )
                 }
                 if (testResult.leftEyeDisorderType[3] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 70f, baseline + 240f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        70f,
+                        baseline + 240f,
+                        paint,
+                    )
                 }
                 if (testResult.leftEyeDisorderType[4] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 150f, baseline + 240f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        150f,
+                        baseline + 240f,
+                        paint,
+                    )
                 }
                 if (testResult.leftEyeDisorderType[5] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 230f, baseline + 240f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        230f,
+                        baseline + 240f,
+                        paint,
+                    )
                 }
                 if (testResult.leftEyeDisorderType[6] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 70f, baseline + 320f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        70f,
+                        baseline + 320f,
+                        paint,
+                    )
                 }
                 if (testResult.leftEyeDisorderType[7] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 150f, baseline + 320f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        150f,
+                        baseline + 320f,
+                        paint,
+                    )
                 }
                 if (testResult.leftEyeDisorderType[8] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 230f, baseline + 320f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        230f,
+                        baseline + 320f,
+                        paint,
+                    )
                 }
 
                 if (testResult.rightEyeDisorderType[0] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 370f, baseline + 160f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        370f,
+                        baseline + 160f,
+                        paint,
+                    )
                 }
                 if (testResult.rightEyeDisorderType[1] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 450f, baseline + 160f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        450f,
+                        baseline + 160f,
+                        paint,
+                    )
                 }
                 if (testResult.rightEyeDisorderType[2] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 530f, baseline + 160f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        530f,
+                        baseline + 160f,
+                        paint,
+                    )
                 }
                 if (testResult.rightEyeDisorderType[3] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 370f, baseline + 240f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        370f,
+                        baseline + 240f,
+                        paint,
+                    )
                 }
                 if (testResult.rightEyeDisorderType[4] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 450f, baseline + 240f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        450f,
+                        baseline + 240f,
+                        paint,
+                    )
                 }
                 if (testResult.rightEyeDisorderType[5] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 530f, baseline + 240f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        530f,
+                        baseline + 240f,
+                        paint,
+                    )
                 }
                 if (testResult.rightEyeDisorderType[6] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 370f, baseline + 320f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        370f,
+                        baseline + 320f,
+                        paint,
+                    )
                 }
                 if (testResult.rightEyeDisorderType[7] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 450f, baseline + 320f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        450f,
+                        baseline + 320f,
+                        paint,
+                    )
                 }
                 if (testResult.rightEyeDisorderType[8] != MacularDisorderType.Normal) {
-                    canvas.drawText(StringProvider.getString(
-                        R.string.printer_problem), 530f, baseline + 320f, paint)
+                    canvas.drawText(
+                        StringProvider.getString(
+                            R.string.printer_problem,
+                        ),
+                        530f,
+                        baseline + 320f,
+                        paint,
+                    )
                 }
                 paint.typeface = Typeface.DEFAULT
 
@@ -370,52 +528,92 @@ object TestResultUtil {
 
 //                canvas.drawBitmap(qrImg, 0f, 0f, null)
 
-                canvas.drawText(StringProvider.getString(
-                    R.string.mchart_name,
-                    
-                ), 300f, baseline, paint)
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.mchart_name,
+                    ),
+                    300f,
+                    baseline,
+                    paint,
+                )
 
-                canvas.drawText(StringProvider.getString(
-                    R.string.printer_left_eye,
-                    
-                ), 150f, baseline + 60f, paint)
-                canvas.drawText(StringProvider.getString(
-                    R.string.printer_right_eye,
-                    
-                ), 450f, baseline + 60f, paint)
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.printer_left_eye,
+                    ),
+                    150f,
+                    baseline + 60f,
+                    paint,
+                )
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.printer_right_eye,
+                    ),
+                    450f,
+                    baseline + 60f,
+                    paint,
+                )
 
                 paint.typeface = Typeface.DEFAULT_BOLD
                 canvas.drawText(
                     when (testResult.leftEyeVertical) {
-                        0 -> StringProvider.getString(
-                            R.string.printer_horizontal_normal)
-                        else -> StringProvider.getString(
-                            R.string.printer_horizontal_problem)
-                    }, 150f, baseline + 170f, paint
+                        0 ->
+                            StringProvider.getString(
+                                R.string.printer_horizontal_normal,
+                            )
+                        else ->
+                            StringProvider.getString(
+                                R.string.printer_horizontal_problem,
+                            )
+                    },
+                    150f,
+                    baseline + 170f,
+                    paint,
                 )
                 canvas.drawText(
                     when (testResult.leftEyeHorizontal) {
-                        0 -> StringProvider.getString(
-                            R.string.printer_vertical_normal)
-                        else -> StringProvider.getString(
-                            R.string.printer_vertical_problem)
-                    }, 150f, baseline + 210f, paint
+                        0 ->
+                            StringProvider.getString(
+                                R.string.printer_vertical_normal,
+                            )
+                        else ->
+                            StringProvider.getString(
+                                R.string.printer_vertical_problem,
+                            )
+                    },
+                    150f,
+                    baseline + 210f,
+                    paint,
                 )
                 canvas.drawText(
                     when (testResult.rightEyeVertical) {
-                        0 -> StringProvider.getString(
-                            R.string.printer_horizontal_normal)
-                        else -> StringProvider.getString(
-                            R.string.printer_horizontal_problem)
-                    }, 450f, baseline + 170f, paint
+                        0 ->
+                            StringProvider.getString(
+                                R.string.printer_horizontal_normal,
+                            )
+                        else ->
+                            StringProvider.getString(
+                                R.string.printer_horizontal_problem,
+                            )
+                    },
+                    450f,
+                    baseline + 170f,
+                    paint,
                 )
                 canvas.drawText(
                     when (testResult.rightEyeHorizontal) {
-                        0 -> StringProvider.getString(
-                            R.string.printer_vertical_normal)
-                        else -> StringProvider.getString(
-                            R.string.printer_vertical_problem)
-                    }, 450f, baseline + 210f, paint
+                        0 ->
+                            StringProvider.getString(
+                                R.string.printer_vertical_normal,
+                            )
+                        else ->
+                            StringProvider.getString(
+                                R.string.printer_vertical_problem,
+                            )
+                    },
+                    450f,
+                    baseline + 210f,
+                    paint,
                 )
                 paint.typeface = Typeface.DEFAULT
 
@@ -435,26 +633,38 @@ object TestResultUtil {
                 canvas.drawARGB(255, 255, 255, 255)
 
                 canvas.drawBitmap(logoImg, 360f, 320f, null)
-                
-                canvas.drawText(StringProvider.getString(
-                    R.string.test_predescription_grip_strength_title1,
-                    
-                ), 300f, baseline, paint)
 
-                canvas.drawText(StringProvider.getString(
-                    R.string.test_result_left,
-                    
-                ), 150f, baseline + 60f, paint)
-                canvas.drawText(StringProvider.getString(
-                    R.string.test_result_right,
-                    
-                ), 450f, baseline + 60f, paint)
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.test_predescription_grip_strength_title1,
+                    ),
+                    300f,
+                    baseline,
+                    paint,
+                )
+
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.test_result_left,
+                    ),
+                    150f,
+                    baseline + 60f,
+                    paint,
+                )
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.test_result_right,
+                    ),
+                    450f,
+                    baseline + 60f,
+                    paint,
+                )
 
                 paint.typeface = Typeface.DEFAULT_BOLD
 
                 canvas.drawText("${testResult.leftGrip}kg", 150f, baseline + 190f, paint)
                 canvas.drawText("${testResult.rightGrip}kg", 450f, baseline + 190f, paint)
-                
+
                 paint.typeface = Typeface.DEFAULT
 
                 paint.textAlign = Paint.Align.LEFT
@@ -470,25 +680,41 @@ object TestResultUtil {
 
                 canvas.drawBitmap(logoImg, 360f, 320f, null)
 
-                canvas.drawText(StringProvider.getString(
-                    (R.string.test_predescription_blood_pressure_title1),
-                    
-                ), 300f, baseline, paint)
+                canvas.drawText(
+                    StringProvider.getString(
+                        (R.string.test_predescription_blood_pressure_title1),
+                    ),
+                    300f,
+                    baseline,
+                    paint,
+                )
 
                 paint.textAlign = Paint.Align.LEFT
 
-                canvas.drawText(StringProvider.getString(
-                    R.string.blood_pressure_monitor_systolic,
-                    
-                ) + " : ${testResult.systolic}mmHg", 20f, baseline + 80f, paint)
-                canvas.drawText(StringProvider.getString(
-                    R.string.blood_pressure_monitor_diastolic,
-                    
-                ) + " : ${testResult.diastolic}mmHg", 20f, baseline + 150f, paint)
-                canvas.drawText(StringProvider.getString(
-                    R.string.blood_pressure_monitor_heart_rate,
-                    
-                ) + " : ${testResult.pulseRate}bpm", 20f, baseline + 220f, paint)
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.blood_pressure_monitor_systolic,
+                    ) + " : ${testResult.systolic}mmHg",
+                    20f,
+                    baseline + 80f,
+                    paint,
+                )
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.blood_pressure_monitor_diastolic,
+                    ) + " : ${testResult.diastolic}mmHg",
+                    20f,
+                    baseline + 150f,
+                    paint,
+                )
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.blood_pressure_monitor_heart_rate,
+                    ) + " : ${testResult.pulseRate}bpm",
+                    20f,
+                    baseline + 220f,
+                    paint,
+                )
 
                 return image!!
             }
@@ -501,14 +727,23 @@ object TestResultUtil {
 
                 canvas.drawBitmap(logoImg, 360f, 320f, null)
 
-                canvas.drawText(StringProvider.getString(
-                    (R.string.dementia_test),
-
-                    ), 300f, baseline, paint)
+                canvas.drawText(
+                    StringProvider.getString(
+                        (R.string.dementia_test),
+                    ),
+                    300f,
+                    baseline,
+                    paint,
+                )
 
                 paint.textAlign = Paint.Align.LEFT
 
-                canvas.drawText(StringProvider.getString(R.string.test_result_my_result) + ": " + testResult.countActiveScore().toString(), 20f, baseline + 150f, paint)
+                canvas.drawText(
+                    StringProvider.getString(R.string.test_result_my_result) + ": " + testResult.countActiveScore().toString(),
+                    20f,
+                    baseline + 150f,
+                    paint,
+                )
 
                 return image!!
             }
@@ -521,28 +756,44 @@ object TestResultUtil {
 
                 canvas.drawBitmap(logoImg, 360f, 320f, null)
 
-                canvas.drawText(StringProvider.getString(
-                    (R.string.pulmonary_function_test_result),
-
-                    ), 300f, baseline, paint)
+                canvas.drawText(
+                    StringProvider.getString(
+                        (R.string.pulmonary_function_test_result),
+                    ),
+                    300f,
+                    baseline,
+                    paint,
+                )
 
                 paint.textAlign = Paint.Align.LEFT
 
                 val roundedPulmonaryCapacity = String.format("%.1f", testResult.pulmonaryCapacity)
                 val roundedPulmonaryPower = String.format("%.1f", testResult.pulmonaryPower)
 
-                canvas.drawText(StringProvider.getString(
-                    R.string.pulmonary_capacity_label,
-
-                    ) + " : ${roundedPulmonaryCapacity}L", 20f, baseline + 80f, paint)
-                canvas.drawText(StringProvider.getString(
-                    R.string.pulmonary_power_label,
-
-                    ) + " : ${roundedPulmonaryPower}F", 20f, baseline + 150f, paint)
-                canvas.drawText(StringProvider.getString(
-                    R.string.pulmonary_age_label,
-
-                    ) + " : ${testResult.pulmonaryAge}", 20f, baseline + 220f, paint)
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.pulmonary_capacity_label,
+                    ) + " : ${roundedPulmonaryCapacity}L",
+                    20f,
+                    baseline + 80f,
+                    paint,
+                )
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.pulmonary_power_label,
+                    ) + " : ${roundedPulmonaryPower}F",
+                    20f,
+                    baseline + 150f,
+                    paint,
+                )
+                canvas.drawText(
+                    StringProvider.getString(
+                        R.string.pulmonary_age_label,
+                    ) + " : ${testResult.pulmonaryAge}",
+                    20f,
+                    baseline + 220f,
+                    paint,
+                )
 
                 return image!!
 
@@ -575,7 +826,6 @@ object TestResultUtil {
 //                return image!!
             }
 
-
             else -> {
                 val image = Bitmap.createBitmap(width, 400, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(image)
@@ -584,7 +834,10 @@ object TestResultUtil {
         }
     }
 
-    fun formatQrCode(qrImg: Bitmap, logoImg: Bitmap): Bitmap {
+    fun formatQrCode(
+        qrImg: Bitmap,
+        logoImg: Bitmap,
+    ): Bitmap {
         val outputWidth = 300
         val outputHeight = 300
 

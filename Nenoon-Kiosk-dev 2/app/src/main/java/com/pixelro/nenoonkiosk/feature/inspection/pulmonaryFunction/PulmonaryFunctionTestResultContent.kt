@@ -21,74 +21,82 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 
 @Composable
-fun PulmonaryFunctionTestResultTestResultContent(
-    testResult: PulmonaryFunctionTestResult
-) {
+fun PulmonaryFunctionTestResultTestResultContent(testResult: PulmonaryFunctionTestResult) {
     Column(
-        modifier = Modifier
-            .padding(40.dp)
-            .fillMaxWidth()
-            .background(
-                color = Color(0xfff7f7f7),
-                shape = RoundedCornerShape(8.dp)
-            )
-            .padding(40.dp)
+        modifier =
+            Modifier
+                .padding(40.dp)
+                .fillMaxWidth()
+                .background(
+                    color = Color(0xfff7f7f7),
+                    shape = RoundedCornerShape(8.dp),
+                )
+                .padding(40.dp),
     ) {
         Text(
-            text = buildAnnotatedString {
-                append(StringProvider.getString(
-                    R.string.pulmonary_capacity_label,
-                    
-                ) + " : ")
-                withStyle(
-                    style = SpanStyle(
-                        color = Color(0xff1d71e1),
-                        fontWeight = FontWeight.Bold
-                    )
-                ) {
-                    append(String.format("%.1fL", testResult.pulmonaryCapacity))
-                }
-            },
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Medium,
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = buildAnnotatedString {
-                append(StringProvider.getString(
-                    R.string.pulmonary_power_label,
-                    
-                )  + " : ")
-                withStyle(
-                    style = SpanStyle(
-                        color = Color(0xff1d71e1),
-                        fontWeight = FontWeight.Bold
-                    )
-                ) {
+            text =
+                buildAnnotatedString {
                     append(
-                        String.format("%.1fF", testResult.pulmonaryPower)
+                        StringProvider.getString(
+                            R.string.pulmonary_capacity_label,
+                        ) + " : ",
                     )
-                }
-            },
+                    withStyle(
+                        style =
+                            SpanStyle(
+                                color = Color(0xff1d71e1),
+                                fontWeight = FontWeight.Bold,
+                            ),
+                    ) {
+                        append(String.format("%.1fL", testResult.pulmonaryCapacity))
+                    }
+                },
             fontSize = 32.sp,
             fontWeight = FontWeight.Medium,
         )
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = buildAnnotatedString {
-                append(StringProvider.getString(
-                    R.string.pulmonary_age_label,
-                    
-                ) + " : ")
-                withStyle(
-                    style = SpanStyle(
-                        color = Color(0xff1d71e1),
-                        fontWeight = FontWeight.Bold
+            text =
+                buildAnnotatedString {
+                    append(
+                        StringProvider.getString(
+                            R.string.pulmonary_power_label,
+                        ) + " : ",
                     )
-                ) {
-                    append(StringProvider.getString(R.string.pulmonary_age_format, testResult.pulmonaryAge.toString()))
-                }
-            },
+                    withStyle(
+                        style =
+                            SpanStyle(
+                                color = Color(0xff1d71e1),
+                                fontWeight = FontWeight.Bold,
+                            ),
+                    ) {
+                        append(
+                            String.format("%.1fF", testResult.pulmonaryPower),
+                        )
+                    }
+                },
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Medium,
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text =
+                buildAnnotatedString {
+                    append(
+                        StringProvider.getString(
+                            R.string.pulmonary_age_label,
+                        ) + " : ",
+                    )
+                    withStyle(
+                        style =
+                            SpanStyle(
+                                color = Color(0xff1d71e1),
+                                fontWeight = FontWeight.Bold,
+                            ),
+                    ) {
+                        append(StringProvider.getString(R.string.pulmonary_age_format, testResult.pulmonaryAge.toString()))
+                    }
+                },
             fontSize = 32.sp,
             fontWeight = FontWeight.Medium,
         )

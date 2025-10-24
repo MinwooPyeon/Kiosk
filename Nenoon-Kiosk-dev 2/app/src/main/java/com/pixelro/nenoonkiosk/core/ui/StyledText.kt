@@ -26,14 +26,13 @@ enum class TextStyle {
 }
 
 @Composable
-fun StyledText (
+fun StyledText(
     text: String,
     style: TextStyle = TextStyle.Message,
     textAlign: TextAlign = TextAlign.Center,
     fontWeight: FontWeight? = null,
     modifier: Modifier = Modifier,
 ) {
-
     val context = LocalContext.current
     val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
     val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
@@ -52,12 +51,12 @@ fun StyledText (
         fontSize = fontSize,
         textAlign = textAlign,
         fontWeight =
-            fontWeight ?:
-            when (style) {
-                TextStyle.Title -> FontWeight.SemiBold
-                TextStyle.Success, TextStyle.Error, TextStyle.BigNumber -> FontWeight.Bold
-                else -> FontWeight.Normal
-            },
+            fontWeight
+                ?: when (style) {
+                    TextStyle.Title -> FontWeight.SemiBold
+                    TextStyle.Success, TextStyle.Error, TextStyle.BigNumber -> FontWeight.Bold
+                    else -> FontWeight.Normal
+                },
         color =
             when (style) {
                 TextStyle.Hint -> colorResource(R.color.gray2)
@@ -65,13 +64,15 @@ fun StyledText (
                 TextStyle.Error, TextStyle.InputError -> colorResource(R.color.error)
                 else -> colorResource(R.color.black)
             },
-        modifier = modifier
-            .padding(
-                vertical = when (style) {
-                    TextStyle.Title -> 40.dp
-                    TextStyle.InputError -> 2.dp
-                    else -> 0.dp
-                }
-            )
+        modifier =
+            modifier
+                .padding(
+                    vertical =
+                        when (style) {
+                            TextStyle.Title -> 40.dp
+                            TextStyle.InputError -> 2.dp
+                            else -> 0.dp
+                        },
+                ),
     )
 }

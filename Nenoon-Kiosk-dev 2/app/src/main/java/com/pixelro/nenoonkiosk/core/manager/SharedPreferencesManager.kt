@@ -11,7 +11,6 @@ import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import java.lang.reflect.Type
 
 object SharedPreferencesManager {
-
     private const val PREFERENCE_NAME = NavConstants.PREFERENCE_NAME
     private const val KEY_REGISTERED_FACE_EMBEDDINGS = "registered_face_embeddings"
     private const val KEY_COMPOUND_TEST_RESULT_PREFIX = "compound_test_result_"
@@ -30,12 +29,18 @@ object SharedPreferencesManager {
 
     private val gson = Gson()
 
-    private fun putStringAndCommit(key: String, string: String) {
+    private fun putStringAndCommit(
+        key: String,
+        string: String,
+    ) {
         editor.putString(key, string)
         editor.commit()
     }
 
-    private fun putIntAndCommit(key: String, int: Int) {
+    private fun putIntAndCommit(
+        key: String,
+        int: Int,
+    ) {
         editor.putInt(key, int)
         editor.commit()
     }
@@ -65,7 +70,12 @@ object SharedPreferencesManager {
         }
     }
 
-    fun putUserAccount(id: String, password: String, name: String, email: String?): Boolean {
+    fun putUserAccount(
+        id: String,
+        password: String,
+        name: String,
+        email: String?,
+    ): Boolean {
         val users = getAllUserAccounts().toMutableMap()
 
         if (users.containsKey(id)) {
@@ -85,7 +95,10 @@ object SharedPreferencesManager {
         return true
     }
 
-    fun checkUserAccount(id: String, password: String): User? {
+    fun checkUserAccount(
+        id: String,
+        password: String,
+    ): User? {
         val users = getAllUserAccounts()
 
         val user = users[id]
@@ -170,7 +183,10 @@ object SharedPreferencesManager {
         }
     }
 
-    fun putCompoundTestResult(userId: String, result: GetCompoundTestResult) {
+    fun putCompoundTestResult(
+        userId: String,
+        result: GetCompoundTestResult,
+    ) {
         val jsonString = gson.toJson(result)
         editor.putString(KEY_COMPOUND_TEST_RESULT_PREFIX + userId, jsonString)
         editor.apply()
@@ -190,7 +206,7 @@ object SharedPreferencesManager {
         secondDistance: Float?,
         thirdDistance: Float?,
         avgDistance: Float?,
-        age: Int?
+        age: Int?,
     ) {
 //        val currentResult = getCompoundTestResult(AppConstants.DEFAULT_USER_ID)
 //        val updatedResult = currentResult.copy(
@@ -203,7 +219,10 @@ object SharedPreferencesManager {
 //        putCompoundTestResult(AppConstants.DEFAULT_USER_ID, updatedResult)
     }
 
-    fun updateVisualAcuityResult(leftEye: Int?, rightEye: Int?) {
+    fun updateVisualAcuityResult(
+        leftEye: Int?,
+        rightEye: Int?,
+    ) {
 //        val currentResult = getCompoundTestResult(AppConstants.DEFAULT_USER_ID)
 //        val updatedResult = currentResult.copy(
 //            shortVisualAcuity_LeftEye = leftEye,
@@ -212,7 +231,10 @@ object SharedPreferencesManager {
 //        putCompoundTestResult(AppConstants.DEFAULT_USER_ID, updatedResult)
     }
 
-    fun updateAmslerGridResult(leftMacularLoc: String?, rightMacularLoc: String?) {
+    fun updateAmslerGridResult(
+        leftMacularLoc: String?,
+        rightMacularLoc: String?,
+    ) {
 //        val currentResult = getCompoundTestResult(AppConstants.DEFAULT_USER_ID)
 //        val updatedResult = currentResult.copy(
 //            amslerGrid_leftMacularLoc = leftMacularLoc,
@@ -225,7 +247,7 @@ object SharedPreferencesManager {
         leftEyeVertical: Float?,
         rightEyeVertical: Float?,
         leftEyeHorizontal: Float?,
-        rightEyeHorizontal: Float?
+        rightEyeHorizontal: Float?,
     ) {
 //        val currentResult = getCompoundTestResult(AppConstants.DEFAULT_USER_ID)
 //        val updatedResult = currentResult.copy(
@@ -240,7 +262,7 @@ object SharedPreferencesManager {
     fun updateBloodPressureResult(
         systolic: Float?,
         diastolic: Float?,
-        pulseRate: Float?
+        pulseRate: Float?,
     ) {
 //        val currentResult = getCompoundTestResult(AppConstants.DEFAULT_USER_ID)
 //        val updatedResult = currentResult.copy(
@@ -251,7 +273,10 @@ object SharedPreferencesManager {
 //        putCompoundTestResult(AppConstants.DEFAULT_USER_ID, updatedResult)
     }
 
-    fun updateGripStrengthResult(leftGrip: Float?, rightGrip: Float?) {
+    fun updateGripStrengthResult(
+        leftGrip: Float?,
+        rightGrip: Float?,
+    ) {
 //        val currentResult = getCompoundTestResult(AppConstants.DEFAULT_USER_ID)
 //        val updatedResult = currentResult.copy(
 //            gripStrength_leftGrip = leftGrip,
@@ -261,9 +286,20 @@ object SharedPreferencesManager {
     }
 
     fun updateDementiaResult(
-        q1: String?, q2: String?, q3: String?, q4: String?, q5: String?,
-        q6: String?, q7: String?, q8: String?, q9: String?, q10: String?,
-        q11: String?, q12: String?, q13: String?, q14: String?
+        q1: String?,
+        q2: String?,
+        q3: String?,
+        q4: String?,
+        q5: String?,
+        q6: String?,
+        q7: String?,
+        q8: String?,
+        q9: String?,
+        q10: String?,
+        q11: String?,
+        q12: String?,
+        q13: String?,
+        q14: String?,
     ) {
 //        val currentResult = getCompoundTestResult(AppConstants.DEFAULT_USER_ID)
 //        val updatedResult = currentResult.copy(
@@ -295,11 +331,17 @@ object SharedPreferencesManager {
         editor.apply()
     }
 
-    fun putString(key: String, value: String) {
+    fun putString(
+        key: String,
+        value: String,
+    ) {
         putStringAndCommit(key, value)
     }
 
-    fun putInt(key: String, value: Int) {
+    fun putInt(
+        key: String,
+        value: Int,
+    ) {
         putIntAndCommit(key, value)
     }
 

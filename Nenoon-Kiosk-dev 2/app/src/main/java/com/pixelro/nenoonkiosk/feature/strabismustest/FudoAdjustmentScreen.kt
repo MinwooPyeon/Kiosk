@@ -3,24 +3,44 @@ package com.pixelro.nenoonkiosk.feature.strabismustest
 import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-import androidx.compose.ui.platform.LocalConfiguration
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,19 +75,21 @@ fun FudoAdjustmentScreen(
                         Text(StringProvider.getString(R.string.common_test_guide), color = Color.White, fontSize = 24.sp)
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Black
-                )
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = Color.Black,
+                    ),
             )
         },
         bottomBar = {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.Black)
-                    .padding(start = 24.dp, end = 24.dp, top = 24.dp,bottom = 24.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .background(Color.Black)
+                        .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
                 val locale = LocalConfiguration.current.locale
                 val fontSize = if (locale.language == "ko") 48.sp else 44.sp
@@ -75,58 +97,63 @@ fun FudoAdjustmentScreen(
                     text = StringProvider.getString(R.string.fudo_adjustment_bottom_text),
                     color = Color.White,
                     fontSize = fontSize,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
                         onNextClicked(1, scaleDifference)
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(96.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = neNoon_blue,
-                    ),
-                    shape = RoundedCornerShape(12.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(96.dp),
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = neNoon_blue,
+                        ),
+                    shape = RoundedCornerShape(12.dp),
                 ) {
                     Text(StringProvider.getString(R.string.common_next), fontSize = 36.sp, color = Color.White)
                 }
             }
-        }
+        },
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .background(Color.Black),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(Color.Black),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(500.dp)
-                    .background(Color(0xFFEBF961)),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(500.dp)
+                        .background(Color(0xFFEBF961)),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_fudo_moon_left),
                     contentDescription = "Left Moon",
-                    modifier = Modifier.size(200.dp, 500.dp)
+                    modifier = Modifier.size(200.dp, 500.dp),
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Image(
                     painter = painterResource(id = R.drawable.ic_fudo_moon_right),
                     contentDescription = "Right Moon",
-                    modifier = Modifier
-                        .size(200.dp, 500.dp)
-                        .graphicsLayer(
-                            scaleX = rightMoonScale,
-                            scaleY = rightMoonScale,
-                            transformOrigin = TransformOrigin(0f, 0.5f)
-                        )
+                    modifier =
+                        Modifier
+                            .size(200.dp, 500.dp)
+                            .graphicsLayer(
+                                scaleX = rightMoonScale,
+                                scaleY = rightMoonScale,
+                                transformOrigin = TransformOrigin(0f, 0.5f),
+                            ),
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -137,28 +164,33 @@ fun FudoAdjustmentScreen(
                 text = StringProvider.getString(R.string.fudo_adjustment_main_text),
                 color = Color.White,
                 fontSize = fontSize,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.height(16.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Spacer(modifier = Modifier.width(48.dp))
                 Button(
                     onClick = {
                         rightMoonScale *= 0.995f
-                        scaleDifference += 0.5f},
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(96.dp),
+                        scaleDifference += 0.5f
+                    },
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(96.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = neNoon_blue),
-                    shape = RoundedCornerShape( 12.dp)
+                    shape = RoundedCornerShape(12.dp),
                 ) {
-                    Text(StringProvider.getString(R.string.fudo_adjustment_button_left_smaller), color = Color.White,
+                    Text(
+                        StringProvider.getString(R.string.fudo_adjustment_button_left_smaller),
+                        color = Color.White,
                         fontSize = 24.sp,
-                        textAlign = TextAlign.Center)
+                        textAlign = TextAlign.Center,
+                    )
                 }
                 Spacer(modifier = Modifier.width(24.dp))
                 Button(
@@ -166,20 +198,22 @@ fun FudoAdjustmentScreen(
                         rightMoonScale *= 1.005f
                         scaleDifference -= 0.5f
                     },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(96.dp),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(96.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = neNoon_blue),
-                    shape = RoundedCornerShape( 12.dp)
+                    shape = RoundedCornerShape(12.dp),
                 ) {
-                    Text(StringProvider.getString(R.string.fudo_adjustment_button_right_smaller), color = Color.White,
+                    Text(
+                        StringProvider.getString(R.string.fudo_adjustment_button_right_smaller),
+                        color = Color.White,
                         fontSize = 24.sp,
-                        textAlign = TextAlign.Center)
+                        textAlign = TextAlign.Center,
+                    )
                 }
                 Spacer(modifier = Modifier.width(48.dp))
-
             }
-
         }
     }
 }

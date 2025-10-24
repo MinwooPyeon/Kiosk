@@ -5,5 +5,5 @@ data class PresbyopiaTestResult(
     val secondDistance: Float = 1f,
     val thirdDistance: Float = 1f,
     val avgDistance: Float = 1f,
-    val age: Int = 1
+    val age: Int = 1,
 )

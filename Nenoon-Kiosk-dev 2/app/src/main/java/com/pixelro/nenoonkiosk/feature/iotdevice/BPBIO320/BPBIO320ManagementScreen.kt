@@ -26,12 +26,12 @@ import androidx.navigation.NavHostController
 import com.inbody.bpbio.IB_SDKConst
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.AccentedText
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
+import com.pixelro.nenoonkiosk.core.util.StringProvider
 import kotlinx.coroutines.delay
 
 enum class BloodPressureConnectionScreenState {
@@ -47,9 +47,8 @@ enum class BloodPressureConnectionScreenState {
 @Composable
 fun BPBIO320ManagementScreen(
     navController: NavHostController,
-    viewModel: BPBIO320ViewModel
+    viewModel: BPBIO320ViewModel,
 ) {
-
     var bloodPressureConnectionScreenState by remember { mutableStateOf(BloodPressureConnectionScreenState.Standby) }
 
     val connectionState by viewModel.connectionState.collectAsState()
@@ -88,26 +87,26 @@ fun BPBIO320ManagementScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(40.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-
         StyledText(StringProvider.getString(R.string.blood_pressure_monitor_title), TextStyle.Title)
 
         Image(
             painter = painterResource(R.drawable.blood_pressure_icon),
             contentDescription = StringProvider.getString(R.string.blood_pressure_monitor_image_content_description),
-            modifier = Modifier.weight(1f).width(500.dp)
+            modifier = Modifier.weight(1f).width(500.dp),
         )
 
         Column(
             modifier = Modifier.weight(2f),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
+            verticalArrangement = Arrangement.Bottom,
         ) {
             when (bloodPressureConnectionScreenState) {
                 BloodPressureConnectionScreenState.Standby -> {
@@ -125,7 +124,7 @@ fun BPBIO320ManagementScreen(
                                 BloodPressureConnectionScreenState.Connecting
                         },
                         text = StringProvider.getString(R.string.blood_pressure_monitor_start_connection),
-                        modifier = Modifier.padding(top = 180.dp, bottom = 20.dp)
+                        modifier = Modifier.padding(top = 180.dp, bottom = 20.dp),
                     )
                 }
 
@@ -139,7 +138,7 @@ fun BPBIO320ManagementScreen(
                             bloodPressureConnectionScreenState = BloodPressureConnectionScreenState.Connecting
                         },
                         text = StringProvider.getString(R.string.blood_pressure_monitor_retry_connection),
-                        modifier = Modifier.padding(top = 180.dp, bottom = 20.dp)
+                        modifier = Modifier.padding(top = 180.dp, bottom = 20.dp),
                     )
                 }
 
@@ -147,7 +146,7 @@ fun BPBIO320ManagementScreen(
                     ProgressIndicator()
                     StyledText(
                         text = StringProvider.getString(R.string.blood_pressure_monitor_connecting),
-                        modifier = Modifier.padding(top = 40.dp, bottom = 180.dp)
+                        modifier = Modifier.padding(top = 40.dp, bottom = 180.dp),
                     )
                 }
 
@@ -162,7 +161,7 @@ fun BPBIO320ManagementScreen(
                                 BloodPressureConnectionScreenState.Standby
                         },
                         text = StringProvider.getString(R.string.blood_pressure_monitor_disconnect),
-                        modifier = Modifier.padding(top = 180.dp, bottom = 20.dp)
+                        modifier = Modifier.padding(top = 180.dp, bottom = 20.dp),
                     )
                 }
 
@@ -179,7 +178,7 @@ fun BPBIO320ManagementScreen(
                             bloodPressureConnectionScreenState = BloodPressureConnectionScreenState.Connecting
                         },
                         text = StringProvider.getString(R.string.blood_pressure_monitor_try_again),
-                        modifier = Modifier.padding(top = 180.dp, bottom = 20.dp)
+                        modifier = Modifier.padding(top = 180.dp, bottom = 20.dp),
                     )
                 }
             }
@@ -188,7 +187,7 @@ fun BPBIO320ManagementScreen(
                 onClick = {
                     navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
                 },
-                text = StringProvider.getString(R.string.back)
+                text = StringProvider.getString(R.string.back),
             )
         }
     }

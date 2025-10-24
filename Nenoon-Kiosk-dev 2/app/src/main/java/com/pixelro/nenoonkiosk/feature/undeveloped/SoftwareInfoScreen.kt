@@ -24,51 +24,57 @@ import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 
-//소프트웨어 정보 나오는 뷰
+// 소프트웨어 정보 나오는 뷰
 @Composable
-fun SoftwareInfoScreen(onBack: () -> Unit,) {
+fun SoftwareInfoScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier =
+            Modifier
+                .fillMaxSize(),
     ) {
         Box(
-            modifier = Modifier
-                .padding(top = (GlobalValue.statusBarPadding + 20).dp, bottom = 20.dp)
-                .fillMaxWidth()
-                .height(40.dp),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .padding(top = (GlobalValue.statusBarPadding + 20).dp, bottom = 20.dp)
+                    .fillMaxWidth()
+                    .height(40.dp),
+            contentAlignment = Alignment.Center,
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) { onBack() },
-                contentAlignment = Alignment.CenterStart
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                        ) { onBack() },
+                contentAlignment = Alignment.CenterStart,
             ) {
                 Image(
-                    modifier = Modifier
-                        .padding(start = 40.dp, top = 4.dp)
-                        .width(28.dp),
+                    modifier =
+                        Modifier
+                            .padding(start = 40.dp, top = 4.dp)
+                            .width(28.dp),
                     painter = painterResource(id = R.drawable.icon_back_black),
-                    contentDescription = ""
+                    contentDescription = "",
                 )
             }
             Text(
                 textAlign = TextAlign.Center,
                 text = "소프트웨어 정보",
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
         }
         Column(
-            modifier = Modifier
-                .padding(start = 20.dp)
+            modifier =
+                Modifier
+                    .padding(start = 20.dp),
         ) {
             Text(
-                text = "품목명: 암슬러 격자검사 소프트웨어\n" +
+                text =
+                    "품목명: 암슬러 격자검사 소프트웨어\n" +
                         "모델명: Screening Charts for Macular Degeneration\n" +
                         "제조업허가번호: 제 8237호\n" +
                         "제조업자의 상호 및 주소\n" +
@@ -82,15 +88,16 @@ fun SoftwareInfoScreen(onBack: () -> Unit,) {
                         "보관 또는 저장방법: 사용설명서 참조\n" +
                         "소프트웨어 명칭 및 버전: 내눈 황반변성(암슬러차트) 검사, ver. 1.0\n" +
                         "본 제품은 의료기기임.\n",
-                fontSize = 20.sp
+                fontSize = 20.sp,
             )
             Image(
-                modifier = Modifier
-                    .padding(top = 20.dp)
-                    .width(200.dp)
-                    .height(100.dp),
+                modifier =
+                    Modifier
+                        .padding(top = 20.dp)
+                        .width(200.dp)
+                        .height(100.dp),
                 painter = painterResource(id = R.drawable.udi_code),
-                contentDescription = null
+                contentDescription = null,
             )
         }
     }

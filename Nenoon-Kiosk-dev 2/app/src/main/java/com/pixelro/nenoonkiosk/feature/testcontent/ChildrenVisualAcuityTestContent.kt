@@ -4,7 +4,5 @@ import androidx.compose.runtime.Composable
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuityTestResult
 
 @Composable
-fun ChildrenVisualAcuityTestContent(
-    toResultScreen: (VisualAcuityTestResult) -> Unit
-) {
+fun ChildrenVisualAcuityTestContent(toResultScreen: (VisualAcuityTestResult) -> Unit) {
 }

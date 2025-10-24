@@ -2,7 +2,14 @@ package com.pixelro.nenoonkiosk.feature.strabismustest
 
 import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -20,8 +27,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.inspection.strabismus.StrabismusPrintHelper
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 import kotlin.math.abs
@@ -35,7 +42,7 @@ fun SawiResultScreen(
     circleX: Float?,
     circleY: Float?,
     onPrintClicked: () -> Unit,
-    onBackToMainClicked: () -> Unit
+    onBackToMainClicked: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         TTS.speechTTS(StringProvider.getString(R.string.tts_result_screen), TextToSpeech.QUEUE_FLUSH)
@@ -44,26 +51,27 @@ fun SawiResultScreen(
     val context = LocalContext.current
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = StringProvider.getString(R.string.sawi_result_title),
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
-            modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
+            modifier = Modifier.padding(top = 32.dp, bottom = 16.dp),
         )
 
         Text(
             text = StringProvider.getString(R.string.sawi_result_normal_case_info),
             fontSize = 24.sp,
             color = Color.DarkGray,
-            modifier = Modifier.padding(bottom = 32.dp)
+            modifier = Modifier.padding(bottom = 32.dp),
         )
 
         val normalLeftTitle: String
@@ -88,16 +96,16 @@ fun SawiResultScreen(
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp),
         )
-        if(isAdjusted || answer == 1) {
+        if (isAdjusted || answer == 1) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 SawiResultCard(
                     modifier = Modifier.weight(1f),
                     title = normalLeftTitle,
                     result1 = StringProvider.getString(R.string.sawi_result_normal_range_exo),
                     result2 = StringProvider.getString(R.string.sawi_result_normal_range_eso),
-                    description = StringProvider.getString(R.string.sawi_result_normal_range_exo_eso_desc)
+                    description = StringProvider.getString(R.string.sawi_result_normal_range_exo_eso_desc),
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 SawiResultCard(
@@ -105,18 +113,17 @@ fun SawiResultScreen(
                     title = normalRightTitle,
                     result1 = StringProvider.getString(R.string.sawi_result_normal),
                     result2 = StringProvider.getString(R.string.sawi_result_normal_range_vertical),
-                    description = StringProvider.getString(R.string.sawi_result_normal_range_vertical_desc)
+                    description = StringProvider.getString(R.string.sawi_result_normal_range_vertical_desc),
                 )
             }
-        }
-        else {
+        } else {
             Row(modifier = Modifier.fillMaxWidth()) {
                 SawiResultCard(
                     modifier = Modifier.weight(1f),
                     title = normalLeftTitle,
                     result1 = StringProvider.getString(R.string.sawi_result_normal),
-                    result2 =  "",
-                    description = StringProvider.getString(R.string.sawi_result_normal_status)
+                    result2 = "",
+                    description = StringProvider.getString(R.string.sawi_result_normal_status),
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 SawiResultCard(
@@ -124,7 +131,7 @@ fun SawiResultScreen(
                     title = normalRightTitle,
                     result1 = StringProvider.getString(R.string.sawi_result_normal),
                     result2 = "",
-                    description = StringProvider.getString(R.string.sawi_result_normal_status)
+                    description = StringProvider.getString(R.string.sawi_result_normal_status),
                 )
             }
         }
@@ -161,26 +168,30 @@ fun SawiResultScreen(
                 val pixelDiffY = (crossY ?: 0f) - (circleY ?: 0f)
                 val vDev = (pixelDiffY / dpi * 25.4f) / 4f
 
-                val (hResult, hDesc) = when {
-                    hDev > 0 -> when { // Esophoria
-                        abs(hDev) <= 2.5f -> StringProvider.getString(R.string.sawi_result_normal_range) to StringProvider.getString(R.string.sawi_result_desc_normal_eso)
-                        abs(hDev) <= 5.5f -> StringProvider.getString(R.string.sawi_result_mild_esophoria) to StringProvider.getString(R.string.sawi_result_desc_mild_eso)
-                        else -> StringProvider.getString(R.string.sawi_result_severe_esophoria) to StringProvider.getString(R.string.sawi_result_desc_severe_eso)
+                val (hResult, hDesc) =
+                    when {
+                        hDev > 0 ->
+                            when { // Esophoria
+                                abs(hDev) <= 2.5f -> StringProvider.getString(R.string.sawi_result_normal_range) to StringProvider.getString(R.string.sawi_result_desc_normal_eso)
+                                abs(hDev) <= 5.5f -> StringProvider.getString(R.string.sawi_result_mild_esophoria) to StringProvider.getString(R.string.sawi_result_desc_mild_eso)
+                                else -> StringProvider.getString(R.string.sawi_result_severe_esophoria) to StringProvider.getString(R.string.sawi_result_desc_severe_eso)
+                            }
+                        hDev < 0 ->
+                            when { // Exophoria
+                                abs(hDev) <= 6.5f -> StringProvider.getString(R.string.sawi_result_normal_range) to StringProvider.getString(R.string.sawi_result_desc_normal_exo)
+                                abs(hDev) <= 10.5f -> StringProvider.getString(R.string.sawi_result_mild_exophoria) to StringProvider.getString(R.string.sawi_result_desc_mild_exo)
+                                else -> StringProvider.getString(R.string.sawi_result_severe_exophoria) to StringProvider.getString(R.string.sawi_result_desc_severe_exo)
+                            }
+                        else -> StringProvider.getString(R.string.sawi_result_normal) to StringProvider.getString(R.string.sawi_result_no_horizontal_phoria)
                     }
-                    hDev < 0 -> when { // Exophoria
-                        abs(hDev) <= 6.5f -> StringProvider.getString(R.string.sawi_result_normal_range) to StringProvider.getString(R.string.sawi_result_desc_normal_exo)
-                        abs(hDev) <= 10.5f -> StringProvider.getString(R.string.sawi_result_mild_exophoria) to StringProvider.getString(R.string.sawi_result_desc_mild_exo)
-                        else -> StringProvider.getString(R.string.sawi_result_severe_exophoria) to StringProvider.getString(R.string.sawi_result_desc_severe_exo)
-                    }
-                    else -> StringProvider.getString(R.string.sawi_result_normal) to StringProvider.getString(R.string.sawi_result_no_horizontal_phoria)
-                }
 
-                val (vResult, vDesc) = when {
-                    abs(vDev) <= 0f -> StringProvider.getString(R.string.sawi_result_normal) to StringProvider.getString(R.string.sawi_result_no_vertical_phoria)
-                    abs(vDev) <= 0.75f -> StringProvider.getString(R.string.sawi_result_normal_range) to StringProvider.getString(R.string.sawi_result_no_vertical_phoria)
-                    abs(vDev) <= 1.75f -> StringProvider.getString(R.string.sawi_result_mild_vertical_phoria) to StringProvider.getString(R.string.sawi_result_desc_mild_vertical)
-                    else -> StringProvider.getString(R.string.sawi_result_severe_vertical_phoria) to StringProvider.getString(R.string.sawi_result_desc_severe_vertical)
-                }
+                val (vResult, vDesc) =
+                    when {
+                        abs(vDev) <= 0f -> StringProvider.getString(R.string.sawi_result_normal) to StringProvider.getString(R.string.sawi_result_no_vertical_phoria)
+                        abs(vDev) <= 0.75f -> StringProvider.getString(R.string.sawi_result_normal_range) to StringProvider.getString(R.string.sawi_result_no_vertical_phoria)
+                        abs(vDev) <= 1.75f -> StringProvider.getString(R.string.sawi_result_mild_vertical_phoria) to StringProvider.getString(R.string.sawi_result_desc_mild_vertical)
+                        else -> StringProvider.getString(R.string.sawi_result_severe_vertical_phoria) to StringProvider.getString(R.string.sawi_result_desc_severe_vertical)
+                    }
 
                 val hPrism = "(${String.format("%.1f", abs(hDev))}△)"
                 val vPrism = "(${String.format("%.1f", abs(vDev))}△)"
@@ -215,7 +226,7 @@ fun SawiResultScreen(
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp),
         )
         Row(modifier = Modifier.fillMaxWidth()) {
             val hResultParts = userHorizontalResult.split("(")
@@ -226,7 +237,7 @@ fun SawiResultScreen(
                 title = userLeftTitle,
                 result1 = hResultParts.getOrElse(0) { "" }.trim(),
                 result2 = if (hResultParts.size > 1) "(${hResultParts[1]}" else "",
-                description = userHorizontalDescription
+                description = userHorizontalDescription,
             )
             Spacer(modifier = Modifier.width(16.dp))
             SawiResultCard(
@@ -234,7 +245,7 @@ fun SawiResultScreen(
                 title = userRightTitle,
                 result1 = vResultParts.getOrElse(0) { "" }.trim(),
                 result2 = if (vResultParts.size > 1) "(${vResultParts[1]}" else "",
-                description = userVerticalDescription
+                description = userVerticalDescription,
             )
         }
 
@@ -245,14 +256,14 @@ fun SawiResultScreen(
             fontSize = 14.sp,
             color = Color.DarkGray,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
             onClick = {
-                TTS.speechTTS(StringProvider.getString(R.string.printing_in_progress),TextToSpeech.QUEUE_FLUSH)
+                TTS.speechTTS(StringProvider.getString(R.string.printing_in_progress), TextToSpeech.QUEUE_FLUSH)
                 StrabismusPrintHelper.printSawiResult(
                     context = context,
                     hTitle = userLeftTitle,
@@ -260,29 +271,30 @@ fun SawiResultScreen(
                     hDesc = userHorizontalDescription,
                     vTitle = userRightTitle,
                     vResult = userVerticalResult,
-                    vDesc = userVerticalDescription
+                    vDesc = userVerticalDescription,
                 )
                 onPrintClicked()
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(96.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = neNoon_blue)
-            ,shape = RoundedCornerShape( 12.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(96.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = neNoon_blue),
+            shape = RoundedCornerShape(12.dp),
         ) {
             Text(StringProvider.getString(R.string.sawi_result_print_button), fontSize = 36.sp, color = Color.White)
         }
 
         Button(
             onClick = onBackToMainClicked,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(96.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-            ,shape = RoundedCornerShape( 12.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(96.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+            shape = RoundedCornerShape(12.dp),
         ) {
             Text(StringProvider.getString(R.string.sawi_result_back_to_main_button), fontSize = 36.sp, color = neNoon_blue)
         }
     }
-
 }

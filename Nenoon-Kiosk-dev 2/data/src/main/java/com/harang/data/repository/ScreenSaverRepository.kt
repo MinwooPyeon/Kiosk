@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class ScreenSaverRepository(
-    private val sharedPreferencesDataSource: SharedPreferencesDataSource
+    private val sharedPreferencesDataSource: SharedPreferencesDataSource,
 ) {
     suspend fun getScreenSaverVideoURI(): String {
         val videoURI: String

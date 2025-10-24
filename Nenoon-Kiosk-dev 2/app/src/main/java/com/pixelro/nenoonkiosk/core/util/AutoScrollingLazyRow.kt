@@ -1,42 +1,42 @@
 package com.pixelro.nenoonkiosk.core.util
 
 // 이거 안 쓰는 듯?
-//import androidx.compose.animation.core.AnimationSpec
-//import androidx.compose.animation.core.LinearEasing
-//import androidx.compose.animation.core.animate
-//import androidx.compose.animation.core.tween
-//import androidx.compose.foundation.MutatePriority
-//import androidx.compose.foundation.gestures.ScrollableState
-//import androidx.compose.foundation.layout.Arrangement
-//import androidx.compose.foundation.lazy.LazyRow
-//import androidx.compose.foundation.lazy.itemsIndexed
-//import androidx.compose.foundation.lazy.rememberLazyListState
-//import androidx.compose.runtime.Composable
-//import androidx.compose.runtime.LaunchedEffect
-//import androidx.compose.runtime.getValue
-//import androidx.compose.runtime.mutableStateOf
-//import androidx.compose.runtime.remember
-//import androidx.compose.runtime.rememberCoroutineScope
-//import androidx.compose.runtime.setValue
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import kotlinx.coroutines.launch
-//import java.util.*
+// import androidx.compose.animation.core.AnimationSpec
+// import androidx.compose.animation.core.LinearEasing
+// import androidx.compose.animation.core.animate
+// import androidx.compose.animation.core.tween
+// import androidx.compose.foundation.MutatePriority
+// import androidx.compose.foundation.gestures.ScrollableState
+// import androidx.compose.foundation.layout.Arrangement
+// import androidx.compose.foundation.lazy.LazyRow
+// import androidx.compose.foundation.lazy.itemsIndexed
+// import androidx.compose.foundation.lazy.rememberLazyListState
+// import androidx.compose.runtime.Composable
+// import androidx.compose.runtime.LaunchedEffect
+// import androidx.compose.runtime.getValue
+// import androidx.compose.runtime.mutableStateOf
+// import androidx.compose.runtime.remember
+// import androidx.compose.runtime.rememberCoroutineScope
+// import androidx.compose.runtime.setValue
+// import androidx.compose.ui.Alignment
+// import androidx.compose.ui.Modifier
+// import kotlinx.coroutines.launch
+// import java.util.*
 //
-//private const val SCROLL_DX = 24f
-//private const val REQUIRED_CARD_COUNT = 8
+// private const val SCROLL_DX = 24f
+// private const val REQUIRED_CARD_COUNT = 8
 //
-//private class AutoScrollItem<T>(
+// private class AutoScrollItem<T>(
 //    val id: String = UUID.randomUUID().toString(),
 //    val data: T
-//)
+// )
 //
-//@Composable
-//fun <T : Any> AutoScrollingLazyRow(
+// @Composable
+// fun <T : Any> AutoScrollingLazyRow(
 //    list: List<T>,
 //    modifier: Modifier = Modifier,
 //    itemContent: @Composable (item: T) -> Unit,
-//) {
+// ) {
 //    val lazyListState = rememberLazyListState()
 //    val coroutineScope = rememberCoroutineScope()
 //
@@ -81,9 +81,9 @@ package com.pixelro.nenoonkiosk.core.util
 //            }
 //        }
 //    }
-//}
+// }
 //
-//private fun <T : Any> List<T>.mapAutoScrollItem(): List<AutoScrollItem<T>> {
+// private fun <T : Any> List<T>.mapAutoScrollItem(): List<AutoScrollItem<T>> {
 //    val newList = this.map { AutoScrollItem(data = it) }.toMutableList()
 //    var index = 0
 //    if (this.size < REQUIRED_CARD_COUNT) {
@@ -97,17 +97,15 @@ package com.pixelro.nenoonkiosk.core.util
 //        }
 //    }
 //    return newList
-//}
+// }
 //
-//suspend fun ScrollableState.autoScroll(
+// suspend fun ScrollableState.autoScroll(
 //    animationSpec: AnimationSpec<Float> = tween(durationMillis = 800, easing = LinearEasing)
-//) {
+// ) {
 //    var previousValue = 0f
 //    scroll(MutatePriority.UserInput) {
 //        animate(0f, SCROLL_DX, animationSpec = animationSpec) { currentValue, _ ->
 //            previousValue += scrollBy(currentValue - previousValue)
 //        }
 //    }
-//}
-
-
+// }

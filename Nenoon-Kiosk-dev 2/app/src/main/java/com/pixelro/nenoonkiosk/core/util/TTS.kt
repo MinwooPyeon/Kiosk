@@ -7,31 +7,42 @@ import java.util.Locale
 
 object TTS {
     lateinit var tts: TextToSpeech
-    fun speechTTS(string: String, queueType: Int) {
+
+    fun speechTTS(
+        string: String,
+        queueType: Int,
+    ) {
         tts.speak(string, queueType, null, "main")
     }
+
     fun stopTTS() {
         tts.stop()
     }
+
     fun initTTS(language: String) {
-        this.tts = TextToSpeech(NenoonKioskApplication.Companion.applicationContext()) {
-            if (it == TextToSpeech.SUCCESS) {
-                tts.setLanguage(Locale(language))
+        this.tts =
+            TextToSpeech(NenoonKioskApplication.Companion.applicationContext()) {
+                if (it == TextToSpeech.SUCCESS) {
+                    tts.setLanguage(Locale(language))
+                }
             }
-        }
     }
+
     fun destroyTTS() {
         tts.shutdown()
     }
+
     fun setOnDoneListener(onDone: () -> Unit) {
         tts.setOnUtteranceProgressListener(
             object : UtteranceProgressListener() {
                 override fun onStart(utteranceId: String?) {}
+
                 override fun onError(utteranceId: String?) {}
+
                 override fun onDone(utteranceId: String?) {
                     onDone()
                 }
-            }
+            },
         )
     }
 
@@ -39,9 +50,11 @@ object TTS {
         tts.setOnUtteranceProgressListener(
             object : UtteranceProgressListener() {
                 override fun onStart(utteranceId: String?) {}
+
                 override fun onError(utteranceId: String?) {}
+
                 override fun onDone(utteranceId: String?) {}
-            }
+            },
         )
     }
 }

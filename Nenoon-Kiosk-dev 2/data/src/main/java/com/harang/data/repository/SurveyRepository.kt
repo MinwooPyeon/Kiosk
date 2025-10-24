@@ -11,10 +11,12 @@ import kotlinx.coroutines.withContext
 
 class SurveyRepository(
     private val remoteDataSource: SurveyRemoteDataSource,
-    private val sharedPreferencesDataSource: SharedPreferencesDataSource
+    private val sharedPreferencesDataSource: SharedPreferencesDataSource,
 ) {
-
-    suspend fun sendSurveyData(token: String?, request: SendSurveyDataRequest): SendSurveyDataResponse? {
+    suspend fun sendSurveyData(
+        token: String?,
+        request: SendSurveyDataRequest,
+    ): SendSurveyDataResponse? {
         return withContext(Dispatchers.IO) {
             remoteDataSource.sendSurveyData(token, request)
         }
@@ -26,17 +28,13 @@ class SurveyRepository(
         }
     }
 
-    suspend fun getPastSurveyId(
-        token: String,
-    ): GetPastSurveyId? {
+    suspend fun getPastSurveyId(token: String): GetPastSurveyId? {
         return withContext(Dispatchers.IO) {
             remoteDataSource.getPastSurveyId(token)
         }
     }
 
-    suspend fun generateResultsChart(
-        token: String,
-    ): GetPastSurveyId? {
+    suspend fun generateResultsChart(token: String): GetPastSurveyId? {
         return withContext(Dispatchers.IO) {
             remoteDataSource.generateResultsChart(token)
         }

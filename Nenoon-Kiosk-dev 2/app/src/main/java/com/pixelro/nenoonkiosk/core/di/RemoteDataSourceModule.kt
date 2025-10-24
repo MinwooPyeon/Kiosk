@@ -13,7 +13,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RemoteDataSourceModule {
-
     @Provides
     @Singleton
     fun provideSignInRemoteDataSource(api: NenoonKioskApi): SignInRemoteDataSource {

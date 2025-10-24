@@ -6,7 +6,11 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
-fun bitmapToFile(context: Context, bitmap: Bitmap, fileName: String): File {
+fun bitmapToFile(
+    context: Context,
+    bitmap: Bitmap,
+    fileName: String,
+): File {
     val filesDir = context.cacheDir
     val file = File(filesDir, fileName)
 

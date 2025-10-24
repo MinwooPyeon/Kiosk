@@ -30,17 +30,18 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 @Composable
 fun AmslerGridTestResultContent(
     testResult: AmslerGridTestResult,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     val leftSelectedArea = testResult.leftEyeDisorderType
     val rightSelectedArea = testResult.rightEyeDisorderType
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            Modifier
+                .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column() {
+        Column {
 //            Text(
 //                modifier = Modifier
 //                    .padding(start = 40.dp),
@@ -329,663 +330,694 @@ fun AmslerGridTestResultContent(
 //        }
     }
     Text(
-        modifier = Modifier
-            .padding(start = 40.dp, top = 40.dp)
-            .fillMaxWidth(),
-        text = StringProvider.getString(R.string.test_result_my_result, ),
+        modifier =
+            Modifier
+                .padding(start = 40.dp, top = 40.dp)
+                .fillMaxWidth(),
+        text = StringProvider.getString(R.string.test_result_my_result),
         fontSize = 28.sp,
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Medium,
     )
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
     ) {
         Column(
-            modifier = Modifier
-                .background(
-                    color = Color(0xfff7f7f7),
-                    shape = RoundedCornerShape(8.dp)
-                )
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .background(
+                        color = Color(0xfff7f7f7),
+                        shape = RoundedCornerShape(8.dp),
+                    )
+                    .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                modifier = Modifier
-                    .padding(bottom = 12.dp),
-                text = StringProvider.getString(R.string.test_result_left, ),
+                modifier =
+                    Modifier
+                        .padding(bottom = 12.dp),
+                text = StringProvider.getString(R.string.test_result_left),
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
             /**
              * 왼쪽 결과 그래프
              */
             Row(
-                modifier = Modifier
-                    .width(300.dp)
-                    .height(100.dp)
+                modifier =
+                    Modifier
+                        .width(300.dp)
+                        .height(100.dp),
             ) {
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (leftSelectedArea[0]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                            Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (leftSelectedArea[0]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
+                            )
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, 0f),
-                                Offset(size.width, 0f),
-                                strokeWidth
-                            )
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, 0f),
-                                Offset(0f, size.height),
-                                strokeWidth
-                            )
-                        }
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, 0f),
+                                    Offset(size.width, 0f),
+                                    strokeWidth,
+                                )
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, 0f),
+                                    Offset(0f, size.height),
+                                    strokeWidth,
+                                )
+                            },
                 ) {
-
                 }
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (leftSelectedArea[1]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
-
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, 0f),
-                                Offset(size.width, 0f),
-                                strokeWidth
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (leftSelectedArea[1]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
                             )
-                        }
-                ) {
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, 0f),
+                                    Offset(size.width, 0f),
+                                    strokeWidth,
+                                )
+                            },
+                ) {
                 }
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (leftSelectedArea[2]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (leftSelectedArea[2]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
+                            )
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, 0f),
-                                Offset(size.width, 0f),
-                                strokeWidth
-                            )
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(size.height, 0f),
-                                Offset(size.height, size.height),
-                                strokeWidth
-                            )
-                        }
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, 0f),
+                                    Offset(size.width, 0f),
+                                    strokeWidth,
+                                )
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(size.height, 0f),
+                                    Offset(size.height, size.height),
+                                    strokeWidth,
+                                )
+                            },
                 ) {
-
                 }
             }
             Row(
-                modifier = Modifier
-                    .width(300.dp)
-                    .height(100.dp)
+                modifier =
+                    Modifier
+                        .width(300.dp)
+                        .height(100.dp),
             ) {
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (leftSelectedArea[3]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
-
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, 0f),
-                                Offset(0f, size.height),
-                                strokeWidth
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (leftSelectedArea[3]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
                             )
-                        }
-                ) {
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, 0f),
+                                    Offset(0f, size.height),
+                                    strokeWidth,
+                                )
+                            },
+                ) {
                 }
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (leftSelectedArea[4]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (leftSelectedArea[4]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
+                            )
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            ),
                 ) {
-
                 }
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (leftSelectedArea[5]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
-
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(size.height, 0f),
-                                Offset(size.height, size.height),
-                                strokeWidth
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (leftSelectedArea[5]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
                             )
-                        }
-                ) {
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(size.height, 0f),
+                                    Offset(size.height, size.height),
+                                    strokeWidth,
+                                )
+                            },
+                ) {
                 }
             }
             Row(
-                modifier = Modifier
-                    .width(300.dp)
-                    .height(100.dp)
+                modifier =
+                    Modifier
+                        .width(300.dp)
+                        .height(100.dp),
             ) {
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (leftSelectedArea[6]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (leftSelectedArea[6]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
+                            )
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, 0f),
-                                Offset(0f, size.height),
-                                strokeWidth
-                            )
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, size.height),
-                                Offset(size.height, size.height),
-                                strokeWidth
-                            )
-                        }
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, 0f),
+                                    Offset(0f, size.height),
+                                    strokeWidth,
+                                )
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, size.height),
+                                    Offset(size.height, size.height),
+                                    strokeWidth,
+                                )
+                            },
                 ) {
-
                 }
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (leftSelectedArea[7]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
-
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, size.height),
-                                Offset(size.height, size.height),
-                                strokeWidth
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (leftSelectedArea[7]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
                             )
-                        }
-                ) {
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, size.height),
+                                    Offset(size.height, size.height),
+                                    strokeWidth,
+                                )
+                            },
+                ) {
                 }
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (leftSelectedArea[8]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (leftSelectedArea[8]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
+                            )
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, size.height),
-                                Offset(size.height, size.height),
-                                strokeWidth
-                            )
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(size.height, 0f),
-                                Offset(size.height, size.height),
-                                strokeWidth
-                            )
-                        }
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, size.height),
+                                    Offset(size.height, size.height),
+                                    strokeWidth,
+                                )
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(size.height, 0f),
+                                    Offset(size.height, size.height),
+                                    strokeWidth,
+                                )
+                            },
                 ) {
-
                 }
             }
         }
         Spacer(
-            modifier = Modifier
-                .width(50.dp)
+            modifier =
+                Modifier
+                    .width(50.dp),
         )
         Column(
-            modifier = Modifier
-                .background(
-                    color = Color(0xfff7f7f7),
-                    shape = RoundedCornerShape(8.dp)
-                )
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .background(
+                        color = Color(0xfff7f7f7),
+                        shape = RoundedCornerShape(8.dp),
+                    )
+                    .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                modifier = Modifier
-                    .padding(bottom = 12.dp),
-                text = StringProvider.getString(R.string.test_result_right, ),
+                modifier =
+                    Modifier
+                        .padding(bottom = 12.dp),
+                text = StringProvider.getString(R.string.test_result_right),
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
             /**
              * 오른쪽 결과 그래프
              */
             Row(
-                modifier = Modifier
-                    .width(300.dp)
-                    .height(100.dp)
+                modifier =
+                    Modifier
+                        .width(300.dp)
+                        .height(100.dp),
             ) {
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (rightSelectedArea[0]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (rightSelectedArea[0]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
+                            )
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, 0f),
-                                Offset(size.width, 0f),
-                                strokeWidth
-                            )
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, 0f),
-                                Offset(0f, size.height),
-                                strokeWidth
-                            )
-                        }
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, 0f),
+                                    Offset(size.width, 0f),
+                                    strokeWidth,
+                                )
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, 0f),
+                                    Offset(0f, size.height),
+                                    strokeWidth,
+                                )
+                            },
                 ) {
-
                 }
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (rightSelectedArea[1]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
-
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, 0f),
-                                Offset(size.width, 0f),
-                                strokeWidth
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (rightSelectedArea[1]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
                             )
-                        }
-                ) {
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, 0f),
+                                    Offset(size.width, 0f),
+                                    strokeWidth,
+                                )
+                            },
+                ) {
                 }
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (rightSelectedArea[2]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (rightSelectedArea[2]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
+                            )
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, 0f),
-                                Offset(size.width, 0f),
-                                strokeWidth
-                            )
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(size.height, 0f),
-                                Offset(size.height, size.height),
-                                strokeWidth
-                            )
-                        }
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, 0f),
+                                    Offset(size.width, 0f),
+                                    strokeWidth,
+                                )
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(size.height, 0f),
+                                    Offset(size.height, size.height),
+                                    strokeWidth,
+                                )
+                            },
                 ) {
-
                 }
             }
             Row(
-                modifier = Modifier
-                    .width(300.dp)
-                    .height(100.dp)
+                modifier =
+                    Modifier
+                        .width(300.dp)
+                        .height(100.dp),
             ) {
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (rightSelectedArea[3]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
-
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, 0f),
-                                Offset(0f, size.height),
-                                strokeWidth
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (rightSelectedArea[3]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
                             )
-                        }
-                ) {
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, 0f),
+                                    Offset(0f, size.height),
+                                    strokeWidth,
+                                )
+                            },
+                ) {
                 }
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (rightSelectedArea[4]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (rightSelectedArea[4]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
+                            )
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            ),
                 ) {
-
                 }
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (rightSelectedArea[5]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
-
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(size.height, 0f),
-                                Offset(size.height, size.height),
-                                strokeWidth
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (rightSelectedArea[5]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
                             )
-                        }
-                ) {
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(size.height, 0f),
+                                    Offset(size.height, size.height),
+                                    strokeWidth,
+                                )
+                            },
+                ) {
                 }
             }
             Row(
-                modifier = Modifier
-                    .width(300.dp)
-                    .height(100.dp)
+                modifier =
+                    Modifier
+                        .width(300.dp)
+                        .height(100.dp),
             ) {
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (rightSelectedArea[6]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (rightSelectedArea[6]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
+                            )
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, 0f),
-                                Offset(0f, size.height),
-                                strokeWidth
-                            )
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, size.height),
-                                Offset(size.height, size.height),
-                                strokeWidth
-                            )
-                        }
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, 0f),
+                                    Offset(0f, size.height),
+                                    strokeWidth,
+                                )
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, size.height),
+                                    Offset(size.height, size.height),
+                                    strokeWidth,
+                                )
+                            },
                 ) {
-
                 }
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (rightSelectedArea[7]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
-
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, size.height),
-                                Offset(size.height, size.height),
-                                strokeWidth
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (rightSelectedArea[7]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
                             )
-                        }
-                ) {
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, size.height),
+                                    Offset(size.height, size.height),
+                                    strokeWidth,
+                                )
+                            },
+                ) {
                 }
                 Box(
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
-                        .background(
-                            color = when (rightSelectedArea[8]) {
-                                MacularDisorderType.Normal -> Color(0xffffffff)
-                                else -> Color(0xb4ea2525)
-                            }
-                        )
-                        .border(
-                            width = (0.5).dp,
-                            color =
-                                Color(0xffc3c3c3),
-                            shape = RectangleShape
-                        )
-                        .drawBehind {
-                            val strokeWidth = 1.5f
-                            val y = strokeWidth / 2
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(100.dp)
+                            .background(
+                                color =
+                                    when (rightSelectedArea[8]) {
+                                        MacularDisorderType.Normal -> Color(0xffffffff)
+                                        else -> Color(0xb4ea2525)
+                                    },
+                            )
+                            .border(
+                                width = (0.5).dp,
+                                color =
+                                    Color(0xffc3c3c3),
+                                shape = RectangleShape,
+                            )
+                            .drawBehind {
+                                val strokeWidth = 1.5f
+                                val y = strokeWidth / 2
 
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(0f, size.height),
-                                Offset(size.height, size.height),
-                                strokeWidth
-                            )
-                            drawLine(
-                                Color(0xffc3c3c3),
-                                Offset(size.height, 0f),
-                                Offset(size.height, size.height),
-                                strokeWidth
-                            )
-                        }
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(0f, size.height),
+                                    Offset(size.height, size.height),
+                                    strokeWidth,
+                                )
+                                drawLine(
+                                    Color(0xffc3c3c3),
+                                    Offset(size.height, 0f),
+                                    Offset(size.height, size.height),
+                                    strokeWidth,
+                                )
+                            },
                 ) {
-
                 }
             }
         }

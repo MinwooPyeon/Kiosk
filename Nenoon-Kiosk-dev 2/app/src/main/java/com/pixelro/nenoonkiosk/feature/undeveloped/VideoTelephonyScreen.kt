@@ -13,39 +13,41 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.R
 
-//미개발
+// 미개발
 @Composable
-fun VideoTelephonyScreen(
-    toContactScreen: () -> Unit
-) {
+fun VideoTelephonyScreen(toContactScreen: () -> Unit) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier =
+            Modifier
+                .fillMaxSize(),
     ) {
         Image(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier =
+                Modifier
+                    .fillMaxSize(),
             painter = painterResource(id = R.drawable.jun),
-            contentDescription = ""
+            contentDescription = "",
         )
         Image(
-            modifier = Modifier
-                .height(150.dp)
-                .width(150.dp)
-                .offset(200.dp, 1120.dp),
+            modifier =
+                Modifier
+                    .height(150.dp)
+                    .width(150.dp)
+                    .offset(200.dp, 1120.dp),
             painter = painterResource(id = R.drawable.mute_icon),
-            contentDescription = ""
+            contentDescription = "",
         )
         Image(
-            modifier = Modifier
-                .height(150.dp)
-                .width(150.dp)
-                .offset(450.dp, 1120.dp)
-                .clickable(
-                    onClick = { toContactScreen() }
-                ),
+            modifier =
+                Modifier
+                    .height(150.dp)
+                    .width(150.dp)
+                    .offset(450.dp, 1120.dp)
+                    .clickable(
+                        onClick = { toContactScreen() },
+                    ),
             painter = painterResource(id = R.drawable.end_icon),
-            contentDescription = ""
+            contentDescription = "",
         )
     }
 }

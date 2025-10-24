@@ -26,10 +26,7 @@ import com.pixelro.nenoonkiosk.core.constants.NavConstants
  * 광고 내용
  */
 @Composable
-fun Advertisement(
-    idx: Int
-) {
-
+fun Advertisement(idx: Int) {
     val context = LocalContext.current
     val sharedPreferences =
         remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
@@ -37,38 +34,45 @@ fun Advertisement(
         sharedPreferences.getString("language", "defaultLanguage")
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(300.dp),
         elevation = CardDefaults.cardElevation(0.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xffffffff)
-        ),
-        shape = RoundedCornerShape(8.dp)
+        colors =
+            CardDefaults.cardColors(
+                containerColor = Color(0xffffffff),
+            ),
+        shape = RoundedCornerShape(8.dp),
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .fillMaxSize(),
+            contentAlignment = Alignment.Center,
         ) {
             Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(
-                        shape = RoundedCornerShape(8.dp)
-                    ),
-                painter = painterResource(id =
-                    if (savedLanguage == "ko") {
-                        when (idx % 2) {
-                            0 -> R.drawable.ad_lens
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(
+                            shape = RoundedCornerShape(8.dp),
+                        ),
+                painter =
+                    painterResource(
+                        id =
+                            if (savedLanguage == "ko") {
+                                when (idx % 2) {
+                                    0 -> R.drawable.ad_lens
 //                    1 -> R.drawable.ad_0
-                            else -> R.drawable.ad_hades
-                        }
-                    } else {
-                        R.drawable.ad_hades_en
-                    }),
+                                    else -> R.drawable.ad_hades
+                                }
+                            } else {
+                                R.drawable.ad_hades_en
+                            },
+                    ),
                 contentScale = ContentScale.FillWidth,
-                contentDescription = ""
+                contentDescription = "",
             )
         }
     }

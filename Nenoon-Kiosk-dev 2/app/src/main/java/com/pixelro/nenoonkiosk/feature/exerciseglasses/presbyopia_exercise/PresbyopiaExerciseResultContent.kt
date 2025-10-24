@@ -24,85 +24,98 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 @Composable
 fun PresbyopiaExerciseResultContent(
     testResult: PresbyopiaExerciseResult,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     val result = testResult
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
-            modifier = Modifier
-                .padding(
-                    start = 20.dp, end = 20.dp,
-                    top = 100.dp, bottom = 20.dp
-                )
-                .fillMaxWidth()
-                .height(300.dp)
-                .border(
-                    border = BorderStroke(1.dp, Color(0xffffffff)),
-                    shape = RoundedCornerShape(8.dp)
-                ),
+            modifier =
+                Modifier
+                    .padding(
+                        start = 20.dp,
+                        end = 20.dp,
+                        top = 100.dp,
+                        bottom = 20.dp,
+                    )
+                    .fillMaxWidth()
+                    .height(300.dp)
+                    .border(
+                        border = BorderStroke(1.dp, Color(0xffffffff)),
+                        shape = RoundedCornerShape(8.dp),
+                    ),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ){
+            verticalArrangement = Arrangement.Top,
+        ) {
             Text(
-                modifier = Modifier
-                    .padding(start = 40.dp, top = 40.dp, bottom = 10.dp),
-                text = StringProvider.getString(
-                    R.string.test_result_my_result,
-                    
-                ),
+                modifier =
+                    Modifier
+                        .padding(start = 40.dp, top = 40.dp, bottom = 10.dp),
+                text =
+                    StringProvider.getString(
+                        R.string.test_result_my_result,
+                    ),
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color(0xffffffff)
+                color = Color(0xffffffff),
             )
             Text(
-                modifier = Modifier
-                    .padding(start = 40.dp, top = 20.dp),
-                text = StringProvider.getString(R.string.stage, ) + "${testResult.presbyopiaExerciseValue + 2} ",
+                modifier =
+                    Modifier
+                        .padding(start = 40.dp, top = 20.dp),
+                text = StringProvider.getString(R.string.stage) + "${testResult.presbyopiaExerciseValue + 2} ",
                 fontSize = 70.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = Color(0xffffffff)
+                color = Color(0xffffffff),
             )
         }
-        Column(modifier = Modifier
-            .fillMaxWidth(),
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.Top,
         ) {
             Text(
-                modifier = Modifier
-                    .padding(top = 30.dp),
-                text = StringProvider.getString(R.string.test_complete, ),
+                modifier =
+                    Modifier
+                        .padding(top = 30.dp),
+                text = StringProvider.getString(R.string.test_complete),
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color(0xffffffff)
+                color = Color(0xffffffff),
             )
             Text(
-                modifier = Modifier
-                    .padding(bottom = 10.dp),
-                text = StringProvider.getString(
-                    R.string.experience_glasses,
-                    
-                ),
+                modifier =
+                    Modifier
+                        .padding(bottom = 10.dp),
+                text =
+                    StringProvider.getString(
+                        R.string.experience_glasses,
+                    ),
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color(0xffffffff)
+                color = Color(0xffffffff),
             )
         }
-        Box(modifier = Modifier
-            .fillMaxWidth(),
-            contentAlignment = Alignment.Center
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
+            contentAlignment = Alignment.Center,
         ) {
             Text(
-                modifier = Modifier
-                    .padding(top = 20.dp, bottom = 10.dp),
-                text = StringProvider.getString(R.string.consistently_wear, ),
+                modifier =
+                    Modifier
+                        .padding(top = 20.dp, bottom = 10.dp),
+                text = StringProvider.getString(R.string.consistently_wear),
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color(0xffffffff)
+                color = Color(0xffffffff),
             )
         }
     }

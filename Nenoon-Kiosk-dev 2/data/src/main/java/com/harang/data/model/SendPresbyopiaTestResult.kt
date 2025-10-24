@@ -2,7 +2,6 @@ package com.harang.data.model
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
-import java.time.LocalDateTime
 
 data class SendPresbyopiaTestResultRequest(
     @SerializedName("surveyId")
@@ -34,7 +33,7 @@ data class SendPresbyopiaTestResultRequest(
     @SerializedName("presbyopia9")
     val presbyopia9: String = "",
     @SerializedName("presbyopia10")
-    val presbyopia10: String = ""
+    val presbyopia10: String = "",
 ) : Serializable
 
 data class SendPresbyopiaTestResultResponse(
@@ -43,5 +42,5 @@ data class SendPresbyopiaTestResultResponse(
     @SerializedName("createAt")
     val createAt: String,
     @SerializedName("data")
-    val data: Map<String, Any>
+    val data: Map<String, Any>,
 ) : Serializable

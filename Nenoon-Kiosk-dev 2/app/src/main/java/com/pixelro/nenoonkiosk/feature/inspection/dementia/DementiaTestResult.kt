@@ -1,7 +1,7 @@
 package com.pixelro.nenoonkiosk.feature.inspection.dementia
 
 data class DementiaTestResult(
-    val scores: List<DementiaViewModel.DementiaAnswer>
+    val scores: List<DementiaViewModel.DementiaAnswer>,
 ) {
     fun countActiveScore(): Int {
         return scores.count { it == DementiaViewModel.DementiaAnswer.Yes }

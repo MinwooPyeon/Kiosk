@@ -17,7 +17,6 @@ fun Logo(
     white: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
-
     val context = LocalContext.current
     val sharedPreferences =
         remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
@@ -26,15 +25,23 @@ fun Logo(
 
     Image(
         modifier = modifier.width(600.dp),
-        painter = painterResource(id =
-            if (savedLanguage == "ko") {
-                if (white) R.drawable.nenoon_logo_v2_invisible_white
-                else R.drawable.nenoon_logo_v2_invisible
-            } else {
-                if (white) R.drawable.nenoon_logo_v2_invisible_white_en
-                else R.drawable.nenoon_logo_v2_invisible_en
-            }
-        ),
-        contentDescription = ""
+        painter =
+            painterResource(
+                id =
+                    if (savedLanguage == "ko") {
+                        if (white) {
+                            R.drawable.nenoon_logo_v2_invisible_white
+                        } else {
+                            R.drawable.nenoon_logo_v2_invisible
+                        }
+                    } else {
+                        if (white) {
+                            R.drawable.nenoon_logo_v2_invisible_white_en
+                        } else {
+                            R.drawable.nenoon_logo_v2_invisible_en
+                        }
+                    },
+            ),
+        contentDescription = "",
     )
 }

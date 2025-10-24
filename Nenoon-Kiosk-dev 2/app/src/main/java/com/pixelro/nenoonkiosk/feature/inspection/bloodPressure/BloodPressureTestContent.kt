@@ -4,28 +4,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.inbody.bpbio.IB_SDKConst
-import com.pixelro.nenoonkiosk.core.manager.BP170BManager
-import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BViewModel
-import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
+import com.pixelro.nenoonkiosk.core.manager.BP170BManager
+import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BInProgressScreen
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BStartScreen
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.BPBIO320InProgressScreen
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.BPBIO320StartScreen
-import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
-import com.pixelro.nenoonkiosk.feature.user.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BViewModel
+import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 
 enum class BloodPressureTestScreen {
     Start,
     Instructions,
     InProgress,
-    Error
+    Error,
 }
 
 @Composable
@@ -35,40 +35,41 @@ fun BloodPressureTestContent(
     isSignedIn: Boolean,
     bpbiO320ViewModel: BPBIO320ViewModel,
     bP170BViewModel: BP170BViewModel = hiltViewModel(),
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
 ) {
-
     val localNavController = rememberNavController()
     val bPBIO320ConnectionState by bpbiO320ViewModel.connectionState.collectAsState()
     val bP170BConnectionState by bP170BViewModel.connectionState.collectAsState()
     val bloodPressureMonitorType = SharedPreferencesManager.getBloodPressureMonitorType()
 
     LaunchedEffect(bPBIO320ConnectionState, bP170BConnectionState) {
-        if ((bloodPressureMonitorType == SharedPreferencesManager.BloodPressureMonitorType.BPBIO320 && 
-                    bPBIO320ConnectionState == IB_SDKConst.DISCONNECTED) ||
-            (bloodPressureMonitorType == SharedPreferencesManager.BloodPressureMonitorType.BP170B && 
-                    bP170BConnectionState == BP170BManager.BluetoothConnectionState.DISCONNECTED)) {
+        if ((
+                bloodPressureMonitorType == SharedPreferencesManager.BloodPressureMonitorType.BPBIO320 &&
+                    bPBIO320ConnectionState == IB_SDKConst.DISCONNECTED
+            ) ||
+            (
+                bloodPressureMonitorType == SharedPreferencesManager.BloodPressureMonitorType.BP170B &&
+                    bP170BConnectionState == BP170BManager.BluetoothConnectionState.DISCONNECTED
+            )
+        ) {
             localNavController.popBackStack(BloodPressureTestScreen.Start.name, false)
         }
     }
 
     NavHost(navController = localNavController, startDestination = BloodPressureTestScreen.Start.name) {
-
-
         composable(BloodPressureTestScreen.Start.name) {
-
             when (bloodPressureMonitorType) {
                 SharedPreferencesManager.BloodPressureMonitorType.BPBIO320 ->
                     BPBIO320StartScreen(
                         navController = localNavController,
                         viewModel = bpbiO320ViewModel,
-                        onBack = { navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false) }
+                        onBack = { navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false) },
                     )
                 SharedPreferencesManager.BloodPressureMonitorType.BP170B ->
                     BP170BStartScreen(
                         navController = localNavController,
                         viewModel = bP170BViewModel,
-                        onBack = { navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false) }
+                        onBack = { navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false) },
                     )
             }
         }
@@ -83,24 +84,23 @@ fun BloodPressureTestContent(
                     BPBIO320InProgressScreen(
                         navController = localNavController,
                         viewModel = bpbiO320ViewModel,
-                        toResultScreen = toResultScreen
+                        toResultScreen = toResultScreen,
                     )
                 SharedPreferencesManager.BloodPressureMonitorType.BP170B ->
                     BP170BInProgressScreen(
                         navController = localNavController,
                         viewModel = bP170BViewModel,
-                        toResultScreen = toResultScreen
+                        toResultScreen = toResultScreen,
                     )
             }
         }
         composable(BloodPressureTestScreen.Error.name) {
-
             BloodPressureErrorScreen(
                 onReturn = {
                     navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false)
                 },
                 onLogout = {
-                    signInViewModel.userSignOut()
+                    loginViewModel.userSignOut()
                     navController.navigate(NavConstants.ROUTE_SIGN_IN)
                 },
                 navController = localNavController,

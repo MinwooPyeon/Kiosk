@@ -3,7 +3,7 @@ package com.harang.data.model
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-data class SendSurveyDataRequest (
+data class SendSurveyDataRequest(
     @SerializedName("age")
     val age: Int,
     @SerializedName("gender")
@@ -35,7 +35,7 @@ data class SendSurveyDataRequest (
     @SerializedName("survey9")
     val survey9: String = "",
     @SerializedName("survey10")
-    val survey10: String = ""
+    val survey10: String = "",
 )
 
 data class SendSurveyDataResponse(
@@ -44,5 +44,5 @@ data class SendSurveyDataResponse(
     @SerializedName("createAt")
     val createAt: String,
     @SerializedName("data")
-    val data: Map<String, Any>
+    val data: Map<String, Any>,
 ) : Serializable

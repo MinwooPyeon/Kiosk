@@ -21,26 +21,27 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 @Composable
 fun GripStrengthTestResultContent(
     testResult: GripStrengthTestResult,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(40.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(40.dp),
     ) {
         Text(
-            text = StringProvider.getString(R.string.test_result_my_result, ),
+            text = StringProvider.getString(R.string.test_result_my_result),
             fontSize = 28.sp,
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.Medium,
         )
 
         Spacer(modifier = Modifier.height(40.dp))
 
         Row {
             Text(
-                text = StringProvider.getString(R.string.test_result_left, ) + " : ",
+                text = StringProvider.getString(R.string.test_result_left) + " : ",
                 fontSize = 32.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
 
             /**
@@ -51,18 +52,17 @@ fun GripStrengthTestResultContent(
                 fontSize = 32.sp,
                 color = colorResource(R.color.main),
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
         Row {
-
             Text(
-                text = StringProvider.getString(R.string.test_result_right, ) + " : ",
+                text = StringProvider.getString(R.string.test_result_right) + " : ",
                 fontSize = 32.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
 
             /**
@@ -73,10 +73,8 @@ fun GripStrengthTestResultContent(
                 fontSize = 32.sp,
                 color = colorResource(R.color.main),
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
-
-
     }
 }

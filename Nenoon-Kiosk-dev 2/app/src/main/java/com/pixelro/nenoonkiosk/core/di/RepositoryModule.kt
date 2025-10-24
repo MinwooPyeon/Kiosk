@@ -16,44 +16,39 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
-
     @Provides
     fun provideSignInResultRepository(
         remoteDataSource: SignInRemoteDataSource,
-        sharedPreferencesDataSource: SharedPreferencesDataSource
+        sharedPreferencesDataSource: SharedPreferencesDataSource,
     ): SignInRepository {
         return SignInRepository(
             remoteDataSource = remoteDataSource,
-            sharedPreferencesDataSource = sharedPreferencesDataSource
+            sharedPreferencesDataSource = sharedPreferencesDataSource,
         )
     }
 
     @Provides
-    fun provideScreenSaverRepository(
-        sharedPreferencesDataSource: SharedPreferencesDataSource
-    ): ScreenSaverRepository {
+    fun provideScreenSaverRepository(sharedPreferencesDataSource: SharedPreferencesDataSource): ScreenSaverRepository {
         return ScreenSaverRepository(
-            sharedPreferencesDataSource = sharedPreferencesDataSource
+            sharedPreferencesDataSource = sharedPreferencesDataSource,
         )
     }
 
     @Provides
     fun provideSurveyRepository(
         remoteDataSource: SurveyRemoteDataSource,
-        sharedPreferencesDataSource: SharedPreferencesDataSource
+        sharedPreferencesDataSource: SharedPreferencesDataSource,
     ): SurveyRepository {
         return SurveyRepository(
             remoteDataSource = remoteDataSource,
-            sharedPreferencesDataSource = sharedPreferencesDataSource
+            sharedPreferencesDataSource = sharedPreferencesDataSource,
         )
     }
 
     @Provides
-    fun provideTestResultRepository(
-        remoteDataSource: TestResultRemoteDataSource
-    ): TestResultRepository {
+    fun provideTestResultRepository(remoteDataSource: TestResultRemoteDataSource): TestResultRepository {
         return TestResultRepository(
-            remoteDataSource = remoteDataSource
+            remoteDataSource = remoteDataSource,
         )
     }
 }
