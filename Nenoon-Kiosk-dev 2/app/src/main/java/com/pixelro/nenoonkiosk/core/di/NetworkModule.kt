@@ -37,9 +37,5 @@ object NetworkModule {
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun provideNenoonApi(retrofit: Retrofit): NenoonKioskApi {
-        return retrofit.create(NenoonKioskApi::class.java)
-    }
+
 }
