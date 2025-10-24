@@ -1,0 +1,41 @@
+# Build output directories
+/Debug/
+/Release/
+
+# STM32CubeIDE project settings and metadata
+/.settings/
+/.metadata/
+.mxproject
+.launch
+
+# Generated files that can be re-generated
+*.bak
+*.elf
+*.hex
+*.bin
+*.map
+*.lst
+*.su
+*.srec
+*.sym
+*.dep
+*.o
+*.d
+*.i
+*.s
+*.a
+*.lib
+*.gdbinit
+*.project
+*.cproject
+
+# CubeMX generated files (if applicable and you don't want to track them)
+# If you want to track the .ioc file, do not ignore it.
+# *.ioc
+
+# Editor-specific files (e.g., VS Code)
+.vscode/
+
+# Operating system files
+.DS_Store
+Thumbs.db
