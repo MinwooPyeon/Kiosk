@@ -18,25 +18,25 @@ import com.pixelro.nenoonkiosk.R
  * 설정 버튼
  */
 @Composable
-fun SettingsButton(
-    toSettingsScreen: () -> Unit
-) {
+fun SettingsButton(toSettingsScreen: () -> Unit) {
     Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.CenterEnd
+        modifier =
+            Modifier
+                .fillMaxSize(),
+        contentAlignment = Alignment.CenterEnd,
     ) {
         Image(
-            modifier = Modifier
-                .width(28.dp)
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) {
-                    toSettingsScreen()
-                },
+            modifier =
+                Modifier
+                    .width(28.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                    ) {
+                        toSettingsScreen()
+                    },
             painter = painterResource(id = R.drawable.icon_settings),
-            contentDescription = ""
+            contentDescription = "",
         )
     }
 }

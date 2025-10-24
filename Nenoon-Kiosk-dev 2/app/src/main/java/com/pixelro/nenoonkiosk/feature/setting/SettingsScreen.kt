@@ -31,14 +31,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.user.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 
-//환경설정 뷰
+// 환경설정 뷰
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun SettingsScreen(
@@ -46,12 +46,12 @@ fun SettingsScreen(
     isSignedIn: Boolean,
     toSignInScreen: () -> Unit,
     toSoftwareInfoScreen: () -> Unit,
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
     onBack: () -> Unit,
 ) {
     val settingsDialogState by viewModel.settingsDialogState.collectAsState()
-    val isUserSignedIn by signInViewModel.isUserSignedIn.collectAsState()
-    val isLocationSignedIn by signInViewModel.isLocationSignedIn.collectAsState()
+    val isUserSignedIn by loginViewModel.isUserSignedIn.collectAsState()
+    val isLocationSignedIn by loginViewModel.isLocationSignedIn.collectAsState()
     val isSeniorValue by viewModel.isSenior.collectAsState()
     val context = LocalContext.current
 
@@ -60,7 +60,7 @@ fun SettingsScreen(
             LanguageSelectDialog(
                 updateLanguage = {
                     viewModel.updateLanguage(it)
-                }
+                },
             ) {
                 viewModel.setSettingsDialogState(NenoonViewModel.SettingsDialogState.None)
             }
@@ -74,78 +74,86 @@ fun SettingsScreen(
     }
 
     Column(
-    modifier = Modifier
-        .fillMaxSize()
+        modifier =
+            Modifier
+                .fillMaxSize(),
     ) {
         /**
          * 상단 바
          */
         Box(
-            modifier = Modifier
-                .padding(top = (GlobalValue.statusBarPadding + 20).dp, bottom = 20.dp)
-                .fillMaxWidth()
-                .height(40.dp),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .padding(top = (GlobalValue.statusBarPadding + 20).dp, bottom = 20.dp)
+                    .fillMaxWidth()
+                    .height(40.dp),
+            contentAlignment = Alignment.Center,
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        onBack()
-                    },
-                contentAlignment = Alignment.CenterStart
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                        ) {
+                            onBack()
+                        },
+                contentAlignment = Alignment.CenterStart,
             ) {
                 Image(
-                    modifier = Modifier
-                        .padding(start = 40.dp, top = 4.dp)
-                        .width(28.dp),
+                    modifier =
+                        Modifier
+                            .padding(start = 40.dp, top = 4.dp)
+                            .width(28.dp),
                     painter = painterResource(id = R.drawable.icon_back_black),
-                    contentDescription = ""
+                    contentDescription = "",
                 )
             }
             Text(
                 textAlign = TextAlign.Center,
-                text = StringProvider.getString(R.string.settings_title, ),
+                text = StringProvider.getString(R.string.settings_title),
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
         }
 
         Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(
-                    color = Color(0xffdddddd)
-                )
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(
+                        color = Color(0xffdddddd),
+                    ),
         )
         /**
          * 언어
          */
         Box(
-            modifier = Modifier
-                .clickable {
-                    viewModel.setSettingsDialogState(NenoonViewModel.SettingsDialogState.Language)
-                }
+            modifier =
+                Modifier
+                    .clickable {
+                        viewModel.setSettingsDialogState(NenoonViewModel.SettingsDialogState.Language)
+                    },
         ) {
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 40.dp, top = 10.dp, bottom = 10.dp),
-                text = StringProvider.getString(R.string.settings_language, ),
-                fontSize = 30.sp
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(start = 40.dp, top = 10.dp, bottom = 10.dp),
+                text = StringProvider.getString(R.string.settings_language),
+                fontSize = 30.sp,
             )
         }
         Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(
-                    color = Color(0xffdddddd)
-                )
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(
+                        color = Color(0xffdddddd),
+                    ),
         )
         /**
          * 시니어용 목록화면
@@ -183,44 +191,49 @@ fun SettingsScreen(
          */
         if (isLocationSignedIn) {
             Box(
-                modifier = Modifier
-                    .clickable {
-                        if (isSignedIn) {
-                            if (isUserSignedIn) {
-                                signInViewModel.userSignOut()
-                            } else {
-                                signInViewModel.locationSignOut()
+                modifier =
+                    Modifier
+                        .clickable {
+                            if (isSignedIn) {
+                                if (isUserSignedIn) {
+                                    loginViewModel.userSignOut()
+                                } else {
+                                    loginViewModel.locationSignOut()
+                                }
                             }
-                        }
-                        toSignInScreen()
-                    }
+                            toSignInScreen()
+                        },
             ) {
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 40.dp, top = 10.dp, bottom = 10.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 40.dp, top = 10.dp, bottom = 10.dp),
                     text =
                         when (isSignedIn) {
-                            true -> StringProvider.getString(
-                                R.string.settings_signout
-                            )
-                            false -> StringProvider.getString(R.string.signin,)
+                            true ->
+                                StringProvider.getString(
+                                    R.string.settings_signout,
+                                )
+                            false -> StringProvider.getString(R.string.signin)
                         },
                     fontSize = 30.sp,
-                    color = when (isSignedIn) {
-                        true -> Color(0xFFFF0000)
-                        false -> Color(0xFF000000)
-                    }
+                    color =
+                        when (isSignedIn) {
+                            true -> Color(0xFFFF0000)
+                            false -> Color(0xFF000000)
+                        },
                 )
             }
 
             Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(
-                        color = Color(0xffdddddd)
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(
+                            color = Color(0xffdddddd),
+                        ),
             )
         }
 
@@ -228,30 +241,33 @@ fun SettingsScreen(
          * 혈압계 선택
          */
         Box(
-            modifier = Modifier
-                .clickable {
-                    viewModel.setSettingsDialogState(NenoonViewModel.SettingsDialogState.BloodPressureMonitorType)
-                }
+            modifier =
+                Modifier
+                    .clickable {
+                        viewModel.setSettingsDialogState(NenoonViewModel.SettingsDialogState.BloodPressureMonitorType)
+                    },
         ) {
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 40.dp, top = 10.dp, bottom = 10.dp),
-                text = StringProvider.getString(
-                    R.string.blood_pressure_monitor_image_content_description,
-                    
-                ) +
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(start = 40.dp, top = 10.dp, bottom = 10.dp),
+                text =
+                    StringProvider.getString(
+                        R.string.blood_pressure_monitor_image_content_description,
+                    ) +
                         " (${SharedPreferencesManager.getBloodPressureMonitorType().name})",
-                fontSize = 30.sp
+                fontSize = 30.sp,
             )
         }
         Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(
-                    color = Color(0xffdddddd)
-                )
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(
+                        color = Color(0xffdddddd),
+                    ),
         )
 //        Spacer(
 //            modifier = Modifier
@@ -261,9 +277,11 @@ fun SettingsScreen(
 //                    color = Color(0xffdddddd)
 //                )
 //        )
+
         /**
          * 이용약관 (내용 없음)
          */
+
 //        Box(
 //            modifier = Modifier
 //                .clickable {
@@ -313,181 +331,204 @@ fun SettingsScreen(
 @Composable
 fun LanguageSelectDialog(
     updateLanguage: (String) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
 ) {
     Dialog(
         onDismissRequest = onDismissRequest,
-        properties = DialogProperties()
+        properties = DialogProperties(),
     ) {
         Column(
-            modifier = Modifier
-                .width(600.dp)
-                .height(1000.dp)
-                .background(
-                    color = Color(0xffffffff),
-                    shape = RoundedCornerShape(8.dp)
-                )
+            modifier =
+                Modifier
+                    .width(600.dp)
+                    .height(1000.dp)
+                    .background(
+                        color = Color(0xffffffff),
+                        shape = RoundedCornerShape(8.dp),
+                    ),
         ) {
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, bottom = 20.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 20.dp, bottom = 20.dp),
                 textAlign = TextAlign.Center,
-                text = StringProvider.getString(R.string.settings_language, ),
-                fontSize = 30.sp
+                text = StringProvider.getString(R.string.settings_language),
+                fontSize = 30.sp,
             )
             Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(2.dp)
-                    .background(
-                        color = Color(0xffdddddd)
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(2.dp)
+                        .background(
+                            color = Color(0xffdddddd),
+                        ),
             )
             Box(
-                modifier = Modifier
-                    .clickable {
-                        updateLanguage("ko")
-                    }
+                modifier =
+                    Modifier
+                        .clickable {
+                            updateLanguage("ko")
+                        },
             ) {
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
                     text = "한국어",
-                    fontSize = 30.sp
+                    fontSize = 30.sp,
                 )
             }
             Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(
-                        color = Color(0xffdddddd)
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(
+                            color = Color(0xffdddddd),
+                        ),
             )
             Box(
-                modifier = Modifier
-                    .clickable {
-                        updateLanguage("en")
-                    }
+                modifier =
+                    Modifier
+                        .clickable {
+                            updateLanguage("en")
+                        },
             ) {
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
                     text = "English",
-                    fontSize = 30.sp
+                    fontSize = 30.sp,
                 )
             }
             Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(
-                        color = Color(0xffdddddd)
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(
+                            color = Color(0xffdddddd),
+                        ),
             )
             Box(
-                modifier = Modifier
-                    .clickable {
-                        updateLanguage("zh")
-                    }
+                modifier =
+                    Modifier
+                        .clickable {
+                            updateLanguage("zh")
+                        },
             ) {
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
                     text = "汉语",
-                    fontSize = 30.sp
+                    fontSize = 30.sp,
                 )
             }
             Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(
-                        color = Color(0xffdddddd)
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(
+                            color = Color(0xffdddddd),
+                        ),
             )
             Box(
-                modifier = Modifier
-                    .clickable {
-                        updateLanguage("ja")
-                    }
+                modifier =
+                    Modifier
+                        .clickable {
+                            updateLanguage("ja")
+                        },
             ) {
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
                     text = "日本語",
-                    fontSize = 30.sp
+                    fontSize = 30.sp,
                 )
             }
             Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(
-                        color = Color(0xffdddddd)
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(
+                            color = Color(0xffdddddd),
+                        ),
             )
             Box(
-                modifier = Modifier
-                    .clickable {
-                        updateLanguage("fr")
-                    }
+                modifier =
+                    Modifier
+                        .clickable {
+                            updateLanguage("fr")
+                        },
             ) {
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
                     text = "Français",
-                    fontSize = 30.sp
+                    fontSize = 30.sp,
                 )
             }
             Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(
-                        color = Color(0xffdddddd)
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(
+                            color = Color(0xffdddddd),
+                        ),
             )
             Box(
-                modifier = Modifier
-                    .clickable {
-                        updateLanguage("ru")
-                    }
+                modifier =
+                    Modifier
+                        .clickable {
+                            updateLanguage("ru")
+                        },
             ) {
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
                     text = "Русский",
-                    fontSize = 30.sp
+                    fontSize = 30.sp,
                 )
             }
             Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(
-                        color = Color(0xffdddddd)
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(
+                            color = Color(0xffdddddd),
+                        ),
             )
             Box(
-                modifier = Modifier
-                    .clickable {
-                        updateLanguage("es")
-                    }
+                modifier =
+                    Modifier
+                        .clickable {
+                            updateLanguage("es")
+                        },
             ) {
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
                     text = "español",
-                    fontSize = 30.sp
+                    fontSize = 30.sp,
                 )
             }
         }
@@ -498,78 +539,83 @@ fun LanguageSelectDialog(
  * 혈압계 선택 dialog
  */
 @Composable
-fun BloodPressureMonitorSelector(
-    onDismissRequest: () -> Unit
-) {
+fun BloodPressureMonitorSelector(onDismissRequest: () -> Unit) {
     Dialog(
         onDismissRequest = onDismissRequest,
-        properties = DialogProperties()
+        properties = DialogProperties(),
     ) {
-
         Column(
-            modifier = Modifier
-                .width(600.dp)
-                .height(1000.dp)
-                .background(
-                    color = Color(0xffffffff),
-                    shape = RoundedCornerShape(8.dp)
-                )
+            modifier =
+                Modifier
+                    .width(600.dp)
+                    .height(1000.dp)
+                    .background(
+                        color = Color(0xffffffff),
+                        shape = RoundedCornerShape(8.dp),
+                    ),
         ) {
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, bottom = 20.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 20.dp, bottom = 20.dp),
                 textAlign = TextAlign.Center,
-                text = StringProvider.getString(
-                    R.string.blood_pressure_monitor_image_content_description,
-                    
-                ),
-                fontSize = 30.sp
+                text =
+                    StringProvider.getString(
+                        R.string.blood_pressure_monitor_image_content_description,
+                    ),
+                fontSize = 30.sp,
             )
             Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(2.dp)
-                    .background(
-                        color = Color(0xffdddddd)
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(2.dp)
+                        .background(
+                            color = Color(0xffdddddd),
+                        ),
             )
             Box(
-                modifier = Modifier
-                    .clickable {
-                        SharedPreferencesManager.putBloodPressureMonitorType(SharedPreferencesManager.BloodPressureMonitorType.BPBIO320)
-                        onDismissRequest()
-                    }
+                modifier =
+                    Modifier
+                        .clickable {
+                            SharedPreferencesManager.putBloodPressureMonitorType(SharedPreferencesManager.BloodPressureMonitorType.BPBIO320)
+                            onDismissRequest()
+                        },
             ) {
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
                     text = "BPBIO320",
-                    fontSize = 30.sp
+                    fontSize = 30.sp,
                 )
             }
             Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(
-                        color = Color(0xffdddddd)
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(
+                            color = Color(0xffdddddd),
+                        ),
             )
             Box(
-                modifier = Modifier
-                    .clickable {
-                        SharedPreferencesManager.putBloodPressureMonitorType(SharedPreferencesManager.BloodPressureMonitorType.BP170B)
-                        onDismissRequest()
-                    }
+                modifier =
+                    Modifier
+                        .clickable {
+                            SharedPreferencesManager.putBloodPressureMonitorType(SharedPreferencesManager.BloodPressureMonitorType.BP170B)
+                            onDismissRequest()
+                        },
             ) {
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
                     text = "BP170B",
-                    fontSize = 30.sp
+                    fontSize = 30.sp,
                 )
             }
         }

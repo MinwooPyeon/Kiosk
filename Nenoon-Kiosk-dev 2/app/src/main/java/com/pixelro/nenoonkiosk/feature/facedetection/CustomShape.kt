@@ -14,90 +14,156 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 @Composable
-fun CustomShape(
-    viewModel: FaceDetectionViewModel = hiltViewModel()
-) {
+fun CustomShape(viewModel: FaceDetectionViewModel = hiltViewModel()) {
     var size by remember { mutableStateOf(IntSize.Zero) }
     val leftEyePosition = viewModel.leftEyePosition.collectAsState().value
     val rightEyePosition = viewModel.rightEyePosition.collectAsState().value
     val textBox = viewModel.textBox.collectAsState().value
 
     Canvas(
-        modifier = Modifier
-            .fillMaxSize()
-            .onGloballyPositioned {
-                size = it.size
-            }
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .onGloballyPositioned {
+                    size = it.size
+                },
     ) {
         drawCircle(
             color = Color(0xFFFF0000),
             radius = 3f,
-            center = Offset(
-                (size.width - (leftEyePosition.x)) / 1.5f + 210f,
-                leftEyePosition.y / 1.5f + 40f
-            )
+            center =
+                Offset(
+                    (size.width - (leftEyePosition.x)) / 1.5f + 210f,
+                    leftEyePosition.y / 1.5f + 40f,
+                ),
         )
         drawCircle(
             color = Color(0xFFFF0000),
             radius = 3f,
-            center = Offset(
-                (size.width - (rightEyePosition.x)) / 1.5f + 130f,
-                rightEyePosition.y / 1.5f + 40f
-            )
+            center =
+                Offset(
+                    (size.width - (rightEyePosition.x)) / 1.5f + 130f,
+                    rightEyePosition.y / 1.5f + 40f,
+                ),
         )
 
         drawRect(
             color = Color(0xFF00FF00),
-            topLeft = Offset(
-                (size.width - ((textBox?.right?.toFloat() ?: 0f) + (textBox?.left?.toFloat()
-                    ?: 0f)) / 2) / 1.5f + 450f,
-                (((textBox?.top?.toFloat() ?: 0f) + (textBox?.bottom?.toFloat()
-                    ?: 0f)) / 2) / 1.5f - 350f
-            ),
-            size = Size(10f, 10f)
+            topLeft =
+                Offset(
+                    (
+                        size.width - (
+                            (textBox?.right?.toFloat() ?: 0f) + (
+                                textBox?.left?.toFloat()
+                                    ?: 0f
+                            )
+                        ) / 2
+                    ) / 1.5f + 450f,
+                    (
+                        (
+                            (textBox?.top?.toFloat() ?: 0f) + (
+                                textBox?.bottom?.toFloat()
+                                    ?: 0f
+                            )
+                        ) / 2
+                    ) / 1.5f - 350f,
+                ),
+            size = Size(10f, 10f),
         )
         drawRect(
             color = Color(0xFF00FF00),
-            topLeft = Offset(
-                (size.width + 150 - ((textBox?.right?.toFloat() ?: 0f) + (textBox?.left?.toFloat()
-                    ?: 0f)) / 2) / 1.5f + 450f,
-                (((textBox?.top?.toFloat() ?: 0f) + (textBox?.bottom?.toFloat()
-                    ?: 0f)) / 2) / 1.5f - 350f
-            ),
-            size = Size(10f, 10f)
+            topLeft =
+                Offset(
+                    (
+                        size.width + 150 - (
+                            (textBox?.right?.toFloat() ?: 0f) + (
+                                textBox?.left?.toFloat()
+                                    ?: 0f
+                            )
+                        ) / 2
+                    ) / 1.5f + 450f,
+                    (
+                        (
+                            (textBox?.top?.toFloat() ?: 0f) + (
+                                textBox?.bottom?.toFloat()
+                                    ?: 0f
+                            )
+                        ) / 2
+                    ) / 1.5f - 350f,
+                ),
+            size = Size(10f, 10f),
         )
         drawRect(
             color = Color(0xFF00FF00),
-            topLeft = Offset(
-                (size.width - 150 - ((textBox?.right?.toFloat() ?: 0f) + (textBox?.left?.toFloat()
-                    ?: 0f)) / 2) / 1.5f + 450f,
-                (((textBox?.top?.toFloat() ?: 0f) + (textBox?.bottom?.toFloat()
-                    ?: 0f)) / 2) / 1.5f - 350f
-            ),
-            size = Size(10f, 10f)
+            topLeft =
+                Offset(
+                    (
+                        size.width - 150 - (
+                            (textBox?.right?.toFloat() ?: 0f) + (
+                                textBox?.left?.toFloat()
+                                    ?: 0f
+                            )
+                        ) / 2
+                    ) / 1.5f + 450f,
+                    (
+                        (
+                            (textBox?.top?.toFloat() ?: 0f) + (
+                                textBox?.bottom?.toFloat()
+                                    ?: 0f
+                            )
+                        ) / 2
+                    ) / 1.5f - 350f,
+                ),
+            size = Size(10f, 10f),
         )
         drawRect(
             color = Color(0xFF00FF00),
-            topLeft = Offset(
-                (size.width - ((textBox?.right?.toFloat() ?: 0f) + (textBox?.left?.toFloat()
-                    ?: 0f)) / 2) / 1.5f + 450f,
-                150 + (((textBox?.top?.toFloat() ?: 0f) + (textBox?.bottom?.toFloat()
-                    ?: 0f)) / 2) / 1.5f - 350f
-            ),
-            size = Size(10f, 10f)
+            topLeft =
+                Offset(
+                    (
+                        size.width - (
+                            (textBox?.right?.toFloat() ?: 0f) + (
+                                textBox?.left?.toFloat()
+                                    ?: 0f
+                            )
+                        ) / 2
+                    ) / 1.5f + 450f,
+                    150 + (
+                        (
+                            (textBox?.top?.toFloat() ?: 0f) + (
+                                textBox?.bottom?.toFloat()
+                                    ?: 0f
+                            )
+                        ) / 2
+                    ) / 1.5f - 350f,
+                ),
+            size = Size(10f, 10f),
         )
         drawRect(
             color = Color(0xFF00FF00),
-            topLeft = Offset(
-                (size.width - ((textBox?.right?.toFloat() ?: 0f) + (textBox?.left?.toFloat()
-                    ?: 0f)) / 2) / 1.5f + 450f,
-                -150 + (((textBox?.top?.toFloat() ?: 0f) + (textBox?.bottom?.toFloat()
-                    ?: 0f)) / 2) / 1.5f - 350f
-            ),
-            size = Size(10f, 10f)
+            topLeft =
+                Offset(
+                    (
+                        size.width - (
+                            (textBox?.right?.toFloat() ?: 0f) + (
+                                textBox?.left?.toFloat()
+                                    ?: 0f
+                            )
+                        ) / 2
+                    ) / 1.5f + 450f,
+                    -150 + (
+                        (
+                            (textBox?.top?.toFloat() ?: 0f) + (
+                                textBox?.bottom?.toFloat()
+                                    ?: 0f
+                            )
+                        ) / 2
+                    ) / 1.5f - 350f,
+                ),
+            size = Size(10f, 10f),
         )
     }
 }

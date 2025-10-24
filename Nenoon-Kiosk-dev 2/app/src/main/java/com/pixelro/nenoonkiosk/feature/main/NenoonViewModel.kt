@@ -25,14 +25,13 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsResponse
 import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.tasks.Task
-import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.constants.DebugConstants
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
+import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
 import com.pixelro.nenoonkiosk.feature.exerciseglasses.concentration_exercise.ConcentrationExerciseResult
 import com.pixelro.nenoonkiosk.feature.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResult
-import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveyGlass
-import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
@@ -44,6 +43,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFun
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.ChildrenVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.LongVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
+import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveyGlass
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.delay
@@ -58,164 +58,164 @@ import javax.inject.Inject
 @RequiresApi(Build.VERSION_CODES.S)
 @SuppressLint("HardwareIds")
 @HiltViewModel
-class NenoonViewModel @Inject constructor(
-    application: Application
-) : AndroidViewModel(application) {
+class NenoonViewModel
+    @Inject
+    constructor(
+        application: Application,
+    ) : AndroidViewModel(application) {
+        /**
+         * 화면 보호기 타이머
+         */
 
-    /**
-     * 화면 보호기 타이머
-     */
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    private fun checkBackgroundStatus() {
-        viewModelScope.launch(CoroutineName("checkBackgroundStatus")) {
-            while (true) {
-                /**
-                 * 0 = 타이머 작동 X, ScreenSaver X
-                 * 1 = 타이머 작동 O, ScreenSaver O
-                 */
-                if (_isResumed.value) {
-                    _screenSaverTimer.update { _screenSaverTimer.value - 1  }
+        @RequiresApi(Build.VERSION_CODES.S)
+        private fun checkBackgroundStatus() {
+            viewModelScope.launch(CoroutineName("checkBackgroundStatus")) {
+                while (true) {
+                    /**
+                     * 0 = 타이머 작동 X, ScreenSaver X
+                     * 1 = 타이머 작동 O, ScreenSaver O
+                     */
+                    if (_isResumed.value) {
+                        _screenSaverTimer.update { _screenSaverTimer.value - 1 }
 //                    _screenSaverTimer.update { _screenSaverTimer.value - 0  }
 
-                    if (_screenSaverTimer.value < 0) {
-                        _isScreenSaving.update { true }
+                        if (_screenSaverTimer.value < 0) {
+                            _isScreenSaving.update { true }
+                        }
+                        /**
+                         * Check permissions
+                         */
+                        checkPermissions()
                     }
-                    /**
-                     * Check permissions
-                     */
-                    checkPermissions()
-
+                    delay(1000)
                 }
-                delay(1000)
             }
         }
-    }
 
+        private val _isScreenSaving = MutableStateFlow(false)
+        val isScreenSaving: StateFlow<Boolean> = _isScreenSaving.asStateFlow()
 
-    private val _isScreenSaving = MutableStateFlow(false)
-    val isScreenSaving: StateFlow<Boolean> = _isScreenSaving.asStateFlow()
+        /**
+         * signIn
+         */
+        private val _isSignedIn = MutableStateFlow(false)
+        val isSignedIn: StateFlow<Boolean> = _isSignedIn
 
+        fun updateIsSignedIn(isSignedIn: Boolean) {
+            _isSignedIn.update { isSignedIn }
+        }
 
-    /**
-     * signIn
-     */
-    private val _isSignedIn = MutableStateFlow(false)
-    val isSignedIn: StateFlow<Boolean> = _isSignedIn
+        /**
+         * LocationID
+         * */
+        private val _locationId = MutableStateFlow(DebugConstants.PLACEHOLDER_PID)
+        val locationId: StateFlow<Int> = _locationId
 
-    fun updateIsSignedIn(isSignedIn: Boolean) {
-        _isSignedIn.update { isSignedIn }
-    }
+        fun updateLocationId(locId: Int) {
+            _locationId.update { locId }
+        }
 
-    /**
-     * LocationID
-     * */
-    private val _locationId = MutableStateFlow(DebugConstants.PLACEHOLDER_PID)
-    val locationId: StateFlow<Int> = _locationId
+        /**
+         * Settings
+         */
+        enum class SettingsDialogState {
+            None,
+            Language,
+            BloodPressureMonitorType,
+        }
 
-    fun updateLocationId(locId: Int) {
-        _locationId.update { locId }
-    }
+        private val _settingsDialogState = MutableStateFlow(SettingsDialogState.None)
+        val settingsDialogState: StateFlow<SettingsDialogState> = _settingsDialogState
 
-    /**
-     * Settings
-     */
-    enum class SettingsDialogState {
-        None,
-        Language,
-        BloodPressureMonitorType,
-    }
+        private val _isSenior = MutableStateFlow(false)
+        val isSenior: StateFlow<Boolean> = _isSenior
 
-    private val _settingsDialogState = MutableStateFlow(SettingsDialogState.None)
-    val settingsDialogState: StateFlow<SettingsDialogState> = _settingsDialogState
+        fun updateIsSenior(isSenior: Boolean) {
+            _isSenior.update { isSenior }
+        }
 
-    private val _isSenior = MutableStateFlow(false)
-    val isSenior: StateFlow<Boolean> = _isSenior
+        fun setSettingsDialogState(state: SettingsDialogState) {
+            _settingsDialogState.update { state }
+        }
 
-    fun updateIsSenior(isSenior: Boolean) {
-        _isSenior.update { isSenior }
-    }
+        fun updateLanguage(language: String) {
+            SharedPreferencesManager.putString("language", language)
+            getApplication<Application>().resources.configuration.setLocale(Locale(language))
+            TTS.tts.setLanguage(Locale(language))
+            _settingsDialogState.update { SettingsDialogState.None }
+        }
 
-    fun setSettingsDialogState(state: SettingsDialogState) {
-        _settingsDialogState.update { state }
-    }
+        /**
+         * Screen Saver
+         */
+        private val _isResumed = MutableStateFlow(false)
+        private val _isPaused = MutableStateFlow(false)
+        val exoPlayer: ExoPlayer
 
-    fun updateLanguage(language: String) {
-        SharedPreferencesManager.putString("language", language)
-        getApplication<Application>().resources.configuration.setLocale(Locale(language))
-        TTS.tts.setLanguage(Locale(language))
-        _settingsDialogState.update { SettingsDialogState.None }
-    }
+        /**
+         * 타이머 시간 설정
+         */
+        private val _screenSaverTimer = MutableStateFlow(120)
+        private val _timeValue = MutableStateFlow(120)
 
-    /**
-     * Screen Saver
-     */
-    private val _isResumed = MutableStateFlow(false)
-    private val _isPaused = MutableStateFlow(false)
-    val exoPlayer: ExoPlayer
-    /**
-     * 타이머 시간 설정
-     */
-    private val _screenSaverTimer = MutableStateFlow(120)
-    private val _timeValue = MutableStateFlow(120)
+        fun resetScreenSaverTimer() {
+            _screenSaverTimer.update { _timeValue.value }
+            _isScreenSaving.update { false }
+        }
 
+        fun updateScreenSaverTimerValue(time: Int) {
+            _timeValue.update { time }
+            resetScreenSaverTimer()
+        }
 
-    fun resetScreenSaverTimer() {
-        _screenSaverTimer.update { _timeValue.value }
-        _isScreenSaving.update { false }
-    }
+        fun updateLocalConfigurationValues(
+            pixelDensity: Float,
+            screenWidthDp: Int,
+            screenHeightDp: Int,
+            focalLength: Float,
+            lensSize: SizeF,
+        ) {
+            GlobalValue.pixelDensity = pixelDensity
+            GlobalValue.screenWidthDp = screenWidthDp
+            GlobalValue.screenHeightDp = screenHeightDp
+            GlobalValue.focalLength = focalLength
+            GlobalValue.lensSize = lensSize
+        }
 
-    fun updateScreenSaverTimerValue(time: Int) {
-        _timeValue.update { time }
-        resetScreenSaverTimer()
-    }
+        /**
+         * Checking permission, location, bluetooth
+         */
 
-    fun updateLocalConfigurationValues(
-        pixelDensity: Float,
-        screenWidthDp: Int,
-        screenHeightDp: Int,
-        focalLength: Float,
-        lensSize: SizeF
-    ) {
-        GlobalValue.pixelDensity = pixelDensity
-        GlobalValue.screenWidthDp = screenWidthDp
-        GlobalValue.screenHeightDp = screenHeightDp
-        GlobalValue.focalLength = focalLength
-        GlobalValue.lensSize = lensSize
-    }
+        private val _isWriteSettingsPermissionGranted = MutableStateFlow(false)
+        val isWriteSettingsPermissionGranted: StateFlow<Boolean> = _isWriteSettingsPermissionGranted
+        private val _isBluetoothPermissionsGranted = MutableStateFlow(false)
+        val isBluetoothPermissionsGranted: StateFlow<Boolean> = _isBluetoothPermissionsGranted
+        private val _isCameraPermissionGranted = MutableStateFlow(false)
+        val isCameraPermissionGranted: StateFlow<Boolean> = _isCameraPermissionGranted
+        private val _isAllPermissionsGranted = MutableStateFlow(false)
+        val isAllPermissionsGranted: StateFlow<Boolean> = _isAllPermissionsGranted
+        private val _isLocationOn = MutableStateFlow(false)
+        val isLocationOn: StateFlow<Boolean> = _isLocationOn
+        private val _isBluetoothOn = MutableStateFlow(false)
+        val isBlueToothOn: StateFlow<Boolean> = _isBluetoothOn
+        private val _resolvableApiException =
+            MutableStateFlow(ResolvableApiException(Status.RESULT_CANCELED))
+        val resolvableApiException: StateFlow<ResolvableApiException> = _resolvableApiException
 
-    /**
-     * Checking permission, location, bluetooth
-     */
+        // 권한 체크
+        @RequiresApi(Build.VERSION_CODES.S)
+        fun checkPermissions() {
+            val isBluetoothScanGranted =
+                ContextCompat.checkSelfPermission(
+                    getApplication(),
+                    Manifest.permission.BLUETOOTH_SCAN,
+                ) == PackageManager.PERMISSION_GRANTED
 
-    private val _isWriteSettingsPermissionGranted = MutableStateFlow(false)
-    val isWriteSettingsPermissionGranted: StateFlow<Boolean> = _isWriteSettingsPermissionGranted
-    private val _isBluetoothPermissionsGranted = MutableStateFlow(false)
-    val isBluetoothPermissionsGranted: StateFlow<Boolean> = _isBluetoothPermissionsGranted
-    private val _isCameraPermissionGranted = MutableStateFlow(false)
-    val isCameraPermissionGranted: StateFlow<Boolean> = _isCameraPermissionGranted
-    private val _isAllPermissionsGranted = MutableStateFlow(false)
-    val isAllPermissionsGranted: StateFlow<Boolean> = _isAllPermissionsGranted
-    private val _isLocationOn = MutableStateFlow(false)
-    val isLocationOn: StateFlow<Boolean> = _isLocationOn
-    private val _isBluetoothOn = MutableStateFlow(false)
-    val isBlueToothOn: StateFlow<Boolean> = _isBluetoothOn
-    private val _resolvableApiException =
-        MutableStateFlow(ResolvableApiException(Status.RESULT_CANCELED))
-    val resolvableApiException: StateFlow<ResolvableApiException> = _resolvableApiException
-    //권한 체크
-    @RequiresApi(Build.VERSION_CODES.S)
-    fun checkPermissions() {
-
-        val isBluetoothScanGranted = ContextCompat.checkSelfPermission(
-            getApplication(),
-            Manifest.permission.BLUETOOTH_SCAN
-        ) == PackageManager.PERMISSION_GRANTED
-
-        val isBluetoothConnectGranted = ContextCompat.checkSelfPermission(
-            getApplication(),
-            Manifest.permission.BLUETOOTH_CONNECT
-        ) == PackageManager.PERMISSION_GRANTED
+            val isBluetoothConnectGranted =
+                ContextCompat.checkSelfPermission(
+                    getApplication(),
+                    Manifest.permission.BLUETOOTH_CONNECT,
+                ) == PackageManager.PERMISSION_GRANTED
 
 //        val isBluetoothGranted = ContextCompat.checkSelfPermission(
 //            getApplication(),
@@ -227,257 +227,254 @@ class NenoonViewModel @Inject constructor(
 //            Manifest.permission.BLUETOOTH_ADMIN
 //        ) == PackageManager.PERMISSION_GRANTED
 
-        val isCameraGranted = ContextCompat.checkSelfPermission(
-            getApplication(),
-            Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
+            val isCameraGranted =
+                ContextCompat.checkSelfPermission(
+                    getApplication(),
+                    Manifest.permission.CAMERA,
+                ) == PackageManager.PERMISSION_GRANTED
 
-        val isWriteSettingsGranted = Settings.System.canWrite(getApplication())
+            val isWriteSettingsGranted = Settings.System.canWrite(getApplication())
 
-        // 업데이트 각 권한 상태
-        _isBluetoothPermissionsGranted.update { isBluetoothScanGranted && isBluetoothConnectGranted }
+            // 업데이트 각 권한 상태
+            _isBluetoothPermissionsGranted.update { isBluetoothScanGranted && isBluetoothConnectGranted }
 //        _isBluetoothPermissionsGranted.update { isBluetoothScanGranted && isBluetoothConnectGranted && isBluetoothGranted && isBluetoothAdminGranted }
-        _isCameraPermissionGranted.update { isCameraGranted }
-        _isWriteSettingsPermissionGranted.update { isWriteSettingsGranted }
+            _isCameraPermissionGranted.update { isCameraGranted }
+            _isWriteSettingsPermissionGranted.update { isWriteSettingsGranted }
 
-        // 위치와 블루투스 상태 확인
-        checkIsLocationOn()
-        checkIsBluetoothOn()
+            // 위치와 블루투스 상태 확인
+            checkIsLocationOn()
+            checkIsBluetoothOn()
 //        Log.d("BluetoothCheck","1$isBluetoothScanGranted.toString()")
 //        Log.d("BluetoothCheck","2$isBluetoothConnectGranted.toString()")
 //        Log.d("BluetoothCheck","3$isBluetoothGranted.toString()")
 //        Log.d("BluetoothCheck","4$isCameraGranted.toString()")
 //        Log.d("BluetoothCheck","5$isWriteSettingsGranted.toString()")
 
-        if (
-            isBluetoothScanGranted &&
-            isBluetoothConnectGranted &&
+            if (
+                isBluetoothScanGranted &&
+                isBluetoothConnectGranted &&
 //            isBluetoothGranted &&
 //            isBluetoothAdminGranted &&
-            isCameraGranted &&
-            isWriteSettingsGranted &&
-            (_isLocationOn.value || DebugConstants.EMULATOR_MODE) &&
-            _isBluetoothOn.value)
-        {
-            _isAllPermissionsGranted.update{true}
-        }
-        // 모든 권한이 부여되었는지 확인
-
-
-    }
-
-    private fun checkIsLocationOn() {
-        val locationManager =
-            ContextCompat.getSystemService(
-                getApplication(),
-                LocationManager::class.java
-            ) as LocationManager
-
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-
-            val locationRequest: LocationRequest = LocationRequest.Builder(10000).build()
-            val client: SettingsClient =
-                LocationServices.getSettingsClient(getApplication() as Context)
-            val builder: LocationSettingsRequest.Builder = LocationSettingsRequest
-                .Builder()
-                .addLocationRequest(locationRequest)
-            val gpsSettingTask: Task<LocationSettingsResponse> =
-                client.checkLocationSettings(builder.build())
-
-            gpsSettingTask.addOnSuccessListener {
-
+                isCameraGranted &&
+                isWriteSettingsGranted &&
+                (_isLocationOn.value || DebugConstants.EMULATOR_MODE) &&
+                _isBluetoothOn.value
+            ) {
+                _isAllPermissionsGranted.update { true }
             }
-            gpsSettingTask.addOnFailureListener { exception ->
-                if (exception is ResolvableApiException) {
-                    try {
-                        _resolvableApiException.update { exception }
-                        _isLocationOn.update { false }
-                    } catch (sendEx: IntentSender.SendIntentException) {
+            // 모든 권한이 부여되었는지 확인
+        }
 
+        private fun checkIsLocationOn() {
+            val locationManager =
+                ContextCompat.getSystemService(
+                    getApplication(),
+                    LocationManager::class.java,
+                ) as LocationManager
+
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                val locationRequest: LocationRequest = LocationRequest.Builder(10000).build()
+                val client: SettingsClient =
+                    LocationServices.getSettingsClient(getApplication() as Context)
+                val builder: LocationSettingsRequest.Builder =
+                    LocationSettingsRequest
+                        .Builder()
+                        .addLocationRequest(locationRequest)
+                val gpsSettingTask: Task<LocationSettingsResponse> =
+                    client.checkLocationSettings(builder.build())
+
+                gpsSettingTask.addOnSuccessListener {
+                }
+                gpsSettingTask.addOnFailureListener { exception ->
+                    if (exception is ResolvableApiException) {
+                        try {
+                            _resolvableApiException.update { exception }
+                            _isLocationOn.update { false }
+                        } catch (sendEx: IntentSender.SendIntentException) {
+                        }
                     }
                 }
-            }
-        } else {
-            _isLocationOn.update { true }
-        }
-    }
-
-    private fun checkIsBluetoothOn() {
-        val bluetoothAdapter =
-            (getApplication<Application>().getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
-        if (bluetoothAdapter.isEnabled) {
-            _isBluetoothOn.update { true }
-        } else {
-            _isBluetoothOn.update { false }
-        }
-    }
-
-    private val _selectedTestType = MutableStateFlow(TestType.None)
-    val selectedTestType: StateFlow<TestType> = _selectedTestType
-
-    fun updateToResumed() {
-        _isResumed.update { true }
-        _isPaused.update { false }
-    }
-
-    fun updateToPaused() {
-        _isResumed.update { false }
-        _isPaused.update { true }
-    }
-
-    fun updateSelectedTestType(testType: TestType) {
-        _selectedTestType.update { testType }
-    }
-
-    /**
-     * Survey Data
-     */
-
-    private val _surveyId = MutableStateFlow(0L)
-    val surveyId: StateFlow<Long> = _surveyId
-
-    fun updateSurveyData(surveyId: Long) {
-        _surveyId.update { surveyId }
-    }
-
-    private val _surveyGlass = MutableStateFlow(SurveyGlass.None)
-    val surveyGlass: StateFlow<SurveyGlass> = _surveyGlass
-
-    fun updateSurveyGlass(surveyGlass: SurveyGlass) {
-        _surveyGlass.update { surveyGlass }
-    }
-
-    /**
-     * Test Result
-     */
-
-    private val _isPhoriaTestDone = MutableStateFlow(false)
-    val isPhoriaTestDone: StateFlow<Boolean> = _isPhoriaTestDone
-    private val _isAniseikoniaTestDone = MutableStateFlow(false)
-    val isAniseikoniaTestDone: StateFlow<Boolean> = _isAniseikoniaTestDone
-
-    private val _isPresbyopiaTestDone = MutableStateFlow(false)
-    val isPresbyopiaTestDone: StateFlow<Boolean> = _isPresbyopiaTestDone
-    private val _isShortVisualAcuityTestDone = MutableStateFlow(false)
-    val isShortVisualAcuityTestDone: StateFlow<Boolean> = _isShortVisualAcuityTestDone
-    private val _isAmslerGridTestDone = MutableStateFlow(false)
-    val isAmslerGridTestDone: StateFlow<Boolean> = _isAmslerGridTestDone
-    private val _isMChartTestDone = MutableStateFlow(false)
-    val isMChartTestDone: StateFlow<Boolean> = _isMChartTestDone
-    private val _isBloodPressureTestDone = MutableStateFlow(false)
-    val isBloodPressureTestDone: StateFlow<Boolean> = _isBloodPressureTestDone
-    private val _isGripStrengthTestDone = MutableStateFlow(false)
-    val isGripStrengthTestDone: StateFlow<Boolean> = _isGripStrengthTestDone
-    private val _isPulmonaryFunctionTestDone = MutableStateFlow(false)
-    val isPulmonaryFunctionTestDone: StateFlow<Boolean> = _isPulmonaryFunctionTestDone
-
-    fun updateIsPhoriaTestDone(isDone: Boolean) {
-        _isPhoriaTestDone.update { isDone }
-    }
-
-    fun updateIsAniseikoniaTestDone(isDone: Boolean) {
-        _isAniseikoniaTestDone.update { isDone }
-    }
-
-    fun updateIsPresbyopiaTestDone(isDone: Boolean) {
-        _isPresbyopiaTestDone.update { isDone }
-    }
-
-    fun updateIsShortVisualAcuityTestDone(isDone: Boolean) {
-        _isShortVisualAcuityTestDone.update { isDone }
-    }
-
-    fun updateIsAmslerGridTestDone(isDone: Boolean) {
-        _isAmslerGridTestDone.update { isDone }
-    }
-
-    fun updateIsMChartTestDone(isDone: Boolean) {
-        _isMChartTestDone.update { isDone }
-    }
-
-    fun updateIsBloodPressureTestDone(isDone: Boolean) {
-        _isBloodPressureTestDone.update { isDone }
-    }
-
-    fun updateIsGripStrengthTestDone(isDone: Boolean) {
-        _isGripStrengthTestDone.update { isDone }
-    }
-
-    fun updateIsPulmonaryFunctionTestDone(isDone: Boolean) {
-        _isPulmonaryFunctionTestDone.update { isDone }
-    }
-
-    fun initializeTestDoneStatus() {
-        _isPhoriaTestDone.update { false }
-        _isAniseikoniaTestDone.update { false }
-        _isPresbyopiaTestDone.update { false }
-        _isShortVisualAcuityTestDone.update { false }
-        _isAmslerGridTestDone.update { false }
-        _isMChartTestDone.update { false }
-        _isBloodPressureTestDone.update { false }
-        _isGripStrengthTestDone.update { false }
-        _isPulmonaryFunctionTestDone.update { false }
-        _isPhoriaTestDone.update { false }
-        _isAniseikoniaTestDone.update { false }
-    }
-
-    fun checkIsTestDone(testType: TestType): Boolean {
-        when (testType) {
-            TestType.Phoria -> {
-                return _isPhoriaTestDone.value
-            }
-
-            TestType.Aniseikonia -> {
-                return _isAniseikoniaTestDone.value
-            }
-
-            TestType.Presbyopia -> {
-                return _isPresbyopiaTestDone.value
-            }
-
-            TestType.ShortDistanceVisualAcuity -> {
-                return _isShortVisualAcuityTestDone.value
-            }
-
-            TestType.AmslerGrid -> {
-                return _isAmslerGridTestDone.value
-            }
-
-            TestType.MChart -> {
-                return _isMChartTestDone.value
-            }
-
-            TestType.BloodPressure -> {
-                return _isBloodPressureTestDone.value
-            }
-
-            TestType.GripStrength -> {
-                return _isGripStrengthTestDone.value
-            }
-
-            else -> {
-                return false
+            } else {
+                _isLocationOn.update { true }
             }
         }
-    }
 
-    var presbyopiaTestResult = PresbyopiaTestResult()
-    var shortVisualAcuityTestResult = ShortVisualAcuityTestResult()
-    var longVisualAcuityTestResult = LongVisualAcuityTestResult()
-    var childrenVisualAcuityTestResult = ChildrenVisualAcuityTestResult()
-    var amslerGridTestResult = AmslerGridTestResult()
-    var mChartTestResult = MChartTestResult()
-    var dementiaTestResult = DementiaTestResult(scores = List(14) { DementiaViewModel.DementiaAnswer.None })
-    var presbyopiaExerciseResult = PresbyopiaExerciseResult()
-    var concentrationExerciseResult = ConcentrationExerciseResult()
-    var bloodPressureTestResult = BloodPressureTestResult(systolic = 0, diastolic = 0, pulseRate = 0)
-    var gripStrengthTestResult = GripStrengthTestResult(leftGrip = 0.0, rightGrip = 0.0)
-    var pulmonaryFunctionTestResult = PulmonaryFunctionTestResult()
+        private fun checkIsBluetoothOn() {
+            val bluetoothAdapter =
+                (getApplication<Application>().getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
+            if (bluetoothAdapter.isEnabled) {
+                _isBluetoothOn.update { true }
+            } else {
+                _isBluetoothOn.update { false }
+            }
+        }
 
-    init {
-        checkBackgroundStatus()
-        exoPlayer = ExoPlayer.Builder(getApplication()).build()
-        exoPlayer.repeatMode = Player.REPEAT_MODE_ONE
-        exoPlayer.volume = 0f
+        private val _selectedTestType = MutableStateFlow(TestType.None)
+        val selectedTestType: StateFlow<TestType> = _selectedTestType
+
+        fun updateToResumed() {
+            _isResumed.update { true }
+            _isPaused.update { false }
+        }
+
+        fun updateToPaused() {
+            _isResumed.update { false }
+            _isPaused.update { true }
+        }
+
+        fun updateSelectedTestType(testType: TestType) {
+            _selectedTestType.update { testType }
+        }
+
+        /**
+         * Survey Data
+         */
+
+        private val _surveyId = MutableStateFlow(0L)
+        val surveyId: StateFlow<Long> = _surveyId
+
+        fun updateSurveyData(surveyId: Long) {
+            _surveyId.update { surveyId }
+        }
+
+        private val _surveyGlass = MutableStateFlow(SurveyGlass.None)
+        val surveyGlass: StateFlow<SurveyGlass> = _surveyGlass
+
+        fun updateSurveyGlass(surveyGlass: SurveyGlass) {
+            _surveyGlass.update { surveyGlass }
+        }
+
+        /**
+         * Test Result
+         */
+
+        private val _isPhoriaTestDone = MutableStateFlow(false)
+        val isPhoriaTestDone: StateFlow<Boolean> = _isPhoriaTestDone
+        private val _isAniseikoniaTestDone = MutableStateFlow(false)
+        val isAniseikoniaTestDone: StateFlow<Boolean> = _isAniseikoniaTestDone
+
+        private val _isPresbyopiaTestDone = MutableStateFlow(false)
+        val isPresbyopiaTestDone: StateFlow<Boolean> = _isPresbyopiaTestDone
+        private val _isShortVisualAcuityTestDone = MutableStateFlow(false)
+        val isShortVisualAcuityTestDone: StateFlow<Boolean> = _isShortVisualAcuityTestDone
+        private val _isAmslerGridTestDone = MutableStateFlow(false)
+        val isAmslerGridTestDone: StateFlow<Boolean> = _isAmslerGridTestDone
+        private val _isMChartTestDone = MutableStateFlow(false)
+        val isMChartTestDone: StateFlow<Boolean> = _isMChartTestDone
+        private val _isBloodPressureTestDone = MutableStateFlow(false)
+        val isBloodPressureTestDone: StateFlow<Boolean> = _isBloodPressureTestDone
+        private val _isGripStrengthTestDone = MutableStateFlow(false)
+        val isGripStrengthTestDone: StateFlow<Boolean> = _isGripStrengthTestDone
+        private val _isPulmonaryFunctionTestDone = MutableStateFlow(false)
+        val isPulmonaryFunctionTestDone: StateFlow<Boolean> = _isPulmonaryFunctionTestDone
+
+        fun updateIsPhoriaTestDone(isDone: Boolean) {
+            _isPhoriaTestDone.update { isDone }
+        }
+
+        fun updateIsAniseikoniaTestDone(isDone: Boolean) {
+            _isAniseikoniaTestDone.update { isDone }
+        }
+
+        fun updateIsPresbyopiaTestDone(isDone: Boolean) {
+            _isPresbyopiaTestDone.update { isDone }
+        }
+
+        fun updateIsShortVisualAcuityTestDone(isDone: Boolean) {
+            _isShortVisualAcuityTestDone.update { isDone }
+        }
+
+        fun updateIsAmslerGridTestDone(isDone: Boolean) {
+            _isAmslerGridTestDone.update { isDone }
+        }
+
+        fun updateIsMChartTestDone(isDone: Boolean) {
+            _isMChartTestDone.update { isDone }
+        }
+
+        fun updateIsBloodPressureTestDone(isDone: Boolean) {
+            _isBloodPressureTestDone.update { isDone }
+        }
+
+        fun updateIsGripStrengthTestDone(isDone: Boolean) {
+            _isGripStrengthTestDone.update { isDone }
+        }
+
+        fun updateIsPulmonaryFunctionTestDone(isDone: Boolean) {
+            _isPulmonaryFunctionTestDone.update { isDone }
+        }
+
+        fun initializeTestDoneStatus() {
+            _isPhoriaTestDone.update { false }
+            _isAniseikoniaTestDone.update { false }
+            _isPresbyopiaTestDone.update { false }
+            _isShortVisualAcuityTestDone.update { false }
+            _isAmslerGridTestDone.update { false }
+            _isMChartTestDone.update { false }
+            _isBloodPressureTestDone.update { false }
+            _isGripStrengthTestDone.update { false }
+            _isPulmonaryFunctionTestDone.update { false }
+            _isPhoriaTestDone.update { false }
+            _isAniseikoniaTestDone.update { false }
+        }
+
+        fun checkIsTestDone(testType: TestType): Boolean {
+            when (testType) {
+                TestType.Phoria -> {
+                    return _isPhoriaTestDone.value
+                }
+
+                TestType.Aniseikonia -> {
+                    return _isAniseikoniaTestDone.value
+                }
+
+                TestType.Presbyopia -> {
+                    return _isPresbyopiaTestDone.value
+                }
+
+                TestType.ShortDistanceVisualAcuity -> {
+                    return _isShortVisualAcuityTestDone.value
+                }
+
+                TestType.AmslerGrid -> {
+                    return _isAmslerGridTestDone.value
+                }
+
+                TestType.MChart -> {
+                    return _isMChartTestDone.value
+                }
+
+                TestType.BloodPressure -> {
+                    return _isBloodPressureTestDone.value
+                }
+
+                TestType.GripStrength -> {
+                    return _isGripStrengthTestDone.value
+                }
+
+                else -> {
+                    return false
+                }
+            }
+        }
+
+        var presbyopiaTestResult = PresbyopiaTestResult()
+        var shortVisualAcuityTestResult = ShortVisualAcuityTestResult()
+        var longVisualAcuityTestResult = LongVisualAcuityTestResult()
+        var childrenVisualAcuityTestResult = ChildrenVisualAcuityTestResult()
+        var amslerGridTestResult = AmslerGridTestResult()
+        var mChartTestResult = MChartTestResult()
+        var dementiaTestResult = DementiaTestResult(scores = List(14) { DementiaViewModel.DementiaAnswer.None })
+        var presbyopiaExerciseResult = PresbyopiaExerciseResult()
+        var concentrationExerciseResult = ConcentrationExerciseResult()
+        var bloodPressureTestResult = BloodPressureTestResult(systolic = 0, diastolic = 0, pulseRate = 0)
+        var gripStrengthTestResult = GripStrengthTestResult(leftGrip = 0.0, rightGrip = 0.0)
+        var pulmonaryFunctionTestResult = PulmonaryFunctionTestResult()
+
+        init {
+            checkBackgroundStatus()
+            exoPlayer = ExoPlayer.Builder(getApplication()).build()
+            exoPlayer.repeatMode = Player.REPEAT_MODE_ONE
+            exoPlayer.volume = 0f
+        }
     }
-}

@@ -8,7 +8,10 @@ import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 
 @Composable
-fun AppNavigation(startDestination: String, parentNavController: NavHostController) {
+fun AppNavigation(
+    startDestination: String,
+    parentNavController: NavHostController,
+) {
     val navController = rememberNavController()
 
     NavHost(
@@ -77,16 +80,18 @@ fun AppNavigation(startDestination: String, parentNavController: NavHostControll
                     }
                 },
                 onBackClicked = { navController.popBackStack() },
-                onShowHowToClicked = { /* TODO */ }
+                onShowHowToClicked = { /* TODO */ },
             )
         }
         composable("sawi_adjustment") {
             SawiAdjustmentScreen(
                 onConfirmClicked = { crosshairPosition, circlePosition ->
-                    navController.navigate("sawi_result/2/true/${crosshairPosition.x}/${crosshairPosition.y}/${circlePosition.x}/${circlePosition.y}")
+                    navController.navigate(
+                        "sawi_result/2/true/${crosshairPosition.x}/${crosshairPosition.y}/${circlePosition.x}/${circlePosition.y}",
+                    )
                 },
                 onBackClicked = { navController.popBackStack() },
-                onShowHowToClicked = { /* TODO */ }
+                onShowHowToClicked = { /* TODO */ },
             )
         }
         composable("fudo_adjustment") {
@@ -106,7 +111,7 @@ fun AppNavigation(startDestination: String, parentNavController: NavHostControll
                 circleX = backStackEntry.arguments?.getString("circleX")?.toFloatOrNull(),
                 circleY = backStackEntry.arguments?.getString("circleY")?.toFloatOrNull(),
                 onPrintClicked = { /* TODO */ },
-                onBackToMainClicked = { parentNavController.popBackStack(NavConstants.ROUTE_CATEGORY_LIST, false) }
+                onBackToMainClicked = { parentNavController.popBackStack(NavConstants.ROUTE_CATEGORY_LIST, false) },
             )
         }
         composable("fudo_result/{answer}/{difference}") { backStackEntry ->
@@ -114,7 +119,7 @@ fun AppNavigation(startDestination: String, parentNavController: NavHostControll
                 answer = backStackEntry.arguments?.getString("answer")?.toIntOrNull(),
                 difference = backStackEntry.arguments?.getString("difference")?.toFloatOrNull(),
                 onPrintClicked = { /* TODO */ },
-                onBackToMainClicked = { parentNavController.popBackStack(NavConstants.ROUTE_CATEGORY_LIST, false) }
+                onBackToMainClicked = { parentNavController.popBackStack(NavConstants.ROUTE_CATEGORY_LIST, false) },
             )
         }
     }

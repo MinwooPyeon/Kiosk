@@ -31,7 +31,6 @@ fun PrimaryButton(
     enabled: Boolean = true,
     text: String,
 ) {
-
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val primaryColor = colorResource(R.color.main)
@@ -45,26 +44,28 @@ fun PrimaryButton(
         onClick = onClick,
         enabled = enabled,
         interactionSource = interactionSource,
-        modifier = modifier
-            .border(
-                border = BorderStroke(2.dp, primaryColor),
-                shape = RoundedCornerShape(8.dp)
-            )
-            .fillMaxWidth()
-            .height(100.dp),
+        modifier =
+            modifier
+                .border(
+                    border = BorderStroke(2.dp, primaryColor),
+                    shape = RoundedCornerShape(8.dp),
+                )
+                .fillMaxWidth()
+                .height(100.dp),
         shape = RoundedCornerShape(8.dp),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = if (isPressed) Color.White else primaryColor,
-            contentColor = if (!isPressed) Color.White else primaryColor,
-            disabledBackgroundColor = if (isPressed) Color.White else disabledColor,
-            disabledContentColor = if (!isPressed) Color.White else disabledColor
-        )
+        colors =
+            ButtonDefaults.buttonColors(
+                backgroundColor = if (isPressed) Color.White else primaryColor,
+                contentColor = if (!isPressed) Color.White else primaryColor,
+                disabledBackgroundColor = if (isPressed) Color.White else disabledColor,
+                disabledContentColor = if (!isPressed) Color.White else disabledColor,
+            ),
     ) {
         Text(
             text = text,
             fontSize = if (savedLanguage == "en") 32.sp else 40.sp,
             fontWeight = FontWeight.Bold,
-            color = if (!isPressed) Color.White else primaryColor
+            color = if (!isPressed) Color.White else primaryColor,
         )
     }
 }

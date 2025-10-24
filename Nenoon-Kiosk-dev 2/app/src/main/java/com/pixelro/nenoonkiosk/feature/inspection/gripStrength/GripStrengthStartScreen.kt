@@ -38,17 +38,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.iotdevice.InGrip.DynamometerConnectionScreenState
 import com.pixelro.nenoonkiosk.core.manager.InGripManager
-import com.pixelro.nenoonkiosk.feature.iotdevice.InGrip.InGripViewModel
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.AccentedText
 import com.pixelro.nenoonkiosk.core.ui.BatteryStatus
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.DynamometerConnectionScreenState
+import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
@@ -58,11 +58,13 @@ import kotlinx.coroutines.flow.collectLatest
 fun GripStrengthStartScreen(
     navController: NavHostController,
     viewModel: InGripViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
-
-    var dynamometerConnectionScreenState by remember { mutableStateOf(
-        DynamometerConnectionScreenState.Standby) }
+    var dynamometerConnectionScreenState by remember {
+        mutableStateOf(
+            DynamometerConnectionScreenState.Standby,
+        )
+    }
 
     val dynamometerData by InGripManager.dataReceived.collectAsState()
     var batteryLevel by remember { mutableStateOf<Double?>(null) }
@@ -111,7 +113,8 @@ fun GripStrengthStartScreen(
                 is InGripManager.BluetoothConnectionState.CONNECTED -> {
                     connecting = false
                     if (dynamometerConnectionScreenState == DynamometerConnectionScreenState.Connecting ||
-                        dynamometerConnectionScreenState == DynamometerConnectionScreenState.DeviceSelection) {
+                        dynamometerConnectionScreenState == DynamometerConnectionScreenState.DeviceSelection
+                    ) {
                         dynamometerConnectionScreenState = DynamometerConnectionScreenState.AwaitingStart
                         isBatteryFetching = true
                         TTS.speechTTS(StringProvider.getString(R.string.dynamometer_connected_tts), TextToSpeech.QUEUE_ADD)
@@ -147,26 +150,26 @@ fun GripStrengthStartScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(40.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-
         BatteryStatus(batteryLevel?.toInt(), hidden = !isBatteryFetching && batteryLevel == null)
 
         Image(
             painter = painterResource(R.drawable.grip_strength_icon),
             contentDescription = StringProvider.getString(R.string.dynamometer_image_content_description),
-            modifier = Modifier.weight(1f).width(500.dp)
+            modifier = Modifier.weight(1f).width(500.dp),
         )
 
         Column(
             modifier = Modifier.weight(2f),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
+            verticalArrangement = Arrangement.Bottom,
         ) {
             when (dynamometerConnectionScreenState) {
                 DynamometerConnectionScreenState.Standby -> {
@@ -182,7 +185,7 @@ fun GripStrengthStartScreen(
                             InGripManager.startScan()
                         },
                         text = StringProvider.getString(R.string.dynamometer_start_connection),
-                        modifier = Modifier.padding(top = 180.dp, bottom = 20.dp)
+                        modifier = Modifier.padding(top = 180.dp, bottom = 20.dp),
                     )
                 }
 
@@ -191,14 +194,15 @@ fun GripStrengthStartScreen(
                         StyledText(
                             StringProvider.getString(R.string.dynamometer_select_device),
                             TextStyle.Message,
-                            modifier = Modifier.padding(top = 60.dp)
+                            modifier = Modifier.padding(top = 60.dp),
                         )
                         LazyColumn(
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.Start,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 20.dp)
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 20.dp),
                         ) {
                             items(availableDevices) { device ->
                                 ListItem(
@@ -215,18 +219,19 @@ fun GripStrengthStartScreen(
                                             textAlign = TextAlign.Start,
                                         )
                                     },
-                                    modifier = Modifier
-                                        .border(
-                                            width = 1.dp,
-                                            color = colorResource(R.color.gray2),
-                                            shape = RoundedCornerShape(8.dp)
-                                        )
-                                        .clickable {
-                                            selectedDevice = device
-                                            InGripManager.connect(device)
-                                            dynamometerConnectionScreenState =
-                                                DynamometerConnectionScreenState.Connecting
-                                        }
+                                    modifier =
+                                        Modifier
+                                            .border(
+                                                width = 1.dp,
+                                                color = colorResource(R.color.gray2),
+                                                shape = RoundedCornerShape(8.dp),
+                                            )
+                                            .clickable {
+                                                selectedDevice = device
+                                                InGripManager.connect(device)
+                                                dynamometerConnectionScreenState =
+                                                    DynamometerConnectionScreenState.Connecting
+                                            },
                                 )
                             }
                         }
@@ -236,7 +241,7 @@ fun GripStrengthStartScreen(
                             ProgressIndicator()
                             StyledText(
                                 text = StringProvider.getString(R.string.dynamometer_searching),
-                                modifier = Modifier.padding(bottom = 180.dp)
+                                modifier = Modifier.padding(bottom = 180.dp),
                             )
                         } else {
                             StyledText(
@@ -246,7 +251,7 @@ fun GripStrengthStartScreen(
                             PrimaryButton(
                                 onClick = { InGripManager.startScan() },
                                 text = StringProvider.getString(R.string.dynamometer_retry_connection),
-                                modifier = Modifier.padding(top = 180.dp, bottom = 20.dp)
+                                modifier = Modifier.padding(top = 180.dp, bottom = 20.dp),
                             )
                         }
                     }
@@ -256,7 +261,7 @@ fun GripStrengthStartScreen(
                     ProgressIndicator()
                     StyledText(
                         text = StringProvider.getString(R.string.dynamometer_connecting),
-                        modifier = Modifier.padding(bottom = 180.dp)
+                        modifier = Modifier.padding(bottom = 180.dp),
                     )
                 }
 
@@ -271,7 +276,7 @@ fun GripStrengthStartScreen(
                             navController.navigate(GripStrengthTestScreen.Instructions.name)
                         },
                         modifier = Modifier.padding(top = 180.dp, bottom = 20.dp),
-                        text = StringProvider.getString(R.string.grip_strength_start_test)
+                        text = StringProvider.getString(R.string.grip_strength_start_test),
                     )
                 }
 
@@ -279,7 +284,7 @@ fun GripStrengthStartScreen(
                     StyledText(
                         text = StringProvider.getString(R.string.dynamometer_connection_error),
                         style = TextStyle.Error,
-                        modifier = Modifier.padding(bottom = 180.dp)
+                        modifier = Modifier.padding(bottom = 180.dp),
                     )
                     PrimaryButton(
                         onClick = {
@@ -288,7 +293,7 @@ fun GripStrengthStartScreen(
                                 DynamometerConnectionScreenState.DeviceSelection
                         },
                         text = StringProvider.getString(R.string.dynamometer_try_again),
-                        modifier = Modifier.padding(bottom = 20.dp)
+                        modifier = Modifier.padding(bottom = 20.dp),
                     )
                 }
             }
@@ -298,7 +303,7 @@ fun GripStrengthStartScreen(
                     TTS.tts.stop()
                     onBack()
                 },
-                text = StringProvider.getString(R.string.back)
+                text = StringProvider.getString(R.string.back),
             )
         }
     }

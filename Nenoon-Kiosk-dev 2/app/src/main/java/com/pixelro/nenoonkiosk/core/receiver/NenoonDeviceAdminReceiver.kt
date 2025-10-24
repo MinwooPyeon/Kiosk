@@ -15,9 +15,11 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.pixelro.nenoonkiosk.feature.main.MainActivity
 
 class NenoonDeviceAdminReceiver : DeviceAdminReceiver() {
-
     @RequiresApi(Build.VERSION_CODES.P)
-    override fun onEnabled(context: Context, intent: Intent) {
+    override fun onEnabled(
+        context: Context,
+        intent: Intent,
+    ) {
         super.onEnabled(context, intent)
         Log.d("DeviceAdmin", "Device Admin enabled")
         Toast.makeText(context, "Device Admin enabled", Toast.LENGTH_SHORT).show()
@@ -29,8 +31,9 @@ class NenoonDeviceAdminReceiver : DeviceAdminReceiver() {
             Log.d("DeviceAdmin", "Applying initial Kiosk Policies for Device Owner.")
             dpm.setLockTaskPackages(adminComponentName, arrayOf(context.packageName))
 
-            val featuresToEnable = DevicePolicyManager.LOCK_TASK_FEATURE_NONE
-                .or(DevicePolicyManager.LOCK_TASK_FEATURE_SYSTEM_INFO)
+            val featuresToEnable =
+                DevicePolicyManager.LOCK_TASK_FEATURE_NONE
+                    .or(DevicePolicyManager.LOCK_TASK_FEATURE_SYSTEM_INFO)
 
             dpm.setLockTaskFeatures(adminComponentName, featuresToEnable)
 
@@ -41,7 +44,10 @@ class NenoonDeviceAdminReceiver : DeviceAdminReceiver() {
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
-    override fun onDisabled(context: Context, intent: Intent) {
+    override fun onDisabled(
+        context: Context,
+        intent: Intent,
+    ) {
         super.onDisabled(context, intent)
         Log.d("DeviceAdmin", "Device Admin disabled")
         Toast.makeText(context, "Device Admin disabled", Toast.LENGTH_SHORT).show()
@@ -56,10 +62,10 @@ class NenoonDeviceAdminReceiver : DeviceAdminReceiver() {
             dpm.setLockTaskFeatures(
                 adminComponentName,
                 DevicePolicyManager.LOCK_TASK_FEATURE_HOME or
-                        DevicePolicyManager.LOCK_TASK_FEATURE_OVERVIEW or
-                        DevicePolicyManager.LOCK_TASK_FEATURE_NOTIFICATIONS or
-                        DevicePolicyManager.LOCK_TASK_FEATURE_SYSTEM_INFO or
-                        DevicePolicyManager.LOCK_TASK_FEATURE_GLOBAL_ACTIONS
+                    DevicePolicyManager.LOCK_TASK_FEATURE_OVERVIEW or
+                    DevicePolicyManager.LOCK_TASK_FEATURE_NOTIFICATIONS or
+                    DevicePolicyManager.LOCK_TASK_FEATURE_SYSTEM_INFO or
+                    DevicePolicyManager.LOCK_TASK_FEATURE_GLOBAL_ACTIONS,
             )
 
             dpm.setKeyguardDisabled(adminComponentName, false)
@@ -68,7 +74,11 @@ class NenoonDeviceAdminReceiver : DeviceAdminReceiver() {
         }
     }
 
-    override fun onLockTaskModeEntering(context: Context, intent: Intent, pkg: String) {
+    override fun onLockTaskModeEntering(
+        context: Context,
+        intent: Intent,
+        pkg: String,
+    ) {
         super.onLockTaskModeEntering(context, intent, pkg)
         Log.d("DeviceAdmin", "Entering lock task mode for: $pkg")
         Toast.makeText(context, "Kiosk Mode Activated", Toast.LENGTH_SHORT).show()
@@ -82,7 +92,10 @@ class NenoonDeviceAdminReceiver : DeviceAdminReceiver() {
         }
     }
 
-    override fun onLockTaskModeExiting(context: Context, intent: Intent) {
+    override fun onLockTaskModeExiting(
+        context: Context,
+        intent: Intent,
+    ) {
         super.onLockTaskModeExiting(context, intent)
         Log.d("DeviceAdmin", "Exiting lock task mode")
         Toast.makeText(context, "Kiosk Mode Deactivated", Toast.LENGTH_SHORT).show()
@@ -96,7 +109,10 @@ class NenoonDeviceAdminReceiver : DeviceAdminReceiver() {
         }
     }
 
-    override fun onProfileProvisioningComplete(context: Context, intent: Intent) {
+    override fun onProfileProvisioningComplete(
+        context: Context,
+        intent: Intent,
+    ) {
         super.onProfileProvisioningComplete(context, intent)
         Log.d("DeviceAdmin", "Profile provisioning complete!")
         val launchIntent = context.packageManager.getLaunchIntentForPackage(context.packageName)

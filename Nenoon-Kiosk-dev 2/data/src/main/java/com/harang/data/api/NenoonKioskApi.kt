@@ -59,63 +59,63 @@ interface NenoonKioskApi {
     @POST("api/v1/test/result/save-with-token")
     suspend fun sendShortVisualAcuityTestResult(
         @Header("authorization") token: String,
-        @Body body: SightTestResult
+        @Body body: SightTestResult,
     ): Response<SendShortVisualAcuityTestResultResponse>
 
     // 노안 검사
     @POST("api/v1/test/result/save-with-token")
     suspend fun sendPresbyopiaTestResult(
         @Header("authorization") token: String,
-        @Body body: PresbyopiaTestResult
+        @Body body: PresbyopiaTestResult,
     ): Response<SendPresbyopiaTestResultResponse>
 
     // M차트 검사
     @POST("api/v1/test/result/save-with-token")
     suspend fun sendMChartTestResult(
         @Header("authorization") token: String,
-        @Body body: MchartsTestResult
+        @Body body: MchartsTestResult,
     ): Response<SendMChartTestResultResponse>
 
     // 암슬러 격자 검사
     @POST("api/v1/test/result/save-with-token")
     suspend fun sendAmslerGridResult(
         @Header("authorization") token: String,
-        @Body body: AmslerTestResult
+        @Body body: AmslerTestResult,
     ): Response<SendAmslerGridTestResultResponse>
 
     // 혈압 측정
     @POST("api/v1/test/result/save-with-token")
     suspend fun sendBloodPressureTestResult(
         @Header("authorization") token: String,
-        @Body body: BloodPressureTestResult
+        @Body body: BloodPressureTestResult,
     ): Response<SendBloodPressureTestResultResponse>
 
     // 치매 진단
     @POST("api/v1/test/result/save-with-token")
     suspend fun sendDementiaTestResult(
         @Header("authorization") token: String,
-        @Body body: DementiaTestResult
+        @Body body: DementiaTestResult,
     ): Response<SendDementiaTestResultResponse>
 
     // 악력 측정
     @POST("api/v1/test/result/save-with-token")
     suspend fun sendGripStrengthTestResult(
         @Header("authorization") token: String,
-        @Body body: GripStrengthTestResult
+        @Body body: GripStrengthTestResult,
     ): Response<SendGripStrengthTestResultResponse>
 
     // 폐기능 측정
     @POST("api/v1/test/result/save-with-token")
     suspend fun sendPulmonaryFunctionTestResult(
         @Header("authorization") token: String,
-        @Body body: PulmonaryTestResult
+        @Body body: PulmonaryTestResult,
     ): Response<SendPulmonaryFunctionTestResultResponse>
 
     // 설문 데이터 전송 (사용자 토큰 포함)
     @POST("api/v1/survey/user")
     suspend fun sendSurveyData(
         @Header("authorization") token: String,
-        @Body body: SendSurveyDataRequest
+        @Body body: SendSurveyDataRequest,
     ): Response<SendSurveyDataResponse>
 
     // 설문 상태 확인
@@ -146,62 +146,62 @@ interface NenoonKioskApi {
     // 암슬러 격자 검사
     @POST("api/v1/test/result/amsler")
     suspend fun sendAmslerGridResult(
-        @Body body: SendAmslerGridTestResultRequest
+        @Body body: SendAmslerGridTestResultRequest,
     ): Response<SendAmslerGridTestResultResponse>
 
     // 노안 검사
     @POST("api/v1/test/result/presbyopia")
     suspend fun sendPresbyopiaTestResult(
-        @Body body: SendPresbyopiaTestResultRequest
+        @Body body: SendPresbyopiaTestResultRequest,
     ): Response<SendPresbyopiaTestResultResponse>
 
     // M차트 검사
     @POST("api/v1/test/result/mCharts")
     suspend fun sendMChartTestResult(
-        @Body body: SendMChartTestResultRequest
+        @Body body: SendMChartTestResultRequest,
     ): Response<SendMChartTestResultResponse>
 
     // 시력 검사
     @POST("api/v1/test/result/sight")
     suspend fun sendShortVisualAcuityTestResult(
-        @Body body: SendShortVisualAcuityTestResultRequest
+        @Body body: SendShortVisualAcuityTestResultRequest,
     ): Response<SendShortVisualAcuityTestResultResponse>
 
     // 치매 진단
     @POST("api/v1/test/result/dementia")
     suspend fun sendDementiaTestResult(
-        @Body body: SendDementiaTestResultRequest
+        @Body body: SendDementiaTestResultRequest,
     ): Response<SendDementiaTestResultResponse>
 
     // 악력 측정
     @POST("api/v1/test/result/gripstrength")
     suspend fun sendGripStrengthTestResult(
-        @Body body: SendGripStrengthTestResultRequest
+        @Body body: SendGripStrengthTestResultRequest,
     ): Response<SendGripStrengthTestResultResponse>
 
     // 혈압 측정
     @POST("api/v1/test/result/bp")
     suspend fun sendBloodPressureTestResult(
-        @Body body: SendBloodPressureTestResultRequest
+        @Body body: SendBloodPressureTestResultRequest,
     ): Response<SendBloodPressureTestResultResponse>
 
     // 폐기능 측정
     @POST("api/v1/test/result/pulmonary")
     suspend fun sendPulmonaryFunctionTestResult(
-        @Body body: SendPulmonaryFunctionTestResultRequest
+        @Body body: SendPulmonaryFunctionTestResultRequest,
     ): Response<SendPulmonaryFunctionTestResultResponse>
 
     // 설문 데이터 전송
     @POST("api/v1/survey")
     suspend fun sendSurveyData(
-        @Body body: SendSurveyDataRequest
+        @Body body: SendSurveyDataRequest,
     ): Response<SendSurveyDataResponse>
 
     // location (기관) 로그인
     @GET("api/v1/location/signin")
     suspend fun sendLocationSignInData(
         @Query("id") id: String,
-        @Query("pw") pw: String
+        @Query("pw") pw: String,
     ): Response<SendLocationSignInDataResponse>
 
     // 사용자 로그인
@@ -219,7 +219,7 @@ interface NenoonKioskApi {
     // 사용자 회원가입
     @POST("api/v1/users/register")
     suspend fun sendUserSignUpData(
-        @Body body: SendSignUpDataRequest
+        @Body body: SendSignUpDataRequest,
     ): Response<SendSignUpDataResponse>
 
     // QR 코드 업데이트
@@ -246,5 +246,4 @@ interface NenoonKioskApi {
     suspend fun getUserProfile(
         @Header("authorization") token: String,
     ): Response<GetUserProfileResponse>
-
 }

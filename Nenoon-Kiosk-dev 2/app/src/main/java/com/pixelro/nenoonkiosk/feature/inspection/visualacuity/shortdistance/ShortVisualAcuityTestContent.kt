@@ -12,17 +12,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuityTestCommonContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuityViewModel
-import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceContent
 
 @Composable
 fun ShortDistanceVisualAcuityTestContent(
     toResultScreen: (VisualAcuityTestResult) -> Unit,
-    visualAcuityViewModel: VisualAcuityViewModel = hiltViewModel()
+    visualAcuityViewModel: VisualAcuityViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(true) {
         visualAcuityViewModel.init()
@@ -32,17 +32,19 @@ fun ShortDistanceVisualAcuityTestContent(
     val visualAcuityContentVisibleState = remember { MutableTransitionState(false) }
     visualAcuityContentVisibleState.targetState = visualAcuityViewModel.isVisualAcuityContentVisible.collectAsState().value
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Color(0xff000000)
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(
+                    Color(0xff000000),
+                ),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
             contentAlignment = Alignment.TopCenter,
-            modifier = Modifier
-                .fillMaxSize()
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
             /**
              * 거리 조절 화면
@@ -54,7 +56,7 @@ fun ShortDistanceVisualAcuityTestContent(
                     visualAcuityViewModel.updateIsVisualAcuityContentVisible(true)
                 },
                 selectedTestType = TestType.ShortDistanceVisualAcuity,
-                isLeftEye = visualAcuityViewModel.isLeftEye.collectAsState().value
+                isLeftEye = visualAcuityViewModel.isLeftEye.collectAsState().value,
             )
             /**
              * 시력 검사 화면
@@ -64,6 +66,5 @@ fun ShortDistanceVisualAcuityTestContent(
                 toResultScreen = toResultScreen,
             )
         }
-
     }
 }

@@ -24,137 +24,152 @@ import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 
-//미개발
+// 미개발
 @Composable
 fun ContactScreen(
     toIntroScreen: () -> Unit,
-    toVideoTelephonyScreen: () -> Unit
+    toVideoTelephonyScreen: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier =
+            Modifier
+                .fillMaxSize(),
     ) {
         Box(
-            modifier = Modifier
-                .padding(
-                    top = (GlobalValue.statusBarPadding + 20).dp,
-                    bottom = 20.dp
-                )
-                .fillMaxWidth()
-                .height(40.dp),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .padding(
+                        top = (GlobalValue.statusBarPadding + 20).dp,
+                        bottom = 20.dp,
+                    )
+                    .fillMaxWidth()
+                    .height(40.dp),
+            contentAlignment = Alignment.Center,
         ) {
             Box(
-                modifier = Modifier
-                    .padding(start = 20.dp)
-                    .fillMaxSize(),
-                contentAlignment = Alignment.CenterStart
+                modifier =
+                    Modifier
+                        .padding(start = 20.dp)
+                        .fillMaxSize(),
+                contentAlignment = Alignment.CenterStart,
             ) {
                 Image(
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .width(28.dp)
-                        .clickable(
-                            onClick = { toIntroScreen() }
-                        ),
+                    modifier =
+                        Modifier
+                            .padding(top = 4.dp)
+                            .width(28.dp)
+                            .clickable(
+                                onClick = { toIntroScreen() },
+                            ),
                     painter = painterResource(id = R.drawable.icon_back_black),
-                    contentDescription = ""
+                    contentDescription = "",
                 )
             }
             Text(
                 textAlign = TextAlign.Center,
                 text = "CONTACT",
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
         }
         Spacer(
-            modifier = Modifier
-                .padding(bottom = 20.dp)
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(
-                    color = Color(0xffdddddd)
-                )
+            modifier =
+                Modifier
+                    .padding(bottom = 20.dp)
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(
+                        color = Color(0xffdddddd),
+                    ),
         )
         Box(
-            modifier = Modifier
-                .padding(20.dp)
-                .fillMaxWidth()
-                .height(300.dp)
-                .background(
-                    color = Color(0xff04B431)
-                )
-                .clickable(
-                    onClick = { toVideoTelephonyScreen() }
-                ),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth()
+                    .height(300.dp)
+                    .background(
+                        color = Color(0xff04B431),
+                    )
+                    .clickable(
+                        onClick = { toVideoTelephonyScreen() },
+                    ),
+            contentAlignment = Alignment.Center,
         ) {
             Image(
-                modifier = Modifier
-                    .height(100.dp)
-                    .width(100.dp),
+                modifier =
+                    Modifier
+                        .height(100.dp)
+                        .width(100.dp),
                 painter = painterResource(id = R.drawable.profile_icon_2),
-                contentDescription = ""
+                contentDescription = "",
             )
             Text(
-                modifier = Modifier
-                    .padding(top = 150.dp),
+                modifier =
+                    Modifier
+                        .padding(top = 150.dp),
                 text = "JUN",
                 color = Color(0xffffffff),
                 fontSize = 30.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
         Spacer(
-            modifier = Modifier
-                .padding(bottom = 20.dp)
-                .fillMaxWidth()
-                .height(1.dp)
+            modifier =
+                Modifier
+                    .padding(bottom = 20.dp)
+                    .fillMaxWidth()
+                    .height(1.dp),
         )
         Box(
-            modifier = Modifier
-                .padding(20.dp)
-                .fillMaxWidth()
-                .height(300.dp)
-                .background(
-                    color = Color(0xff04B431)
-                ),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth()
+                    .height(300.dp)
+                    .background(
+                        color = Color(0xff04B431),
+                    ),
+            contentAlignment = Alignment.Center,
         ) {
             Image(
-                modifier = Modifier
-                    .height(100.dp)
-                    .width(100.dp),
+                modifier =
+                    Modifier
+                        .height(100.dp)
+                        .width(100.dp),
                 painter = painterResource(id = R.drawable.profile_icon_1),
-                contentDescription = ""
+                contentDescription = "",
             )
             Text(
-                modifier = Modifier
-                    .padding(top = 150.dp),
+                modifier =
+                    Modifier
+                        .padding(top = 150.dp),
                 text = "LISA",
                 color = Color(0xffffffff),
                 fontSize = 30.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
         Spacer(
-            modifier = Modifier
-                .padding(bottom = 20.dp)
-                .fillMaxWidth()
-                .height(1.dp)
+            modifier =
+                Modifier
+                    .padding(bottom = 20.dp)
+                    .fillMaxWidth()
+                    .height(1.dp),
         )
         Box(
-            modifier = Modifier
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
+            contentAlignment = Alignment.Center,
         ) {
             Image(
-                modifier = Modifier
-                    .height(80.dp)
-                    .width(80.dp),
+                modifier =
+                    Modifier
+                        .height(80.dp)
+                        .width(80.dp),
                 painter = painterResource(id = R.drawable.plus_icon),
-                contentDescription = ""
+                contentDescription = "",
             )
         }
     }

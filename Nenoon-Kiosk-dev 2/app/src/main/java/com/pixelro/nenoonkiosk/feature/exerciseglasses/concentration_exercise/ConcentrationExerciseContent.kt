@@ -32,7 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
@@ -44,7 +44,7 @@ import kotlin.math.roundToInt
 @Composable
 fun ConcentrationExerciseContent(
     toResultScreen: (ConcentrationExerciseResult) -> Unit,
-    concentrationExerciseViewModel: ConcentrationExerciseViewModel = hiltViewModel()
+    concentrationExerciseViewModel: ConcentrationExerciseViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(true) {
         concentrationExerciseViewModel.init()
@@ -53,21 +53,23 @@ fun ConcentrationExerciseContent(
     concentrationExerciseContentVisibleState.targetState = concentrationExerciseViewModel.isMChartContentVisible.collectAsState().value
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                color = Color(0xff000000)
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(
+                    color = Color(0xff000000),
+                ),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
             contentAlignment = Alignment.TopCenter,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
         ) {
             ConcentrationexerciseContent(
                 mChartContentVisibleState = concentrationExerciseContentVisibleState,
-                toResultScreen = toResultScreen
+                toResultScreen = toResultScreen,
             )
         }
     }
@@ -79,14 +81,13 @@ fun ConcentrationexerciseContent(
     mChartContentVisibleState: MutableTransitionState<Boolean>,
     toResultScreen: (ConcentrationExerciseResult) -> Unit,
     concentrationExerciseViewModel: ConcentrationExerciseViewModel = hiltViewModel(),
-    faceDetectionViewModel: FaceDetectionViewModel = hiltViewModel()
+    faceDetectionViewModel: FaceDetectionViewModel = hiltViewModel(),
 ) {
     AnimatedVisibility(
         visibleState = mChartContentVisibleState,
         enter = AnimationProvider.enterTransition,
-        exit = AnimationProvider.exitTransition
+        exit = AnimationProvider.exitTransition,
     ) {
-
         val context = LocalContext.current
         val coroutineScope = rememberCoroutineScope()
         val isTesting = concentrationExerciseViewModel.isTesting.collectAsState().value
@@ -98,80 +99,92 @@ fun ConcentrationexerciseContent(
         val currentLevel = concentrationExerciseViewModel.currentLevel.collectAsState().value
         val imageId = concentrationExerciseViewModel.mChartImageId.collectAsState().value
         Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                modifier = Modifier
-                    .padding(top = 20.dp, bottom = 20.dp),
-//                text = "화면에 40cm 이내로 가깝게 오세요.\n사각 프레임 안으로 천천히 읽어보세요.\n글씨가 더욱 선명해지며 몰입하는\n느낌을 경험할 수 있습니다.",
-                text = StringProvider.getString(R.string.within_40cm, ) + StringProvider.getString(
-                    R.string.square_frame,
-                    
-                ) + StringProvider.getString(R.string.feel_more_immersive, ),
+                modifier =
+                    Modifier
+                        .padding(top = 20.dp, bottom = 20.dp),
+                //                text = "화면에 40cm 이내로 가깝게 오세요.\n사각 프레임 안으로 천천히 읽어보세요.\n글씨가 더욱 선명해지며 몰입하는\n느낌을 경험할 수 있습니다.",
+                text =
+                    StringProvider.getString(R.string.within_40cm) +
+                        StringProvider.getString(
+                            R.string.square_frame,
+                        ) + StringProvider.getString(R.string.feel_more_immersive),
                 fontSize = 35.sp,
                 color = Color(0xffffffff),
                 fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
             Column(
-                modifier = Modifier
-                    .width(700.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier =
+                    Modifier
+                        .width(700.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .background(
-                            color = Color(0xffffffff),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .fillMaxWidth()
-                        .width(700.dp)
-                        .height(420.dp)
+                    modifier =
+                        Modifier
+                            .background(
+                                color = Color(0xffffffff),
+                                shape = RoundedCornerShape(12.dp),
+                            )
+                            .fillMaxWidth()
+                            .width(700.dp)
+                            .height(420.dp),
                 ) {
-                        Image(
-                            modifier = Modifier
+                    Image(
+                        modifier =
+                            Modifier
                                 .padding(5.dp)
                                 .fillMaxSize(),
-                            painter = painterResource(id = imageId),
-                            contentDescription = ""
-                        )
+                        painter = painterResource(id = imageId),
+                        contentDescription = "",
+                    )
                     Text(
-                        modifier = Modifier
-                            .padding(bottom = 340.dp),
-                        text = StringProvider.getString(
-                            R.string.concentration_test_chart),
+                        modifier =
+                            Modifier
+                                .padding(bottom = 340.dp),
+                        text =
+                            StringProvider.getString(
+                                R.string.concentration_test_chart,
+                            ),
                         fontSize = 30.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xff000000)
+                        color = Color(0xff000000),
                     )
                 }
             }
-                Column(
-                    modifier = Modifier
+            Column(
+                modifier =
+                    Modifier
                         .fillMaxSize()
                         .padding(top = 20.dp, bottom = 20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row(
-                        modifier = Modifier
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Row(
+                    modifier =
+                        Modifier
                             .fillMaxWidth(),
-                        verticalAlignment = Alignment.Top,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Box(
-                            modifier = Modifier
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Box(
+                        modifier =
+                            Modifier
                                 .padding(
                                     start = 20.dp,
                                     end = 10.dp,
-                                    bottom = 10.dp
+                                    bottom = 10.dp,
                                 )
                                 .width(340.dp)
                                 .height(120.dp)
                                 .clip(
-                                    shape = RoundedCornerShape(8.dp)
+                                    shape = RoundedCornerShape(8.dp),
                                 )
                                 .background(
                                     color = Color(0xffffffff),
@@ -181,31 +194,33 @@ fun ConcentrationexerciseContent(
                                     concentrationExerciseViewModel.updateConcentrationExerciseValue()
                                     toResultScreen(concentrationExerciseViewModel.getConcentrationExerciseResult())
                                 },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                modifier = Modifier
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            modifier =
+                                Modifier
                                     .padding(bottom = 4.dp),
-                                text = StringProvider.getString(
+                            text =
+                                StringProvider.getString(
                                     R.string.test_over,
-                                    
                                 ),
-                                fontSize = 30.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = Color(0xffB90000)
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color(0xffB90000),
+                        )
+                    }
+                    Box(
+                        modifier =
+                            Modifier
                                 .padding(
                                     start = 10.dp,
                                     end = 20.dp,
-                                    bottom = 10.dp
+                                    bottom = 10.dp,
                                 )
                                 .width(340.dp)
                                 .height(120.dp)
                                 .clip(
-                                    shape = RoundedCornerShape(8.dp)
+                                    shape = RoundedCornerShape(8.dp),
                                 )
                                 .background(
                                     color = Color(0xffffffff),
@@ -214,81 +229,87 @@ fun ConcentrationexerciseContent(
                                 .clickable {
                                     if (currentLevel == 0) {
                                         concentrationExerciseViewModel.updateCurrentLevel(
-                                            currentLevel + 1
+                                            currentLevel + 1,
                                         )
                                     } else {
                                         concentrationExerciseViewModel.updateCurrentLevel(
-                                            currentLevel - 1
+                                            currentLevel - 1,
                                         )
                                     }
                                 },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                modifier = Modifier
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            modifier =
+                                Modifier
                                     .padding(bottom = 4.dp),
-                                text = if (currentLevel == 0) {
+                            text =
+                                if (currentLevel == 0) {
                                     StringProvider.getString(
                                         R.string.chart_en,
-                                        
                                     )
                                 } else {
                                     StringProvider.getString(
                                         R.string.chart_ko,
-                                        
                                     )
                                 },
-                                fontSize = 30.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = Color(0xff000000)
-                            )
-                        }
-                    }
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .padding(bottom = 4.dp),
-                            text = "※" + StringProvider.getString(
-                                R.string.source,
-                                
-                            ),
-                            fontSize = 20.sp,
+                            fontSize = 30.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xff999999)
-                        )
-                    }
-                    Column(
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .padding(bottom = 10.dp),
-                            text = StringProvider.getString(
-                                R.string.test_screen_current_distance,
-                                
-                            ),
-                            fontSize = 24.sp,
-                            color = Color(0xffffffff)
-                        )
-                        Text(
-                            modifier = Modifier
-                                .padding(bottom = 10.dp),
-                            text = "${(faceDetectionViewModel.screenToFaceDistance.collectAsState().value / 10).roundToInt()}cm",
-                            fontSize = 100.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = Color(0xffffffff)
+                            color = Color(0xff000000),
                         )
                     }
                 }
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        modifier =
+                            Modifier
+                                .padding(bottom = 4.dp),
+                        text =
+                            "※" +
+                                StringProvider.getString(
+                                    R.string.source,
+                                ),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xff999999),
+                    )
+                }
+                Column(
+                    modifier =
+                        Modifier
+                            .padding(20.dp)
+                            .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        modifier =
+                            Modifier
+                                .padding(bottom = 10.dp),
+                        text =
+                            StringProvider.getString(
+                                R.string.test_screen_current_distance,
+                            ),
+                        fontSize = 24.sp,
+                        color = Color(0xffffffff),
+                    )
+                    Text(
+                        modifier =
+                            Modifier
+                                .padding(bottom = 10.dp),
+                        text = "${(faceDetectionViewModel.screenToFaceDistance.collectAsState().value / 10).roundToInt()}cm",
+                        fontSize = 100.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xffffffff),
+                    )
+                }
+            }
         }
     }
 }

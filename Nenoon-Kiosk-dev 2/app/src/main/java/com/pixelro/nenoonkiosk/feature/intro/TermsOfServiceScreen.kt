@@ -42,33 +42,36 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
+import com.pixelro.nenoonkiosk.core.util.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class TermsOfServiceViewModel @Inject constructor() : ViewModel() {
-    private val _acceptedPersonalInformationTerms = mutableStateOf<Boolean?>(null)
-    val acceptedPersonalInformationTerms: State<Boolean?> = _acceptedPersonalInformationTerms
+class TermsOfServiceViewModel
+    @Inject
+    constructor() : ViewModel() {
+        private val _acceptedPersonalInformationTerms = mutableStateOf<Boolean?>(null)
+        val acceptedPersonalInformationTerms: State<Boolean?> = _acceptedPersonalInformationTerms
 
-    private val _acceptedSensitiveInformationTerms = mutableStateOf<Boolean?>(null)
-    val acceptedSensitiveInformationTerms: State<Boolean?> = _acceptedSensitiveInformationTerms
+        private val _acceptedSensitiveInformationTerms = mutableStateOf<Boolean?>(null)
+        val acceptedSensitiveInformationTerms: State<Boolean?> = _acceptedSensitiveInformationTerms
 
-    fun onPersonalInformationTermsAcceptedChange(newValue: Boolean?) {
-        _acceptedPersonalInformationTerms.value = newValue
+        fun onPersonalInformationTermsAcceptedChange(newValue: Boolean?) {
+            _acceptedPersonalInformationTerms.value = newValue
+        }
+
+        fun onSensitiveInformationTermsAcceptedChange(newValue: Boolean?) {
+            _acceptedSensitiveInformationTerms.value = newValue
+        }
     }
-    fun onSensitiveInformationTermsAcceptedChange(newValue: Boolean?){
-        _acceptedSensitiveInformationTerms.value = newValue
-    }
-}
 
 @Composable
-fun TermsOfServiceScreen(
+fun termsOfServiceScreen(
     onTermsAccepted: () -> Unit,
     onTermsRejected: () -> Unit,
     viewModel: TermsOfServiceViewModel = hiltViewModel(),
@@ -83,10 +86,11 @@ fun TermsOfServiceScreen(
 
     Scaffold { paddingValues ->
         Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(40.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(40.dp),
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -97,18 +101,21 @@ fun TermsOfServiceScreen(
 
                 // 제목
                 Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color(0xff1d71e1), fontSize = 40.sp, fontWeight = FontWeight.SemiBold)) {
-                            append(StringProvider.getString(R.string.terms_of_service_title_primary) + "\n")
-                        }
-                        withStyle(style = SpanStyle(fontSize = 26.sp, fontWeight = FontWeight.Bold)) {
-                            append(StringProvider.getString(R.string.terms_of_service_title_secondary))
-                        }
-                    },
-                    style = TextStyle(
-                        textAlign = TextAlign.Center, lineHeight = 40.sp
-                    ),
-                    modifier = Modifier.fillMaxWidth()
+                    text =
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(color = Color(0xff1d71e1), fontSize = 40.sp, fontWeight = FontWeight.SemiBold)) {
+                                append(StringProvider.getString(R.string.terms_of_service_title_primary) + "\n")
+                            }
+                            withStyle(style = SpanStyle(fontSize = 26.sp, fontWeight = FontWeight.Bold)) {
+                                append(StringProvider.getString(R.string.terms_of_service_title_secondary))
+                            }
+                        },
+                    style =
+                        TextStyle(
+                            textAlign = TextAlign.Center,
+                            lineHeight = 40.sp,
+                        ),
+                    modifier = Modifier.fillMaxWidth(),
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
@@ -117,14 +124,14 @@ fun TermsOfServiceScreen(
                 Text(
                     text = StringProvider.getString(R.string.terms_of_service_description),
                     style = TextStyle(fontSize = textSize),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
 
                 // 개인정보 수집 이용 내역
                 Column {
-                    TermsOfServiceTable(
+                    termsOfServiceTable(
                         label = StringProvider.getString(R.string.personal_info_table_label),
                         column1 = StringProvider.getString(R.string.personal_info_table_column1),
                         column2 = StringProvider.getString(R.string.personal_info_table_column2),
@@ -134,12 +141,12 @@ fun TermsOfServiceScreen(
 
                     Spacer(modifier = Modifier.height(30.dp))
 
-                    TermsOfServiceCheckboxes(
+                    termsOfServiceCheckboxes(
                         description = StringProvider.getString(R.string.personal_info_checkbox_description),
                         question = StringProvider.getString(R.string.personal_info_checkbox_question),
                         accepted = acceptedPersonalInformationTerms,
                         textSize = textSize,
-                        onAcceptedChange = { viewModel.onPersonalInformationTermsAcceptedChange(it) }
+                        onAcceptedChange = { viewModel.onPersonalInformationTermsAcceptedChange(it) },
                     )
                 }
 
@@ -147,7 +154,7 @@ fun TermsOfServiceScreen(
 
                 // 민감정보 수집 이용 내역
                 Column {
-                    TermsOfServiceTable(
+                    termsOfServiceTable(
                         label = StringProvider.getString(R.string.sensitive_info_table_label),
                         column1 = StringProvider.getString(R.string.sensitive_info_table_column1),
                         column2 = StringProvider.getString(R.string.sensitive_info_table_column2),
@@ -157,12 +164,12 @@ fun TermsOfServiceScreen(
 
                     Spacer(modifier = Modifier.height(30.dp))
 
-                    TermsOfServiceCheckboxes(
+                    termsOfServiceCheckboxes(
                         description = StringProvider.getString(R.string.sensitive_info_checkbox_description),
                         question = StringProvider.getString(R.string.sensitive_info_checkbox_question),
                         accepted = acceptedSensitiveInformationTerms,
                         textSize = textSize,
-                        onAcceptedChange = { viewModel.onSensitiveInformationTermsAcceptedChange(it) }
+                        onAcceptedChange = { viewModel.onSensitiveInformationTermsAcceptedChange(it) },
                     )
                 }
 
@@ -175,7 +182,7 @@ fun TermsOfServiceScreen(
                         }
                     },
                     enabled = acceptedPersonalInformationTerms == true && acceptedSensitiveInformationTerms == true,
-                    text = StringProvider.getString(R.string.button_agree)
+                    text = StringProvider.getString(R.string.button_agree),
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -184,7 +191,7 @@ fun TermsOfServiceScreen(
                     onClick = {
                         onTermsRejected()
                     },
-                    text = StringProvider.getString(R.string.back)
+                    text = StringProvider.getString(R.string.back),
                 )
             }
         }
@@ -192,14 +199,15 @@ fun TermsOfServiceScreen(
 }
 
 @Composable
-fun TermsOfServiceTable(
+fun termsOfServiceTable(
     label: String,
     column1: String,
     column2: String,
     column3: String,
     isEvenlySpaced: Boolean = false,
     textSize: TextUnit,
-) {isEvenlySpaced
+) {
+    isEvenlySpaced
 
     val strokeWidthDp = 1.dp
     val cellPaddingDp = 8.dp
@@ -215,164 +223,173 @@ fun TermsOfServiceTable(
     Text(
         text = label,
         style = TextStyle(fontSize = textSize, background = Color(0xffffff00), fontWeight = FontWeight.SemiBold),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     )
 
     Spacer(modifier = Modifier.height(8.dp))
 
-    Column(modifier = Modifier
-        .onGloballyPositioned {
-            height = it.size.height.toFloat()
-            width = it.size.width.toFloat()
-        }
-        .drawWithContent {
-            drawContent()
-            drawLine(
-                color = Color(0xff000000),
-                start = Offset(0f, firstColumnHeight),
-                end = Offset(width, firstColumnHeight),
-                strokeWidth = strokeWidthPx
-            )
-            drawLine(
-                color = Color(0xff000000),
-                start = Offset(width * if (isEvenlySpaced) 0.33f else 0.25f, 0f),
-                end = Offset(width * if (isEvenlySpaced) 0.33f else 0.25f, height),
-                strokeWidth = strokeWidthPx
-            )
-            drawLine(
-                color = Color(0xff000000),
-                start = Offset(width * if (isEvenlySpaced) 0.67f else 0.75f, 0f),
-                end = Offset(width * if (isEvenlySpaced) 0.67f else 0.75f, height),
-                strokeWidth = strokeWidthPx
-            )
-        }
-        .fillMaxWidth()
-        .border(1.dp, Color.Black, shape = RectangleShape)
+    Column(
+        modifier =
+            Modifier
+                .onGloballyPositioned {
+                    height = it.size.height.toFloat()
+                    width = it.size.width.toFloat()
+                }
+                .drawWithContent {
+                    drawContent()
+                    drawLine(
+                        color = Color(0xff000000),
+                        start = Offset(0f, firstColumnHeight),
+                        end = Offset(width, firstColumnHeight),
+                        strokeWidth = strokeWidthPx,
+                    )
+                    drawLine(
+                        color = Color(0xff000000),
+                        start = Offset(width * if (isEvenlySpaced) 0.33f else 0.25f, 0f),
+                        end = Offset(width * if (isEvenlySpaced) 0.33f else 0.25f, height),
+                        strokeWidth = strokeWidthPx,
+                    )
+                    drawLine(
+                        color = Color(0xff000000),
+                        start = Offset(width * if (isEvenlySpaced) 0.67f else 0.75f, 0f),
+                        end = Offset(width * if (isEvenlySpaced) 0.67f else 0.75f, height),
+                        strokeWidth = strokeWidthPx,
+                    )
+                }
+                .fillMaxWidth()
+                .border(1.dp, Color.Black, shape = RectangleShape),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xffebebeb))
-                .onGloballyPositioned {
-                    firstColumnHeight = it.size.height.toFloat()
-                }
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xffebebeb))
+                    .onGloballyPositioned {
+                        firstColumnHeight = it.size.height.toFloat()
+                    },
         ) {
             Text(
                 text = StringProvider.getString(R.string.table_header_item),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(cellPaddingDp),
-                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = textSize, textAlign = TextAlign.Center)
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(cellPaddingDp),
+                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = textSize, textAlign = TextAlign.Center),
             )
             Text(
                 text = StringProvider.getString(R.string.table_header_purpose),
-                modifier = Modifier
-                    .weight(if (isEvenlySpaced) 1f else 2f)
-                    .padding(cellPaddingDp),
-                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = textSize, textAlign = TextAlign.Center)
+                modifier =
+                    Modifier
+                        .weight(if (isEvenlySpaced) 1f else 2f)
+                        .padding(cellPaddingDp),
+                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = textSize, textAlign = TextAlign.Center),
             )
             Text(
                 text = StringProvider.getString(R.string.table_header_period),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(cellPaddingDp),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(cellPaddingDp),
                 style = TextStyle(fontWeight = FontWeight.Bold, fontSize = textSize, textAlign = TextAlign.Center),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
                 text = column1,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(cellPaddingDp),
-                style = TextStyle(fontSize = textSize, textAlign = TextAlign.Center)
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(cellPaddingDp),
+                style = TextStyle(fontSize = textSize, textAlign = TextAlign.Center),
             )
             Text(
                 text = column2,
-                modifier = Modifier
-                    .weight(if (isEvenlySpaced) 1f else 2f)
-                    .padding(cellPaddingDp),
-                style = TextStyle(fontSize = textSize, textAlign = TextAlign.Center)
+                modifier =
+                    Modifier
+                        .weight(if (isEvenlySpaced) 1f else 2f)
+                        .padding(cellPaddingDp),
+                style = TextStyle(fontSize = textSize, textAlign = TextAlign.Center),
             )
             Text(
                 text = column3,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(cellPaddingDp),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(cellPaddingDp),
                 style = TextStyle(fontSize = textSize, textAlign = TextAlign.Center),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     }
 }
 
 @Composable
-fun TermsOfServiceCheckboxes(
+fun termsOfServiceCheckboxes(
     description: String,
     question: String,
     accepted: Boolean?,
     onAcceptedChange: (Boolean?) -> Unit,
-    textSize: TextUnit
+    textSize: TextUnit,
 ) {
-
     Text(
         text = description,
-        style = TextStyle(fontSize = textSize)
+        style = TextStyle(fontSize = textSize),
     )
 
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Text(
             text = question,
             style = TextStyle(fontSize = textSize),
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
         Text(
             text = StringProvider.getString(R.string.checkbox_agree),
             color = Color(0xff1d71e1),
-            style = TextStyle(fontSize = textSize)
+            style = TextStyle(fontSize = textSize),
         )
         Checkbox(
             checked = accepted == true,
-            colors = CheckboxDefaults.colors(
-                checkedColor = Color(0xff1d71e1),
-                uncheckedColor = Color(0xff1d71e1),
-                checkmarkColor = Color(0xff1d71e1)
-            ),
+            colors =
+                CheckboxDefaults.colors(
+                    checkedColor = Color(0xff1d71e1),
+                    uncheckedColor = Color(0xff1d71e1),
+                    checkmarkColor = Color(0xff1d71e1),
+                ),
             onCheckedChange = { onAcceptedChange(true) },
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = StringProvider.getString(R.string.checkbox_disagree),
             color = Color(0xff1d71e1),
-            style = TextStyle(fontSize = textSize)
+            style = TextStyle(fontSize = textSize),
         )
         Checkbox(
             checked = accepted == false,
-            colors = CheckboxDefaults.colors(
-                checkedColor = Color(0xff1d71e1),
-                uncheckedColor = Color(0xff1d71e1),
-                checkmarkColor = Color(0xff1d71e1)
-            ),
+            colors =
+                CheckboxDefaults.colors(
+                    checkedColor = Color(0xff1d71e1),
+                    uncheckedColor = Color(0xff1d71e1),
+                    checkmarkColor = Color(0xff1d71e1),
+                ),
             onCheckedChange = { onAcceptedChange(false) },
         )
     }
 }
 
-
 @Preview(showBackground = true, widthDp = 888, heightDp = 1422)
 @Composable
-fun TermsOfServiceScreenPreview() {
-    TermsOfServiceScreen(
+fun termsOfServiceScreenPreview() {
+    termsOfServiceScreen(
         onTermsAccepted = {},
         onTermsRejected = {},
     )

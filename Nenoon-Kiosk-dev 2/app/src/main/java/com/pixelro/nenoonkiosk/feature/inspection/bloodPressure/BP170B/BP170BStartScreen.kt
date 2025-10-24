@@ -27,16 +27,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.manager.BP170BManager
-import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BViewModel
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.InstructionItem
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestScreen
+import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -58,7 +58,6 @@ fun BP170BStartScreen(
     viewModel: BP170BViewModel,
     onBack: () -> Unit,
 ) {
-
     var bp170bConnectionScreenState by remember { mutableStateOf(BP170BConnectionScreenState.DeviceCheck) }
 
     val connectionState by viewModel.connectionState.collectAsState()
@@ -71,23 +70,22 @@ fun BP170BStartScreen(
 
     // Initialize the BP170BManager
     LaunchedEffect(Unit) {
-
         bp170bConnectionScreenState = BP170BConnectionScreenState.DeviceCheck
         viewModel.startScan()
 
         coroutineScope.launch {
-
             delay(5000)
 
             if (bp170bConnectionScreenState == BP170BConnectionScreenState.TurnOffDevice) {
                 bp170bConnectionScreenState = BP170BConnectionScreenState.Standby
             }
 
-            bp170bConnectionScreenState = if (connectionState == BP170BManager.BluetoothConnectionState.CONNECTED) {
-                BP170BConnectionScreenState.TurnOffDevice
-            } else {
-                BP170BConnectionScreenState.Standby
-            }
+            bp170bConnectionScreenState =
+                if (connectionState == BP170BManager.BluetoothConnectionState.CONNECTED) {
+                    BP170BConnectionScreenState.TurnOffDevice
+                } else {
+                    BP170BConnectionScreenState.Standby
+                }
         }
 
         coroutineScope.launch {
@@ -100,17 +98,16 @@ fun BP170BStartScreen(
     // Effect to start scan when entering DeviceSelection state
     LaunchedEffect(connectionState) {
         if (connectionState == BP170BManager.BluetoothConnectionState.CONNECTED) {
-
             if (bp170bConnectionScreenState != BP170BConnectionScreenState.TurnOffDevice &&
-                bp170bConnectionScreenState != BP170BConnectionScreenState.DeviceCheck) {
+                bp170bConnectionScreenState != BP170BConnectionScreenState.DeviceCheck
+            ) {
                 navController.navigate(BloodPressureTestScreen.InProgress.name)
-
             } else {
                 bp170bConnectionScreenState = BP170BConnectionScreenState.TurnOffDevice
             }
-
         } else if (connectionState == BP170BManager.BluetoothConnectionState.DISCONNECTED &&
-            bp170bConnectionScreenState == BP170BConnectionScreenState.TurnOffDevice) {
+            bp170bConnectionScreenState == BP170BConnectionScreenState.TurnOffDevice
+        ) {
             bp170bConnectionScreenState = BP170BConnectionScreenState.Standby
             viewModel.startScan()
         }
@@ -175,18 +172,18 @@ fun BP170BStartScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(40.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
+            verticalArrangement = Arrangement.Bottom,
         ) {
             when (bp170bConnectionScreenState) {
                 BP170BConnectionScreenState.Standby, BP170BConnectionScreenState.Connecting, BP170BConnectionScreenState.AwaitingStart -> {
@@ -220,7 +217,7 @@ fun BP170BStartScreen(
                             viewModel.startScan()
                         },
                         text = StringProvider.getString(R.string.blood_pressure_monitor_try_again),
-                        modifier = Modifier.padding(top = 120.dp, bottom = 20.dp)
+                        modifier = Modifier.padding(top = 120.dp, bottom = 20.dp),
                     )
                 }
 
@@ -250,13 +247,13 @@ fun BP170BStartScreen(
                 }
             }
 
-                PrimaryButton(
+            PrimaryButton(
                 onClick = {
                     TTS.tts.stop()
                     viewModel.disconnect()
                     onBack()
                 },
-                text = StringProvider.getString(R.string.back)
+                text = StringProvider.getString(R.string.back),
             )
         }
     }

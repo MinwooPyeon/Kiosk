@@ -7,6 +7,6 @@ import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.Long
 @Composable
 fun LongDistanceVisualAcuityTestResultContent(
     testResult: LongVisualAcuityTestResult,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
 }

@@ -2,7 +2,16 @@ package com.pixelro.nenoonkiosk.feature.strabismustest
 
 import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -29,9 +38,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.StringProviderForSawi
+import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.inspection.strabismus.StrabismusPrintHelper
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 import kotlin.math.abs
@@ -41,7 +50,7 @@ fun FudoResultScreen(
     answer: Int?,
     difference: Float?,
     onPrintClicked: () -> Unit,
-    onBackToMainClicked: () -> Unit
+    onBackToMainClicked: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         TTS.speechTTS(StringProvider.getString(R.string.tts_result_screen), TextToSpeech.QUEUE_FLUSH)
@@ -50,26 +59,27 @@ fun FudoResultScreen(
     val context = LocalContext.current
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = StringProvider.getString(R.string.fudo_result_title),
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
-            modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
+            modifier = Modifier.padding(top = 32.dp, bottom = 16.dp),
         )
 
         Text(
             text = StringProvider.getString(R.string.sawi_result_normal_case_info),
             fontSize = 24.sp,
             color = Color.DarkGray,
-            modifier = Modifier.padding(bottom = 32.dp)
+            modifier = Modifier.padding(bottom = 32.dp),
         )
 
         var normalCaseVisible = false
@@ -115,12 +125,13 @@ fun FudoResultScreen(
                 }
 
                 userRightTitle = StringProvider.getString(R.string.fudo_result_clinical_opinion)
-                val (result, description) = when {
-                    abs(differenceValue) < 0.5f -> StringProvider.getString(R.string.sawi_result_normal) to StringProvider.getString(R.string.fudo_result_normal_desc)
-                    abs(differenceValue) <= 2f -> StringProvider.getString(R.string.sawi_result_normal_range) to StringProvider.getString(R.string.fudo_result_normal_desc)
-                    abs(differenceValue) <= 4f -> StringProvider.getString(R.string.fudo_result_mild_aniseikonia) to StringProvider.getString(R.string.fudo_result_desc_mild)
-                    else -> StringProvider.getString(R.string.fudo_result_severe_aniseikonia) to StringProvider.getString(R.string.fudo_result_desc_severe)
-                }
+                val (result, description) =
+                    when {
+                        abs(differenceValue) < 0.5f -> StringProvider.getString(R.string.sawi_result_normal) to StringProvider.getString(R.string.fudo_result_normal_desc)
+                        abs(differenceValue) <= 2f -> StringProvider.getString(R.string.sawi_result_normal_range) to StringProvider.getString(R.string.fudo_result_normal_desc)
+                        abs(differenceValue) <= 4f -> StringProvider.getString(R.string.fudo_result_mild_aniseikonia) to StringProvider.getString(R.string.fudo_result_desc_mild)
+                        else -> StringProvider.getString(R.string.fudo_result_severe_aniseikonia) to StringProvider.getString(R.string.fudo_result_desc_severe)
+                    }
                 userVerticalResult = result
                 userVerticalDescription = description
             }
@@ -155,7 +166,6 @@ fun FudoResultScreen(
                 userHorizontalDescription = StringProvider.getString(R.string.sawi_result_desc_suppression_left)
                 userVerticalResult = StringProvider.getString(R.string.sawi_result_normal)
                 userVerticalDescription = StringProvider.getString(R.string.sawi_result_normal_status)
-
             }
             4 -> {
                 normalCaseVisible = true
@@ -173,7 +183,6 @@ fun FudoResultScreen(
                 userHorizontalDescription = StringProvider.getString(R.string.sawi_result_desc_suppression_left)
                 userVerticalResult = StringProvider.getString(R.string.sawi_result_suppression_suspicion)
                 userVerticalDescription = StringProvider.getString(R.string.sawi_result_desc_suppression_right)
-
             }
             else -> {
                 normalCaseVisible = false
@@ -192,12 +201,22 @@ fun FudoResultScreen(
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 16.dp),
             )
             Row(modifier = Modifier.fillMaxWidth()) {
-                ResultCard(modifier = Modifier.weight(1f), title = normalLeftTitle, result = normalLeftResult, description = normalLeftDescription)
+                ResultCard(
+                    modifier = Modifier.weight(1f),
+                    title = normalLeftTitle,
+                    result = normalLeftResult,
+                    description = normalLeftDescription,
+                )
                 Spacer(modifier = Modifier.width(16.dp))
-                ResultCard(modifier = Modifier.weight(1f), title = normalRightTitle, result = normalRightResult, description = normalRightDescription)
+                ResultCard(
+                    modifier = Modifier.weight(1f),
+                    title = normalRightTitle,
+                    result = normalRightResult,
+                    description = normalRightDescription,
+                )
             }
             Spacer(modifier = Modifier.height(24.dp))
         }
@@ -207,12 +226,22 @@ fun FudoResultScreen(
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp),
         )
         Row(modifier = Modifier.fillMaxWidth()) {
-            ResultCard(modifier = Modifier.weight(1f), title = userLeftTitle, result = userHorizontalResult, description = userHorizontalDescription)
+            ResultCard(
+                modifier = Modifier.weight(1f),
+                title = userLeftTitle,
+                result = userHorizontalResult,
+                description = userHorizontalDescription,
+            )
             Spacer(modifier = Modifier.width(16.dp))
-            ResultCard(modifier = Modifier.weight(1f), title = userRightTitle, result = userVerticalResult, description = userVerticalDescription)
+            ResultCard(
+                modifier = Modifier.weight(1f),
+                title = userRightTitle,
+                result = userVerticalResult,
+                description = userVerticalDescription,
+            )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -222,26 +251,27 @@ fun FudoResultScreen(
             fontSize = 12.sp,
             color = Color.DarkGray,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
             onClick = {
-                TTS.speechTTS(StringProvider.getString(R.string.printing_in_progress),TextToSpeech.QUEUE_FLUSH)
+                TTS.speechTTS(StringProvider.getString(R.string.printing_in_progress), TextToSpeech.QUEUE_FLUSH)
                 val differenceValue = difference ?: 0f
-                val formattedResult = when {
-                    differenceValue > 0 -> {
-                        StringProviderForSawi.getString(R.string.fudo_result_right_eye_larger_format, differenceValue)
+                val formattedResult =
+                    when {
+                        differenceValue > 0 -> {
+                            StringProviderForSawi.getString(R.string.fudo_result_right_eye_larger_format, differenceValue)
+                        }
+                        differenceValue < 0 -> {
+                            StringProviderForSawi.getString(R.string.fudo_result_left_eye_larger_format, abs(differenceValue))
+                        }
+                        else -> {
+                            userHorizontalResult
+                        }
                     }
-                    differenceValue < 0 -> {
-                        StringProviderForSawi.getString(R.string.fudo_result_left_eye_larger_format, abs(differenceValue))
-                    }
-                    else -> {
-                        userHorizontalResult
-                    }
-                }
 
                 StrabismusPrintHelper.printFudoResult(
                     context = context,
@@ -250,25 +280,28 @@ fun FudoResultScreen(
                     opinionTitle = userRightTitle,
                     opinionResult = userVerticalResult,
                     retinalDescription = userHorizontalDescription,
-                    opinionDescription = userVerticalDescription
+                    opinionDescription = userVerticalDescription,
                 )
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(96.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = neNoon_blue),
-                shape = RoundedCornerShape( 12.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(96.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = neNoon_blue),
+            shape = RoundedCornerShape(12.dp),
         ) {
             Text(StringProvider.getString(R.string.sawi_result_print_button), fontSize = 36.sp, color = Color.White)
         }
 
         Button(
             onClick = onBackToMainClicked,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(96.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-            ,shape = RoundedCornerShape( 12.dp)        ) {
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(96.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+            shape = RoundedCornerShape(12.dp),
+        ) {
             Text(StringProvider.getString(R.string.sawi_result_back_to_main_button), fontSize = 36.sp, color = neNoon_blue)
         }
     }
@@ -279,18 +312,19 @@ fun AutoSizedText(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
-    style: TextStyle = LocalTextStyle.current
+    style: TextStyle = LocalTextStyle.current,
 ) {
     var scaledTextStyle by remember { mutableStateOf(style) }
     var readyToDraw by remember { mutableStateOf(false) }
 
     Text(
         text,
-        modifier = modifier.drawWithContent {
-            if (readyToDraw) {
-                drawContent()
-            }
-        },
+        modifier =
+            modifier.drawWithContent {
+                if (readyToDraw) {
+                    drawContent()
+                }
+            },
         color = color,
         style = scaledTextStyle,
         softWrap = false,
@@ -302,96 +336,114 @@ fun AutoSizedText(
             } else {
                 readyToDraw = true
             }
-        }
+        },
     )
 }
 
 @Composable
-fun ResultCard(modifier: Modifier = Modifier, title: String, result: String, description: String) {
+fun ResultCard(
+    modifier: Modifier = Modifier,
+    title: String,
+    result: String,
+    description: String,
+) {
     Card(
         modifier = modifier.height(240.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .height(IntrinsicSize.Min),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .height(IntrinsicSize.Min),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.Top,
         ) {
             AutoSizedText(
                 text = title,
-                style = TextStyle(
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                ),
-                color = Color.Black
+                style =
+                    TextStyle(
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                    ),
+                color = Color.Black,
             )
             AutoSizedText(
                 text = result,
-                style = TextStyle(
-                    fontSize = 42.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                ),
-                color = neNoon_blue
+                style =
+                    TextStyle(
+                        fontSize = 42.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                    ),
+                color = neNoon_blue,
             )
             Text(
                 text = description,
                 fontSize = 16.sp,
                 color = Color.DarkGray,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     }
 }
 
 @Composable
-fun SawiResultCard(modifier: Modifier = Modifier, title: String, result1: String, result2: String, description: String) {
+fun SawiResultCard(
+    modifier: Modifier = Modifier,
+    title: String,
+    result1: String,
+    result2: String,
+    description: String,
+) {
     Card(
         modifier = modifier.height(220.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         // 👇 이 Column의 속성이 변경되었습니다.
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(4.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             AutoSizedText(
                 text = title,
-                style = TextStyle(
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                ),
+                style =
+                    TextStyle(
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                    ),
                 color = Color.Black,
             )
             AutoSizedText(
                 text = result1,
-                style = TextStyle(
-                    fontSize = 42.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                ),
-                color = neNoon_blue
+                style =
+                    TextStyle(
+                        fontSize = 42.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                    ),
+                color = neNoon_blue,
             )
 
             if (result2.isNotEmpty()) {
                 AutoSizedText(
                     text = result2,
-                    style = TextStyle(
-                        fontSize = 42.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    ),
-                    color = neNoon_blue
+                    style =
+                        TextStyle(
+                            fontSize = 42.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                        ),
+                    color = neNoon_blue,
                 )
             }
             Spacer(modifier = Modifier.height(1.dp))
@@ -400,7 +452,7 @@ fun SawiResultCard(modifier: Modifier = Modifier, title: String, result1: String
                 text = description,
                 fontSize = 16.sp,
                 color = Color.DarkGray,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     }

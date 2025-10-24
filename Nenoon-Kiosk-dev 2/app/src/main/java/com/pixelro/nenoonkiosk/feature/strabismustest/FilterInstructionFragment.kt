@@ -4,21 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 
 class FilterInstructionFragment : Fragment() {
-
     companion object {
         private const val ARG_TEST_TYPE = "test_type"
         private const val ARG_IS_WEARING_GLASSES = "is_wearing_glasses"
         const val TEST_TYPE_SAWI = "sawi"
         const val TEST_TYPE_FUDO = "fudo"
 
-        fun newInstance(testType: String, isWearingGlasses: Boolean): FilterInstructionFragment {
+        fun newInstance(
+            testType: String,
+            isWearingGlasses: Boolean,
+        ): FilterInstructionFragment {
             val fragment = FilterInstructionFragment()
             val args = Bundle()
             args.putString(ARG_TEST_TYPE, testType)
@@ -29,7 +33,9 @@ class FilterInstructionFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {

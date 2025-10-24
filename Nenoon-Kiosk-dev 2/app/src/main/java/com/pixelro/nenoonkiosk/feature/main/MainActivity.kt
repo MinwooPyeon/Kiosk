@@ -56,22 +56,21 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.pixelro.nenoonkiosk.core.receiver.NenoonDeviceAdminReceiver
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.constants.DebugConstants
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
+import com.pixelro.nenoonkiosk.core.constants.NavConstants
+import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.core.receiver.NenoonDeviceAdminReceiver
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     val viewModel: NenoonViewModel by lazy {
         ViewModelProvider(this)[NenoonViewModel::class.java]
     }
@@ -146,11 +145,13 @@ class MainActivity : ComponentActivity() {
 
     private fun checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                this, Manifest.permission.ACCESS_FINE_LOCATION,
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
+                LOCATION_PERMISSION_REQUEST_CODE,
             )
         }
     }
@@ -179,7 +180,7 @@ class MainActivity : ComponentActivity() {
         }
         window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
         )
 
         val statusBarResourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
@@ -198,7 +199,7 @@ class MainActivity : ComponentActivity() {
             NenoonKioskTheme {
                 val systemUiController = rememberSystemUiController()
                 systemUiController.setStatusBarColor(
-                    color = Color(0x00000000)
+                    color = Color(0x00000000),
                 )
                 systemUiController.isNavigationBarVisible = false
                 val context = LocalContext.current
@@ -208,23 +209,27 @@ class MainActivity : ComponentActivity() {
                         context.getSystemService(CAMERA_SERVICE) as CameraManager
                     val cameraCharacteristics =
                         (context.getSystemService(CAMERA_SERVICE) as CameraManager).getCameraCharacteristics(
-                            cameraManager.cameraIdList[if (DebugConstants.EMULATOR_MODE) 0 else 1]
+                            cameraManager.cameraIdList[if (DebugConstants.EMULATOR_MODE) 0 else 1],
                         )
                     viewModel.updateLocalConfigurationValues(
                         pixelDensity = context.resources.displayMetrics.density,
                         screenWidthDp = configuration.screenWidthDp,
                         screenHeightDp = configuration.screenHeightDp,
-                        focalLength = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
-                            ?.get(0) ?: 0f,
-                        lensSize = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)
-                            ?: SizeF(0f, 0f)
+                        focalLength =
+                            cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
+                                ?.get(0) ?: 0f,
+                        lensSize =
+                            cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)
+                                ?: SizeF(0f, 0f),
                     )
                 }
-                val sharedPreferences = getSharedPreferences(NavConstants.PREFERENCE_NAME,
-                    MODE_PRIVATE
-                )
+                val sharedPreferences =
+                    getSharedPreferences(
+                        NavConstants.PREFERENCE_NAME,
+                        MODE_PRIVATE,
+                    )
 
-                NenoonApp()
+                nenoonApp()
 
                 if (showPasswordDialog) {
                     PasswordDialog(
@@ -238,7 +243,7 @@ class MainActivity : ComponentActivity() {
                             } else {
                                 Toast.makeText(context, "Incorrect password", Toast.LENGTH_SHORT).show()
                             }
-                        }
+                        },
                     )
                 }
             }
@@ -248,27 +253,29 @@ class MainActivity : ComponentActivity() {
     private fun connectPrinter() {
         when {
             ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED -> {
+                ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED -> {
                 PrinterManager.startBluetoothScan(this)
             }
             else -> {
                 requestPermissionsLauncher.launch(
-                    arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)
+                    arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT),
                 )
             }
         }
     }
 
-    private val requestPermissionsLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        if (permissions[Manifest.permission.BLUETOOTH_SCAN] == true &&
-            permissions[Manifest.permission.BLUETOOTH_CONNECT] == true) {
-            PrinterManager.startBluetoothScan(this)
-        } else {
-            Log.e("MainActivity", "Bluetooth permissions were denied.")
+    private val requestPermissionsLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions(),
+        ) { permissions ->
+            if (permissions[Manifest.permission.BLUETOOTH_SCAN] == true &&
+                permissions[Manifest.permission.BLUETOOTH_CONNECT] == true
+            ) {
+                PrinterManager.startBluetoothScan(this)
+            } else {
+                Log.e("MainActivity", "Bluetooth permissions were denied.")
+            }
         }
-    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onPause() {
@@ -303,15 +310,16 @@ class MainActivity : ComponentActivity() {
             return
         }
 
-        val features = if (enable) {
-            DevicePolicyManager.LOCK_TASK_FEATURE_NONE
-        } else {
-            DevicePolicyManager.LOCK_TASK_FEATURE_HOME or
+        val features =
+            if (enable) {
+                DevicePolicyManager.LOCK_TASK_FEATURE_NONE
+            } else {
+                DevicePolicyManager.LOCK_TASK_FEATURE_HOME or
                     DevicePolicyManager.LOCK_TASK_FEATURE_OVERVIEW or
                     DevicePolicyManager.LOCK_TASK_FEATURE_NOTIFICATIONS or
                     DevicePolicyManager.LOCK_TASK_FEATURE_SYSTEM_INFO or
                     DevicePolicyManager.LOCK_TASK_FEATURE_GLOBAL_ACTIONS
-        }
+            }
         dpm.setLockTaskFeatures(adminComponentName, features)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -326,10 +334,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun PasswordDialog(
     onDismiss: () -> Unit,
-    onPasswordEntered: (String) -> Unit
+    onPasswordEntered: (String) -> Unit,
 ) {
     var passwordInput by remember { mutableStateOf("") }
-    val context = LocalContext.current // Context is not used in this specific composable, but useful if you need Toast here
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -341,57 +348,68 @@ fun PasswordDialog(
                 OutlinedTextField(
                     value = passwordInput,
                     onValueChange = { passwordInput = it },
-                    label = { Text(StringProvider.getString(
-                        R.string.password)) },
+                    label = {
+                        Text(
+                            StringProvider.getString(
+                                R.string.password,
+                            ),
+                        )
+                    },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     singleLine = true,
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = colorResource(R.color.main),
-                        focusedLabelColor = colorResource(R.color.main),
-                        cursorColor = colorResource(R.color.main),
-                        backgroundColor = Color.White,
-                    ),
-                    modifier = Modifier.fillMaxWidth()
+                    colors =
+                        TextFieldDefaults.textFieldColors(
+                            focusedIndicatorColor = colorResource(R.color.main),
+                            focusedLabelColor = colorResource(R.color.main),
+                            cursorColor = colorResource(R.color.main),
+                            backgroundColor = Color.White,
+                        ),
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
         buttons = {
             Row(
-                modifier = Modifier
-                    .padding(24.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier =
+                    Modifier
+                        .padding(24.dp)
+                        .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Button(
                     onClick = {
                         onPasswordEntered(passwordInput)
                         passwordInput = ""
                     },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(R.color.error),
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(60.dp)
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(R.color.error),
+                            contentColor = Color.White,
+                        ),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(60.dp),
                 ) {
-                    Text(StringProvider.getString(R.string.enter, ))
+                    Text(StringProvider.getString(R.string.enter))
                 }
                 Spacer(modifier = Modifier.width(24.dp))
                 Button(
                     onClick = onDismiss,
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(R.color.gray1),
-                    ),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(60.dp)
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(R.color.gray1),
+                        ),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(60.dp),
                 ) {
-                    Text(StringProvider.getString(R.string.cancel, ))
+                    Text(StringProvider.getString(R.string.cancel))
                 }
             }
         },
-        properties = DialogProperties(dismissOnClickOutside = false)
+        properties = DialogProperties(dismissOnClickOutside = false),
     )
 }

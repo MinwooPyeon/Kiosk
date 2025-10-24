@@ -8,8 +8,7 @@ import com.google.zxing.WriterException
 import com.google.zxing.common.BitMatrix
 import java.io.UnsupportedEncodingException
 
-object QrCodeGenerator {
-
+object QRCodeGenerator {
     /**
      * Generates a QR code Bitmap from the given text.
      *
@@ -18,14 +17,19 @@ object QrCodeGenerator {
      * @param height The desired height of the QR code in pixels.
      * @return A Bitmap representing the QR code, or null if an error occurs.
      */
-    fun generateQrCode(text: String, width: Int, height: Int): Bitmap? {
+    fun generateQrCode(
+        text: String,
+        width: Int,
+        height: Int,
+    ): Bitmap? {
         try {
-            val bitMatrix: BitMatrix = MultiFormatWriter().encode(
-                text,
-                BarcodeFormat.QR_CODE,
-                width,
-                height
-            )
+            val bitMatrix: BitMatrix =
+                MultiFormatWriter().encode(
+                    text,
+                    BarcodeFormat.QR_CODE,
+                    width,
+                    height,
+                )
 
             val pixels = IntArray(width * height)
             for (y in 0 until height) {

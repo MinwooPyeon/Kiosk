@@ -7,6 +7,6 @@ import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.Children
 @Composable
 fun ChildrenVisualAcuityTestResultContent(
     testResult: ChildrenVisualAcuityTestResult,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
 }

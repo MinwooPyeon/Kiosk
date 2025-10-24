@@ -17,22 +17,28 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BConnectionScreen
-import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ManagementScreen
-import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
-import com.pixelro.nenoonkiosk.feature.iotdevice.BTDeviceManagementScreen
-import com.pixelro.nenoonkiosk.feature.iotdevice.InGrip.InGripManagmentScreen
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
 import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.auth.AccountManagementScreen
+import com.pixelro.nenoonkiosk.feature.auth.FaceIdTermsOfServiceScreen
+import com.pixelro.nenoonkiosk.feature.auth.FaceUpdateScreen
+import com.pixelro.nenoonkiosk.feature.auth.SignInScreen
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
+import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListScreen
 import com.pixelro.nenoonkiosk.feature.exerciseglasses.concentration_exercise.ConcentrationExerciseContent
 import com.pixelro.nenoonkiosk.feature.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseContent
+import com.pixelro.nenoonkiosk.feature.inspection.ExternalDeviceTestListScreen
+import com.pixelro.nenoonkiosk.feature.inspection.EyeTestListScreen
+import com.pixelro.nenoonkiosk.feature.inspection.PhoriaAndAniseikoniaTestListScreen
+import com.pixelro.nenoonkiosk.feature.inspection.TestResultScreen
+import com.pixelro.nenoonkiosk.feature.inspection.TestScreen
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestContent
@@ -43,59 +49,59 @@ import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.Children
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.LongVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortDistanceVisualAcuityTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
-import com.pixelro.nenoonkiosk.feature.print.ResultPrintScreen
-import com.pixelro.nenoonkiosk.feature.survey.SurveyScreen
-import com.pixelro.nenoonkiosk.feature.user.AccountManagementScreen
-import com.pixelro.nenoonkiosk.feature.undeveloped.AdminPageScreen
-import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListScreen
-import com.pixelro.nenoonkiosk.feature.undeveloped.EntriesScreen
-import com.pixelro.nenoonkiosk.feature.inspection.ExternalDeviceTestListScreen
-import com.pixelro.nenoonkiosk.feature.inspection.EyeTestListScreen
 import com.pixelro.nenoonkiosk.feature.intro.IntroScreen
 import com.pixelro.nenoonkiosk.feature.intro.PermissionRequestScreen
-import com.pixelro.nenoonkiosk.feature.inspection.PhoriaAndAniseikoniaTestListScreen
+import com.pixelro.nenoonkiosk.feature.intro.termsOfServiceScreen
+import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BConnectionScreen
+import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ManagementScreen
+import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
+import com.pixelro.nenoonkiosk.feature.iotdevice.BTDeviceManagementScreen
+import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripManagmentScreen
+import com.pixelro.nenoonkiosk.feature.print.ResultPrintScreen
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverScreen
 import com.pixelro.nenoonkiosk.feature.setting.SettingsScreen
-import com.pixelro.nenoonkiosk.feature.undeveloped.SoftwareInfoScreen
 import com.pixelro.nenoonkiosk.feature.splash.SplashScreen
-import com.pixelro.nenoonkiosk.feature.intro.TermsOfServiceScreen
-import com.pixelro.nenoonkiosk.feature.inspection.TestResultScreen
-import com.pixelro.nenoonkiosk.feature.inspection.TestScreen
-import com.pixelro.nenoonkiosk.feature.undeveloped.ContactScreen
-import com.pixelro.nenoonkiosk.feature.undeveloped.ExerciseListScreen
-import com.pixelro.nenoonkiosk.feature.undeveloped.VideoTelephonyScreen
 import com.pixelro.nenoonkiosk.feature.strabismustest.AppNavigation
+import com.pixelro.nenoonkiosk.feature.survey.SurveyScreen
 import com.pixelro.nenoonkiosk.feature.testcontent.ChildrenVisualAcuityTestContent
 import com.pixelro.nenoonkiosk.feature.testcontent.LongDistanceVisualAcuityTestContent
-import com.pixelro.nenoonkiosk.feature.user.FaceIdTermsOfServiceScreen
-import com.pixelro.nenoonkiosk.feature.user.FaceUpdateScreen
-import com.pixelro.nenoonkiosk.feature.user.SignInScreen
-import com.pixelro.nenoonkiosk.feature.user.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.undeveloped.AdminPageScreen
+import com.pixelro.nenoonkiosk.feature.undeveloped.ContactScreen
+import com.pixelro.nenoonkiosk.feature.undeveloped.EntriesScreen
+import com.pixelro.nenoonkiosk.feature.undeveloped.ExerciseListScreen
+import com.pixelro.nenoonkiosk.feature.undeveloped.SoftwareInfoScreen
+import com.pixelro.nenoonkiosk.feature.undeveloped.VideoTelephonyScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+
+// Route가 되어야함.
 @SuppressLint("RestrictedApi")
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun NenoonApp(
+fun nenoonApp(
     viewModel: NenoonViewModel = hiltViewModel(),
     bloodPressureMonitorViewModel: BPBIO320ViewModel = hiltViewModel(),
-    signInViewModel: SignInViewModel = hiltViewModel(),
-    navController: NavHostController = rememberAnimatedNavController()
+    loginViewModel: LoginViewModel = hiltViewModel(),
+    navController: NavHostController = rememberNavController(),
 ) {
     val selectedTest = viewModel.selectedTestType.collectAsState().value
     val isScreenSaving = viewModel.isScreenSaving.collectAsState().value
 
-    //광고 화면 전환 관련 코드
+    // 광고 화면 전환 관련 코드
     LaunchedEffect(isScreenSaving) {
         bloodPressureMonitorViewModel.initializeBluetoothSDK()
         if (isScreenSaving) {
             if (navController.currentBackStackEntry?.destination?.route != NavConstants.ROUTE_SIGN_IN) {
                 navController.popBackStack(
-                    if (viewModel.isSignedIn.value) NavConstants.ROUTE_CATEGORY_LIST
-                    else NavConstants.ROUTE_INTRO,
-        false)
+                    if (viewModel.isSignedIn.value) {
+                        NavConstants.ROUTE_CATEGORY_LIST
+                    } else {
+                        NavConstants.ROUTE_INTRO
+                    },
+                    false,
+                )
                 navController.navigate(NavConstants.ROUTE_SCREEN_SAVER)
             }
         } else {
@@ -104,31 +110,33 @@ fun NenoonApp(
     }
 
     AnimatedNavHost(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier =
+            Modifier
+                .fillMaxSize(),
         navController = navController,
         startDestination = NavConstants.ROUTE_SPLASH,
-        contentAlignment = Alignment.TopCenter
+        contentAlignment = Alignment.TopCenter,
     ) {
         /*
          * 스플래시 화면
-        */
+         */
         composable(
             route = NavConstants.ROUTE_SPLASH,
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             BackHandler(true) {}
             LaunchedEffect(true) {
                 delay(3000) // 스플래시 화면을 보여주기 위한 짧은 딜레이
                 viewModel.checkPermissions() // 권한 상태 업데이트
 
-                val allGranted = viewModel.isWriteSettingsPermissionGranted.value &&
-                        viewModel.isCameraPermissionGranted.value &&
-                        viewModel.isBluetoothPermissionsGranted.value &&
-                        viewModel.isBlueToothOn.value
+                val allGranted =
+                    viewModel.isWriteSettingsPermissionGranted.value &&
+                            viewModel.isCameraPermissionGranted.value &&
+                            viewModel.isBluetoothPermissionsGranted.value &&
+                            viewModel.isBlueToothOn.value
 
                 if (allGranted) {
                     // 모든 권한이 있으면 로그인 화면으로 바로 이동
@@ -144,14 +152,14 @@ fun NenoonApp(
         }
 
         /*
-        * 기재사항 화면
-        */
+         * 기재사항 화면
+         */
         composable(
             route = NavConstants.ROUTE_ENTRIES,
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             LaunchedEffect(true) {
                 delay(2000)
@@ -169,14 +177,14 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             SignInScreen(
                 updateLocationSignIn = {
                     viewModel.updateIsSignedIn(it)
                 },
                 navController = navController,
-                signInViewModel = signInViewModel,
+                loginViewModel = loginViewModel,
             )
         }
 
@@ -188,11 +196,11 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             AccountManagementScreen(
                 navController = navController,
-                viewModel = signInViewModel,
+                viewModel = loginViewModel,
             )
         }
 
@@ -204,14 +212,19 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             FaceIdTermsOfServiceScreen(
                 onTermsAccepted = {
                     navController.popBackStack(NavConstants.ROUTE_ACCOUNT_MANAGEMENT, false)
                     navController.navigate(NavConstants.ROUTE_FACE_UPDATE)
                 },
-                onTermsRejected = { navController.popBackStack(NavConstants.ROUTE_ACCOUNT_MANAGEMENT, false) }
+                onTermsRejected = {
+                    navController.popBackStack(
+                        NavConstants.ROUTE_ACCOUNT_MANAGEMENT,
+                        false
+                    )
+                },
             )
         }
 
@@ -223,73 +236,74 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             FaceUpdateScreen(
                 navController = navController,
-                signInViewModel = signInViewModel,
+                loginViewModel = loginViewModel,
             )
         }
 
         /*
-        * 개인정보 동의서 화면 (비회원용)
-        */
+         * 개인정보 동의서 화면 (비회원용)
+         */
         composable(
             route = NavConstants.ROUTE_TERMS_OF_SERVICE,
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            TermsOfServiceScreen(
+            termsOfServiceScreen(
                 onTermsAccepted = {
                     navController.popBackStack(NavConstants.ROUTE_SIGN_IN, false)
                     navController.navigate(NavConstants.ROUTE_INTRO)
                 },
                 onTermsRejected = {
                     navController.popBackStack(NavConstants.ROUTE_SIGN_IN, false)
-                }
+                },
             )
             BackHandler(true) {}
         }
 
         /*
-        * 화면 보호기 화면
-        */
+         * 화면 보호기 화면
+         */
         composable(
             route = NavConstants.ROUTE_SCREEN_SAVER,
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             ScreenSaverScreen(
                 exoPlayer = viewModel.exoPlayer,
                 isSignedIn = viewModel.isSignedIn.collectAsState().value,
                 initializeTestDoneStatus = {
                     viewModel.initializeTestDoneStatus()
-                }
+                },
             )
         }
 
         /*
-        * 권한 확인 화면
-        */
+         * 권한 확인 화면
+         */
         composable(
             route = NavConstants.ROUTE_PERMISSION,
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            PermissionRequestScreen(viewModel,toLoginScreen={ //권한 다 허용 되면 로그인 화면으로
-                navController.popBackStack(NavConstants.ROUTE_SPLASH, false)
-                navController.navigate(NavConstants.ROUTE_SIGN_IN)
-                }
+            PermissionRequestScreen(
+                viewModel,
+                toLoginScreen = { // 권한 다 허용 되면 로그인 화면으로
+                    navController.popBackStack(NavConstants.ROUTE_SPLASH, false)
+                    navController.navigate(NavConstants.ROUTE_SIGN_IN)
+                },
             )
             BackHandler(true) {}
         }
-
 
         /*
          * 첫 시작 화면
@@ -299,7 +313,7 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             IntroScreen(
                 toSurveyScreen = {
@@ -307,7 +321,7 @@ fun NenoonApp(
                 },
                 toSettingsScreen = {
                     navController.navigate(NavConstants.ROUTE_SETTINGS)
-                }
+                },
             )
             BackHandler(true) {}
         }
@@ -320,7 +334,7 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             SurveyScreen(
                 isLoggedIn = viewModel.isSignedIn.collectAsState().value,
@@ -329,13 +343,13 @@ fun NenoonApp(
                     viewModel.initializeTestDoneStatus()
                     viewModel.updateSurveyData(it)
                 },
-                signInViewModel = signInViewModel,
-                userData = signInViewModel.userData.collectAsState().value,
+                loginViewModel = loginViewModel,
+                userData = loginViewModel.userData.collectAsState().value,
                 onBack = { navController.popBackStack(NavConstants.ROUTE_INTRO, false) },
                 signOut = {
                     navController.popBackStack(NavConstants.ROUTE_SIGN_IN, false)
-                    signInViewModel.userSignOut()
-                }
+                    loginViewModel.userSignOut()
+                },
             )
         }
 
@@ -347,14 +361,14 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             CategoryListScreen(
                 pid = viewModel.locationId.collectAsState().value,
                 isSignInSkipped = {
-                    signInViewModel.isUserSignInSkipped()
+                    loginViewModel.isUserSignInSkipped()
                 },
-                toEyeTestScreen= {
+                toEyeTestScreen = {
                     navController.navigate(NavConstants.ROUTE_TEST_LIST)
                 },
                 toDementiaTestScreen = {
@@ -399,7 +413,7 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             EyeTestListScreen(
                 checkIsTestDone = viewModel::checkIsTestDone,
@@ -417,7 +431,7 @@ fun NenoonApp(
                 isShortVisualAcuityDone = viewModel.isShortVisualAcuityTestDone.collectAsState().value,
                 isAmslerGridDone = viewModel.isAmslerGridTestDone.collectAsState().value,
                 isMChartDone = viewModel.isMChartTestDone.collectAsState().value,
-                viewModel = viewModel
+                viewModel = viewModel,
             )
         }
 
@@ -429,7 +443,7 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             ExternalDeviceTestListScreen(
                 checkIsTestDone = viewModel::checkIsTestDone,
@@ -445,7 +459,7 @@ fun NenoonApp(
                 },
                 isBloodPressureDone = viewModel.isBloodPressureTestDone.collectAsState().value,
                 isGripStrengthDone = viewModel.isGripStrengthTestDone.collectAsState().value,
-                viewModel = viewModel
+                viewModel = viewModel,
             )
         }
 
@@ -457,16 +471,17 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             PhoriaAndAniseikoniaTestListScreen(
                 checkIsTestDone = viewModel::checkIsTestDone,
                 toTestScreen = {
-                    val route = when (it) {
-                        TestType.Phoria -> "strabismus_test/sawi_intro"
-                        TestType.Aniseikonia -> "strabismus_test/fudo_intro"
-                        else -> ""
-                    }
+                    val route =
+                        when (it) {
+                            TestType.Phoria -> "strabismus_test/sawi_intro"
+                            TestType.Aniseikonia -> "strabismus_test/fudo_intro"
+                            else -> ""
+                        }
                     if (route.isNotEmpty()) {
                         navController.navigate(route)
                     }
@@ -479,7 +494,7 @@ fun NenoonApp(
                 },
                 isPhoriaDone = viewModel.isPhoriaTestDone.collectAsState().value,
                 isAniseikoniaDone = viewModel.isAniseikoniaTestDone.collectAsState().value,
-                viewModel = viewModel
+                viewModel = viewModel,
             )
         }
 
@@ -487,7 +502,7 @@ fun NenoonApp(
             val startRoute = backStackEntry.arguments?.getString("startRoute") ?: "sawi_intro"
             AppNavigation(
                 startDestination = startRoute,
-                parentNavController = navController
+                parentNavController = navController,
             )
         }
 
@@ -499,7 +514,7 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             var isNavigating by remember { mutableStateOf(false) }
             val coroutineScope = rememberCoroutineScope()
@@ -529,7 +544,7 @@ fun NenoonApp(
                         }
                     }
                 },
-                signInViewModel = signInViewModel,
+                loginViewModel = loginViewModel,
                 onBack = {
                     if (!isNavigating) {
                         isNavigating = true
@@ -539,10 +554,9 @@ fun NenoonApp(
                             isNavigating = false
                         }
                     }
-                }
+                },
             )
         }
-
 
         /**
          * 검사 화면
@@ -552,7 +566,7 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             TestScreen(
                 viewModel = viewModel,
@@ -564,7 +578,7 @@ fun NenoonApp(
                                 toResultScreen = {
                                     navController.navigate(NavConstants.ROUTE_TEST_RESULT)
                                     viewModel.presbyopiaTestResult = it
-                                }
+                                },
                             )
                         }
 
@@ -575,9 +589,9 @@ fun NenoonApp(
                                     viewModel.shortVisualAcuityTestResult =
                                         ShortVisualAcuityTestResult(
                                             it.leftEye,
-                                            it.rightEye
+                                            it.rightEye,
                                         )
-                                }
+                                },
                             )
                         }
 
@@ -588,9 +602,9 @@ fun NenoonApp(
                                     viewModel.longVisualAcuityTestResult =
                                         LongVisualAcuityTestResult(
                                             it.leftEye,
-                                            it.rightEye
+                                            it.rightEye,
                                         )
-                                }
+                                },
                             )
                         }
 
@@ -601,9 +615,9 @@ fun NenoonApp(
                                     viewModel.childrenVisualAcuityTestResult =
                                         ChildrenVisualAcuityTestResult(
                                             it.leftEye,
-                                            it.rightEye
+                                            it.rightEye,
                                         )
-                                }
+                                },
                             )
                         }
 
@@ -621,7 +635,7 @@ fun NenoonApp(
                                 toResultScreen = {
                                     navController.navigate(NavConstants.ROUTE_TEST_RESULT)
                                     viewModel.mChartTestResult = it
-                                }
+                                },
                             )
                         }
 
@@ -630,7 +644,7 @@ fun NenoonApp(
                                 toResultScreen = {
                                     navController.navigate(NavConstants.ROUTE_TEST_RESULT)
                                     viewModel.dementiaTestResult = it
-                                }
+                                },
                             )
                         }
 
@@ -639,7 +653,7 @@ fun NenoonApp(
                                 toResultScreen = {
                                     navController.navigate(NavConstants.ROUTE_TEST_RESULT)
                                     viewModel.presbyopiaExerciseResult = it
-                                }
+                                },
                             )
                         }
 
@@ -648,7 +662,7 @@ fun NenoonApp(
                                 toResultScreen = {
                                     navController.navigate(NavConstants.ROUTE_TEST_RESULT)
                                     viewModel.concentrationExerciseResult = it
-                                }
+                                },
                             )
                         }
 
@@ -661,9 +675,8 @@ fun NenoonApp(
                                 navController = navController,
                                 isSignedIn = viewModel.isSignedIn.collectAsState().value,
                                 bpbiO320ViewModel = bloodPressureMonitorViewModel,
-                                signInViewModel = signInViewModel,
+                                loginViewModel = loginViewModel,
                             )
-
                         }
 
                         TestType.GripStrength -> {
@@ -674,17 +687,16 @@ fun NenoonApp(
                                 },
                                 navController = navController,
                                 isSignedIn = viewModel.isSignedIn.collectAsState().value,
-                                signInViewModel = signInViewModel,
+                                loginViewModel = loginViewModel,
                             )
                         }
 
                         else -> {
-                            Box() {
-
+                            Box {
                             }
                         }
                     }
-                }
+                },
             )
         }
 
@@ -696,49 +708,53 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             when (viewModel.selectedTestType.collectAsState().value) {
                 TestType.Presbyopia -> viewModel.updateIsPresbyopiaTestDone(true)
-                TestType.ShortDistanceVisualAcuity -> viewModel.updateIsShortVisualAcuityTestDone(true)
+                TestType.ShortDistanceVisualAcuity -> viewModel.updateIsShortVisualAcuityTestDone(
+                    true
+                )
+
                 TestType.AmslerGrid -> viewModel.updateIsAmslerGridTestDone(true)
                 TestType.MChart -> viewModel.updateIsMChartTestDone(true)
                 TestType.BloodPressure -> viewModel.updateIsBloodPressureTestDone(true)
                 TestType.GripStrength -> viewModel.updateIsGripStrengthTestDone(true)
                 TestType.PulmonaryFunction -> viewModel.updateIsPulmonaryFunctionTestDone(true)
                 else -> {
-
                 }
             }
             val surveyId = viewModel.surveyId.collectAsState().value
             TestResultScreen(
                 surveyId = surveyId,
                 testType = viewModel.selectedTestType.collectAsState().value,
-                testResult = when (
-                    viewModel.selectedTestType.collectAsState().value) {
-                    TestType.Presbyopia -> viewModel.presbyopiaTestResult
-                    TestType.ShortDistanceVisualAcuity -> viewModel.shortVisualAcuityTestResult
-                    TestType.LongDistanceVisualAcuity -> viewModel.longVisualAcuityTestResult
-                    TestType.ChildrenVisualAcuity -> viewModel.childrenVisualAcuityTestResult
-                    TestType.AmslerGrid -> viewModel.amslerGridTestResult
-                    TestType.MChart -> viewModel.mChartTestResult
-                    TestType.Dementia -> viewModel.dementiaTestResult
-                    TestType.Presbyopia_Glasses -> viewModel.presbyopiaExerciseResult
-                    TestType.Concentration_Glasses -> viewModel.concentrationExerciseResult
-                    TestType.BloodPressure -> viewModel.bloodPressureTestResult
-                    TestType.GripStrength -> viewModel.gripStrengthTestResult
-                    TestType.PulmonaryFunction -> viewModel.pulmonaryFunctionTestResult
-                    TestType.None -> null
-                    TestType.Phoria -> TODO()
-                    TestType.Aniseikonia -> TODO()
-                },
+                testResult =
+                    when (
+                        viewModel.selectedTestType.collectAsState().value
+                    ) {
+                        TestType.Presbyopia -> viewModel.presbyopiaTestResult
+                        TestType.ShortDistanceVisualAcuity -> viewModel.shortVisualAcuityTestResult
+                        TestType.LongDistanceVisualAcuity -> viewModel.longVisualAcuityTestResult
+                        TestType.ChildrenVisualAcuity -> viewModel.childrenVisualAcuityTestResult
+                        TestType.AmslerGrid -> viewModel.amslerGridTestResult
+                        TestType.MChart -> viewModel.mChartTestResult
+                        TestType.Dementia -> viewModel.dementiaTestResult
+                        TestType.Presbyopia_Glasses -> viewModel.presbyopiaExerciseResult
+                        TestType.Concentration_Glasses -> viewModel.concentrationExerciseResult
+                        TestType.BloodPressure -> viewModel.bloodPressureTestResult
+                        TestType.GripStrength -> viewModel.gripStrengthTestResult
+                        TestType.PulmonaryFunction -> viewModel.pulmonaryFunctionTestResult
+                        TestType.None -> null
+                        TestType.Phoria -> TODO()
+                        TestType.Aniseikonia -> TODO()
+                    },
                 navController = navController,
                 onLogout = {
                     viewModel.updateIsSignedIn(false)
                     navController.popBackStack(NavConstants.ROUTE_TERMS_OF_SERVICE, true)
                     navController.navigate(NavConstants.ROUTE_SIGN_IN)
                 },
-                userData = signInViewModel.userData.collectAsState().value
+                userData = loginViewModel.userData.collectAsState().value,
             )
         }
 
@@ -750,11 +766,11 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             AdminPageScreen(
                 url = AppConstants.ADMIN_PAGE_URL,
-                onBack = { navController.popBackStack(NavConstants.ROUTE_SIGN_IN, false) }
+                onBack = { navController.popBackStack(NavConstants.ROUTE_SIGN_IN, false) },
             )
         }
 
@@ -766,13 +782,13 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             ResultPrintScreen(
                 surveyId = viewModel.surveyId.collectAsState().value,
-                qrCode = signInViewModel.accountQrCode.collectAsState().value,
+                qrCode = loginViewModel.accountQrCode.collectAsState().value,
                 navController = navController,
-                userData = signInViewModel.userData.collectAsState().value,
+                userData = loginViewModel.userData.collectAsState().value,
             )
         }
 
@@ -784,7 +800,7 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             BTDeviceManagementScreen(
                 navController = navController,
@@ -800,7 +816,7 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             BPBIO320ManagementScreen(
                 navController = navController,
@@ -816,7 +832,7 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             BP170BConnectionScreen(
                 navController = navController,
@@ -831,7 +847,7 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             InGripManagmentScreen(
                 navController = navController,
@@ -846,10 +862,10 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             SoftwareInfoScreen(
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
             )
         }
 
@@ -865,7 +881,7 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             ContactScreen(
                 toVideoTelephonyScreen = {
@@ -873,7 +889,7 @@ fun NenoonApp(
                 },
                 toIntroScreen = {
                     navController.popBackStack(NavConstants.ROUTE_INTRO, false)
-                }
+                },
             )
         }
 
@@ -885,12 +901,12 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             VideoTelephonyScreen(
                 toContactScreen = {
                     navController.popBackStack(NavConstants.ROUTE_CONTACT, false)
-                }
+                },
             )
         }
 
@@ -902,7 +918,7 @@ fun NenoonApp(
             enterTransition = { AnimationProvider.enterTransition },
             exitTransition = { AnimationProvider.exitTransition },
             popEnterTransition = { AnimationProvider.popEnterTransition },
-            popExitTransition = { AnimationProvider.popExitTransition }
+            popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             ExerciseListScreen(
                 toTestScreen = {
@@ -911,7 +927,7 @@ fun NenoonApp(
                 },
                 toIntroScreen = {
                     navController.popBackStack(NavConstants.ROUTE_INTRO, false)
-                }
+                },
             )
         }
     }

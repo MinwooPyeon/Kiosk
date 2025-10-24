@@ -1,16 +1,16 @@
 package com.pixelro.nenoonkiosk.core.constants
 
 object AppConstants {
-
     // API endpoint
     const val BASE_API_ADDRESS = "https://pixelro.nenoons.com:8080/"
 
     // 관리자 페이지 URL
     const val ADMIN_PAGE_URL = "http://172.30.1.40:3000/login"
-    val ADMIN_PAGE_LOCALE_PARAMETER = mapOf(
-        "ko" to "lang=ko",
-        "en" to "lang=en",
-    )
+    val ADMIN_PAGE_LOCALE_PARAMETER =
+        mapOf(
+            "ko" to "lang=ko",
+            "en" to "lang=en",
+        )
 
     // 사용자 기본 이메일 (회원가입 시 이메일 작성하지 않은 경우 사용되는 이메일)
     const val DEFAULT_EMAIL = "info@pixelro.com"

@@ -4,4 +4,4 @@ data class BloodPressureTestResult(
     val systolic: Int,
     val diastolic: Int,
     val pulseRate: Int,
-) {}
+)

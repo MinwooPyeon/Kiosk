@@ -1,6 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.inspection.dementia
 
-//import androidx.compose.foundation.layout.RowScopeInstance.weight
+// import androidx.compose.foundation.layout.RowScopeInstance.weight
 import android.view.ViewGroup
 import android.webkit.WebViewClient
 import androidx.compose.foundation.Image
@@ -35,7 +35,7 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 @Composable
 fun DementiaTestResultContent(
     testResult: DementiaTestResult,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     val isWebViewShowing1 = remember { mutableStateOf(false) }
     val showDementia333 = remember { mutableStateOf(false) }
@@ -43,71 +43,78 @@ fun DementiaTestResultContent(
     when {
         isWebViewShowing1.value -> {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        color = Color(0xff144AAE)
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            color = Color(0xff144AAE),
+                        ),
             ) {
                 Box(
-                    modifier = Modifier
-                        .padding(
-                            start = 40.dp,
-                            top = 20.dp,
-                            end = 40.dp,
-                            bottom = 20.dp
-                        )
-                        .fillMaxWidth()
-                        .height(40.dp)
+                    modifier =
+                        Modifier
+                            .padding(
+                                start = 40.dp,
+                                top = 20.dp,
+                                end = 40.dp,
+                                bottom = 20.dp,
+                            )
+                            .fillMaxWidth()
+                            .height(40.dp),
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .clickable {
-                                isWebViewShowing1.value = false
-                            },
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier =
+                            Modifier
+                                .fillMaxHeight()
+                                .clickable {
+                                    isWebViewShowing1.value = false
+                                },
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Image(
-                            modifier = Modifier
-                                .padding(top = 4.dp)
-                                .width(28.dp),
+                            modifier =
+                                Modifier
+                                    .padding(top = 4.dp)
+                                    .width(28.dp),
                             painter = painterResource(id = R.drawable.icon_back_white),
-                            contentDescription = ""
+                            contentDescription = "",
                         )
                         Text(
-                            text = StringProvider.getString(R.string.back, ),
+                            text = StringProvider.getString(R.string.back),
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xffffffff)
+                            color = Color(0xffffffff),
                         )
                     }
                 }
-                TheContent( "https://m.nid.or.kr/main/main.aspx" )
+                TheContent("https://m.nid.or.kr/main/main.aspx")
             }
         }
 
         showDementia333.value -> {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        color = Color(0xffffffff)
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            color = Color(0xffffffff),
+                        ),
             ) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable {
-                            showDementia333.value = false
-                        },
-                    contentAlignment = Alignment.TopCenter
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .clickable {
+                                showDementia333.value = false
+                            },
+                    contentAlignment = Alignment.TopCenter,
                 ) {
                     Image(
-                        modifier = Modifier
-                            .fillMaxSize(),
+                        modifier =
+                            Modifier
+                                .fillMaxSize(),
                         painter = painterResource(id = R.drawable.dementia_2),
-                        contentDescription = ""
+                        contentDescription = "",
                     )
                 }
             }
@@ -115,37 +122,44 @@ fun DementiaTestResultContent(
 
         else -> {
             Column {
-
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 65.dp, vertical = 20.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 65.dp, vertical = 20.dp),
                 ) {
                     Text(
-                        text = StringProvider.getString(
-                            R.string.dementia_result_instruction),
+                        text =
+                            StringProvider.getString(
+                                R.string.dementia_result_instruction,
+                            ),
                         color = Color(0xff1d71e1),
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
                     )
                 }
 
                 Column(
-                    modifier = Modifier
-                        .padding(top = 10.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
-                        .fillMaxWidth()
-                        .background(
-                            color = Color(0xfff7f7f7),
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(40.dp)
-
+                    modifier =
+                        Modifier
+                            .padding(top = 10.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
+                            .fillMaxWidth()
+                            .background(
+                                color = Color(0xfff7f7f7),
+                                shape = RoundedCornerShape(8.dp),
+                            )
+                            .padding(40.dp),
                 ) {
                     Text(
-                        text = StringProvider.getString(
-                            R.string.dementia_result_wording1) + " " + testResult.countActiveScore()
-                            .toString() + StringProvider.getString(
-                            R.string.dementia_result_wording2),
+                        text =
+                            StringProvider.getString(
+                                R.string.dementia_result_wording1,
+                            ) + " " +
+                                testResult.countActiveScore()
+                                    .toString() +
+                                StringProvider.getString(
+                                    R.string.dementia_result_wording2,
+                                ),
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Medium,
                     )
@@ -156,15 +170,14 @@ fun DementiaTestResultContent(
 }
 
 @Composable
-fun TheContent(
-    mUrl: String
-) {
+fun TheContent(mUrl: String) {
     AndroidView(factory = {
         android.webkit.WebView(it).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
+            layoutParams =
+                ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                )
             webViewClient = WebViewClient()
             loadUrl(mUrl)
         }
@@ -172,4 +185,3 @@ fun TheContent(
         it.loadUrl(mUrl)
     })
 }
-

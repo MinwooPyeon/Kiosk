@@ -2,7 +2,6 @@ package com.harang.data.model
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
-import java.time.LocalDateTime
 
 data class SendAmslerGridTestResultRequest(
     @SerializedName("surveyId")
@@ -41,5 +40,5 @@ data class SendAmslerGridTestResultResponse(
     @SerializedName("createAt")
     val createAt: String,
     @SerializedName("data")
-    val data: Map<String, Any>
+    val data: Map<String, Any>,
 ) : Serializable

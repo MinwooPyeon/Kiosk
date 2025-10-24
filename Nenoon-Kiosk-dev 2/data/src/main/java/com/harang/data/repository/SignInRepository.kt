@@ -17,9 +17,12 @@ import java.io.File
 
 class SignInRepository(
     private val remoteDataSource: SignInRemoteDataSource,
-    private val sharedPreferencesDataSource: SharedPreferencesDataSource
+    private val sharedPreferencesDataSource: SharedPreferencesDataSource,
 ) {
-    suspend fun locationSignIn(id: String, pw: String): SendLocationSignInDataResponse? {
+    suspend fun locationSignIn(
+        id: String,
+        pw: String,
+    ): SendLocationSignInDataResponse? {
         return withContext(Dispatchers.IO) {
             remoteDataSource.locationSignIn(id, pw)
         }
@@ -44,7 +47,15 @@ class SignInRepository(
         }
     }
 
-    suspend fun userSignUp(id: String, pw: String, name: String, email: String?, pid: Long, vector: String?, qrUrl: String?): String? {
+    suspend fun userSignUp(
+        id: String,
+        pw: String,
+        name: String,
+        email: String?,
+        pid: Long,
+        vector: String?,
+        qrUrl: String?,
+    ): String? {
         return withContext(Dispatchers.IO) {
             try {
                 val temp = remoteDataSource.userSignUp(id, pw, name, email, pid, vector, qrUrl)
@@ -57,7 +68,9 @@ class SignInRepository(
                     }
                 } else if (temp == null) {
                     null
-                } else temp?.data?.get("accessToken") as String?
+                } else {
+                    temp?.data?.get("accessToken") as String?
+                }
             } catch (e: Exception) {
                 Log.e("SignInRepository", e.toString())
                 null
@@ -69,14 +82,14 @@ class SignInRepository(
         if (qrCode == null) return null
         return withContext(Dispatchers.IO) {
             try {
-
                 val requestFile = qrCode.asRequestBody("image/jpeg".toMediaTypeOrNull())
 
-                val qrCodePart = MultipartBody.Part.createFormData(
-                    "file",
-                    qrCode.name,
-                    requestFile
-                )
+                val qrCodePart =
+                    MultipartBody.Part.createFormData(
+                        "file",
+                        qrCode.name,
+                        requestFile,
+                    )
 
                 remoteDataSource.updateQrCode(qrCodePart)?.data?.get("qrUrl") as String
             } catch (e: Exception) {
@@ -92,8 +105,11 @@ class SignInRepository(
                 val temp = remoteDataSource.getQrUrl(token)
                 val url = temp?.data?.get("qrUrl") as String?
                 val success = temp?.data?.get("success") as Boolean?
-                if (success == null || !success || url == null) null
-                else url
+                if (success == null || !success || url == null) {
+                    null
+                } else {
+                    url
+                }
             } catch (e: Exception) {
                 Log.e("SignInRepository", e.toString())
                 null
@@ -107,7 +123,9 @@ class SignInRepository(
                 val bytes = remoteDataSource.getQrCode(filename)?.bytes()
                 if (bytes != null) {
                     BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                } else null
+                } else {
+                    null
+                }
             } catch (e: Exception) {
                 Log.e("SignInRepository", e.toString())
                 null
@@ -128,7 +146,9 @@ class SignInRepository(
                         gender = profile.data["gender"] as String?,
                         surveyId = "${profile.data["surveyId"] as Double?}",
                     )
-                } else null
+                } else {
+                    null
+                }
             } catch (e: Exception) {
                 Log.e("SignInRepository", e.toString())
                 null
@@ -136,14 +156,20 @@ class SignInRepository(
         }
     }
 
-    suspend fun userSignIn(id: String, pw: String): User? {
+    suspend fun userSignIn(
+        id: String,
+        pw: String,
+    ): User? {
         return withContext(Dispatchers.IO) {
             try {
                 val temp = remoteDataSource.userSignIn(id, pw)
                 val accessToken = temp?.data?.get("accessToken") as String?
                 val refreshToken = temp?.data?.get("refreshToken") as String?
-                if (accessToken.isNullOrBlank() || refreshToken.isNullOrBlank()) null
-                else User(accessToken = accessToken, refreshToken = refreshToken)
+                if (accessToken.isNullOrBlank() || refreshToken.isNullOrBlank()) {
+                    null
+                } else {
+                    User(accessToken = accessToken, refreshToken = refreshToken)
+                }
             } catch (e: Exception) {
                 Log.e("SignInRepository", e.toString())
                 null
@@ -151,21 +177,30 @@ class SignInRepository(
         }
     }
 
-    suspend fun userUpdateFace(token: String, vector: String): Boolean {
+    suspend fun userUpdateFace(
+        token: String,
+        vector: String,
+    ): Boolean {
         return withContext(Dispatchers.IO) {
             val data = remoteDataSource.userUpdateFace(token, vector)
             data != null
         }
     }
 
-    suspend fun userSignInWithFace(vector: String, threshold: Double): User? {
+    suspend fun userSignInWithFace(
+        vector: String,
+        threshold: Double,
+    ): User? {
         return withContext(Dispatchers.IO) {
             try {
                 val temp = remoteDataSource.userSignInWithFace(vector, threshold)
                 val accessToken = temp?.data?.get("accessToken") as String
                 val refreshToken = temp?.data?.get("refreshToken") as String
-                if (accessToken.isBlank() || refreshToken.isBlank()) null
-                else User(accessToken = accessToken, refreshToken = refreshToken)
+                if (accessToken.isBlank() || refreshToken.isBlank()) {
+                    null
+                } else {
+                    User(accessToken = accessToken, refreshToken = refreshToken)
+                }
             } catch (e: Exception) {
                 Log.e("SignInRepository", e.toString())
                 null

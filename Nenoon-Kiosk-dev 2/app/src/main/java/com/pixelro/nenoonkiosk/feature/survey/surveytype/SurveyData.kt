@@ -5,5 +5,5 @@ data class SurveyData(
     val surveySex: SurveySex = SurveySex.None,
     val surveyGlass: SurveyGlass = SurveyGlass.None,
     val surveySurgery: SurveySurgery = SurveySurgery.None,
-    val surveyDiabetes: SurveyDiabetes = SurveyDiabetes.None
+    val surveyDiabetes: SurveyDiabetes = SurveyDiabetes.None,
 )

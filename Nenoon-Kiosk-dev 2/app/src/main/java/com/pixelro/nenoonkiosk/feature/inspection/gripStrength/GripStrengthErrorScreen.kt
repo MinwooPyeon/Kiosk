@@ -24,12 +24,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.iotdevice.InGrip.InGripViewModel
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.IconTextButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripViewModel
 
 @Composable
 fun GripStrengthErrorScreen(
@@ -39,22 +39,22 @@ fun GripStrengthErrorScreen(
     isSignedIn: Boolean,
     viewModel: InGripViewModel,
 ) {
-
     LaunchedEffect(Unit) {
         TTS.stopTTS()
         TTS.speechTTS(
             StringProvider.getString(R.string.ingrip_measurement_failed_tts),
-            TextToSpeech.QUEUE_ADD
+            TextToSpeech.QUEUE_ADD,
         )
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(vertical = 60.dp, horizontal = 40.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(vertical = 60.dp, horizontal = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Spacer(modifier = Modifier.weight(1f))
 
@@ -62,14 +62,14 @@ fun GripStrengthErrorScreen(
             painter = painterResource(R.drawable.warning),
             tint = colorResource(R.color.error),
             contentDescription = null,
-            modifier = Modifier.size(400.dp)
+            modifier = Modifier.size(400.dp),
         )
         Spacer(modifier = Modifier.height(20.dp))
         StyledText(
             text = StringProvider.getString(R.string.ingrip_error_title),
             style = TextStyle.Error,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -107,6 +107,6 @@ fun GripStrengthErrorScreenPreview() {
         onLogout = {},
         navController = NavHostController(LocalContext.current),
         isSignedIn = true,
-        viewModel = InGripViewModel()
+        viewModel = InGripViewModel(),
     )
 }

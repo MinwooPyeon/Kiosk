@@ -41,15 +41,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.ui.TestSelectionButton
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
 import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import kotlinx.coroutines.delay
 
-//치매, 눈 검사 검사
+// 치매, 눈 검사 검사
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun CategoryListScreen(
@@ -67,11 +67,12 @@ fun CategoryListScreen(
     toSettingsScreen: () -> Unit,
 ) {
     val context = LocalContext.current
-    val pagerState = rememberPagerState(
-        initialPage = Int.MAX_VALUE / 2,
-        initialPageOffsetFraction = 0f,
-        pageCount = { Int.MAX_VALUE }
-    )
+    val pagerState =
+        rememberPagerState(
+            initialPage = Int.MAX_VALUE / 2,
+            initialPageOffsetFraction = 0f,
+            pageCount = { Int.MAX_VALUE },
+        )
     val isDescriptionShowing = remember { mutableStateOf(true) }
     LaunchedEffect(true) {
 //        exoPlayer.release()
@@ -80,7 +81,7 @@ fun CategoryListScreen(
             delay(5000)
             pagerState.animateScrollToPage(
                 page = (pagerState.currentPage + 1),
-                animationSpec = tween(1000)
+                animationSpec = tween(1000),
             )
             for (i in 1..3) {
                 isDescriptionShowing.value = false
@@ -92,42 +93,44 @@ fun CategoryListScreen(
     }
     rememberInfiniteTransition(label = "")
 
-    val activityResultLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val isGood = result.data?.getBooleanExtra("isGood", false)
-            val lungAge = result.data?.getDoubleExtra("lungAge", -1.0)
-            val capacity = result.data?.getDoubleExtra("capacity", -1.0)
-            val capacityPredict = result.data?.getDoubleExtra("capacityPredict", -1.0)
-            val power = result.data?.getDoubleExtra("power", -1.0)
-            val powerPredict = result.data?.getDoubleExtra("powerPredict", -1.0)
-            val deviceID = result.data?.getStringExtra("deviceID")
+    val activityResultLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult(),
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val isGood = result.data?.getBooleanExtra("isGood", false)
+                val lungAge = result.data?.getDoubleExtra("lungAge", -1.0)
+                val capacity = result.data?.getDoubleExtra("capacity", -1.0)
+                val capacityPredict = result.data?.getDoubleExtra("capacityPredict", -1.0)
+                val power = result.data?.getDoubleExtra("power", -1.0)
+                val powerPredict = result.data?.getDoubleExtra("powerPredict", -1.0)
+                val deviceID = result.data?.getStringExtra("deviceID")
 
-            Log.d("CallTestApp", "Received result: $isGood, $lungAge, $capacity, $capacityPredict, $power, $powerPredict, $deviceID")
-            val result = PulmonaryFunctionTestResult()
-            isGood?.let { result.pulmonaryStatus = it }
-            capacity?.let{ result.pulmonaryCapacity = it }
-            power?.let{ result.pulmonaryPower = it }
-            lungAge?.let{result.pulmonaryAge = it.toInt()}
-            toPulmonaryTestResultScreen(result)
+                Log.d("CallTestApp", "Received result: $isGood, $lungAge, $capacity, $capacityPredict, $power, $powerPredict, $deviceID")
+                val result = PulmonaryFunctionTestResult()
+                isGood?.let { result.pulmonaryStatus = it }
+                capacity?.let { result.pulmonaryCapacity = it }
+                power?.let { result.pulmonaryPower = it }
+                lungAge?.let { result.pulmonaryAge = it.toInt() }
+                toPulmonaryTestResultScreen(result)
+            }
         }
-    }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                color = Color(0xff1d71e1)
-            ),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(
+                    color = Color(0xff1d71e1),
+                ),
     ) {
-
         Spacer(modifier = Modifier.weight(1f))
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
         ) {
             Logo(true)
         }
@@ -135,10 +138,13 @@ fun CategoryListScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         TestSelectionButton(
-            modifier = Modifier
-                .height(100.dp),
-            title1 = StringProvider.getString(
-                R.string.blood_pressure_and_grip_strength),
+            modifier =
+                Modifier
+                    .height(100.dp),
+            title1 =
+                StringProvider.getString(
+                    R.string.blood_pressure_and_grip_strength,
+                ),
             title2 = "",
             onClickMethod = {
                 toExternalDeviceTestListScreen()
@@ -147,16 +153,18 @@ fun CategoryListScreen(
             isDone = false,
             isSenior = false,
             time = 0,
-            icon = R.drawable.blood_pressure_and_grip_strength_icon
+            icon = R.drawable.blood_pressure_and_grip_strength_icon,
         )
         Spacer(
-            modifier = Modifier
-                .height(20.dp)
+            modifier =
+                Modifier
+                    .height(20.dp),
         )
         TestSelectionButton(
-            modifier = Modifier
-                .height(100.dp),
-            title1 = StringProvider.getString(R.string.eye_test, ),
+            modifier =
+                Modifier
+                    .height(100.dp),
+            title1 = StringProvider.getString(R.string.eye_test),
             title2 = "",
             onClickMethod = {
                 toEyeTestScreen()
@@ -165,41 +173,48 @@ fun CategoryListScreen(
             isDone = false,
             isSenior = false,
             time = 0,
-            icon = R.drawable.eye_test_icon
+            icon = R.drawable.eye_test_icon,
         )
         Spacer(
-            modifier = Modifier
-                .height(20.dp)
+            modifier =
+                Modifier
+                    .height(20.dp),
         )
         TestSelectionButton(
-            modifier = Modifier
-                .height(100.dp),
-            title1 = StringProvider.getString(
-                R.string.pulmonary_function_test),
+            modifier =
+                Modifier
+                    .height(100.dp),
+            title1 =
+                StringProvider.getString(
+                    R.string.pulmonary_function_test,
+                ),
             title2 = "",
             onClickMethod = {
-                val intent = Intent("android.intent.action.BREATHINGS").apply {
-                    putExtra("id", pid.toString())
-                    putExtra("height", 0)
-                    putExtra("birthday", 0)
-                    putExtra("weight", 0)
-                    putExtra("gender", "m")
-                }
+                val intent =
+                    Intent("android.intent.action.BREATHINGS").apply {
+                        putExtra("id", pid.toString())
+                        putExtra("height", 0)
+                        putExtra("birthday", 0)
+                        putExtra("weight", 0)
+                        putExtra("gender", "m")
+                    }
                 activityResultLauncher.launch(intent)
             },
             alignment = Alignment.Center,
             isDone = false,
             isSenior = false,
             time = 0,
-            icon = R.drawable.lung_age_icon
+            icon = R.drawable.lung_age_icon,
         )
         Spacer(
-            modifier = Modifier
-                .height(20.dp)
+            modifier =
+                Modifier
+                    .height(20.dp),
         )
         TestSelectionButton(
-            modifier = Modifier
-                .height(100.dp),
+            modifier =
+                Modifier
+                    .height(100.dp),
             title1 = StringProvider.getString(R.string.cross_eye_test),
             title2 = "",
             onClickMethod = {
@@ -213,13 +228,15 @@ fun CategoryListScreen(
             enabled = true,
         )
         Spacer(
-            modifier = Modifier
-                .height(20.dp)
+            modifier =
+                Modifier
+                    .height(20.dp),
         )
         TestSelectionButton(
-            modifier = Modifier
-                .height(100.dp),
-            title1 = StringProvider.getString(R.string.dementia_test, ),
+            modifier =
+                Modifier
+                    .height(100.dp),
+            title1 = StringProvider.getString(R.string.dementia_test),
             title2 = "",
             onClickMethod = {
                 toDementiaTestScreen(TestType.Dementia)
@@ -228,60 +245,65 @@ fun CategoryListScreen(
             isDone = false,
             isSenior = false,
             time = 0,
-            icon = R.drawable.dementia_icon
+            icon = R.drawable.dementia_icon,
         )
         Spacer(
-            modifier = Modifier
-                .height(40.dp)
+            modifier =
+                Modifier
+                    .height(40.dp),
         )
     }
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(40.dp),
-        horizontalArrangement = Arrangement.End
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(40.dp),
+        horizontalArrangement = Arrangement.End,
     ) {
         if (!isSignInSkipped()) {
             Card(
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(shape = RoundedCornerShape(8.dp))
-                    .border(
-                        border = BorderStroke(1.dp, Color(0xffc3c3c3)),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .clickable { toPrintScreen() },
-                backgroundColor = Color(0xffffffff)
+                modifier =
+                    Modifier
+                        .size(100.dp)
+                        .clip(shape = RoundedCornerShape(8.dp))
+                        .border(
+                            border = BorderStroke(1.dp, Color(0xffc3c3c3)),
+                            shape = RoundedCornerShape(8.dp),
+                        )
+                        .clickable { toPrintScreen() },
+                backgroundColor = Color(0xffffffff),
             ) {
                 Icon(
                     modifier = Modifier.width(60.dp).padding(20.dp),
                     painter = painterResource(id = R.drawable.icon_print),
-                    contentDescription = ""
+                    contentDescription = "",
                 )
             }
 
             Spacer(
-                modifier = Modifier
-                    .width(20.dp)
+                modifier =
+                    Modifier
+                        .width(20.dp),
             )
         }
 
         Card(
-            modifier = Modifier
-                .size(100.dp)
-                .clip(shape = RoundedCornerShape(8.dp))
-                .border(
-                    border = BorderStroke(1.dp, Color(0xffc3c3c3)),
-                    shape = RoundedCornerShape(8.dp)
-                )
-                .clickable { toAccountManagementScreen() },
-            backgroundColor = Color(0xffffffff)
+            modifier =
+                Modifier
+                    .size(100.dp)
+                    .clip(shape = RoundedCornerShape(8.dp))
+                    .border(
+                        border = BorderStroke(1.dp, Color(0xffc3c3c3)),
+                        shape = RoundedCornerShape(8.dp),
+                    )
+                    .clickable { toAccountManagementScreen() },
+            backgroundColor = Color(0xffffffff),
         ) {
             Icon(
                 modifier = Modifier.width(60.dp).padding(20.dp),
                 painter = painterResource(id = R.drawable.account_icon),
-                contentDescription = ""
+                contentDescription = "",
             )
         }
     }
