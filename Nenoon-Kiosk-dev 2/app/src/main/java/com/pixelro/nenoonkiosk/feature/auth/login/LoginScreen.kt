@@ -31,8 +31,8 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
 
 @Composable
-fun UserSignInScreen(
-    signInViewModel: SignInViewModel,
+fun LoginScreen(
+    loginViewModel: LoginViewModel,
     signInNavController: NavController,
     navController: NavController,
 ) {
@@ -153,7 +153,7 @@ fun UserSignInScreen(
             PrimaryButton(
                 text = StringProvider.getString(R.string.start_without_signin),
                 onClick = {
-                    signInViewModel.userSignInSkip()
+                    loginViewModel.userSignInSkip()
                     navController.navigate(NavConstants.ROUTE_TERMS_OF_SERVICE)
                 },
             )

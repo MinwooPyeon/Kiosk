@@ -45,7 +45,7 @@ import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.qr.QRScannerAnalyzer
-import com.pixelro.nenoonkiosk.feature.auth.login.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -56,7 +56,7 @@ import java.util.concurrent.Executors
 @Composable
 fun QRSignInScreen(
     updateIsSignedIn: (Boolean) -> Unit,
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
     navController: NavController,
 ) {
     var scannedId by remember { mutableStateOf("") }
@@ -66,8 +66,8 @@ fun QRSignInScreen(
     var signInFailed by remember { mutableStateOf(false) }
     var signInMessage by remember { mutableStateOf("") }
 
-    val userData by signInViewModel.userData.collectAsState()
-    val isUserSignedIn by signInViewModel.isUserSignedIn.collectAsState()
+    val userData by loginViewModel.userData.collectAsState()
+    val isUserSignedIn by loginViewModel.isUserSignedIn.collectAsState()
 
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -94,7 +94,7 @@ fun QRSignInScreen(
         if (!isScanning && scannedId.isNotBlank() && scannedPassword.isNotBlank()) {
             signInMessage = StringProvider.getString(R.string.qr_sign_in_login_processing)
             coroutineScope.launch(Dispatchers.Main) {
-                signInViewModel.userSignIn(scannedId, scannedPassword, {}).also { success ->
+                loginViewModel.userSignIn(scannedId, scannedPassword, {}).also { success ->
                     delay(1500L)
                     if (!success) {
                         signInMessage = StringProvider.getString(R.string.qr_sign_in_invalid_qr)

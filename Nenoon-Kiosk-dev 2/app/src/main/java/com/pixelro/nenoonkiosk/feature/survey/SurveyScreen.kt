@@ -59,7 +59,7 @@ import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveyDiabetes
 import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveyGlass
 import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveySex
 import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveySurgery
-import com.pixelro.nenoonkiosk.feature.auth.login.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -75,7 +75,7 @@ fun SurveyScreen(
     isLoggedIn: Boolean,
     toCategoryListScreen: (Long) -> Unit,
     surveyViewModel: SurveyViewModel = hiltViewModel(),
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
     userData: User?,
     onBack: () -> Unit,
     signOut: () -> Unit,
@@ -1182,7 +1182,7 @@ fun SurveyScreen(
                                                                 surveyViewModel.getSurveyId(
                                                                     token = userData?.accessToken,
                                                                     toCategoryListScreen = toCategoryListScreen,
-                                                                    isSignInSkipped = { signInViewModel.isUserSignInSkipped() },
+                                                                    isSignInSkipped = { loginViewModel.isUserSignInSkipped() },
                                                                 ) {
                                                                     surveyScreenState =
                                                                         SurveyScreenState.Error

@@ -41,13 +41,13 @@ import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.auth.login.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun IdPasswordSignInScreen(
     updateIsSignedIn: (Boolean) -> Unit,
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
     navController: NavController,
 ) {
     var id by remember { mutableStateOf("") }
@@ -126,7 +126,7 @@ fun IdPasswordSignInScreen(
             onClick = {
                 coroutineScope.launch {
                     signingIn = true
-                    signInViewModel.userSignIn(id, password, updateIsSignedIn).also { success ->
+                    loginViewModel.userSignIn(id, password, updateIsSignedIn).also { success ->
                         signInError = !success
                         signingIn = false
                     }

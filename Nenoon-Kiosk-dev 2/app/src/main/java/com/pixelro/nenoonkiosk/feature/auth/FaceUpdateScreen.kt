@@ -37,23 +37,23 @@ import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.auth.login.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
 fun FaceUpdateScreen(
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
     navController: NavController,
 ) {
     val context = LocalContext.current
-    val faceDetectionStatus by signInViewModel.faceDetectionStatus.collectAsState()
-    val isProcessingFace by signInViewModel.isProcessingFace.collectAsState()
-    val lastDetectedFaceBitmap by signInViewModel.lastDetectedFaceBitmap.collectAsState()
-    val isFaceEnrollmentDataReady by signInViewModel.isFaceEnrollmentDataReady.collectAsState()
-    val enrollmentSuccess by signInViewModel.enrollmentSuccess.collectAsState()
-    val enrollmentMessage by signInViewModel.enrollmentMessage.collectAsState()
-    val loggedInUserId by signInViewModel.userId.collectAsState()
+    val faceDetectionStatus by loginViewModel.faceDetectionStatus.collectAsState()
+    val isProcessingFace by loginViewModel.isProcessingFace.collectAsState()
+    val lastDetectedFaceBitmap by loginViewModel.lastDetectedFaceBitmap.collectAsState()
+    val isFaceEnrollmentDataReady by loginViewModel.isFaceEnrollmentDataReady.collectAsState()
+    val enrollmentSuccess by loginViewModel.enrollmentSuccess.collectAsState()
+    val enrollmentMessage by loginViewModel.enrollmentMessage.collectAsState()
+    val loggedInUserId by loginViewModel.userId.collectAsState()
     var faceEnrollAttempted by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -64,8 +64,8 @@ fun FaceUpdateScreen(
     }
 
     LaunchedEffect(Unit) {
-        signInViewModel.resetFaceEnrollmentData()
-        signInViewModel.clearEnrollmentMessage()
+        loginViewModel.resetFaceEnrollmentData()
+        loginViewModel.clearEnrollmentMessage()
     }
 
     LaunchedEffect(isFaceEnrollmentDataReady, faceDetectionStatus, faceEnrollAttempted) {
@@ -118,7 +118,7 @@ fun FaceUpdateScreen(
                     faceBitmap.recycle()
                 },
                 onDetectionStatus = { status ->
-                    signInViewModel.updateFaceDetectionStatus(status)
+                    loginViewModel.updateFaceDetectionStatus(status)
                 },
             )
 
@@ -164,7 +164,7 @@ fun FaceUpdateScreen(
                 onClick = {
                     if (liveCameraBitmap != null && !isProcessingFace) {
                         faceEnrollAttempted = true
-                        signInViewModel.processFaceForEmbeddingAndStoreTemporarily(liveCameraBitmap!!)
+                        loginViewModel.processFaceForEmbeddingAndStoreTemporarily(liveCameraBitmap!!)
                     }
                 },
             )
@@ -176,12 +176,12 @@ fun FaceUpdateScreen(
                 onClick = {
                     if (isFaceEnrollmentDataReady && lastDetectedFaceBitmap != null && loggedInUserId != null) {
                         coroutineScope.launch(Dispatchers.Main) {
-                            signInViewModel.updateFace(loggedInUserId!!).also { success ->
+                            loginViewModel.updateFace(loggedInUserId!!).also { success ->
                                 if (success) {
                                     navController.popBackStack(NavConstants.ROUTE_ACCOUNT_MANAGEMENT, false)
-                                    signInViewModel.clearEnrollmentMessage()
+                                    loginViewModel.clearEnrollmentMessage()
                                 } else {
-                                    signInViewModel.clearEnrollmentMessage()
+                                    loginViewModel.clearEnrollmentMessage()
                                 }
                             }
                         }
@@ -195,7 +195,7 @@ fun FaceUpdateScreen(
             PrimaryButton(
                 text = StringProvider.getString(R.string.cancel),
                 onClick = {
-                    signInViewModel.resetFaceEnrollmentData()
+                    loginViewModel.resetFaceEnrollmentData()
                     navController.popBackStack(NavConstants.ROUTE_ACCOUNT_MANAGEMENT, false)
                 },
             )

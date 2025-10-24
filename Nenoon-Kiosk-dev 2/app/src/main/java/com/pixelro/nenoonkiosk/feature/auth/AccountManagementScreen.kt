@@ -47,7 +47,7 @@ import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.auth.login.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -56,7 +56,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun AccountManagementScreen(
     navController: NavController,
-    viewModel: SignInViewModel,
+    viewModel: LoginViewModel,
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()

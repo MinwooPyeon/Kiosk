@@ -30,7 +30,7 @@ import com.pixelro.nenoonkiosk.feature.auth.AccountManagementScreen
 import com.pixelro.nenoonkiosk.feature.auth.FaceIdTermsOfServiceScreen
 import com.pixelro.nenoonkiosk.feature.auth.FaceUpdateScreen
 import com.pixelro.nenoonkiosk.feature.auth.SignInScreen
-import com.pixelro.nenoonkiosk.feature.auth.login.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListScreen
 import com.pixelro.nenoonkiosk.feature.exerciseglasses.concentration_exercise.ConcentrationExerciseContent
 import com.pixelro.nenoonkiosk.feature.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseContent
@@ -83,7 +83,7 @@ import kotlinx.coroutines.launch
 fun nenoonApp(
     viewModel: NenoonViewModel = hiltViewModel(),
     bloodPressureMonitorViewModel: BPBIO320ViewModel = hiltViewModel(),
-    signInViewModel: SignInViewModel = hiltViewModel(),
+    loginViewModel: LoginViewModel = hiltViewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
     val selectedTest = viewModel.selectedTestType.collectAsState().value
@@ -184,7 +184,7 @@ fun nenoonApp(
                     viewModel.updateIsSignedIn(it)
                 },
                 navController = navController,
-                signInViewModel = signInViewModel,
+                loginViewModel = loginViewModel,
             )
         }
 
@@ -200,7 +200,7 @@ fun nenoonApp(
         ) {
             AccountManagementScreen(
                 navController = navController,
-                viewModel = signInViewModel,
+                viewModel = loginViewModel,
             )
         }
 
@@ -240,7 +240,7 @@ fun nenoonApp(
         ) {
             FaceUpdateScreen(
                 navController = navController,
-                signInViewModel = signInViewModel,
+                loginViewModel = loginViewModel,
             )
         }
 
@@ -343,12 +343,12 @@ fun nenoonApp(
                     viewModel.initializeTestDoneStatus()
                     viewModel.updateSurveyData(it)
                 },
-                signInViewModel = signInViewModel,
-                userData = signInViewModel.userData.collectAsState().value,
+                loginViewModel = loginViewModel,
+                userData = loginViewModel.userData.collectAsState().value,
                 onBack = { navController.popBackStack(NavConstants.ROUTE_INTRO, false) },
                 signOut = {
                     navController.popBackStack(NavConstants.ROUTE_SIGN_IN, false)
-                    signInViewModel.userSignOut()
+                    loginViewModel.userSignOut()
                 },
             )
         }
@@ -366,7 +366,7 @@ fun nenoonApp(
             CategoryListScreen(
                 pid = viewModel.locationId.collectAsState().value,
                 isSignInSkipped = {
-                    signInViewModel.isUserSignInSkipped()
+                    loginViewModel.isUserSignInSkipped()
                 },
                 toEyeTestScreen = {
                     navController.navigate(NavConstants.ROUTE_TEST_LIST)
@@ -544,7 +544,7 @@ fun nenoonApp(
                         }
                     }
                 },
-                signInViewModel = signInViewModel,
+                loginViewModel = loginViewModel,
                 onBack = {
                     if (!isNavigating) {
                         isNavigating = true
@@ -675,7 +675,7 @@ fun nenoonApp(
                                 navController = navController,
                                 isSignedIn = viewModel.isSignedIn.collectAsState().value,
                                 bpbiO320ViewModel = bloodPressureMonitorViewModel,
-                                signInViewModel = signInViewModel,
+                                loginViewModel = loginViewModel,
                             )
                         }
 
@@ -687,7 +687,7 @@ fun nenoonApp(
                                 },
                                 navController = navController,
                                 isSignedIn = viewModel.isSignedIn.collectAsState().value,
-                                signInViewModel = signInViewModel,
+                                loginViewModel = loginViewModel,
                             )
                         }
 
@@ -754,7 +754,7 @@ fun nenoonApp(
                     navController.popBackStack(NavConstants.ROUTE_TERMS_OF_SERVICE, true)
                     navController.navigate(NavConstants.ROUTE_SIGN_IN)
                 },
-                userData = signInViewModel.userData.collectAsState().value,
+                userData = loginViewModel.userData.collectAsState().value,
             )
         }
 
@@ -786,9 +786,9 @@ fun nenoonApp(
         ) {
             ResultPrintScreen(
                 surveyId = viewModel.surveyId.collectAsState().value,
-                qrCode = signInViewModel.accountQrCode.collectAsState().value,
+                qrCode = loginViewModel.accountQrCode.collectAsState().value,
                 navController = navController,
-                userData = signInViewModel.userData.collectAsState().value,
+                userData = loginViewModel.userData.collectAsState().value,
             )
         }
 

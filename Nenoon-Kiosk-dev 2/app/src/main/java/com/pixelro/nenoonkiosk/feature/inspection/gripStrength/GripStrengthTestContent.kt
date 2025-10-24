@@ -13,7 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.manager.InGripManager
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripViewModel
-import com.pixelro.nenoonkiosk.feature.auth.login.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 enum class GripStrengthTestScreen {
@@ -29,7 +29,7 @@ fun GripStrengthTestContent(
     navController: NavHostController,
     isSignedIn: Boolean,
     gripStrengthViewModel: InGripViewModel = hiltViewModel(),
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
 ) {
 //    toResultScreen(gripStrengthViewModel.getGripStrengthData())
 
@@ -84,7 +84,7 @@ fun GripStrengthTestContent(
                     navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false)
                 },
                 onLogout = {
-                    signInViewModel.userSignOut()
+                    loginViewModel.userSignOut()
                     navController.navigate(NavConstants.ROUTE_SIGN_IN)
                 },
                 navController = localNavController,

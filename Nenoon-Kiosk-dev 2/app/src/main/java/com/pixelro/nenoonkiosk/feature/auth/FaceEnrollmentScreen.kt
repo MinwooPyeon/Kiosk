@@ -30,25 +30,25 @@ import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.auth.login.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
 fun FaceEnrollmentScreen(
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
     navController: NavController,
 ) {
     val context = LocalContext.current
-    val faceDetectionStatus by signInViewModel.faceDetectionStatus.collectAsState()
-    val isProcessingFace by signInViewModel.isProcessingFace.collectAsState()
-    val lastDetectedFaceBitmap by signInViewModel.lastDetectedFaceBitmap.collectAsState()
-    val isFaceEnrollmentDataReady by signInViewModel.isFaceEnrollmentDataReady.collectAsState()
+    val faceDetectionStatus by loginViewModel.faceDetectionStatus.collectAsState()
+    val isProcessingFace by loginViewModel.isProcessingFace.collectAsState()
+    val lastDetectedFaceBitmap by loginViewModel.lastDetectedFaceBitmap.collectAsState()
+    val isFaceEnrollmentDataReady by loginViewModel.isFaceEnrollmentDataReady.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        signInViewModel.resetFaceEnrollmentData()
-        signInViewModel.clearEnrollmentMessage()
+        loginViewModel.resetFaceEnrollmentData()
+        loginViewModel.clearEnrollmentMessage()
     }
 
     Column(
@@ -77,13 +77,13 @@ fun FaceEnrollmentScreen(
                 modifier = Modifier.fillMaxSize(),
                 onFaceDetected = { faceBitmap ->
                     if (!isProcessingFace) {
-                        signInViewModel.processFaceForEmbeddingAndStoreTemporarily(faceBitmap)
+                        loginViewModel.processFaceForEmbeddingAndStoreTemporarily(faceBitmap)
                     } else {
                         faceBitmap.recycle()
                     }
                 },
                 onDetectionStatus = { status ->
-                    signInViewModel.updateFaceDetectionStatus(status)
+                    loginViewModel.updateFaceDetectionStatus(status)
                 },
             )
 
@@ -126,7 +126,7 @@ fun FaceEnrollmentScreen(
                 enabled = isFaceEnrollmentDataReady,
                 onClick = {
                     coroutineScope.launch(Dispatchers.Main) {
-                        signInViewModel.updateFace().also { success ->
+                        loginViewModel.updateFace().also { success ->
                             if (success) {
                                 navController.popBackStack(SignInScreenState.UserSignIn.name, false)
                             }

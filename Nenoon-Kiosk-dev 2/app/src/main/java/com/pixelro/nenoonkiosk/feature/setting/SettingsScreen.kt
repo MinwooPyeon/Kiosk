@@ -36,7 +36,7 @@ import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
-import com.pixelro.nenoonkiosk.feature.auth.login.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 
 // 환경설정 뷰
 @RequiresApi(Build.VERSION_CODES.S)
@@ -46,12 +46,12 @@ fun SettingsScreen(
     isSignedIn: Boolean,
     toSignInScreen: () -> Unit,
     toSoftwareInfoScreen: () -> Unit,
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
     onBack: () -> Unit,
 ) {
     val settingsDialogState by viewModel.settingsDialogState.collectAsState()
-    val isUserSignedIn by signInViewModel.isUserSignedIn.collectAsState()
-    val isLocationSignedIn by signInViewModel.isLocationSignedIn.collectAsState()
+    val isUserSignedIn by loginViewModel.isUserSignedIn.collectAsState()
+    val isLocationSignedIn by loginViewModel.isLocationSignedIn.collectAsState()
     val isSeniorValue by viewModel.isSenior.collectAsState()
     val context = LocalContext.current
 
@@ -196,9 +196,9 @@ fun SettingsScreen(
                         .clickable {
                             if (isSignedIn) {
                                 if (isUserSignedIn) {
-                                    signInViewModel.userSignOut()
+                                    loginViewModel.userSignOut()
                                 } else {
-                                    signInViewModel.locationSignOut()
+                                    loginViewModel.locationSignOut()
                                 }
                             }
                             toSignInScreen()

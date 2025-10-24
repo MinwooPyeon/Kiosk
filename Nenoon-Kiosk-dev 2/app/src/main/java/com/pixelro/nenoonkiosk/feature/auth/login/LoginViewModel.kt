@@ -20,6 +20,7 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.bitmapToFile
 import com.pixelro.nenoonkiosk.core.util.qr.QRCodeGenerator
@@ -39,18 +40,14 @@ import javax.inject.Inject
 import kotlin.collections.iterator
 
 @HiltViewModel
-class SignInViewModel
+class LoginViewModel
     @Inject
     constructor(
         application: Application,
         private val signInRepository: SignInRepository,
+        private val navigator: Navigator,
         val faceRecognizer: FaceRecognizer,
     ) : AndroidViewModel(application) {
-        private val _locationStrId = MutableStateFlow<String?>(null)
-        val locationStrId: StateFlow<String?> = _locationStrId.asStateFlow()
-
-        private val _locationId = MutableStateFlow<Long?>(null)
-        val locationId: StateFlow<Long?> = _locationId.asStateFlow()
 
         private val _userId = MutableStateFlow<String?>(null)
         val userId: StateFlow<String?> = _userId.asStateFlow()
@@ -121,7 +118,6 @@ class SignInViewModel
         }
 
         fun resetAllViewModelData() {
-            _locationStrId.update { null }
             _userId.update { null }
             _isLocationSignedIn.update { false }
             _isUserSignedIn.update { false }
@@ -255,8 +251,6 @@ class SignInViewModel
                     signInRepository.updateLocationId((result.data["pid"] as Double).toInt())
                     signInRepository.updateScreenSaverVideoURI(result.data["video"] as String)
                     _isLocationSignedIn.update { true }
-                    _locationStrId.update { id }
-                    _locationId.update { AppConstants.DEFAULT_LOCATION_ID.toLong() } // TODO TEMP
                     updateIsSignedIn(true)
                     return true
                 } else {
@@ -274,7 +268,6 @@ class SignInViewModel
         @OptIn(UnstableApi::class)
         fun locationSignInSkip(updateIsSignedIn: (Boolean) -> Unit) {
             _isLocationSignedIn.update { true }
-            _locationId.update { AppConstants.DEFAULT_LOCATION_ID.toLong() }
             updateIsSignedIn(true)
             viewModelScope.launch(Dispatchers.IO) {
                 signInRepository.updateLocationId(AppConstants.DEFAULT_LOCATION_ID)
@@ -324,7 +317,7 @@ class SignInViewModel
                                     pw = password,
                                     name = name,
                                     email = if (email.isNullOrBlank()) AppConstants.DEFAULT_EMAIL else email,
-                                    pid = _locationId.value!!,
+                                    pid = 0L,
                                     vector = tempFaceEmbedding.contentToString(),
                                     qrUrl = qrUrl,
                                 )
@@ -435,6 +428,7 @@ class SignInViewModel
             }
         }
 
+    // FaceIdSingin Screen
         suspend fun userSignInWithFace(
             faceBitmap: Bitmap,
             updateIsSignedIn: (Boolean) -> Unit,
@@ -544,6 +538,8 @@ class SignInViewModel
             }
         }
 
+
+    // Face Enrollment
         suspend fun updateFace(userId: String? = null): Boolean {
             if (tempFaceEmbedding != null) {
                 if (AppConstants.MANAGE_USERS_INTERNALLY) {
