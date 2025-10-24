@@ -59,7 +59,7 @@ import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveyDiabetes
 import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveyGlass
 import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveySex
 import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveySurgery
-import com.pixelro.nenoonkiosk.feature.auth.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.SignInViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

@@ -19,7 +19,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.BPBIO32
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.BPBIO320StartScreen
 import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BViewModel
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
-import com.pixelro.nenoonkiosk.feature.auth.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.SignInViewModel
 
 enum class BloodPressureTestScreen {
     Start,

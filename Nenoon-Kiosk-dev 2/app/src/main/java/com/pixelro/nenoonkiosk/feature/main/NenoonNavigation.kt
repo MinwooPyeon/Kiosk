@@ -30,7 +30,7 @@ import com.pixelro.nenoonkiosk.feature.auth.AccountManagementScreen
 import com.pixelro.nenoonkiosk.feature.auth.FaceIdTermsOfServiceScreen
 import com.pixelro.nenoonkiosk.feature.auth.FaceUpdateScreen
 import com.pixelro.nenoonkiosk.feature.auth.SignInScreen
-import com.pixelro.nenoonkiosk.feature.auth.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.SignInViewModel
 import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListScreen
 import com.pixelro.nenoonkiosk.feature.exerciseglasses.concentration_exercise.ConcentrationExerciseContent
 import com.pixelro.nenoonkiosk.feature.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseContent

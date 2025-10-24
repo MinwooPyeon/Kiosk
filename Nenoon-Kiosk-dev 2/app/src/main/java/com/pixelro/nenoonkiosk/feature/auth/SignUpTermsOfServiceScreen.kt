@@ -29,7 +29,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
@@ -42,22 +42,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpTermsOfServiceViewModel
-    @Inject
-    constructor() : ViewModel() {
-        private val _acceptedPersonalInformationTerms = mutableStateOf<Boolean?>(null)
-        val acceptedPersonalInformationTerms: State<Boolean?> = _acceptedPersonalInformationTerms
+@Inject
+constructor() : ViewModel() {
+    private val _acceptedPersonalInformationTerms = mutableStateOf<Boolean?>(null)
+    val acceptedPersonalInformationTerms: State<Boolean?> = _acceptedPersonalInformationTerms
 
-        private val _acceptedSensitiveInformationTerms = mutableStateOf<Boolean?>(null)
-        val acceptedSensitiveInformationTerms: State<Boolean?> = _acceptedSensitiveInformationTerms
+    private val _acceptedSensitiveInformationTerms = mutableStateOf<Boolean?>(null)
+    val acceptedSensitiveInformationTerms: State<Boolean?> = _acceptedSensitiveInformationTerms
 
-        fun onPersonalInformationTermsAcceptedChange(newValue: Boolean?) {
-            _acceptedPersonalInformationTerms.value = newValue
-        }
-
-        fun onSensitiveInformationTermsAcceptedChange(newValue: Boolean?) {
-            _acceptedSensitiveInformationTerms.value = newValue
-        }
+    fun onPersonalInformationTermsAcceptedChange(newValue: Boolean?) {
+        _acceptedPersonalInformationTerms.value = newValue
     }
+
+    fun onSensitiveInformationTermsAcceptedChange(newValue: Boolean?) {
+        _acceptedSensitiveInformationTerms.value = newValue
+    }
+}
 
 @Composable
 fun signUpTermsOfServiceScreen(
@@ -69,7 +69,12 @@ fun signUpTermsOfServiceScreen(
     val acceptedSensitiveInformationTerms by viewModel.acceptedSensitiveInformationTerms
 
     val context = LocalContext.current
-    val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
+    val sharedPreferences = remember {
+        context.getSharedPreferences(
+            NavConstants.PREFERENCE_NAME,
+            Context.MODE_PRIVATE
+        )
+    }
     val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
     val textSize = if (savedLanguage == "en") 16.sp else 20.sp
 
@@ -202,7 +207,7 @@ fun signUpTermsOfServiceScreen(
 
 @Preview(showBackground = true, widthDp = 888, heightDp = 1422)
 @Composable
-fun signUpTermsOfServiceScreenPreview() {
+fun SignUpTermsOfServiceScreenPreview() {
     signUpTermsOfServiceScreen(
         onTermsAccepted = {},
         onTermsRejected = {},

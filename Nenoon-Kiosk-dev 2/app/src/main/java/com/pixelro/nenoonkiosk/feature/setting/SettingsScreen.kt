@@ -36,7 +36,7 @@ import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
-import com.pixelro.nenoonkiosk.feature.auth.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.SignInViewModel
 
 // 환경설정 뷰
 @RequiresApi(Build.VERSION_CODES.S)

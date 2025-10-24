@@ -24,9 +24,7 @@ import org.tensorflow.lite.Interpreter.Options as InterpreterOptions
 @Singleton
 class TFLiteFaceRecognizer
     @Inject
-    constructor(
-        private val application: Application,
-    ) : FaceRecognizer {
+    constructor() : FaceRecognizer {
         private val TAG = "TFLiteFaceRecognizer"
 
         private var interpreter: Interpreter? = null
