@@ -43,7 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.harang.data.model.User
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.DebugConstants
@@ -57,9 +57,11 @@ import com.pixelro.nenoonkiosk.feature.survey.component.SurveyEightOptionsQuesti
 import com.pixelro.nenoonkiosk.feature.survey.component.SurveyFourOptionsQuestion
 import com.pixelro.nenoonkiosk.feature.survey.component.SurveyProgressBar
 import com.pixelro.nenoonkiosk.feature.survey.component.SurveyTwoOptionsQuestion
-import com.pixelro.nenoonkiosk.feature.user.SignInViewModel
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 // 시력검사 전 설문조사 뷰
 @Composable
@@ -67,7 +69,7 @@ fun SurveyScreen(
     isLoggedIn: Boolean,
     toCategoryListScreen: (Long) -> Unit,
     surveyViewModel: SurveyViewModel = hiltViewModel(),
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
     userData: User?,
     onBack: () -> Unit,
     signOut: () -> Unit,
@@ -334,7 +336,7 @@ fun SurveyScreen(
                                             surveyViewModel.getSurveyId(
                                                 token = userData?.accessToken,
                                                 toCategoryListScreen = toCategoryListScreen,
-                                                isSignInSkipped = { signInViewModel.isUserSignInSkipped() },
+                                                isSignInSkipped = { loginViewModel.isUserSignInSkipped() },
                                             ) {
                                                 surveyScreenState = SurveyScreenState.Error
                                             }

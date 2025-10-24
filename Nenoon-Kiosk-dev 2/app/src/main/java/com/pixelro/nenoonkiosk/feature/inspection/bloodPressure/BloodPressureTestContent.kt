@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,7 +19,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.BPBIO32
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.BPBIO320StartScreen
 import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BViewModel
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
-import com.pixelro.nenoonkiosk.feature.user.SignInViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 
 enum class BloodPressureTestScreen {
     Start,
@@ -35,7 +35,7 @@ fun BloodPressureTestContent(
     isSignedIn: Boolean,
     bpbiO320ViewModel: BPBIO320ViewModel,
     bP170BViewModel: BP170BViewModel = hiltViewModel(),
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
 ) {
     val localNavController = rememberNavController()
     val bPBIO320ConnectionState by bpbiO320ViewModel.connectionState.collectAsState()
@@ -100,7 +100,7 @@ fun BloodPressureTestContent(
                     navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false)
                 },
                 onLogout = {
-                    signInViewModel.userSignOut()
+                    loginViewModel.userSignOut()
                     navController.navigate(NavConstants.ROUTE_SIGN_IN)
                 },
                 navController = localNavController,

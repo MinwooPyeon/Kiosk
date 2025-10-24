@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.user
+package com.pixelro.nenoonkiosk.feature.auth
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
@@ -13,6 +13,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
+import com.pixelro.nenoonkiosk.feature.auth.login.LoginScreen
 
 enum class SignInScreenState {
     LocationSignIn,
@@ -29,11 +31,11 @@ enum class SignInScreenState {
 @Composable
 fun SignInScreen(
     updateLocationSignIn: (Boolean) -> Unit,
-    signInViewModel: SignInViewModel,
+    loginViewModel: LoginViewModel,
     navController: NavController,
 ) {
     val signInNavController = rememberNavController()
-    val isLocationSignedIn by signInViewModel.isLocationSignedIn.collectAsState()
+    val isLocationSignedIn by loginViewModel.isLocationSignedIn.collectAsState()
     var isFaceIdTermsOfServiceAccepted by remember { mutableStateOf(false) }
 
     NavHost(
@@ -51,7 +53,7 @@ fun SignInScreen(
             }
             LocationSignInScreen(
                 updateIsSignedIn = updateLocationSignIn,
-                signInViewModel = signInViewModel,
+                loginViewModel = loginViewModel,
                 signInNavController = signInNavController,
                 navController = navController,
             )
@@ -62,10 +64,10 @@ fun SignInScreen(
         ) {
             LaunchedEffect(Unit) {
                 isFaceIdTermsOfServiceAccepted = false
-                signInViewModel.resetUserData()
+                loginViewModel.resetUserData()
             }
-            UserSignInScreen(
-                signInViewModel = signInViewModel,
+            LoginScreen(
+                loginViewModel = loginViewModel,
                 signInNavController = signInNavController,
                 navController = navController,
             )
@@ -76,7 +78,7 @@ fun SignInScreen(
         ) {
             UserSignUpScreen(
                 updateIsSignedIn = { navController.navigate(NavConstants.ROUTE_INTRO) },
-                signInViewModel = signInViewModel,
+                loginViewModel = loginViewModel,
                 toFaceEnrollmentScreen = {
                     if (isFaceIdTermsOfServiceAccepted) {
                         signInNavController.navigate(SignInScreenState.FaceEnrollment.name)
@@ -115,7 +117,7 @@ fun SignInScreen(
         ) {
             QRSignInScreen(
                 updateIsSignedIn = { navController.navigate(NavConstants.ROUTE_INTRO) },
-                signInViewModel = signInViewModel,
+                loginViewModel = loginViewModel,
                 navController = signInNavController,
             )
         }
@@ -130,7 +132,7 @@ fun SignInScreen(
                         signInNavController.popBackStack(SignInScreenState.UserSignIn.name, false)
                     }
                 },
-                signInViewModel = signInViewModel,
+                loginViewModel = loginViewModel,
                 navController = signInNavController,
             )
         }
@@ -138,7 +140,7 @@ fun SignInScreen(
             SignInScreenState.FaceEnrollment.name,
         ) {
             FaceEnrollmentScreen(
-                signInViewModel = signInViewModel,
+                loginViewModel = loginViewModel,
                 navController = signInNavController,
             )
         }
@@ -147,7 +149,7 @@ fun SignInScreen(
         ) {
             IdPasswordSignInScreen(
                 updateIsSignedIn = { navController.navigate(NavConstants.ROUTE_INTRO) },
-                signInViewModel = signInViewModel,
+                loginViewModel = loginViewModel,
                 navController = signInNavController,
             )
         }
