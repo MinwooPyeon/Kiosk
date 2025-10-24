@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveyGlass
+import com.pixelro.nenoonkiosk.feature.survey.model.SurveyGlass
 
 @Composable
 fun RedGreenFilterGlassDialog(

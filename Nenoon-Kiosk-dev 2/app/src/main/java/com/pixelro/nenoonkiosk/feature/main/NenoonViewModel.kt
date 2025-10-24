@@ -43,7 +43,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFun
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.ChildrenVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.LongVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
-import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveyGlass
+import com.pixelro.nenoonkiosk.feature.survey.model.SurveyGlass
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.delay

@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.survey.surveytype
+package com.pixelro.nenoonkiosk.feature.survey.model
 
 enum class SurveySurgery {
     None,

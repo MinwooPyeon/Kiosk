@@ -7,18 +7,23 @@ import androidx.lifecycle.viewModelScope
 import com.harang.data.model.SendSurveyDataRequest
 import com.harang.data.repository.SignInRepository
 import com.harang.data.repository.SurveyRepository
+import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.constants.DebugConstants
-import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveyAge
-import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveyDiabetes
-import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveyGlass
-import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveySex
-import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveySurgery
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.survey.model.SurveyAge
+import com.pixelro.nenoonkiosk.feature.survey.model.SurveyDiabetes
+import com.pixelro.nenoonkiosk.feature.survey.model.SurveyGlass
+import com.pixelro.nenoonkiosk.feature.survey.model.SurveySex
+import com.pixelro.nenoonkiosk.feature.survey.model.SurveySurgery
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,59 +38,225 @@ class SurveyViewModel
         private val surveyRepository: SurveyRepository,
         private val signInRepository: SignInRepository,
     ) : AndroidViewModel(application) {
-        private val _surveyAge = MutableStateFlow(SurveyAge.None)
-        val surveyAge: StateFlow<SurveyAge> = _surveyAge
-        private val _surveySex = MutableStateFlow(SurveySex.None)
-        val surveySex: StateFlow<SurveySex> = _surveySex
-        private val _surveyGlass = MutableStateFlow(SurveyGlass.None)
-        val surveyGlass: StateFlow<SurveyGlass> = _surveyGlass
-        private val _surveySurgery = MutableStateFlow(SurveySurgery.None)
-        val surveySurgery: StateFlow<SurveySurgery> = _surveySurgery
-        private val _surveyDiabetes = MutableStateFlow(SurveyDiabetes.None)
-        val surveyDiabetes: StateFlow<SurveyDiabetes> = _surveyDiabetes
-        private val _questionType = MutableStateFlow(QuestionType.Age)
-        val questionType: StateFlow<QuestionType> = _questionType
+        private val _state = MutableStateFlow(SurveyState())
+        val state: StateFlow<SurveyState> = _state
+
+        val currentQuestion: StateFlow<SurveyQuestion> =
+            state.map { state ->
+                when (state.currentQuestion) {
+                    QuestionType.Age -> {
+                        val selectedIndex =
+                            when (state.age) {
+                                SurveyAge.First -> 1
+                                SurveyAge.Third -> 2
+                                SurveyAge.Fifth -> 3
+                                SurveyAge.Seventh -> 4
+                                SurveyAge.Second -> 5
+                                SurveyAge.Fourth -> 6
+                                SurveyAge.Sixth -> 7
+                                SurveyAge.Eighth -> 8
+                                else -> 0
+                            }
+                        SurveyQuestion.EightOptions(
+                            questionText = StringProvider.getString(R.string.survey_age),
+                            leftOptions =
+                                listOf(
+                                    StringProvider.getString(R.string.survey_under9),
+                                    StringProvider.getString(R.string.survey_20s),
+                                    StringProvider.getString(R.string.survey_40s),
+                                    StringProvider.getString(R.string.survey_60s),
+                                ),
+                            rightOptions =
+                                listOf(
+                                    StringProvider.getString(R.string.survey_10s),
+                                    StringProvider.getString(R.string.survey_30s),
+                                    StringProvider.getString(R.string.survey_50s),
+                                    StringProvider.getString(R.string.survey_above70),
+                                ),
+                            selectedIndex = selectedIndex,
+                        )
+                    }
+                    QuestionType.Sex -> {
+                        val selectedIndex =
+                            when (state.sex) {
+                                SurveySex.Man -> 1
+                                SurveySex.Woman -> 2
+                                else -> 0
+                            }
+                        SurveyQuestion.TwoOptions(
+                            questionText = StringProvider.getString(R.string.survey_sex),
+                            option1Text = StringProvider.getString(R.string.survey_male),
+                            option2Text = StringProvider.getString(R.string.survey_female),
+                            selectedIndex = selectedIndex,
+                        )
+                    }
+                    QuestionType.Glass -> {
+                        val selectedIndex =
+                            when (state.glass) {
+                                SurveyGlass.Yes -> 1
+                                SurveyGlass.No -> 2
+                                else -> 0
+                            }
+                        SurveyQuestion.TwoOptions(
+                            questionText = StringProvider.getString(R.string.survey_glasses),
+                            option1Text = StringProvider.getString(R.string.yes),
+                            option2Text = StringProvider.getString(R.string.no),
+                            selectedIndex = selectedIndex,
+                        )
+                    }
+                    QuestionType.Surgery -> {
+                        val selectedIndex =
+                            when (state.surgery) {
+                                SurveySurgery.Normal -> 1
+                                SurveySurgery.LASIK -> 2
+                                SurveySurgery.Cataract -> 3
+                                SurveySurgery.Etc -> 4
+                                else -> 0
+                            }
+                        SurveyQuestion.FourOptions(
+                            questionText = StringProvider.getString(R.string.survey_surgery),
+                            topOptions =
+                                listOf(
+                                    StringProvider.getString(R.string.survey_none),
+                                    StringProvider.getString(R.string.survey_lasik_lasek),
+                                ),
+                            bottomOptions =
+                                listOf(
+                                    StringProvider.getString(R.string.survey_cataract),
+                                    StringProvider.getString(R.string.survey_etc),
+                                ),
+                            selectedIndex = selectedIndex,
+                        )
+                    }
+                    QuestionType.Diabetes -> {
+                        val selectedIndex =
+                            when (state.diabetes) {
+                                SurveyDiabetes.Yes -> 1
+                                SurveyDiabetes.No -> 2
+                                else -> 0
+                            }
+                        SurveyQuestion.TwoOptions(
+                            questionText = StringProvider.getString(R.string.survey_diabetes),
+                            option1Text = StringProvider.getString(R.string.yes),
+                            option2Text = StringProvider.getString(R.string.no),
+                            selectedIndex = selectedIndex,
+                        )
+                    }
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue =
+                    SurveyQuestion.EightOptions(
+                        questionText = "",
+                        leftOptions = emptyList(),
+                        rightOptions = emptyList(),
+                        selectedIndex = 0,
+                    ),
+            )
+
         private val _pid = MutableStateFlow(0)
         val pid: StateFlow<Int> = _pid
-        private val _pastSurveyId = MutableStateFlow<Long?>(null)
-        val pastSurveyId: StateFlow<Long?> = _pastSurveyId
-        private val _isPastSurveyFetched = MutableStateFlow(false)
-        val isPastSurveyFetched: StateFlow<Boolean> = _isPastSurveyFetched
 
         fun updateQuestionType(type: QuestionType) {
             viewModelScope.launch {
                 delay(1000)
-                _questionType.update { type }
+                _state.update { it.copy(currentQuestion = type) }
             }
         }
 
         fun updateSurveyAge(type: SurveyAge) {
-            _surveyAge.update { type }
+            _state.update { it.copy(age = type) }
         }
 
         fun updateSurveySex(type: SurveySex) {
-            _surveySex.update { type }
+            _state.update { it.copy(sex = type) }
         }
 
         fun updateSurveyGlass(type: SurveyGlass) {
-            _surveyGlass.update { type }
+            _state.update { it.copy(glass = type) }
         }
 
         fun updateSurveySurgery(type: SurveySurgery) {
-            _surveySurgery.update { type }
+            _state.update { it.copy(surgery = type) }
         }
 
         fun updateSurveyDiabetes(type: SurveyDiabetes) {
-            _surveyDiabetes.update { type }
+            _state.update { it.copy(diabetes = type) }
         }
 
         fun initSurveyData() {
-            _questionType.update { QuestionType.Age }
-            _surveyAge.update { SurveyAge.None }
-            _surveySex.update { SurveySex.None }
-            _surveyGlass.update { SurveyGlass.None }
-            _surveySurgery.update { SurveySurgery.None }
-            _surveyDiabetes.update { SurveyDiabetes.None }
+            _state.update { SurveyState() }
+        }
+
+        fun handleSelection(
+            index: Int,
+            onComplete: () -> Unit = {},
+        ) {
+            when (state.value.currentQuestion) {
+                QuestionType.Age -> {
+                    val age =
+                        when (index) {
+                            1 -> SurveyAge.First
+                            2 -> SurveyAge.Third
+                            3 -> SurveyAge.Fifth
+                            4 -> SurveyAge.Seventh
+                            5 -> SurveyAge.Second
+                            6 -> SurveyAge.Fourth
+                            7 -> SurveyAge.Sixth
+                            8 -> SurveyAge.Eighth
+                            else -> SurveyAge.None
+                        }
+                    updateSurveyAge(age)
+                    updateQuestionType(QuestionType.Sex)
+                }
+
+                QuestionType.Sex -> {
+                    val sex =
+                        when (index) {
+                            1 -> SurveySex.Man
+                            2 -> SurveySex.Woman
+                            else -> SurveySex.None
+                        }
+                    updateSurveySex(sex)
+                    updateQuestionType(QuestionType.Glass)
+                }
+
+                QuestionType.Glass -> {
+                    val glass =
+                        when (index) {
+                            1 -> SurveyGlass.Yes
+                            2 -> SurveyGlass.No
+                            else -> SurveyGlass.None
+                        }
+                    updateSurveyGlass(glass)
+                    updateQuestionType(QuestionType.Surgery)
+                }
+
+                QuestionType.Surgery -> {
+                    val surgery =
+                        when (index) {
+                            1 -> SurveySurgery.Normal
+                            2 -> SurveySurgery.LASIK
+                            3 -> SurveySurgery.Cataract
+                            4 -> SurveySurgery.Etc
+                            else -> SurveySurgery.None
+                        }
+                    updateSurveySurgery(surgery)
+                    updateQuestionType(QuestionType.Diabetes)
+                }
+
+                QuestionType.Diabetes -> {
+                    val diabetes =
+                        when (index) {
+                            1 -> SurveyDiabetes.Yes
+                            2 -> SurveyDiabetes.No
+                            else -> SurveyDiabetes.None
+                        }
+                    updateSurveyDiabetes(diabetes)
+                    onComplete()
+                }
+            }
         }
 
         fun checkIsSurveyCompleted(token: String) {
@@ -96,7 +267,7 @@ class SurveyViewModel
                             surveyRepository.generateResultsChart(token).also { generateResultsChartResponse ->
                                 try {
                                     val tid = floor(generateResultsChartResponse?.data?.get("tid") as Double).toLong()
-                                    _pastSurveyId.value = tid
+                                    _state.update { it.copy(pastSurveyId = tid) }
                                 } catch (e: Exception) {
                                     Log.e(
                                         "SurveyViewModel",
@@ -108,13 +279,13 @@ class SurveyViewModel
                     } catch (e: Exception) {
                         Log.e("SurveyViewModel", "Error when reading past survey ID as Long - ${it?.data?.get("surveyId")}")
                     }
-                    _isPastSurveyFetched.value = true
+                    _state.update { it.copy(isPastSurveyFetched = true) }
                 }
             }
         }
 
         fun setIsPastSurveyFetched(value: Boolean) {
-            _isPastSurveyFetched.value = value
+            _state.update { it.copy(isPastSurveyFetched = value) }
         }
 
         fun getSurveyId(
@@ -126,17 +297,18 @@ class SurveyViewModel
             if (AppConstants.MANAGE_USERS_INTERNALLY) {
                 toCategoryListScreen(DebugConstants.SAMPLE_SURVEY_ID)
             } else if (AppConstants.ALLOW_OFFLINE_BYPASS_FOR_SIGN_IN_SKIP && isSignInSkipped()) {
-                _pastSurveyId.value = DebugConstants.SAMPLE_SURVEY_ID
+                _state.update { it.copy(pastSurveyId = DebugConstants.SAMPLE_SURVEY_ID) }
                 toCategoryListScreen(DebugConstants.SAMPLE_SURVEY_ID)
             } else {
                 viewModelScope.launch(Dispatchers.IO) {
                     // 서버에 보낼 data 정보
+                    val currentState = _state.value
                     val response =
                         surveyRepository.sendSurveyData(
                             token = token,
                             SendSurveyDataRequest(
                                 age =
-                                    when (_surveyAge.value) {
+                                    when (currentState.age) {
                                         SurveyAge.First -> 1
                                         SurveyAge.Second -> 2
                                         SurveyAge.Third -> 4
@@ -147,24 +319,24 @@ class SurveyViewModel
                                         else -> 9
                                     },
                                 gender =
-                                    when (_surveySex.value) {
+                                    when (currentState.sex) {
                                         SurveySex.Man -> "M"
                                         else -> "W"
                                     },
                                 glasses =
-                                    when (_surveyGlass.value) {
+                                    when (currentState.glass) {
                                         SurveyGlass.Yes -> true
                                         else -> false
                                     },
                                 surgery =
-                                    when (_surveySurgery.value) {
+                                    when (currentState.surgery) {
                                         SurveySurgery.Normal -> "normal"
                                         SurveySurgery.LASIK -> "correction"
                                         SurveySurgery.Cataract -> "cataract"
                                         else -> "etc"
                                     },
                                 diabetes =
-                                    when (_surveyDiabetes.value) {
+                                    when (currentState.diabetes) {
                                         SurveyDiabetes.Yes -> true
                                         else -> false
                                     },
@@ -188,7 +360,7 @@ class SurveyViewModel
                                                                         "tid",
                                                                     ) as Double,
                                                                 ).toLong()
-                                                            _pastSurveyId.value = tid
+                                                            _state.update { it.copy(pastSurveyId = tid) }
                                                             withContext(Dispatchers.Main) {
                                                                 toCategoryListScreen(tid)
                                                             }
@@ -212,7 +384,7 @@ class SurveyViewModel
                             } else {
                                 try {
                                     val tid = floor(response?.data?.get("tid") as Double).toLong()
-                                    _pastSurveyId.value = tid
+                                    _state.update { it.copy(pastSurveyId = tid) }
                                     withContext(Dispatchers.Main) {
                                         toCategoryListScreen(tid)
                                     }
@@ -230,14 +402,6 @@ class SurveyViewModel
                     }
                 }
             }
-        }
-
-        enum class QuestionType {
-            Age,
-            Sex,
-            Glass,
-            Surgery,
-            Diabetes,
         }
 
         init {
