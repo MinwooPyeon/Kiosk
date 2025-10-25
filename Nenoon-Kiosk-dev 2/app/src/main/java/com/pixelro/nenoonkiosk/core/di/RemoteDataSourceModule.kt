@@ -1,6 +1,8 @@
 package com.pixelro.nenoonkiosk.core.di
 
+import com.harang.data.api.AuthApi
 import com.harang.data.api.NenoonKioskApi
+import com.harang.data.api.SurveyApi
 import com.harang.data.datasource.SignInRemoteDataSource
 import com.harang.data.datasource.SurveyRemoteDataSource
 import com.harang.data.datasource.TestResultRemoteDataSource
@@ -15,13 +17,13 @@ import javax.inject.Singleton
 object RemoteDataSourceModule {
     @Provides
     @Singleton
-    fun provideSignInRemoteDataSource(api: NenoonKioskApi): SignInRemoteDataSource {
+    fun provideSignInRemoteDataSource(api: AuthApi): SignInRemoteDataSource {
         return SignInRemoteDataSource(api)
     }
 
     @Provides
     @Singleton
-    fun provideSurveyRemoteDataSource(api: NenoonKioskApi): SurveyRemoteDataSource {
+    fun provideSurveyRemoteDataSource(api: SurveyApi): SurveyRemoteDataSource {
         return SurveyRemoteDataSource(api)
     }
 

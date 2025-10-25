@@ -1,6 +1,6 @@
 package com.harang.data.datasource
 
-import com.harang.data.api.NenoonKioskApi
+import com.harang.data.api.AuthApi
 import com.harang.data.model.GetUserProfileResponse
 import com.harang.data.model.SendLocationSignInDataResponse
 import com.harang.data.model.SendSignUpDataRequest
@@ -16,7 +16,7 @@ import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 
 class SignInRemoteDataSource(
-    private val api: NenoonKioskApi,
+    private val api: AuthApi,
 ) {
     suspend fun locationSignIn(
         id: String,
