@@ -19,14 +19,14 @@ import com.pixelro.nenoonkiosk.feature.survey.model.SurveySurgery
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 import kotlin.math.floor
 
@@ -37,12 +37,15 @@ class SurveyViewModel
         application: Application,
         private val surveyRepository: SurveyRepository,
         private val signInRepository: SignInRepository,
-    ) : AndroidViewModel(application) {
-        private val _state = MutableStateFlow(SurveyState())
-        val state: StateFlow<SurveyState> = _state
+    ) : AndroidViewModel(application),
+    ContainerHost<SurveyUiState, SurveySideEffect> {
+        override val container: Container<SurveyUiState, SurveySideEffect> =
+            container(SurveyUiState())
+
+        val state: StateFlow<SurveyUiState> = container.stateFlow
 
         val currentQuestion: StateFlow<SurveyQuestion> =
-            state.map { state ->
+            container.stateFlow.map { state ->
                 when (state.currentQuestion) {
                     QuestionType.Age -> {
                         val selectedIndex =
@@ -155,39 +158,55 @@ class SurveyViewModel
                     ),
             )
 
-        private val _pid = MutableStateFlow(0)
-        val pid: StateFlow<Int> = _pid
-
-        fun updateQuestionType(type: QuestionType) {
-            viewModelScope.launch {
+        fun updateQuestionType(type: QuestionType) =
+            intent {
                 delay(1000)
-                _state.update { it.copy(currentQuestion = type) }
+                reduce {
+                    state.copy(currentQuestion = type)
+                }
             }
-        }
 
-        fun updateSurveyAge(type: SurveyAge) {
-            _state.update { it.copy(age = type) }
-        }
+        fun updateSurveyAge(type: SurveyAge) =
+            intent {
+                reduce {
+                    state.copy(age = type)
+                }
+            }
 
-        fun updateSurveySex(type: SurveySex) {
-            _state.update { it.copy(sex = type) }
-        }
+        fun updateSurveySex(type: SurveySex) =
+            intent {
+                reduce {
+                    state.copy(sex = type)
+                }
+            }
 
-        fun updateSurveyGlass(type: SurveyGlass) {
-            _state.update { it.copy(glass = type) }
-        }
+        fun updateSurveyGlass(type: SurveyGlass) =
+            intent {
+                reduce {
+                    state.copy(glass = type)
+                }
+            }
 
-        fun updateSurveySurgery(type: SurveySurgery) {
-            _state.update { it.copy(surgery = type) }
-        }
+        fun updateSurveySurgery(type: SurveySurgery) =
+            intent {
+                reduce {
+                    state.copy(surgery = type)
+                }
+            }
 
-        fun updateSurveyDiabetes(type: SurveyDiabetes) {
-            _state.update { it.copy(diabetes = type) }
-        }
+        fun updateSurveyDiabetes(type: SurveyDiabetes) =
+            intent {
+                reduce {
+                    state.copy(diabetes = type)
+                }
+            }
 
-        fun initSurveyData() {
-            _state.update { SurveyState() }
-        }
+        fun initSurveyData() =
+            intent {
+                reduce {
+                    SurveyUiState()
+                }
+            }
 
         fun handleSelection(
             index: Int,
@@ -259,150 +278,165 @@ class SurveyViewModel
             }
         }
 
-        fun checkIsSurveyCompleted(token: String) {
-            viewModelScope.launch(Dispatchers.IO) {
-                surveyRepository.getPastSurveyId(token).also {
-                    try {
-                        if (it?.data?.get("hasSurvey") as Boolean) {
-                            surveyRepository.generateResultsChart(token).also { generateResultsChartResponse ->
-                                try {
-                                    val tid = floor(generateResultsChartResponse?.data?.get("tid") as Double).toLong()
-                                    _state.update { it.copy(pastSurveyId = tid) }
-                                } catch (e: Exception) {
-                                    Log.e(
-                                        "SurveyViewModel",
-                                        "Error when reading generateResultsChart survey ID as Long - ${generateResultsChartResponse?.data}",
-                                    )
+        fun checkIsSurveyCompleted(token: String) =
+            intent {
+                withContext(Dispatchers.IO) {
+                    surveyRepository.getPastSurveyId(token).also {
+                        try {
+                            if (it?.data?.get("hasSurvey") as Boolean) {
+                                surveyRepository.generateResultsChart(token).also { generateResultsChartResponse ->
+                                    try {
+                                        val tid = floor(generateResultsChartResponse?.data?.get("tid") as Double).toLong()
+                                        reduce {
+                                            state.copy(pastSurveyId = tid)
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e(
+                                            "SurveyViewModel",
+                                            "Error when reading generateResultsChart survey ID as Long - ${generateResultsChartResponse?.data}",
+                                        )
+                                    }
                                 }
                             }
+                        } catch (e: Exception) {
+                            Log.e("SurveyViewModel", "Error when reading past survey ID as Long - ${it?.data?.get("surveyId")}")
                         }
-                    } catch (e: Exception) {
-                        Log.e("SurveyViewModel", "Error when reading past survey ID as Long - ${it?.data?.get("surveyId")}")
+                        reduce {
+                            state.copy(isPastSurveyFetched = true)
+                        }
                     }
-                    _state.update { it.copy(isPastSurveyFetched = true) }
                 }
             }
-        }
 
-        fun setIsPastSurveyFetched(value: Boolean) {
-            _state.update { it.copy(isPastSurveyFetched = value) }
-        }
+        fun setIsPastSurveyFetched(value: Boolean) =
+            intent {
+                reduce {
+                    state.copy(isPastSurveyFetched = value)
+                }
+            }
 
         fun getSurveyId(
             token: String?,
             toCategoryListScreen: (Long) -> Unit,
             isSignInSkipped: () -> Boolean,
             onError: () -> Unit,
-        ) {
-            if (AppConstants.MANAGE_USERS_INTERNALLY) {
-                toCategoryListScreen(DebugConstants.SAMPLE_SURVEY_ID)
-            } else if (AppConstants.ALLOW_OFFLINE_BYPASS_FOR_SIGN_IN_SKIP && isSignInSkipped()) {
-                _state.update { it.copy(pastSurveyId = DebugConstants.SAMPLE_SURVEY_ID) }
-                toCategoryListScreen(DebugConstants.SAMPLE_SURVEY_ID)
-            } else {
-                viewModelScope.launch(Dispatchers.IO) {
-                    // 서버에 보낼 data 정보
-                    val currentState = _state.value
-                    val response =
-                        surveyRepository.sendSurveyData(
-                            token = token,
-                            SendSurveyDataRequest(
-                                age =
-                                    when (currentState.age) {
-                                        SurveyAge.First -> 1
-                                        SurveyAge.Second -> 2
-                                        SurveyAge.Third -> 4
-                                        SurveyAge.Fourth -> 5
-                                        SurveyAge.Fifth -> 6
-                                        SurveyAge.Sixth -> 7
-                                        SurveyAge.Seventh -> 8
-                                        else -> 9
-                                    },
-                                gender =
-                                    when (currentState.sex) {
-                                        SurveySex.Man -> "M"
-                                        else -> "W"
-                                    },
-                                glasses =
-                                    when (currentState.glass) {
-                                        SurveyGlass.Yes -> true
-                                        else -> false
-                                    },
-                                surgery =
-                                    when (currentState.surgery) {
-                                        SurveySurgery.Normal -> "normal"
-                                        SurveySurgery.LASIK -> "correction"
-                                        SurveySurgery.Cataract -> "cataract"
-                                        else -> "etc"
-                                    },
-                                diabetes =
-                                    when (currentState.diabetes) {
-                                        SurveyDiabetes.Yes -> true
-                                        else -> false
-                                    },
-                                pid = surveyRepository.getLocationId(),
-                            ),
-                        )
-                    // 로그인 tid 가져오기
-                    if (response != null) {
-                        withContext(Dispatchers.IO) {
-                            if (token != null) {
-                                surveyRepository.getPastSurveyId(token)
-                                    .also { getPastSurveyIdResponse ->
-                                        try {
-                                            if (getPastSurveyIdResponse?.data?.get("hasSurvey") as Boolean) {
-                                                surveyRepository.generateResultsChart(token)
-                                                    .also { generateResultsChartResponse ->
-                                                        try {
-                                                            val tid =
-                                                                floor(
-                                                                    generateResultsChartResponse?.data?.get(
-                                                                        "tid",
-                                                                    ) as Double,
-                                                                ).toLong()
-                                                            _state.update { it.copy(pastSurveyId = tid) }
-                                                            withContext(Dispatchers.Main) {
-                                                                toCategoryListScreen(tid)
+        ) =
+            intent {
+                if (AppConstants.MANAGE_USERS_INTERNALLY) {
+                    toCategoryListScreen(DebugConstants.SAMPLE_SURVEY_ID)
+                } else if (AppConstants.ALLOW_OFFLINE_BYPASS_FOR_SIGN_IN_SKIP && isSignInSkipped()) {
+                    reduce {
+                        state.copy(pastSurveyId = DebugConstants.SAMPLE_SURVEY_ID)
+                    }
+                    toCategoryListScreen(DebugConstants.SAMPLE_SURVEY_ID)
+                } else {
+                    withContext(Dispatchers.IO) {
+                        // 서버에 보낼 data 정보
+                        val currentState = state
+                        val response =
+                            surveyRepository.sendSurveyData(
+                                token = token,
+                                SendSurveyDataRequest(
+                                    age =
+                                        when (currentState.age) {
+                                            SurveyAge.First -> 1
+                                            SurveyAge.Second -> 2
+                                            SurveyAge.Third -> 4
+                                            SurveyAge.Fourth -> 5
+                                            SurveyAge.Fifth -> 6
+                                            SurveyAge.Sixth -> 7
+                                            SurveyAge.Seventh -> 8
+                                            else -> 9
+                                        },
+                                    gender =
+                                        when (currentState.sex) {
+                                            SurveySex.Man -> "M"
+                                            else -> "W"
+                                        },
+                                    glasses =
+                                        when (currentState.glass) {
+                                            SurveyGlass.Yes -> true
+                                            else -> false
+                                        },
+                                    surgery =
+                                        when (currentState.surgery) {
+                                            SurveySurgery.Normal -> "normal"
+                                            SurveySurgery.LASIK -> "correction"
+                                            SurveySurgery.Cataract -> "cataract"
+                                            else -> "etc"
+                                        },
+                                    diabetes =
+                                        when (currentState.diabetes) {
+                                            SurveyDiabetes.Yes -> true
+                                            else -> false
+                                        },
+                                    pid = surveyRepository.getLocationId(),
+                                ),
+                            )
+                        // 로그인 tid 가져오기
+                        if (response != null) {
+                            withContext(Dispatchers.IO) {
+                                if (token != null) {
+                                    surveyRepository.getPastSurveyId(token)
+                                        .also { getPastSurveyIdResponse ->
+                                            try {
+                                                if (getPastSurveyIdResponse?.data?.get("hasSurvey") as Boolean) {
+                                                    surveyRepository.generateResultsChart(token)
+                                                        .also { generateResultsChartResponse ->
+                                                            try {
+                                                                val tid =
+                                                                    floor(
+                                                                        generateResultsChartResponse?.data?.get(
+                                                                            "tid",
+                                                                        ) as Double,
+                                                                    ).toLong()
+                                                                reduce {
+                                                                    state.copy(pastSurveyId = tid)
+                                                                }
+                                                                withContext(Dispatchers.Main) {
+                                                                    toCategoryListScreen(tid)
+                                                                }
+                                                            } catch (e: Exception) {
+                                                                Log.e(
+                                                                    "SurveyViewModel",
+                                                                    "Error when reading generateResultsChart survey ID as Long - ${generateResultsChartResponse?.data}",
+                                                                )
+                                                                onError()
                                                             }
-                                                        } catch (e: Exception) {
-                                                            Log.e(
-                                                                "SurveyViewModel",
-                                                                "Error when reading generateResultsChart survey ID as Long - ${generateResultsChartResponse?.data}",
-                                                            )
-                                                            onError()
                                                         }
-                                                    }
+                                                }
+                                            } catch (e: Exception) {
+                                                Log.e(
+                                                    "SurveyViewModel",
+                                                    "Token does not exist - ${getPastSurveyIdResponse?.data}",
+                                                )
+                                                onError()
                                             }
-                                        } catch (e: Exception) {
-                                            Log.e(
-                                                "SurveyViewModel",
-                                                "Token does not exist - ${getPastSurveyIdResponse?.data}",
-                                            )
-                                            onError()
                                         }
+                                } else {
+                                    try {
+                                        val tid = floor(response?.data?.get("tid") as Double).toLong()
+                                        reduce {
+                                            state.copy(pastSurveyId = tid)
+                                        }
+                                        withContext(Dispatchers.Main) {
+                                            toCategoryListScreen(tid)
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e(
+                                            "SurveyViewModel",
+                                            "Error when reading sendSurveyData survey ID as Long - ${response?.data}",
+                                        )
+                                        onError()
                                     }
-                            } else {
-                                try {
-                                    val tid = floor(response?.data?.get("tid") as Double).toLong()
-                                    _state.update { it.copy(pastSurveyId = tid) }
-                                    withContext(Dispatchers.Main) {
-                                        toCategoryListScreen(tid)
-                                    }
-                                } catch (e: Exception) {
-                                    Log.e(
-                                        "SurveyViewModel",
-                                        "Error when reading sendSurveyData survey ID as Long - ${response?.data}",
-                                    )
-                                    onError()
                                 }
                             }
+                        } else {
+                            onError()
                         }
-                    } else {
-                        onError()
                     }
                 }
             }
-        }
 
         init {
             initSurveyData()

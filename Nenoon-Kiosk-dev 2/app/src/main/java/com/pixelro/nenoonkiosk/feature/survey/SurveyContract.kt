@@ -6,7 +6,7 @@ import com.pixelro.nenoonkiosk.feature.survey.model.SurveyGlass
 import com.pixelro.nenoonkiosk.feature.survey.model.SurveySex
 import com.pixelro.nenoonkiosk.feature.survey.model.SurveySurgery
 
-data class SurveyState(
+data class SurveyUiState(
     val currentQuestion: QuestionType = QuestionType.Age,
     val age: SurveyAge = SurveyAge.None,
     val sex: SurveySex = SurveySex.None,
@@ -53,4 +53,9 @@ enum class SurveyScreenState {
     Loading,
     InProgress,
     Error,
+}
+
+sealed interface SurveySideEffect {
+    data class NavigateToCategoryList(val tid: Long) : SurveySideEffect
+    data object ShowError : SurveySideEffect
 }
