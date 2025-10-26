@@ -94,6 +94,7 @@ constructor(
         loadRegisteredFacesFromPrefs()
     }
 
+    // LoginViewModel
     private fun loadRegisteredFacesFromPrefs() {
         registeredFaces = SharedPreferencesManager.getRegisteredFaceEmbeddings().toMutableMap()
         Log.d(
@@ -102,16 +103,22 @@ constructor(
         )
     }
 
+    // SurveyViewModel
+    // AccountManagementViewModel
     fun isUserSignInSkipped(): Boolean {
         return _userId.value == AppConstants.DEFAULT_USER_ID && _isUserSignedIn.value
     }
 
+    // LoginViewModel
     override fun onCleared() {
         super.onCleared()
         _lastDetectedFaceBitmap.value?.recycle()
         _lastDetectedFaceBitmap.value = null
     }
 
+    // FaceEnrollmentViewModel
+    // FaceUpdateViewModel
+    // LoginViewModel
     fun resetFaceEnrollmentData() {
         _faceDetectionStatus.update { StringProvider.getString(R.string.signin_vm_face_detection_status_looking) }
         _isProcessingFace.update { false }
@@ -122,6 +129,7 @@ constructor(
         tempFaceEmbedding = null
     }
 
+    // ???
     fun resetAllViewModelData() {
         _userId.update { null }
         _isLocationSignedIn.update { false }
@@ -131,6 +139,7 @@ constructor(
         tempAccessToken = null
     }
 
+    // Signin???
     fun resetUserData() {
         _userId.update { null }
         _isUserSignedIn.update { false }
@@ -139,10 +148,12 @@ constructor(
         tempAccessToken = null
     }
 
+    // LoginViewModel
     fun clearQrCode() {
         _accountQrCode.update { null }
     }
 
+    // UserSignUpViewModel
     fun validatePassword(password: String): String? {
         return if (password.length < 8 || password.length > 32) {
             StringProvider.getString(R.string.signin_vm_validation_password_length)
@@ -151,6 +162,7 @@ constructor(
         }
     }
 
+    // UserSignUpViewModel
     fun validateConfirmPassword(
         password: String,
         confirmPassword: String,
@@ -162,6 +174,8 @@ constructor(
         }
     }
 
+    // UserSignUpViewModel
+    // LoginViewModel
     fun validateEmail(email: String): String? {
         return if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             StringProvider.getString(R.string.signin_vm_validation_email_invalid)
@@ -170,6 +184,8 @@ constructor(
         }
     }
 
+    // QRSignInViewModel
+    // IdPaassword
     suspend fun userSignIn(
         id: String,
         password: String,
@@ -229,11 +245,13 @@ constructor(
         }
     }
 
+    // 자동로그인 로직
     fun userSignInSkip() {
         _isUserSignedIn.update { true }
         _userId.update { AppConstants.DEFAULT_USER_ID }
     }
 
+    // 위치로그인 로직
     suspend fun locationSignIn(
         id: String,
         password: String,
@@ -270,6 +288,7 @@ constructor(
         }
     }
 
+    // 위치 로그인 로직
     @OptIn(UnstableApi::class)
     fun locationSignInSkip(updateIsSignedIn: (Boolean) -> Unit) {
         _isLocationSignedIn.update { true }
@@ -284,6 +303,7 @@ constructor(
         }
     }
 
+    // SignUpViewModel
     suspend fun userSignUp(
         id: String,
         password: String,
@@ -349,6 +369,7 @@ constructor(
         return signUpResult
     }
 
+    // LoginViewModel
     fun validateLocationSignIn(
         id: String,
         password: String,
@@ -356,6 +377,7 @@ constructor(
         return !(id.isBlank() || password.isBlank())
     }
 
+    // LoginViewModel
     fun validateUserSignIn(
         id: String,
         password: String,
@@ -363,6 +385,7 @@ constructor(
         return !(id.isBlank() || password.isBlank())
     }
 
+    // 유저 로그아웃
     fun userSignOut() {
         viewModelScope.launch {
             SharedPreferencesManager.clearCompoundTestResult(AppConstants.DEFAULT_USER_ID)
@@ -373,6 +396,7 @@ constructor(
         }
     }
 
+    // SettingViewModel
     fun locationSignOut() {
         viewModelScope.launch {
             signInRepository.locationSignOut()
@@ -381,15 +405,21 @@ constructor(
         }
     }
 
+    // FaceEnrollmentViewModel
+    // FaceUpdateViewModel
     fun clearEnrollmentMessage() {
         _enrollmentMessage.update { null }
         _enrollmentSuccess.update { false }
     }
 
+    // FaceEnrollmentViewModel
+    // FaceUpdateViewModel
     fun updateFaceDetectionStatus(status: String) {
         _faceDetectionStatus.update { status }
     }
 
+    // FaceEnrollmentViewModel
+    // FaceUpdateViewModel
     fun processFaceForEmbeddingAndStoreTemporarily(faceBitmap: Bitmap) {
         if (_isProcessingFace.value) {
             faceBitmap.recycle()
@@ -439,7 +469,7 @@ constructor(
         }
     }
 
-    // FaceIdSingin Screen
+    // FaceIdSignInViewModel
     suspend fun userSignInWithFace(
         faceBitmap: Bitmap,
         updateIsSignedIn: (Boolean) -> Unit,
@@ -556,7 +586,7 @@ constructor(
     }
 
 
-    // Face Enrollment
+    // Face Enrollment ViewModel
     suspend fun updateFace(userId: String? = null): Boolean {
         if (tempFaceEmbedding != null) {
             if (AppConstants.MANAGE_USERS_INTERNALLY) {
@@ -598,6 +628,7 @@ constructor(
         return false
     }
 
+    // LoginViewModel
     suspend fun generateQrCode(
         id: String,
         password: String,
@@ -616,6 +647,8 @@ constructor(
         return bitmap
     }
 
+    // AccountManagementViewModel
+    // SignUpViewModel
     fun generateAndPrintQrCode(
         id: String,
         password: String,
@@ -629,6 +662,7 @@ constructor(
         }
     }
 
+    // AccountManagementViewModel
     fun printQrCode(qrCode: Bitmap?) {
         if (qrCode != null) {
             printQrCodeInternal(qrCode)
@@ -646,6 +680,7 @@ constructor(
         }
     }
 
+    // LoginViewModel
     private fun printQrCodeInternal(qrCodeImageBitmap: Bitmap) {
         val printerInfo = PrinterManager.getPrinterInfo()
         val printerType = printerInfo.first

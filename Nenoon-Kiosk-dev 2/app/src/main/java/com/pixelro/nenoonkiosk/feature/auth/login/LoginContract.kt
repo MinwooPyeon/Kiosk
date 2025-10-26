@@ -21,7 +21,6 @@ data class LoginUiState(
 // SideEffect 정의
 sealed interface LoginSideEffect {
     data class ShowToast(val message: String) : LoginSideEffect
-    data class NavigateTo(val route: String) : LoginSideEffect
     data class UpdateSignInStatus(val isSignedIn: Boolean) : LoginSideEffect
     data object PrintQrCode : LoginSideEffect
     data class ValidationError(val error: String) : LoginSideEffect
