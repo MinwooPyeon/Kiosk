@@ -19,11 +19,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
+import com.pixelro.nenoonkiosk.ui.theme.LightGray
+import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
+import com.pixelro.nenoonkiosk.ui.theme.buttonTextStyle
+import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
+/**
+ * 기본 버튼 컴포넌트
+ *
+ * @param onClick 클릭 이벤트
+ * @param modifier Modifier
+ * @param enabled 활성화 여부
+ * @param text 버튼에 표시될 텍스트
+ */
 @Composable
 fun PrimaryButton(
     onClick: () -> Unit,
@@ -33,8 +46,8 @@ fun PrimaryButton(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
-    val primaryColor = colorResource(R.color.main)
-    val disabledColor = colorResource(R.color.disabled)
+    val primaryColor = neNoon_blue
+    val disabledColor = LightGray
 
     val context = LocalContext.current
     val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
@@ -48,11 +61,11 @@ fun PrimaryButton(
             modifier
                 .border(
                     border = BorderStroke(2.dp, primaryColor),
-                    shape = RoundedCornerShape(8.dp),
+                    shape = RoundedCornerShape(10.dp),
                 )
                 .fillMaxWidth()
                 .height(100.dp),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(10.dp),
         colors =
             ButtonDefaults.buttonColors(
                 backgroundColor = if (isPressed) Color.White else primaryColor,
@@ -63,9 +76,42 @@ fun PrimaryButton(
     ) {
         Text(
             text = text,
-            fontSize = if (savedLanguage == "en") 32.sp else 40.sp,
-            fontWeight = FontWeight.Bold,
+            style = buttonTextStyle,
             color = if (!isPressed) Color.White else primaryColor,
+        )
+    }
+}
+
+@Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
+@Composable
+private fun PrimaryButtonPreview1() {
+    NenoonKioskTheme {
+        PrimaryButton(
+            onClick = {},
+            text = "가로 모드",
+        )
+    }
+}
+
+@Preview(showBackground = true, device = "spec:width=800dp,height=1280dp,dpi=240")
+@Composable
+private fun PrimaryButtonPreview2() {
+    NenoonKioskTheme {
+        PrimaryButton(
+            onClick = {},
+            text = "세로 모드",
+        )
+    }
+}
+
+@Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
+@Composable
+private fun PrimaryButtonDisabledPreview() {
+    NenoonKioskTheme {
+        PrimaryButton(
+            onClick = {},
+            text = "비활성화",
+            enabled = false,
         )
     }
 }
