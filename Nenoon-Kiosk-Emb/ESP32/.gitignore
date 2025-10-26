@@ -1,17 +1,17 @@
 # ESP-IDF build artifacts
-build/
-sdkconfig
-sdkconfig.old
+*/build/
+*/sdkconfig
+*/sdkconfig.old
 
 # IDE-specific files (e.g., VS Code)
-.vscode/
+*/.vscode/
 
 # Python virtual environments
-.venv/
-venv/
+*/.venv/
+*/venv/
 
 # Python bytecode
-__pycache__/
+*/__pycache__/
 *.pyc
 
 # Other common temporary files
