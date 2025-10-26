@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;nenoon_esp/main/include/wifi_mgr&apos; to &apos;wifi_mgr.h&apos;" description="Rename resource &apos;wifi_mgr&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="main/include/wifi_mgr" name="wifi_mgr.h" stamp="1761483981262" updateReferences="true"/>
+</session>
