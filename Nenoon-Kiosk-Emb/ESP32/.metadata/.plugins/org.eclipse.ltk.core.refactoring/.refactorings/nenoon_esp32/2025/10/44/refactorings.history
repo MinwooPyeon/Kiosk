@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;nenoon_esp/main/include/wifi_mgr&apos; to &apos;wifi_mgr.h&apos;" description="Rename resource &apos;wifi_mgr&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="main/include/wifi_mgr" name="wifi_mgr.h" stamp="1761483981262" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;nenoon_esp32/main/include/cent_store.h&apos; to &apos;cert_store.h&apos;" description="Rename resource &apos;cent_store.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="main/include/cent_store.h" name="cert_store.h" stamp="1761484428114" updateReferences="true"/>
-</session>
