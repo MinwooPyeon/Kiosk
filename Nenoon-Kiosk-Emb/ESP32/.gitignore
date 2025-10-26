@@ -1,20 +1,56 @@
-# ESP-IDF build artifacts
-*/build/
-*/sdkconfig
-*/sdkconfig.old
+# ===== OS 공통 잡파일 =====
+.DS_Store
+Thumbs.db
 
-# IDE-specific files (e.g., VS Code)
-*/.vscode/
+# ===== 에디터/IDE =====
+.vscode/
+.idea/
+.project
+.cproject
+.settings/
+.metadata/
 
-# Python virtual environments
-*/.venv/
-*/venv/
-
-# Python bytecode
-*/__pycache__/
+# ===== Python / 도구 캐시 =====
+__pycache__/
 *.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.cache/
+.venv/
+venv/
+env/
 
-# Other common temporary files
+# ===== ESP-IDF: 모든 하위 프로젝트에 공통 적용 =====
+# (여러 프로젝트를 워크스페이스에서 함께 관리할 때 유용)
+**/build/
+**/CMakeFiles/
+**/CMakeCache.txt
+**/cmake_install.cmake
+**/project_description.json
+**/compile_commands.json
+**/flash_args
+**/flash_project_args
+**/*.bin
+**/*.elf
+**/*.map
+
+# Component Manager 산출물
+**/managed_components/
+# (dependencies.lock은 팀 빌드 재현성을 위해 커밋 권장)
+# !**/dependencies.lock
+
+# sdkconfig 정책: 현재 값은 커밋, old만 무시
+**/sdkconfig.old
+!**/sdkconfig
+
+# ===== 기타 =====
 *.log
-*.tmp
-*.bak
+*.swp
+*.swo
+tags
+
+# --- 선택: clang/분석 도구 ---
+.clangd
+# .clang-format   # 팀 규칙이면 커밋 권장
+# .clang-tidy     # 사용 시 커밋 권장
