@@ -1,0 +1,35 @@
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_log.h"
+#include "nvs_flash.h"
+#include "esp_netif.h"
+#include "esp_event.h"
+
+#include "wifi_mgr/wifi_mgr.h"
+#include "uart_link/uart_link.h"
+
+static const char* TAG = "app";
+
+void app_main(void) {
+    // 필수 초기화
+    ESP_ERROR_CHECK(nvs_flash_init());
+    ESP_ERROR_CHECK(esp_netif_init());
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
+
+    // Wi-Fi 연결
+    wifi_config_t cfg = {0};
+    // 필요시 SSID/PASS 설정 API 제공(예: wifi_set_creds)
+    wifi_init(&cfg);                                // PDF: wifi_mgr 역할. :contentReference[oaicite:12]{index=12}
+    bool ok = wifi_wait_connected(pdMS_TO_TICKS(10000));
+    ESP_LOGI(TAG, "wifi %s", ok ? "connected" : "connect timeout");
+
+    // STM32와 UART 링크
+    // (핀/속도는 보드에 맞춰 수정)
+    uart_link_init(/*tx=*/17, /*rx=*/16, /*baud=*/115200); // PDF: uart_link API. :contentReference[oaicite:13]{index=13}
+
+    // 메인 루프(데모)
+    while (1) {
+        ESP_LOGI(TAG, "tick");
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+}

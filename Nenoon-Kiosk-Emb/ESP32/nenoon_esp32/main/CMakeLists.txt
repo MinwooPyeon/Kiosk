@@ -1,10 +1,18 @@
-# See the build system documentation in IDF programming guide
-# for more information about component CMakeLists.txt files.
-
 idf_component_register(
-    SRCS main.c         # list the source files of this component
-    INCLUDE_DIRS        # optional, add here public include directories
-    PRIV_INCLUDE_DIRS   # optional, add here private include directories
-    REQUIRES            # optional, list the public requirements (component names)
-    PRIV_REQUIRES       # optional, list the private requirements
+  SRCS
+    "app_main.c"
+    "src/wifi_mgr/wifi_mgr.c"
+    "src/uart_link/uart_link.c"
+    "src/http_srv/http_srv.c"
+    "src/auth_adapter/auth_adapter.c"
+    "src/cert_store/cert_store.c"
+    "src/ratelimit/ratelimit.c"
+    "src/metrics/metrics.c"
+    "src/proto/frame.c"
+  INCLUDE_DIRS
+    "include"
+  REQUIRES
+    esp_wifi esp_netif nvs_flash esp_event
+    esp_http_client esp_https_ota
+    driver
 )
