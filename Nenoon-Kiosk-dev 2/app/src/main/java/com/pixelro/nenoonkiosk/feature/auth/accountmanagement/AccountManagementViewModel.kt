@@ -26,11 +26,13 @@ import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 import androidx.core.graphics.set
 import androidx.core.graphics.createBitmap
+import com.pixelro.nenoonkiosk.core.navigation.Navigator
 
 @HiltViewModel
 class AccountManagementViewModel @Inject constructor(
     private val application: Application,
-    private val signInRepository: SignInRepository
+    private val signInRepository: SignInRepository,
+    private val navigator: Navigator
 ) : ViewModel(), ContainerHost<AccountManagementState, AccountManagementSideEffect> {
 
     override val container: Container<AccountManagementState, AccountManagementSideEffect> =

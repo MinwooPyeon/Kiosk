@@ -1,5 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.auth.faceenrollment
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -90,7 +91,7 @@ fun FaceEnrollmentRoute(
 @Composable
 fun FaceEnrollmentScreen(
     state: FaceEnrollmentState,
-    onFaceDetected: (android.graphics.Bitmap) -> Unit,
+    onFaceDetected: (Bitmap) -> Unit,
     onDetectionStatus: (String) -> Unit,
     onEnrollFaceClick: () -> Unit,
     onBackClick: () -> Unit,
