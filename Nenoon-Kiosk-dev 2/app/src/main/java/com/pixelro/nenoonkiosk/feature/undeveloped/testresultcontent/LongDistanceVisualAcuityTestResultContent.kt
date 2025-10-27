@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.testresultcontent
+package com.pixelro.nenoonkiosk.feature.undeveloped.testresultcontent
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController

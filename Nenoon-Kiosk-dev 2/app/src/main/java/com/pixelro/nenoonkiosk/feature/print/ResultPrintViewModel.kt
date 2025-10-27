@@ -55,7 +55,6 @@ class ResultPrintViewModel
     ) : AndroidViewModel(application) {
         suspend fun getCompoundTestResult(token: String): List<CompoundTestResultAPI> {
             val data = testResultRepository.getCompoundTestResult(token)
-            Log.d("HHHHHHHHHHH", "$data")
             return data?.data?.results?.sortedByDescending { it.createAt } ?: emptyList()
         }
 

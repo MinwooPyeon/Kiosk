@@ -57,14 +57,15 @@ import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ManagementScre
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
 import com.pixelro.nenoonkiosk.feature.iotdevice.BTDeviceManagementScreen
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripManagmentScreen
+import com.pixelro.nenoonkiosk.feature.print.ResultPrintRoute
 import com.pixelro.nenoonkiosk.feature.print.ResultPrintScreen
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverScreen
 import com.pixelro.nenoonkiosk.feature.splash.SplashScreen
 import com.pixelro.nenoonkiosk.feature.inspection.strabismus.AppNavigation
 import com.pixelro.nenoonkiosk.feature.survey.SurveyScreen
 import com.pixelro.nenoonkiosk.feature.termsofservice.base.TermsOfServiceRoute
-import com.pixelro.nenoonkiosk.feature.testcontent.ChildrenVisualAcuityTestContent
-import com.pixelro.nenoonkiosk.feature.testcontent.LongDistanceVisualAcuityTestContent
+import com.pixelro.nenoonkiosk.feature.undeveloped.testcontent.ChildrenVisualAcuityTestContent
+import com.pixelro.nenoonkiosk.feature.undeveloped.testcontent.LongDistanceVisualAcuityTestContent
 import com.pixelro.nenoonkiosk.feature.undeveloped.AdminPageScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.ContactScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.EntriesScreen
@@ -784,7 +785,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            ResultPrintScreen(
+            ResultPrintRoute(
                 surveyId = viewModel.surveyId.collectAsState().value,
                 qrCode = loginViewModel.accountQrCode.collectAsState().value,
                 navController = navController,
