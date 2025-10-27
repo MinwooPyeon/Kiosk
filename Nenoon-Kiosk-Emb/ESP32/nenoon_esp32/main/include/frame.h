@@ -10,6 +10,7 @@
  *   [6..]   PAYLOAD (LEN bytes)
  *   [...]   CRC16-CCITT (0x1021, init 0xFFFF) over bytes [2..(5+LEN)]
  *            i.e., VER|TYPE|LEN|PAYLOAD  (MAGIC 제외)
+ * 
  *  Created on: 2025. 10. 26.
  *  Updated on: 2025. 10. 27.
  *      Author: Park Joo Hyun
@@ -52,7 +53,18 @@ typedef struct{
     size_t      scan;
 }frame_parser_t;
 
-void        frame_parser_init(frame_parser_t* p);
-void        frame_parser_feed(frame_parser_t* p, const uint8_t* data, size_t n, frame_t* out, size_t* consumed);
-uint16_t    frame_crc16_ccitt(const uint8_t* data, size_t len);
+typedef enum {
+    FP_EMIT = 0,            // out 프레임 1개 완성됨 (정상)
+    FP_MORE,                // 더 많은 입력 필요 (정상 대기)
+    FP_RESYNC_MAGIC,        // MAGIC 동기화 중(노이즈 드롭 후 재시도)
+    FP_RESYNC_VERSION,      // 버전 불일치 → 1바이트 드롭 후 재동기화
+    FP_RESYNC_LEN_OOB,      // LEN 상한 초과 → 1바이트 드롭 후 재동기화
+    FP_RESYNC_CRC_FAIL,     // CRC 불일치 → 1바이트 드롭 후 재동기화
+    FP_OVERFLOW,            // 내부 버퍼 가득 참 (입력 일부/전부 미수용)
+    FP_ARG_ERROR            // 잘못된 인자
+} frame_parse_status_t;
+
+void                    frame_parser_init(frame_parser_t* p);
+frame_parse_status_t    frame_parser_feed(frame_parser_t* p, const uint8_t* data, size_t n, frame_t* out, size_t* consumed);
+uint16_t                frame_crc16_ccitt(const uint8_t* data, size_t len);
 #endif /* MAIN_INCLUDE_FRAME_H_ */
