@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
@@ -36,114 +37,122 @@ import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
-fun FaceIdLoginScreen(
-    loginViewModel: LoginViewModel,
+fun FaceIdLoginRoute(
     navController: NavController,
     updateIsSignedIn: (Boolean) -> Unit,
+    viewModel: FaceIdLoginViewModel = hiltViewModel()
 ) {
-    val faceRecognitionStatus by loginViewModel.faceDetectionStatus.collectAsState()
-    val isProcessingFace by loginViewModel.isProcessingFace.collectAsState()
-    val isSignedIn by loginViewModel.isUserSignedIn.collectAsState()
+    val state = viewModel.collectAsState().value
 
-    var liveFaceDetectionStatus by remember { mutableStateOf("") }
-    var attemptsLeft by remember { mutableStateOf(AppConstants.FACE_ID_MAX_ATTEMPTS) }
-    val coroutineScope = rememberCoroutineScope()
-    var previousAttemptTime by remember { mutableStateOf(System.currentTimeMillis()) }
-
-    LaunchedEffect(Unit) {
-        coroutineScope.launch(Dispatchers.Main) {
-            delay(30000)
-            updateIsSignedIn(false)
-        }
-    }
-
-    LaunchedEffect(attemptsLeft) {
-        if (attemptsLeft <= 0) {
-            coroutineScope.launch(Dispatchers.Main) {
-                delay(3000)
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is FaceIdLoginSideEffect.ShowToast -> {
+                // 토스트 표시 처리
+            }
+            is FaceIdLoginSideEffect.LoginSuccess -> {
+                updateIsSignedIn(true)
+            }
+            is FaceIdLoginSideEffect.LoginFailed -> {
+                // 실패 처리
+            }
+            is FaceIdLoginSideEffect.MaxAttemptsReached -> {
                 updateIsSignedIn(false)
+            }
+            is FaceIdLoginSideEffect.NavigateBack -> {
+                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
             }
         }
     }
 
+    LaunchedEffect(Unit) {
+        delay(30000)
+        updateIsSignedIn(false)
+    }
+
+    FaceIdLoginScreen(
+        state = state,
+        onFaceDetected = { faceBitmap ->
+            if (!state.isProcessingFace && state.attemptsLeft > 0 && viewModel.canAttemptSignIn()) {
+                viewModel.signInWithFace(faceBitmap)
+            } else {
+                faceBitmap.recycle()
+            }
+        },
+        onDetectionStatus = { status ->
+            viewModel.updateFaceDetectionStatus(status)
+        },
+        onBackClick = {
+            viewModel.navigateBack()
+        }
+    )
+}
+
+@Composable
+fun FaceIdLoginScreen(
+    state: FaceIdLoginState,
+    onFaceDetected: (android.graphics.Bitmap) -> Unit,
+    onDetectionStatus: (String) -> Unit,
+    onBackClick: () -> Unit
+) {
     Column(
-        modifier =
-            Modifier
-                .padding(40.dp)
-                .fillMaxSize(),
+        modifier = Modifier
+            .padding(40.dp)
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         StyledText(
-            StringProvider.getString(R.string.face_id_sign_in_title),
+            StringProvider.getString(R.string.faceid_signin_title),
             style = TextStyle.Title,
             textAlign = TextAlign.Center,
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 40.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 40.dp),
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier =
-                Modifier
-                    .fillMaxWidth(0.7f)
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(16.dp))
-                    .align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(16.dp))
+                .align(Alignment.CenterHorizontally),
         ) {
             CameraPreview(
                 modifier = Modifier.fillMaxSize(),
-                onFaceDetected = { faceBitmap ->
-                    if (!isProcessingFace && !isSignedIn && attemptsLeft > 0 &&
-                        System.currentTimeMillis() - previousAttemptTime > AppConstants.FACE_ID_INTERVAL
-                    ) {
-                        previousAttemptTime = System.currentTimeMillis()
-                        coroutineScope.launch(Dispatchers.Main) {
-                            loginViewModel.userSignInWithFace(faceBitmap, updateIsSignedIn).also { success ->
-                                if (success) {
-                                    delay(3000)
-                                    updateIsSignedIn(true)
-                                }
-                            }
-                        }
-                        attemptsLeft--
-                    } else {
-                        faceBitmap.recycle()
-                    }
-                },
-                onDetectionStatus = { status ->
-                    liveFaceDetectionStatus = status
-                },
+                onFaceDetected = onFaceDetected,
+                onDetectionStatus = onDetectionStatus,
             )
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
-        if (attemptsLeft > 0) StyledText(liveFaceDetectionStatus)
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        if (attemptsLeft > 0) {
-            StyledText(
-                faceRecognitionStatus + " (${AppConstants.FACE_ID_MAX_ATTEMPTS - attemptsLeft + 1}/${AppConstants.FACE_ID_MAX_ATTEMPTS})",
-            )
+        if (state.attemptsLeft > 0) {
+            StyledText(state.liveFaceDetectionStatus)
+            Spacer(modifier = Modifier.height(20.dp))
+            if (state.attemptsLeft < AppConstants.FACE_ID_MAX_ATTEMPTS) {
+                StyledText(
+                    "${state.faceDetectionStatus} (${AppConstants.FACE_ID_MAX_ATTEMPTS - state.attemptsLeft + 1}/${AppConstants.FACE_ID_MAX_ATTEMPTS})"
+                )
+            }
         } else {
-            StyledText(StringProvider.getString(R.string.signin_vm_face_no_match), TextStyle.Error)
+            StyledText(
+                StringProvider.getString(R.string.signin_vm_face_no_match),
+                TextStyle.Error
+            )
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
         PrimaryButton(
             text = StringProvider.getString(R.string.back),
-            onClick = {
-                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
-            },
+            onClick = onBackClick,
         )
     }
 }

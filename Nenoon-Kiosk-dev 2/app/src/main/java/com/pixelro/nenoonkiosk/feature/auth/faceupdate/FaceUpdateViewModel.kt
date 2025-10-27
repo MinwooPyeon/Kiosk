@@ -1,4 +1,168 @@
 package com.pixelro.nenoonkiosk.feature.auth.faceupdate
 
-class FaceUpdateViewModel {
+import android.app.Application
+import android.graphics.Bitmap
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import com.harang.data.repository.SignInRepository
+import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.core.constants.AppConstants
+import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.core.recognizer.FaceRecognizer
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.viewmodel.container
+import javax.inject.Inject
+
+@HiltViewModel
+class FaceUpdateViewModel @Inject constructor(
+    application: Application,
+    private val faceRecognizer: FaceRecognizer,
+    private val signInRepository: SignInRepository
+) : ViewModel(), ContainerHost<FaceUpdateState, FaceUpdateSideEffect> {
+
+    override val container: Container<FaceUpdateState, FaceUpdateSideEffect> =
+        container(
+            FaceUpdateState(
+                currentScreenStatus = StringProvider.getString(R.string.user_face_update_initial_status)
+            )
+        )
+
+    private var tempFaceEmbedding: FloatArray? = null
+    private var registeredFaces: MutableMap<String, FloatArray> = mutableMapOf()
+
+    init {
+        faceRecognizer.initialize(application)
+        loadRegisteredFaces()
+    }
+
+    private fun loadRegisteredFaces() {
+        registeredFaces = SharedPreferencesManager.getRegisteredFaceEmbeddings().toMutableMap()
+    }
+
+    fun resetFaceData() = intent {
+        reduce {
+            state.copy(
+                faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_detection_status_looking),
+                isProcessingFace = false,
+                lastDetectedFaceBitmap = null,
+                isFaceEnrollmentDataReady = false,
+                enrollmentMessage = null,
+                currentScreenStatus = StringProvider.getString(R.string.user_face_update_initial_status)
+            )
+        }
+        tempFaceEmbedding = null
+    }
+
+    fun updateFaceDetectionStatus(status: String) = intent {
+        reduce { state.copy(faceDetectionStatus = status) }
+        updateScreenStatus()
+    }
+
+    fun captureFace(faceBitmap: Bitmap) = intent {
+        if (state.isProcessingFace) {
+            faceBitmap.recycle()
+            return@intent
+        }
+
+        reduce {
+            state.copy(
+                isProcessingFace = true,
+                faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_processing)
+            )
+        }
+
+        try {
+            val embedding = withContext(Dispatchers.Default) {
+                faceRecognizer.getFaceEmbedding(faceBitmap)
+            }
+
+            if (embedding != null && !faceBitmap.isRecycled) {
+                tempFaceEmbedding = embedding
+
+                val oldBitmap = state.lastDetectedFaceBitmap
+                oldBitmap?.recycle()
+
+                reduce {
+                    state.copy(
+                        lastDetectedFaceBitmap = faceBitmap.config?.let {
+                            faceBitmap.copy(it, true)
+                        },
+                        isFaceEnrollmentDataReady = true
+                    )
+                }
+                Log.d("FaceUpdateVM", "Face captured successfully")
+            } else {
+                val oldBitmap = state.lastDetectedFaceBitmap
+                oldBitmap?.recycle()
+
+                reduce {
+                    state.copy(
+                        faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_processing),
+                        lastDetectedFaceBitmap = null,
+                        isFaceEnrollmentDataReady = false
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("FaceUpdateVM", "Error capturing face: ${e.message}", e)
+            reduce {
+                state.copy(
+                    faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_processing_error),
+                    isFaceEnrollmentDataReady = false
+                )
+            }
+        } finally {
+            reduce { state.copy(isProcessingFace = false) }
+            faceBitmap.recycle()
+            updateScreenStatus()
+        }
+    }
+
+    private fun updateScreenStatus() = intent {
+        val status = if (state.isFaceEnrollmentDataReady) {
+            StringProvider.getString(R.string.user_face_update_ready_status)
+        } else if (state.faceDetectionStatus.isEmpty()) {
+            StringProvider.getString(R.string.user_face_update_scan_prompt)
+        } else if (state.faceDetectionStatus.isNotEmpty()) {
+            state.faceDetectionStatus
+        } else {
+            StringProvider.getString(R.string.user_face_update_retry_scan)
+        }
+
+        reduce { state.copy(currentScreenStatus = status) }
+    }
+
+    suspend fun saveFaceUpdate(userId: String): Boolean {
+        if (tempFaceEmbedding == null) {
+            return false
+        }
+
+        return try {
+            if (AppConstants.MANAGE_USERS_INTERNALLY) {
+                registeredFaces[userId] = tempFaceEmbedding!!
+                SharedPreferencesManager.putRegisteredFaceEmbeddings(registeredFaces)
+                true
+            } else {
+                // 서버에 업데이트 로직
+                false
+            }
+        } catch (e: Exception) {
+            Log.e("FaceUpdateVM", "Error saving face update: ${e.message}", e)
+            false
+        }
+    }
+
+    fun navigateBack() = intent {
+        postSideEffect(FaceUpdateSideEffect.NavigateBack)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        container.stateFlow.value.lastDetectedFaceBitmap?.recycle()
+    }
 }

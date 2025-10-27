@@ -1,4 +1,187 @@
 package com.pixelro.nenoonkiosk.feature.auth.faceidlogin
 
-class FaceIdLoginViewModel {
+import android.app.Application
+import android.graphics.Bitmap
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import com.harang.data.repository.SignInRepository
+import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.core.constants.AppConstants
+import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.core.recognizer.FaceRecognizer
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.container
+import org.orbitmvi.orbit.viewmodel.container
+import javax.inject.Inject
+
+@HiltViewModel
+class FaceIdLoginViewModel @Inject constructor(
+    application: Application,
+    private val faceRecognizer: FaceRecognizer,
+    private val signInRepository: SignInRepository
+) : ViewModel(), ContainerHost<FaceIdLoginState, FaceIdLoginSideEffect> {
+
+    override val container: Container<FaceIdLoginState, FaceIdLoginSideEffect> =
+        container(FaceIdLoginState(
+            attemptsLeft = AppConstants.FACE_ID_MAX_ATTEMPTS
+        ))
+
+    private var registeredFaces: Map<String, FloatArray> = emptyMap()
+    private var previousAttemptTime: Long = 0L
+
+    init {
+        faceRecognizer.initialize(application)
+        loadRegisteredFaces()
+    }
+
+    private fun loadRegisteredFaces() {
+        registeredFaces = SharedPreferencesManager.getRegisteredFaceEmbeddings()
+        Log.d("FaceIdLoginVM", "Loaded ${registeredFaces.size} registered faces")
+    }
+
+    fun updateFaceDetectionStatus(status: String) = intent {
+        reduce { state.copy(liveFaceDetectionStatus = status) }
+    }
+
+    fun canAttemptSignIn(): Boolean {
+        val currentTime = System.currentTimeMillis()
+        return currentTime - previousAttemptTime >= AppConstants.FACE_ID_INTERVAL
+    }
+
+    fun signInWithFace(faceBitmap: Bitmap) = intent {
+        if (state.isProcessingFace || state.attemptsLeft <= 0) {
+            faceBitmap.recycle()
+            return@intent
+        }
+
+        if (!canAttemptSignIn()) {
+            faceBitmap.recycle()
+            return@intent
+        }
+
+        previousAttemptTime = System.currentTimeMillis()
+
+        reduce {
+            state.copy(
+                isProcessingFace = true,
+                faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_recognizing)
+            )
+        }
+
+        try {
+            val embedding = withContext(Dispatchers.Default) {
+                faceRecognizer.getFaceEmbedding(faceBitmap)
+            }
+
+            if (embedding == null) {
+                reduce {
+                    state.copy(
+                        faceDetectionStatus = StringProvider.getString(
+                            R.string.signin_vm_face_info_extraction_failed
+                        ),
+                        attemptsLeft = state.attemptsLeft - 1,
+                        isProcessingFace = false
+                    )
+                }
+                faceBitmap.recycle()
+
+                if (state.attemptsLeft <= 0) {
+                    postSideEffect(FaceIdLoginSideEffect.MaxAttemptsReached)
+                }
+                return@intent
+            }
+
+            // 서버 인증 또는 로컬 인증
+            val success = if (!AppConstants.MANAGE_USERS_INTERNALLY) {
+                authenticateWithServer(embedding)
+            } else {
+                authenticateLocally(embedding)
+            }
+
+            if (success) {
+                reduce {
+                    state.copy(
+                        faceDetectionStatus = StringProvider.getString(R.string.signin_vm_login_success),
+                        isProcessingFace = false
+                    )
+                }
+                delay(1500)
+                postSideEffect(FaceIdLoginSideEffect.LoginSuccess)
+            } else {
+                reduce {
+                    state.copy(
+                        faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_no_match),
+                        attemptsLeft = state.attemptsLeft - 1,
+                        isProcessingFace = false
+                    )
+                }
+
+                if (state.attemptsLeft <= 0) {
+                    postSideEffect(FaceIdLoginSideEffect.MaxAttemptsReached)
+                } else {
+                    postSideEffect(FaceIdLoginSideEffect.LoginFailed)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("FaceIdLoginVM", "Error during face sign in: ${e.message}", e)
+            reduce {
+                state.copy(
+                    faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_processing_error),
+                    attemptsLeft = state.attemptsLeft - 1,
+                    isProcessingFace = false
+                )
+            }
+
+            if (state.attemptsLeft <= 0) {
+                postSideEffect(FaceIdLoginSideEffect.MaxAttemptsReached)
+            }
+        } finally {
+            faceBitmap.recycle()
+        }
+    }
+
+    private suspend fun authenticateWithServer(embedding: FloatArray): Boolean {
+        return try {
+            val signedInUserData = signInRepository.userSignInWithFace(
+                embedding.contentToString(),
+                AppConstants.FACE_ID_THRESHOLD
+            )
+
+            if (signedInUserData?.accessToken != null) {
+                val newUserData = signInRepository.getUserProfile(signedInUserData.accessToken!!)
+                newUserData != null
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            Log.e("FaceIdLoginVM", "Server authentication failed: ${e.message}", e)
+            false
+        }
+    }
+
+    private fun authenticateLocally(embedding: FloatArray): Boolean {
+        var highestSimilarity = 0.0f
+        val recognitionThreshold = AppConstants.FACE_ID_THRESHOLD
+
+        for ((userId, storedEmbedding) in registeredFaces) {
+            val similarity = faceRecognizer.compareEmbeddings(embedding, storedEmbedding)
+            Log.d("FaceIdLoginVM", "Comparing with $userId: Similarity = $similarity")
+
+            if (similarity > highestSimilarity) {
+                highestSimilarity = similarity
+            }
+        }
+
+        return highestSimilarity >= recognitionThreshold
+    }
+
+    fun navigateBack() = intent {
+        postSideEffect(FaceIdLoginSideEffect.NavigateBack)
+    }
 }
