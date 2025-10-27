@@ -9,8 +9,16 @@ idf_component_register(
     "src/ratelimit.c"
     "src/metrics.c"
     "src/frame.c"
-  INCLUDE_DIRS "include"
+  INCLUDE_DIRS
+    "include"
   REQUIRES
-    freertos esp_system esp_wifi esp_netif nvs_flash esp_event
-    esp_http_client esp_https_ota driver
+    freertos
+    esp_system
+    esp_wifi
+    esp_netif
+    nvs_flash
+    esp_event
+    esp_http_client
+    esp_https_ota
+    driver
 )
