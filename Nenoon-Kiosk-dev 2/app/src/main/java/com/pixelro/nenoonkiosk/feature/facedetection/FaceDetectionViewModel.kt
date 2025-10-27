@@ -8,8 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +23,13 @@ class FaceDetectionViewModel
     constructor(
         application: Application,
     ) : AndroidViewModel(application) {
+
+        private val _state = MutableStateFlow(FaceDetectionContract.State())
+        val state: StateFlow<FaceDetectionContract.State> = _state.asStateFlow()
+
+        private val _effect = MutableSharedFlow<FaceDetectionContract.Effect>()
+        val effect = _effect.asSharedFlow()
+
         private val _screenToFaceDistance = MutableStateFlow(0f)
         val screenToFaceDistance: StateFlow<Float> = _screenToFaceDistance
         private val _inputImageSizeX = MutableStateFlow(1088f)
@@ -94,6 +104,67 @@ class FaceDetectionViewModel
 
         fun updateIsPressStartButtonTTSDone(isDone: Boolean) {
             _isPressStartButtonTTSDone.update { isDone }
+        }
+
+        fun processIntent(intent: FaceDetectionContract.Intent) {
+            when (intent) {
+                is FaceDetectionContract.Intent.UpdateFaceData -> handleUpdateFaceData(intent)
+                is FaceDetectionContract.Intent.UpdateTextData -> handleUpdateTextData(intent)
+                is FaceDetectionContract.Intent.UpdateIsFaceDetected -> handleUpdateIsFaceDetected(intent)
+                is FaceDetectionContract.Intent.UpdateIsNenoonTextDetected -> handleUpdateIsNenoonTextDetected(intent)
+                is FaceDetectionContract.Intent.UpdateGazeResult -> handleUpdateGazeResult(intent)
+            }
+        }
+        
+        private fun handleUpdateFaceData(intent: FaceDetectionContract.Intent.UpdateFaceData) {
+            _state.update { currentState ->
+                currentState.copy(
+                    leftEyePosition = intent.leftEyePosition,
+                    rightEyePosition = intent.rightEyePosition,
+                    rotX = intent.rotX,
+                    rotY = intent.rotY,
+                    rotZ = intent.rotZ,
+                    leftEyeOpenProbability = intent.leftEyeOpenProbability,
+                    rightEyeOpenProbability = intent.rightEyeOpenProbability,
+                    faceBoundingBox = intent.boundingBox
+                )
+            }
+            
+            // Legacy 함수 호출 (나중에 없앨 예정)
+            updateFaceDetectionData(
+                intent.boundingBox,
+                intent.leftEyePosition,
+                intent.rightEyePosition,
+                intent.rotX,
+                intent.rotY,
+                intent.rotZ,
+                intent.leftEyeOpenProbability,
+                intent.rightEyeOpenProbability
+            )
+        }
+        
+        private fun handleUpdateTextData(intent: FaceDetectionContract.Intent.UpdateTextData) {
+            _state.update { it.copy(textBoundingBox = intent.textBoundingBox) }
+            updateTextRecognitionData(intent.textBoundingBox)
+        }
+        
+        private fun handleUpdateIsFaceDetected(intent: FaceDetectionContract.Intent.UpdateIsFaceDetected) {
+            _state.update { it.copy(isFaceDetected = intent.isDetected) }
+            updateIsFaceDetected(intent.isDetected)
+        }
+        
+        private fun handleUpdateIsNenoonTextDetected(intent: FaceDetectionContract.Intent.UpdateIsNenoonTextDetected) {
+            _state.update { it.copy(isNenoonTextDetected = intent.isDetected) }
+            updateIsNenoonTextDetected(intent.isDetected)
+        }
+        
+        private fun handleUpdateGazeResult(intent: FaceDetectionContract.Intent.UpdateGazeResult) {
+            _state.update { currentState ->
+                currentState.copy(
+                    isFacingForward = false,  // IrisResult에서 가져올 예정
+                    gazeScore = 0f            // IrisResult에서 가져올 예정
+                )
+            }
         }
 
         fun updateFaceDetectionData(
