@@ -66,6 +66,7 @@ fun VisualAcuityTestCommonContent(
 fun VisualAcuityTestContent(
     toResultScreen: (VisualAcuityTestResult) -> Unit,
     visualAcuityViewModel: VisualAcuityViewModel = hiltViewModel(),
+    faceDetectionViewModel: FaceDetectionViewModel = hiltViewModel(),
 ) {
     val randomList = visualAcuityViewModel.randomList.collectAsState().value
     val ansNum = visualAcuityViewModel.ansNum.collectAsState().value
@@ -75,8 +76,10 @@ fun VisualAcuityTestContent(
         targetValue = progress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
     )
-    val coroutineScope = rememberCoroutineScope()
-    val isWarning = remember { mutableStateOf(false) }
+    
+    val faceDetectionState by faceDetectionViewModel.collectAsState()
+    val isFacingForward = faceDetectionState.isFacingForward
+    val isFaceDetected = faceDetectionState.isFaceDetected
     LaunchedEffect(true) {
         TTS.speechTTS(
             StringProvider.getString(
@@ -103,20 +106,7 @@ fun VisualAcuityTestContent(
                     .background(
                         color = Color(0xffffffff),
                         shape = RoundedCornerShape(8.dp),
-                    )
-                    .clickable {
-                        coroutineScope.launch {
-                            for (i in 1..4) {
-                                isWarning.value = true
-                                delay(600)
-                                isWarning.value = false
-                                delay(400)
-                            }
-                            isWarning.value = true
-                            delay(4000)
-                            isWarning.value = false
-                        }
-                    },
+                    ),
             contentAlignment = Alignment.Center,
         ) {
             Image(
@@ -254,19 +244,21 @@ fun VisualAcuityTestContent(
                     ),
                 contentDescription = "",
             )
-            if (isWarning.value) {
-                Text(
-                    modifier =
-                        Modifier
-                            .padding(top = 300.dp),
-                    text =
-                        StringProvider.getString(
-                            R.string.visual_acuity_warning,
-                        ),
-                    textAlign = TextAlign.Center,
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                )
+            
+            // 안내 메시지
+            if (!isFaceDetected || !isFacingForward) {
+                Column(
+                    modifier = Modifier.padding(top = 300.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "정면을 주시해주세요",
+                        textAlign = TextAlign.Center,
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color.Red
+                    )
+                }
             }
         }
         Text(
