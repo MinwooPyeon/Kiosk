@@ -10,6 +10,7 @@ import androidx.core.graphics.set
 import androidx.lifecycle.ViewModel
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
+import com.harang.data.model.dto.User
 import com.harang.data.repository.SignInRepository
 import com.mangoslab.nemonicsdk.NPrintInfo
 import com.mangoslab.nemonicsdk.NPrinter
@@ -38,7 +39,7 @@ class AccountManagementViewModel @Inject constructor(
 
     fun loadUserData(
         userId: String?,
-        userData: com.harang.data.model.dto.User?,
+        userData: User?,
         isUserSignedIn: Boolean
     ) = intent {
         reduce {
