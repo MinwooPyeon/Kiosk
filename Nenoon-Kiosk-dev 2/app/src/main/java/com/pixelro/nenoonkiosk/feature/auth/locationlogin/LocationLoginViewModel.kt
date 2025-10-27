@@ -1,203 +1,80 @@
 package com.pixelro.nenoonkiosk.feature.auth.locationlogin
 
-import android.Manifest
-import android.app.Application
-import android.content.Context
-import android.content.pm.PackageManager
-import android.location.LocationManager
-import android.util.Log
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationTokenSource
 import com.harang.data.repository.SignInRepository
-import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.constants.AppConstants
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.pow
-import kotlin.math.sin
-import kotlin.math.sqrt
 
 @HiltViewModel
 class LocationLoginViewModel @Inject constructor(
-    private val application: Application,
     private val signInRepository: SignInRepository
 ) : ViewModel(), ContainerHost<LocationLoginState, LocationLoginSideEffect> {
 
     override val container: Container<LocationLoginState, LocationLoginSideEffect> =
         container(LocationLoginState())
 
-    private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(application)
-
-    fun checkLocationPermission() = intent {
-        val hasPermission = ContextCompat.checkSelfPermission(
-            application,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-
+    fun updateId(id: String) = intent {
         reduce {
-            state.copy(isLocationPermissionGranted = hasPermission)
-        }
-
-        if (!hasPermission) {
-            postSideEffect(LocationLoginSideEffect.RequestLocationPermission)
+            state.copy(id = id, loginError = false)
         }
     }
 
-    fun checkLocationEnabled() = intent {
-        val locationManager =
-            application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val isEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-
+    fun updatePassword(password: String) = intent {
         reduce {
-            state.copy(isLocationEnabled = isEnabled)
-        }
-
-        if (!isEnabled) {
-            postSideEffect(LocationLoginSideEffect.RequestEnableLocation)
+            state.copy(password = password, loginError = false)
         }
     }
 
-    fun updatePermissionGranted(granted: Boolean) = intent {
-        reduce {
-            state.copy(isLocationPermissionGranted = granted)
-        }
-    }
-
-    fun signInWithLocation() = intent {
-        if (!state.isLocationPermissionGranted) {
-            reduce {
-                state.copy(locationStatus = StringProvider.getString(R.string.location_signin_permission_required))
-            }
-            postSideEffect(LocationLoginSideEffect.RequestLocationPermission)
-            return@intent
-        }
-
-        if (!state.isLocationEnabled) {
-            reduce {
-                state.copy(locationStatus = StringProvider.getString(R.string.location_signin_location_disabled))
-            }
-            postSideEffect(LocationLoginSideEffect.RequestEnableLocation)
+    fun signIn() = intent {
+        if (!validateLocationSignIn(state.id, state.password)) {
             return@intent
         }
 
         reduce {
-            state.copy(
-                isCheckingLocation = true,
-                locationStatus = StringProvider.getString(R.string.location_signin_fetching_location)
-            )
+            state.copy(isLoggingIn = true, loginError = false)
         }
 
-        try {
-            val location = getCurrentLocation()
-
-            if (location != null) {
-                val latitude = location.first
-                val longitude = location.second
-
-                reduce {
-                    state.copy(
-                        currentLatitude = latitude,
-                        currentLongitude = longitude,
-                        locationStatus = StringProvider.getString(R.string.location_signin_verifying_location)
-                    )
-                }
-
-                val isWithinRange = isLocationWithinRange(latitude, longitude)
-
-                if (isWithinRange) {
-                    reduce {
-                        state.copy(
-                            locationStatus = StringProvider.getString(R.string.location_signin_success),
-                            isCheckingLocation = false
-                        )
-                    }
-                    postSideEffect(LocationLoginSideEffect.LoginSuccess)
-                } else {
-                    reduce {
-                        state.copy(
-                            locationStatus = StringProvider.getString(R.string.location_signin_out_of_range),
-                            isCheckingLocation = false
-                        )
-                    }
-                    postSideEffect(LocationLoginSideEffect.LoginFailed)
-                }
+        runCatching {
+            signInRepository.locationSignIn(state.id, state.password)
+        }.onSuccess { success ->
+            reduce {
+                state.copy(isLoggingIn = false)
+            }
+            if (success) {
+                postSideEffect(LocationLoginSideEffect.LoginSuccess)
             } else {
                 reduce {
-                    state.copy(
-                        locationStatus = StringProvider.getString(R.string.location_signin_failed),
-                        isCheckingLocation = false
-                    )
+                    state.copy(loginError = true)
                 }
-                postSideEffect(LocationLoginSideEffect.LoginFailed)
+                postSideEffect(LocationLoginSideEffect.ShowToast("로그인에 실패했습니다"))
             }
-        } catch (e: Exception) {
-            Log.e("LocationLoginVM", "Location sign in error: ${e.message}", e)
+        }.onFailure { exception ->
             reduce {
-                state.copy(
-                    locationStatus = StringProvider.getString(R.string.location_signin_error),
-                    isCheckingLocation = false
-                )
+                state.copy(isLoggingIn = false, loginError = true)
             }
-            postSideEffect(LocationLoginSideEffect.LoginFailed)
+            postSideEffect(LocationLoginSideEffect.ShowToast("로그인 중 오류가 발생했습니다"))
         }
     }
 
-    private suspend fun getCurrentLocation(): Pair<Double, Double>? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val cancellationTokenSource = CancellationTokenSource()
-                val location = fusedLocationClient.getCurrentLocation(
-                    Priority.PRIORITY_HIGH_ACCURACY,
-                    cancellationTokenSource.token
-                ).await()
-
-                location?.let { Pair(it.latitude, it.longitude) }
-            } catch (e: Exception) {
-                Log.e("LocationLoginVM", "Error getting current location: ${e.message}", e)
-                null
-            }
+    fun skipSignIn(updateIsSignedIn: (Boolean) -> Unit) = intent {
+        runCatching {
+            signInRepository.locationSignInSkip()
+        }.onSuccess {
+            updateIsSignedIn(false)
+            postSideEffect(LocationLoginSideEffect.NavigateToUserSignIn)
+        }.onFailure {
+            postSideEffect(LocationLoginSideEffect.ShowToast("오류가 발생했습니다"))
         }
     }
 
-    private fun isLocationWithinRange(latitude: Double, longitude: Double): Boolean {
-        val targetLat = AppConstants.LOCATION_SIGNIN_TARGET_LATITUDE
-        val targetLon = AppConstants.LOCATION_SIGNIN_TARGET_LONGITUDE
-        val maxDistance = AppConstants.LOCATION_SIGNIN_MAX_DISTANCE_METERS
-
-        val distance = calculateDistance(latitude, longitude, targetLat, targetLon)
-        Log.d("LocationLoginVM", "Distance from target: $distance meters")
-
-        return distance <= maxDistance
+    fun navigateToSettings() = intent {
+        postSideEffect(LocationLoginSideEffect.NavigateToSettings)
     }
 
-    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-        val earthRadiusMeters = 6371000.0
-        val dLat = Math.toRadians(lat2 - lat1)
-        val dLon = Math.toRadians(lon2 - lon1)
-
-        val a = sin(dLat / 2).pow(2.0) +
-                cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
-                sin(dLon / 2).pow(2.0)
-
-        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-
-        return earthRadiusMeters * c
-    }
-
-    fun navigateBack() = intent {
-        postSideEffect(LocationLoginSideEffect.NavigateBack)
+    private fun validateLocationSignIn(id: String, password: String): Boolean {
+        return !(id.isBlank() || password.isBlank())
     }
 }

@@ -40,7 +40,6 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
-
 @Composable
 fun AccountManagementRoute(
     navController: NavController,
@@ -199,7 +198,7 @@ fun AccountManagementScreen(
 
                     if (state.qrCodeBitmap != null) {
                         Image(
-                            bitmap = state.qrCodeBitmap!!.asImageBitmap(),
+                            bitmap = state.qrCodeBitmap.asImageBitmap(),
                             contentDescription = StringProvider.getString(
                                 R.string.qr_code_image_description
                             ),
@@ -239,7 +238,7 @@ fun AccountManagementScreen(
                             } else if (!AppConstants.MANAGE_USERS_INTERNALLY &&
                                 state.qrCodeBitmap != null
                             ) {
-                                onPrintExistingQrCodeClick(state.qrCodeBitmap!!)
+                                onPrintExistingQrCodeClick(state.qrCodeBitmap)
                             }
                         }
                     },

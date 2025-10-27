@@ -24,6 +24,8 @@ import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
+import androidx.core.graphics.set
+import androidx.core.graphics.createBitmap
 
 @HiltViewModel
 class AccountManagementViewModel @Inject constructor(
@@ -58,15 +60,12 @@ class AccountManagementViewModel @Inject constructor(
 
             val width = bitMatrix.width
             val height = bitMatrix.height
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+            val bitmap = createBitmap(width, height, Bitmap.Config.RGB_565)
 
             for (x in 0 until width) {
                 for (y in 0 until height) {
-                    bitmap.setPixel(
-                        x, y,
-                        if (bitMatrix[x, y]) android.graphics.Color.BLACK
-                        else android.graphics.Color.WHITE
-                    )
+                    bitmap[x, y] = if (bitMatrix[x, y]) android.graphics.Color.BLACK
+                    else android.graphics.Color.WHITE
                 }
             }
 
@@ -112,15 +111,12 @@ class AccountManagementViewModel @Inject constructor(
 
             val width = bitMatrix.width
             val height = bitMatrix.height
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+            val bitmap = createBitmap(width, height, Bitmap.Config.RGB_565)
 
             for (x in 0 until width) {
                 for (y in 0 until height) {
-                    bitmap.setPixel(
-                        x, y,
-                        if (bitMatrix[x, y]) android.graphics.Color.BLACK
-                        else android.graphics.Color.WHITE
-                    )
+                    bitmap[x, y] = if (bitMatrix[x, y]) android.graphics.Color.BLACK
+                    else android.graphics.Color.WHITE
                 }
             }
 
