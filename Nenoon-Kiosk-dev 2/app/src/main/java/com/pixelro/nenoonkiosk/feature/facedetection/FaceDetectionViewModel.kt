@@ -8,13 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,13 +22,11 @@ class FaceDetectionViewModel
     @Inject
     constructor(
         application: Application,
-    ) : AndroidViewModel(application) {
+    ) : AndroidViewModel(application),
+        ContainerHost<FaceDetectionContract.State, FaceDetectionContract.SideEffect> {
 
-        private val _state = MutableStateFlow(FaceDetectionContract.State())
-        val state: StateFlow<FaceDetectionContract.State> = _state.asStateFlow()
-
-        private val _effect = MutableSharedFlow<FaceDetectionContract.Effect>()
-        val effect = _effect.asSharedFlow()
+    override val container: Container<FaceDetectionContract.State, FaceDetectionContract.SideEffect> =
+        container(FaceDetectionContract.State())
 
         private val _screenToFaceDistance = MutableStateFlow(0f)
         val screenToFaceDistance: StateFlow<Float> = _screenToFaceDistance
@@ -106,63 +104,67 @@ class FaceDetectionViewModel
             _isPressStartButtonTTSDone.update { isDone }
         }
 
-        fun processIntent(intent: FaceDetectionContract.Intent) {
-            when (intent) {
-                is FaceDetectionContract.Intent.UpdateFaceData -> handleUpdateFaceData(intent)
-                is FaceDetectionContract.Intent.UpdateTextData -> handleUpdateTextData(intent)
-                is FaceDetectionContract.Intent.UpdateIsFaceDetected -> handleUpdateIsFaceDetected(intent)
-                is FaceDetectionContract.Intent.UpdateIsNenoonTextDetected -> handleUpdateIsNenoonTextDetected(intent)
-                is FaceDetectionContract.Intent.UpdateGazeResult -> handleUpdateGazeResult(intent)
-            }
-        }
-        
-        private fun handleUpdateFaceData(intent: FaceDetectionContract.Intent.UpdateFaceData) {
-            _state.update { currentState ->
-                currentState.copy(
-                    leftEyePosition = intent.leftEyePosition,
-                    rightEyePosition = intent.rightEyePosition,
-                    rotX = intent.rotX,
-                    rotY = intent.rotY,
-                    rotZ = intent.rotZ,
-                    leftEyeOpenProbability = intent.leftEyeOpenProbability,
-                    rightEyeOpenProbability = intent.rightEyeOpenProbability,
-                    faceBoundingBox = intent.boundingBox
+        // 얼굴 감지 데이터 업데이트
+        fun onFaceDataDetected(
+            boundingBox: Rect,
+            leftEyePosition: PointF?,
+            rightEyePosition: PointF?,
+            rotX: Float,
+            rotY: Float,
+            rotZ: Float,
+            leftEyeOpenProbability: Float?,
+            rightEyeOpenProbability: Float?
+        ) = intent {
+            reduce {
+                state.copy(
+                    leftEyePosition = leftEyePosition,
+                    rightEyePosition = rightEyePosition,
+                    rotX = rotX,
+                    rotY = rotY,
+                    rotZ = rotZ,
+                    leftEyeOpenProbability = leftEyeOpenProbability,
+                    rightEyeOpenProbability = rightEyeOpenProbability,
+                    faceBoundingBox = boundingBox
                 )
             }
             
-            // Legacy 함수 호출 (나중에 없앨 예정)
+            // Legacy 함수 호출
             updateFaceDetectionData(
-                intent.boundingBox,
-                intent.leftEyePosition,
-                intent.rightEyePosition,
-                intent.rotX,
-                intent.rotY,
-                intent.rotZ,
-                intent.leftEyeOpenProbability,
-                intent.rightEyeOpenProbability
+                boundingBox, leftEyePosition, rightEyePosition,
+                rotX, rotY, rotZ, leftEyeOpenProbability, rightEyeOpenProbability
             )
         }
         
-        private fun handleUpdateTextData(intent: FaceDetectionContract.Intent.UpdateTextData) {
-            _state.update { it.copy(textBoundingBox = intent.textBoundingBox) }
-            updateTextRecognitionData(intent.textBoundingBox)
+        // 텍스트 인식 데이터 업데이트
+        fun onTextRecognized(textBoundingBox: Rect?) = intent {
+            reduce {
+                state.copy(textBoundingBox = textBoundingBox)
+            }
+            updateTextRecognitionData(textBoundingBox)
         }
         
-        private fun handleUpdateIsFaceDetected(intent: FaceDetectionContract.Intent.UpdateIsFaceDetected) {
-            _state.update { it.copy(isFaceDetected = intent.isDetected) }
-            updateIsFaceDetected(intent.isDetected)
+        // 얼굴 감지 여부 업데이트
+        fun onFaceDetectionChanged(isDetected: Boolean) = intent {
+            reduce {
+                state.copy(isFaceDetected = isDetected)
+            }
+            updateIsFaceDetected(isDetected)
         }
         
-        private fun handleUpdateIsNenoonTextDetected(intent: FaceDetectionContract.Intent.UpdateIsNenoonTextDetected) {
-            _state.update { it.copy(isNenoonTextDetected = intent.isDetected) }
-            updateIsNenoonTextDetected(intent.isDetected)
+        // NENOON 텍스트 감지 여부 업데이트
+        fun onNenoonTextDetected(isDetected: Boolean) = intent {
+            reduce {
+                state.copy(isNenoonTextDetected = isDetected)
+            }
+            updateIsNenoonTextDetected(isDetected)
         }
         
-        private fun handleUpdateGazeResult(intent: FaceDetectionContract.Intent.UpdateGazeResult) {
-            _state.update { currentState ->
-                currentState.copy(
-                    isFacingForward = false,  // IrisResult에서 가져올 예정
-                    gazeScore = 0f            // IrisResult에서 가져올 예정
+        // 시선 추적 결과 업데이트
+        fun onGazeResultDetected(irisResult: IrisResult) = intent {
+            reduce {
+                state.copy(
+                    isFacingForward = false,  // 확장 예정
+                    gazeScore = 0f
                 )
             }
         }
@@ -208,9 +210,7 @@ class FaceDetectionViewModel
             _isNenoonTextDetected.update { isNenoonTextDetected }
         }
 
-        /**
-         * 얼굴 인식 거리 조절 함수
-         */
+        // 얼굴 인식 거리 조절 함수
         private fun updateScreenToFaceDistance() {
             if (!_isNenoonTextDetected.value) {
                 if ((rightEyePosition.value.x - leftEyePosition.value.y) != 0f && GlobalValue.lensSize.width != 0f) {
@@ -231,15 +231,13 @@ class FaceDetectionViewModel
             }
         }
 
-        // Text Recognition
+        // 텍스트 인식
         private val _textBox: MutableStateFlow<Rect?> = MutableStateFlow(Rect(0, 0, 0, 0))
         val textBox: StateFlow<Rect?> = _textBox
 
         private val _distance = MutableStateFlow(0f)
 
-        /**
-         * 텍스트 거리 조절 함수
-         */
+        // 텍스트 거리 조절 함수
         fun updateTextRecognitionData(textBox: Rect?) {
             _textBox.update { textBox }
             if (((_textBox.value?.right?.toFloat() ?: 0f) + (_textBox.value?.left?.toFloat() ?: 0f)) / 2 > 544) {
@@ -253,9 +251,7 @@ class FaceDetectionViewModel
             _screenToFaceDistance.update { _distance.value * 10f }
         }
 
-        /**
-         * 몇 초 마다 측정할 것인지
-         */
+        // 몇초 마다 측정할 지
         private fun startTimer() {
             viewModelScope.launch {
                 while (true) {
