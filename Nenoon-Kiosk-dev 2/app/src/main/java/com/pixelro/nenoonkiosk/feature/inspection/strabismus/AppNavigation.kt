@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.strabismustest
+package com.pixelro.nenoonkiosk.feature.inspection.strabismus
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -6,6 +6,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.adjustment.AniseikoniaAdjustmentScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.intro.AniseikoniaIntroScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.question.AniseikoniaQuestionScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.result.AniseikoniaResultScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.phoria.adjustment.PhoriaAdjustmentScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.phoria.intro.PhoriaIntroScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.phoria.question.PhoriaQuestionScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.phoria.result.PhoriaResultScreen
 
 @Composable
 fun AppNavigation(
@@ -19,14 +27,14 @@ fun AppNavigation(
         startDestination = startDestination,
     ) {
         composable("sawi_intro") {
-            SawiIntroScreen(
+            PhoriaIntroScreen(
                 onStartClicked = { navController.navigate("glass_instruction/sawi") },
                 onHowToClicked = { /* TODO */ },
                 onBackClicked = { parentNavController.popBackStack() },
             )
         }
         composable("fudo_intro") {
-            FudoIntroScreen(
+            AniseikoniaIntroScreen(
                 onStartClicked = { navController.navigate("glass_instruction/fudo") },
                 onHowToClicked = { /* TODO */ },
                 onBackClicked = { parentNavController.popBackStack() },
@@ -58,7 +66,7 @@ fun AppNavigation(
             )
         }
         composable("sawi_question") {
-            SawiQuestionScreen(
+            PhoriaQuestionScreen(
                 onNextClicked = { answer ->
                     if (answer == 2) {
                         navController.navigate("sawi_adjustment")
@@ -71,7 +79,7 @@ fun AppNavigation(
             )
         }
         composable("fudo_question") {
-            FudoQuestionScreen(
+            AniseikoniaQuestionScreen(
                 onNextClicked = { answer ->
                     if (answer == 1) {
                         navController.navigate("fudo_adjustment")
@@ -84,7 +92,7 @@ fun AppNavigation(
             )
         }
         composable("sawi_adjustment") {
-            SawiAdjustmentScreen(
+            PhoriaAdjustmentScreen(
                 onConfirmClicked = { crosshairPosition, circlePosition ->
                     navController.navigate(
                         "sawi_result/2/true/${crosshairPosition.x}/${crosshairPosition.y}/${circlePosition.x}/${circlePosition.y}",
@@ -95,7 +103,7 @@ fun AppNavigation(
             )
         }
         composable("fudo_adjustment") {
-            FudoAdjustmentScreen(
+            AniseikoniaAdjustmentScreen(
                 onNextClicked = { answer, difference ->
                     navController.navigate("fudo_result/$answer/$difference")
                 },
@@ -103,23 +111,34 @@ fun AppNavigation(
             )
         }
         composable("sawi_result/{answer}/{isAdjusted}/{crossX}/{crossY}/{circleX}/{circleY}") { backStackEntry ->
-            SawiResultScreen(
+            PhoriaResultScreen(
                 answer = backStackEntry.arguments?.getString("answer")?.toIntOrNull(),
-                isAdjusted = backStackEntry.arguments?.getString("isAdjusted")?.toBoolean() ?: false,
+                isAdjusted = backStackEntry.arguments?.getString("isAdjusted")?.toBoolean()
+                    ?: false,
                 crossX = backStackEntry.arguments?.getString("crossX")?.toFloatOrNull(),
                 crossY = backStackEntry.arguments?.getString("crossY")?.toFloatOrNull(),
                 circleX = backStackEntry.arguments?.getString("circleX")?.toFloatOrNull(),
                 circleY = backStackEntry.arguments?.getString("circleY")?.toFloatOrNull(),
                 onPrintClicked = { /* TODO */ },
-                onBackToMainClicked = { parentNavController.popBackStack(NavConstants.ROUTE_CATEGORY_LIST, false) },
+                onBackToMainClicked = {
+                    parentNavController.popBackStack(
+                        NavConstants.ROUTE_CATEGORY_LIST,
+                        false
+                    )
+                },
             )
         }
         composable("fudo_result/{answer}/{difference}") { backStackEntry ->
-            FudoResultScreen(
+            AniseikoniaResultScreen(
                 answer = backStackEntry.arguments?.getString("answer")?.toIntOrNull(),
                 difference = backStackEntry.arguments?.getString("difference")?.toFloatOrNull(),
                 onPrintClicked = { /* TODO */ },
-                onBackToMainClicked = { parentNavController.popBackStack(NavConstants.ROUTE_CATEGORY_LIST, false) },
+                onBackToMainClicked = {
+                    parentNavController.popBackStack(
+                        NavConstants.ROUTE_CATEGORY_LIST,
+                        false
+                    )
+                },
             )
         }
     }

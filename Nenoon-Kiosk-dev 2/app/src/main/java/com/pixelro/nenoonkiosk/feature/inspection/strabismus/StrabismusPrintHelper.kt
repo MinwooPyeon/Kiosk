@@ -13,12 +13,15 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 
+/**
+ * 사시 검사 결과 출력 헬퍼
+ */
 object StrabismusPrintHelper {
 
     private const val PAPER_WIDTH = 384
     private const val PADDING = 10f
 
-    fun printSawiResult(
+    fun printPhoriaResult(
         context: Context,
         hTitle: String,
         hResult: String,
@@ -27,11 +30,11 @@ object StrabismusPrintHelper {
         vResult: String,
         vDesc: String
     ) {
-        val bitmap = createSawiResultBitmap(context, hTitle, hResult, hDesc, vTitle, vResult, vDesc)
+        val bitmap = createPhoriaResultBitmap(context, hTitle, hResult, hDesc, vTitle, vResult, vDesc)
         printBitmap(bitmap)
     }
 
-    fun printFudoResult(
+    fun printAniseikoniaResult(
         context: Context,
         retinalTitle: String,
 //        retinalResult: String,
@@ -40,11 +43,11 @@ object StrabismusPrintHelper {
         opinionResult: String,
         opinionDescription: String
     ) {
-        val bitmap = createFudoResultBitmap(context, retinalTitle, retinalDescription, opinionTitle, opinionResult, opinionDescription)
+        val bitmap = createAniseikoniaResultBitmap(context, retinalTitle, retinalDescription, opinionTitle, opinionResult, opinionDescription)
         printBitmap(bitmap)
     }
 
-    private fun createSawiResultBitmap(
+    private fun createPhoriaResultBitmap(
         context: Context,
         hTitle: String,
         hResult: String,
@@ -114,7 +117,7 @@ $vDesc
         return bitmap
     }
 
-    private fun createFudoResultBitmap(
+    private fun createAniseikoniaResultBitmap(
         context: Context,
         retinalTitle: String,
         retinalDescription: String,
