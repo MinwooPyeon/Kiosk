@@ -55,7 +55,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 @Composable
-fun QRSignInScreen(
+fun QrLoginScreen(
     updateIsSignedIn: (Boolean) -> Unit,
     loginViewModel: LoginViewModel,
     navController: NavController,

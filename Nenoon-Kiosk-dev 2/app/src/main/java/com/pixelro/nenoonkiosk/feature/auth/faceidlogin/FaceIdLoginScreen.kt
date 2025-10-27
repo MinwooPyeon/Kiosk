@@ -38,7 +38,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun FaceIdSignInScreen(
+fun FaceIdLoginScreen(
     loginViewModel: LoginViewModel,
     navController: NavController,
     updateIsSignedIn: (Boolean) -> Unit,

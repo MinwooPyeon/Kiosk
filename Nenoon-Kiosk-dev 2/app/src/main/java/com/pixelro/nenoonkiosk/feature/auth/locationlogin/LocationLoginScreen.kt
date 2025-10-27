@@ -50,7 +50,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun LocationSignInScreen(
+fun LocationLoginScreen(
     updateIsSignedIn: (Boolean) -> Unit,
     loginViewModel: LoginViewModel,
     signInNavController: NavController,

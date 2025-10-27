@@ -14,13 +14,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.feature.auth.faceenrollment.FaceEnrollmentScreen
-import com.pixelro.nenoonkiosk.feature.auth.faceidlogin.FaceIdSignInScreen
-import com.pixelro.nenoonkiosk.feature.auth.idpasswordlogin.IdPasswordSignInScreen
-import com.pixelro.nenoonkiosk.feature.auth.locationlogin.LocationSignInScreen
+import com.pixelro.nenoonkiosk.feature.auth.faceidlogin.FaceIdLoginScreen
+import com.pixelro.nenoonkiosk.feature.auth.idpasswordlogin.IdPasswordLoginScreen
+import com.pixelro.nenoonkiosk.feature.auth.locationlogin.LocationLoginScreen
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginScreen
-import com.pixelro.nenoonkiosk.feature.auth.qrlogin.QRSignInScreen
-import com.pixelro.nenoonkiosk.feature.auth.signup.UserSignUpScreen
+import com.pixelro.nenoonkiosk.feature.auth.qrlogin.QrLoginScreen
+import com.pixelro.nenoonkiosk.feature.auth.signup.SignUpScreen
 import com.pixelro.nenoonkiosk.feature.termsofservice.faceid.FaceIdTermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.termsofservice.signup.SignUpTermsOfServiceRoute
 
@@ -59,7 +59,7 @@ fun SignInScreen(
                     signInNavController.navigate(SignInScreenState.UserSignIn.name)
                 }
             }
-            LocationSignInScreen(
+            LocationLoginScreen(
                 updateIsSignedIn = updateLocationSignIn,
                 loginViewModel = loginViewModel,
                 signInNavController = signInNavController,
@@ -84,7 +84,7 @@ fun SignInScreen(
         composable(
             SignInScreenState.SignUp.name,
         ) {
-            UserSignUpScreen(
+            SignUpScreen(
                 updateIsSignedIn = { navController.navigate(NavConstants.ROUTE_INTRO) },
                 loginViewModel = loginViewModel,
                 toFaceEnrollmentScreen = {
@@ -133,7 +133,7 @@ fun SignInScreen(
         composable(
             SignInScreenState.QR.name,
         ) {
-            QRSignInScreen(
+            QrLoginScreen(
                 updateIsSignedIn = { navController.navigate(NavConstants.ROUTE_INTRO) },
                 loginViewModel = loginViewModel,
                 navController = signInNavController,
@@ -142,7 +142,7 @@ fun SignInScreen(
         composable(
             SignInScreenState.FaceId.name,
         ) {
-            FaceIdSignInScreen(
+            FaceIdLoginScreen(
                 updateIsSignedIn = { success ->
                     if (success) {
                         navController.navigate(NavConstants.ROUTE_INTRO)
@@ -165,7 +165,7 @@ fun SignInScreen(
         composable(
             SignInScreenState.IdPassword.name,
         ) {
-            IdPasswordSignInScreen(
+            IdPasswordLoginScreen(
                 updateIsSignedIn = { navController.navigate(NavConstants.ROUTE_INTRO) },
                 loginViewModel = loginViewModel,
                 navController = signInNavController,

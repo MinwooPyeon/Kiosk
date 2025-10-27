@@ -52,7 +52,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun UserSignUpScreen(
+fun SignUpScreen(
     updateIsSignedIn: (Boolean) -> Unit,
     toFaceEnrollmentScreen: () -> Unit,
     loginViewModel: LoginViewModel,

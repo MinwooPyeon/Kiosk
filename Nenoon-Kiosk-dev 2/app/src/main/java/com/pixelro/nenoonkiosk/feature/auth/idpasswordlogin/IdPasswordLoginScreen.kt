@@ -46,7 +46,7 @@ import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun IdPasswordSignInScreen(
+fun IdPasswordLoginScreen(
     updateIsSignedIn: (Boolean) -> Unit,
     loginViewModel: LoginViewModel,
     navController: NavController,
