@@ -1,8 +1,15 @@
 package com.pixelro.nenoonkiosk.feature.auth.locationlogin
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.RawResourceDataSource
 import com.harang.data.repository.SignInRepository
+import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
@@ -17,15 +24,11 @@ class LocationLoginViewModel @Inject constructor(
         container(LocationLoginState())
 
     fun updateId(id: String) = intent {
-        reduce {
-            state.copy(id = id, loginError = false)
-        }
+        reduce { state.copy(id = id, loginError = false) }
     }
 
     fun updatePassword(password: String) = intent {
-        reduce {
-            state.copy(password = password, loginError = false)
-        }
+        reduce { state.copy(password = password, loginError = false) }
     }
 
     fun signIn() = intent {
@@ -33,40 +36,34 @@ class LocationLoginViewModel @Inject constructor(
             return@intent
         }
 
-        reduce {
-            state.copy(isLoggingIn = true, loginError = false)
-        }
-
         runCatching {
-            signInRepository.locationSignIn(state.id, state.password)
-        }.onSuccess { success ->
-            reduce {
-                state.copy(isLoggingIn = false)
+            val result = signInRepository.locationSignIn(state.id, state.password)
+
+            if (result != null && result.data["success"] as Boolean) {
+                signInRepository.updateLocationId((result.data["pid"] as Double).toInt())
+                signInRepository.updateScreenSaverVideoURI(result.data["video"] as String)
+                true
+            } else {
+                false
             }
+        }.onSuccess { success ->
             if (success) {
                 postSideEffect(LocationLoginSideEffect.LoginSuccess)
-            } else {
-                reduce {
-                    state.copy(loginError = true)
-                }
-                postSideEffect(LocationLoginSideEffect.ShowToast("로그인에 실패했습니다"))
             }
-        }.onFailure { exception ->
-            reduce {
-                state.copy(isLoggingIn = false, loginError = true)
-            }
-            postSideEffect(LocationLoginSideEffect.ShowToast("로그인 중 오류가 발생했습니다"))
         }
     }
 
-    fun skipSignIn(updateIsSignedIn: (Boolean) -> Unit) = intent {
-        runCatching {
-            signInRepository.locationSignInSkip()
-        }.onSuccess {
-            updateIsSignedIn(false)
+    @androidx.annotation.OptIn(UnstableApi::class)
+    fun skipSignIn(updateIsSignedIn: (Boolean) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            signInRepository.updateLocationId(AppConstants.DEFAULT_LOCATION_ID)
+            signInRepository.updateScreenSaverVideoURI(
+                RawResourceDataSource.buildRawResourceUri(R.raw.ad_sub).toString()
+            )
+        }
+        intent {
+            updateIsSignedIn(true)
             postSideEffect(LocationLoginSideEffect.NavigateToUserSignIn)
-        }.onFailure {
-            postSideEffect(LocationLoginSideEffect.ShowToast("오류가 발생했습니다"))
         }
     }
 

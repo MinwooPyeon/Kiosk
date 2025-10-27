@@ -56,9 +56,6 @@ fun LocationLoginRoute(
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is LocationLoginSideEffect.ShowToast -> {
-                // 토스트 표시 처리
-            }
             is LocationLoginSideEffect.LoginSuccess -> {
                 updateIsSignedIn(true)
                 signInNavController.navigate(SignInScreenState.UserSignIn.name)
@@ -74,11 +71,11 @@ fun LocationLoginRoute(
 
     LocationLoginScreen(
         state = state,
-        onIdChange = { viewModel.updateId(it) },
-        onPasswordChange = { viewModel.updatePassword(it) },
-        onSignInClick = { viewModel.signIn() },
+        onIdChange = viewModel::updateId,
+        onPasswordChange = viewModel::updatePassword,
+        onSignInClick = viewModel::signIn,
         onSkipClick = { viewModel.skipSignIn(updateIsSignedIn) },
-        onSettingsClick = { viewModel.navigateToSettings() }
+        onSettingsClick = viewModel::navigateToSettings
     )
 }
 
@@ -103,28 +100,10 @@ fun LocationLoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() },
-                            ) {
-                                onSettingsClick()
-                            },
-                        painter = painterResource(id = R.drawable.icon_settings),
-                        contentDescription = "",
-                    )
-                }
+                SettingsButton(onClick = onSettingsClick)
 
                 Spacer(modifier = Modifier.height(107.dp))
-
                 Logo()
-
                 Spacer(modifier = Modifier.height(50.dp))
 
                 Text(
@@ -135,91 +114,22 @@ fun LocationLoginScreen(
 
                 Spacer(modifier = Modifier.height(40.dp))
 
-                BasicTextField(
+                LoginTextField(
                     value = state.id,
                     onValueChange = onIdChange,
-                    textStyle = TextStyle(
-                        fontSize = 36.sp,
-                    ),
-                    decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(80.dp)
-                                .border(
-                                    border = BorderStroke(
-                                        width = 1.dp,
-                                        color = Color(0xffc3c3c3),
-                                    ),
-                                    shape = RoundedCornerShape(8.dp),
-                                )
-                                .padding(start = 20.dp),
-                            contentAlignment = Alignment.CenterStart,
-                        ) {
-                            if (state.id.isEmpty()) {
-                                Text(
-                                    text = StringProvider.getString(R.string.id_input),
-                                    fontSize = 36.sp,
-                                    color = Color.LightGray,
-                                )
-                            }
-                            innerTextField()
-                        }
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                    ),
+                    placeholderResId = R.string.id_input,
+                    imeAction = ImeAction.Next
                 )
 
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(20.dp),
-                )
+                Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
 
-                BasicTextField(
+                PasswordTextField(
                     value = state.password,
                     onValueChange = onPasswordChange,
-                    visualTransformation = PasswordVisualTransformation(),
-                    textStyle = TextStyle(
-                        fontSize = 36.sp,
-                    ),
-                    decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(80.dp)
-                                .border(
-                                    border = BorderStroke(
-                                        width = 1.dp,
-                                        color = Color(0xffc3c3c3),
-                                    ),
-                                    shape = RoundedCornerShape(8.dp),
-                                )
-                                .padding(start = 20.dp),
-                            contentAlignment = Alignment.CenterStart,
-                        ) {
-                            if (state.password.isEmpty()) {
-                                Text(
-                                    text = StringProvider.getString(R.string.pw_input),
-                                    fontSize = 36.sp,
-                                    color = Color.LightGray,
-                                )
-                            }
-                            innerTextField()
-                        }
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done,
-                    ),
+                    placeholderResId = R.string.pw_input
                 )
 
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(20.dp),
-                )
-
+                Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
                 Spacer(modifier = Modifier.weight(1f))
 
                 PrimaryButton(
@@ -232,11 +142,100 @@ fun LocationLoginScreen(
                 PrimaryButton(
                     text = StringProvider.getString(R.string.signin),
                     onClick = onSignInClick,
-                    enabled = !state.isLoggingIn
                 )
             }
         }
-    } else {
-        // Landscape 처리
+    }
+}
+
+@Composable
+private fun SettingsButton(onClick: () -> Unit) {
+    Row(
+        horizontalArrangement = Arrangement.End,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Image(
+            modifier = Modifier
+                .size(40.dp)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = onClick
+                ),
+            painter = painterResource(id = R.drawable.icon_settings),
+            contentDescription = "",
+        )
+    }
+}
+
+@Composable
+private fun LoginTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholderResId: Int,
+    imeAction: ImeAction = ImeAction.Done
+) {
+    BasicTextField(
+        value = value,
+        onValueChange = onValueChange,
+        textStyle = TextStyle(fontSize = 36.sp),
+        decorationBox = { innerTextField ->
+            TextFieldDecorationBox(
+                isEmpty = value.isEmpty(),
+                placeholderResId = placeholderResId,
+                innerTextField = innerTextField
+            )
+        },
+        keyboardOptions = KeyboardOptions(imeAction = imeAction),
+    )
+}
+
+@Composable
+private fun PasswordTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholderResId: Int
+) {
+    BasicTextField(
+        value = value,
+        onValueChange = onValueChange,
+        visualTransformation = PasswordVisualTransformation(),
+        textStyle = TextStyle(fontSize = 36.sp),
+        decorationBox = { innerTextField ->
+            TextFieldDecorationBox(
+                isEmpty = value.isEmpty(),
+                placeholderResId = placeholderResId,
+                innerTextField = innerTextField
+            )
+        },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+    )
+}
+
+@Composable
+private fun TextFieldDecorationBox(
+    isEmpty: Boolean,
+    placeholderResId: Int,
+    innerTextField: @Composable () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .border(
+                border = BorderStroke(width = 1.dp, color = Color(0xffc3c3c3)),
+                shape = RoundedCornerShape(8.dp),
+            )
+            .padding(start = 20.dp),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        if (isEmpty) {
+            Text(
+                text = StringProvider.getString(placeholderResId),
+                fontSize = 36.sp,
+                color = Color.LightGray,
+            )
+        }
+        innerTextField()
     }
 }
