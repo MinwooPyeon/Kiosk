@@ -1,5 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.auth.faceidlogin
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,12 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,10 +28,7 @@ import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
-import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -53,15 +45,19 @@ fun FaceIdLoginRoute(
             is FaceIdLoginSideEffect.ShowToast -> {
                 // 토스트 표시 처리
             }
+
             is FaceIdLoginSideEffect.LoginSuccess -> {
                 updateIsSignedIn(true)
             }
+
             is FaceIdLoginSideEffect.LoginFailed -> {
                 // 실패 처리
             }
+
             is FaceIdLoginSideEffect.MaxAttemptsReached -> {
-                updateIsSignedIn(false)
+                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
             }
+
             is FaceIdLoginSideEffect.NavigateBack -> {
                 navController.popBackStack(SignInScreenState.UserSignIn.name, false)
             }
@@ -70,7 +66,7 @@ fun FaceIdLoginRoute(
 
     LaunchedEffect(Unit) {
         delay(30000)
-        updateIsSignedIn(false)
+        navController.popBackStack(SignInScreenState.UserSignIn.name, false)
     }
 
     FaceIdLoginScreen(
@@ -83,7 +79,7 @@ fun FaceIdLoginRoute(
             }
         },
         onDetectionStatus = { status ->
-            viewModel.updateFaceDetectionStatus(status)
+            viewModel.updateLiveFaceDetectionStatus(status)
         },
         onBackClick = {
             viewModel.navigateBack()
@@ -94,7 +90,7 @@ fun FaceIdLoginRoute(
 @Composable
 fun FaceIdLoginScreen(
     state: FaceIdLoginState,
-    onFaceDetected: (android.graphics.Bitmap) -> Unit,
+    onFaceDetected: (Bitmap) -> Unit,
     onDetectionStatus: (String) -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -106,7 +102,7 @@ fun FaceIdLoginScreen(
         verticalArrangement = Arrangement.Center,
     ) {
         StyledText(
-            StringProvider.getString(R.string.faceid_signin_title),
+            StringProvider.getString(R.string.face_id_sign_in_title),
             style = TextStyle.Title,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -136,11 +132,9 @@ fun FaceIdLoginScreen(
         if (state.attemptsLeft > 0) {
             StyledText(state.liveFaceDetectionStatus)
             Spacer(modifier = Modifier.height(20.dp))
-            if (state.attemptsLeft < AppConstants.FACE_ID_MAX_ATTEMPTS) {
-                StyledText(
-                    "${state.faceDetectionStatus} (${AppConstants.FACE_ID_MAX_ATTEMPTS - state.attemptsLeft + 1}/${AppConstants.FACE_ID_MAX_ATTEMPTS})"
-                )
-            }
+            StyledText(
+                "${state.faceDetectionStatus} (${AppConstants.FACE_ID_MAX_ATTEMPTS - state.attemptsLeft + 1}/${AppConstants.FACE_ID_MAX_ATTEMPTS})"
+            )
         } else {
             StyledText(
                 StringProvider.getString(R.string.signin_vm_face_no_match),

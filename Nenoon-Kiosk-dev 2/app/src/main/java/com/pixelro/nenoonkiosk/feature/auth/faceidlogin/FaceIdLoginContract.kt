@@ -1,8 +1,5 @@
 package com.pixelro.nenoonkiosk.feature.auth.faceidlogin
 
-import android.graphics.Bitmap
-import com.harang.data.model.dto.User
-
 data class FaceIdLoginState(
     val faceDetectionStatus: String = "",
     val isProcessingFace: Boolean = false,

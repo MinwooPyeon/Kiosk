@@ -16,7 +16,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
-import org.orbitmvi.orbit.container
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
@@ -28,9 +27,12 @@ class FaceIdLoginViewModel @Inject constructor(
 ) : ViewModel(), ContainerHost<FaceIdLoginState, FaceIdLoginSideEffect> {
 
     override val container: Container<FaceIdLoginState, FaceIdLoginSideEffect> =
-        container(FaceIdLoginState(
-            attemptsLeft = AppConstants.FACE_ID_MAX_ATTEMPTS
-        ))
+        container(
+            FaceIdLoginState(
+                attemptsLeft = AppConstants.FACE_ID_MAX_ATTEMPTS,
+                faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_detection_status_looking)
+            )
+        )
 
     private var registeredFaces: Map<String, FloatArray> = emptyMap()
     private var previousAttemptTime: Long = 0L
@@ -45,7 +47,7 @@ class FaceIdLoginViewModel @Inject constructor(
         Log.d("FaceIdLoginVM", "Loaded ${registeredFaces.size} registered faces")
     }
 
-    fun updateFaceDetectionStatus(status: String) = intent {
+    fun updateLiveFaceDetectionStatus(status: String) = intent {
         reduce { state.copy(liveFaceDetectionStatus = status) }
     }
 
@@ -74,10 +76,12 @@ class FaceIdLoginViewModel @Inject constructor(
             )
         }
 
-        try {
-            val embedding = withContext(Dispatchers.Default) {
+        runCatching {
+            withContext(Dispatchers.Default) {
                 faceRecognizer.getFaceEmbedding(faceBitmap)
             }
+        }.onSuccess { embedding ->
+            faceBitmap.recycle()
 
             if (embedding == null) {
                 reduce {
@@ -89,15 +93,14 @@ class FaceIdLoginViewModel @Inject constructor(
                         isProcessingFace = false
                     )
                 }
-                faceBitmap.recycle()
 
                 if (state.attemptsLeft <= 0) {
+                    delay(3000)
                     postSideEffect(FaceIdLoginSideEffect.MaxAttemptsReached)
                 }
                 return@intent
             }
 
-            // 서버 인증 또는 로컬 인증
             val success = if (!AppConstants.MANAGE_USERS_INTERNALLY) {
                 authenticateWithServer(embedding)
             } else {
@@ -116,20 +119,23 @@ class FaceIdLoginViewModel @Inject constructor(
             } else {
                 reduce {
                     state.copy(
-                        faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_no_match),
+                        faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_recognizing),
                         attemptsLeft = state.attemptsLeft - 1,
                         isProcessingFace = false
                     )
                 }
 
                 if (state.attemptsLeft <= 0) {
+                    delay(3000)
                     postSideEffect(FaceIdLoginSideEffect.MaxAttemptsReached)
                 } else {
                     postSideEffect(FaceIdLoginSideEffect.LoginFailed)
                 }
             }
-        } catch (e: Exception) {
+        }.onFailure { e ->
             Log.e("FaceIdLoginVM", "Error during face sign in: ${e.message}", e)
+            faceBitmap.recycle()
+
             reduce {
                 state.copy(
                     faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_processing_error),
@@ -139,15 +145,14 @@ class FaceIdLoginViewModel @Inject constructor(
             }
 
             if (state.attemptsLeft <= 0) {
+                delay(3000)
                 postSideEffect(FaceIdLoginSideEffect.MaxAttemptsReached)
             }
-        } finally {
-            faceBitmap.recycle()
         }
     }
 
     private suspend fun authenticateWithServer(embedding: FloatArray): Boolean {
-        return try {
+        return runCatching {
             val signedInUserData = signInRepository.userSignInWithFace(
                 embedding.contentToString(),
                 AppConstants.FACE_ID_THRESHOLD
@@ -159,7 +164,7 @@ class FaceIdLoginViewModel @Inject constructor(
             } else {
                 false
             }
-        } catch (e: Exception) {
+        }.getOrElse { e ->
             Log.e("FaceIdLoginVM", "Server authentication failed: ${e.message}", e)
             false
         }
