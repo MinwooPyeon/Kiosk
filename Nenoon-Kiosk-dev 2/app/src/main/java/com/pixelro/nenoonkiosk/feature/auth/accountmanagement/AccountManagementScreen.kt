@@ -84,9 +84,9 @@ fun AccountManagementRoute(
             }
         } else if (isUserSignedIn &&
             !userData?.id.isNullOrBlank() &&
-            !userData?.password.isNullOrBlank()
+            !userData.password.isNullOrBlank()
         ) {
-            viewModel.generateQrCodeBitmap(userData?.id!!, userData?.password!!)
+            viewModel.generateQrCodeBitmap(userData.id!!, userData.password!!)
         }
     }
 

@@ -7,6 +7,7 @@ import android.util.Log
 import android.util.Patterns
 import androidx.core.graphics.scale
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.harang.data.repository.SignInRepository
 import com.mangoslab.nemonicsdk.NPrintInfo
 import com.mangoslab.nemonicsdk.NPrinter
@@ -21,6 +22,7 @@ import com.pixelro.nenoonkiosk.core.util.qr.QRCodeGenerator
 import com.pixelro.nenoonkiosk.feature.inspection.result.TestResultUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import org.orbitmvi.orbit.Container
@@ -114,7 +116,7 @@ class SignUpViewModel @Inject constructor(
             state.copy(isSigningUp = true, errorMessage = null)
         }
 
-        runCatching {
+        val success = runCatching {
             val isFaceEnrolled = state.isFaceEnrollmentReady && tempFaceEmbedding != null
 
             if (AppConstants.MANAGE_USERS_INTERNALLY) {
@@ -133,60 +135,57 @@ class SignUpViewModel @Inject constructor(
                     }
                 }
 
-                generateQrCode(state.id, state.password)
-                ""
+                val qrBitmap = generateQrCodeBitmap(state.id, state.password)
+                reduce { state.copy(generatedQrBitmap = qrBitmap) }
+                true
             } else {
-                val locationId = signInRepository.getLocationId()
-                if (locationId != null) {
-                    val qrCode = generateQrCodeBitmap(state.id, state.password)
-                    if (qrCode != null) {
-                        val qrUrl = signInRepository.updateQrCode(
-                            bitmapToFile(application, qrCode, "qr-image.jpg")
-                        )
+                val qrCode =
+                    generateQrCodeBitmap(state.id, state.password) ?: return@runCatching false
 
-                        if (qrUrl != null) {
-                            signInRepository.userSignUp(
-                                id = state.id,
-                                pw = state.password,
-                                name = state.name,
-                                email = state.email.ifBlank { AppConstants.DEFAULT_EMAIL },
-                                pid = 0L,
-                                vector = tempFaceEmbedding.contentToString(),
-                                qrUrl = qrUrl
-                            ).also { token ->
-                                if (token != null) {
-                                    tempAccessToken = token
-                                }
-                            }
-                        } else null
-                    } else null
-                } else null
-            }
-        }.onSuccess { result ->
-            if (result != null) {
-                reduce {
-                    state.copy(
-                        isSigningUp = false,
-                        signupSuccess = true
-                    )
+                reduce { state.copy(generatedQrBitmap = qrCode) }
+
+                val qrUrl = signInRepository.updateQrCode(
+                    bitmapToFile(application, qrCode, "qr-image.jpg")
+                ) ?: return@runCatching false
+
+                val token = signInRepository.userSignUp(
+                    id = state.id,
+                    pw = state.password,
+                    name = state.name,
+                    email = state.email.ifBlank { AppConstants.DEFAULT_EMAIL },
+                    pid = 0L,
+                    vector = if (isFaceEnrolled) tempFaceEmbedding.contentToString() else "",
+                    qrUrl = qrUrl
+                )
+
+                if (token != null) {
+                    tempAccessToken = token
+                    true
+                } else {
+                    false
                 }
-                printQrCode()
-                postSideEffect(SignUpSideEffect.SignUpSuccess)
-            } else {
-                reduce {
-                    state.copy(
-                        isSigningUp = false,
-                        errorMessage = StringProvider.getString(R.string.user_signup_error_signup_failed)
-                    )
-                }
-                postSideEffect(SignUpSideEffect.SignUpFailed)
             }
-        }.onFailure { e ->
+        }.getOrElse { e ->
             Log.e("SignUpVM", "Sign up error: ${e.message}", e)
+            false
+        }
+
+        if (success) {
             reduce {
                 state.copy(
                     isSigningUp = false,
-                    errorMessage = StringProvider.getString(R.string.user_signup_error_signup_failed)
+                    signupSuccess = true
+                )
+            }
+            viewModelScope.launch {
+                printQrCode()
+            }
+            postSideEffect(SignUpSideEffect.SignUpSuccess)
+        } else {
+            reduce {
+                state.copy(
+                    isSigningUp = false,
+                    errorMessage = "회원가입에 실패했습니다"
                 )
             }
             postSideEffect(SignUpSideEffect.SignUpFailed)
@@ -217,19 +216,6 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private suspend fun generateQrCode(id: String, password: String) {
-        val userDataJson = JSONObject().apply {
-            put("id", id)
-            put("pw", password)
-        }.toString()
-
-        val bitmap = withContext(Dispatchers.IO) {
-            QRCodeGenerator.generateQrCode(userDataJson, 400, 400)
-        }
-
-        reduce { state.copy(generatedQrBitmap = bitmap) }
-    }
-
     private suspend fun generateQrCodeBitmap(id: String, password: String): Bitmap? {
         return runCatching {
             val userDataJson = JSONObject().apply {
@@ -239,14 +225,12 @@ class SignUpViewModel @Inject constructor(
 
             withContext(Dispatchers.IO) {
                 QRCodeGenerator.generateQrCode(userDataJson, 400, 400)
-            }.also { bitmap ->
-                reduce { state.copy(generatedQrBitmap = bitmap) }
             }
         }.getOrNull()
     }
 
     private fun printQrCode() {
-        val qrCode = state.generatedQrBitmap ?: return
+        val qrCode = container.stateFlow.value.generatedQrBitmap ?: return
 
         val printerInfo = PrinterManager.getPrinterInfo()
         val printerType = printerInfo.first
@@ -296,6 +280,6 @@ class SignUpViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        state.generatedQrBitmap?.recycle()
+        container.stateFlow.value.generatedQrBitmap?.recycle()
     }
 }
