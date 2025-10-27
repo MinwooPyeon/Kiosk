@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.auth
+package com.pixelro.nenoonkiosk.feature.auth.faceenrollment
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +30,7 @@ import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.auth
+package com.pixelro.nenoonkiosk.core.recognizer
 
 import android.app.Application
 import android.graphics.Bitmap

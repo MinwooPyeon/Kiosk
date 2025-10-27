@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.auth
+package com.pixelro.nenoonkiosk.feature.auth.qrlogin
 
 import android.util.Log
 import android.util.Size
@@ -45,6 +45,7 @@ import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.qr.QRScannerAnalyzer
+import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -75,7 +76,8 @@ fun QRSignInScreen(
 
     val cameraExecutor: ExecutorService = remember { Executors.newSingleThreadExecutor() }
 
-    val cameraProviderFutureState = remember { mutableStateOf<ListenableFuture<ProcessCameraProvider>?>(null) }
+    val cameraProviderFutureState =
+        remember { mutableStateOf<ListenableFuture<ProcessCameraProvider>?>(null) }
 
     DisposableEffect(Unit) {
         signInFailed = false
@@ -167,18 +169,21 @@ fun QRSignInScreen(
                                                         val json = JSONObject(result)
                                                         scannedId = json.getString("id")
                                                         scannedPassword = json.getString("pw")
-                                                        signInMessage = StringProvider.getString(R.string.qr_sign_in_scanned_success)
+                                                        signInMessage =
+                                                            StringProvider.getString(R.string.qr_sign_in_scanned_success)
                                                     } catch (e: Exception) {
-                                                        signInMessage = StringProvider.getString(R.string.qr_sign_in_invalid_qr)
+                                                        signInMessage =
+                                                            StringProvider.getString(R.string.qr_sign_in_invalid_qr)
                                                         isScanning = true
-                                                        ContextCompat.getMainExecutor(context).execute {
-                                                            actualCameraProvider.bindToLifecycle(
-                                                                lifecycleOwner,
-                                                                CameraSelector.DEFAULT_FRONT_CAMERA,
-                                                                preview,
-                                                                it,
-                                                            )
-                                                        }
+                                                        ContextCompat.getMainExecutor(context)
+                                                            .execute {
+                                                                actualCameraProvider.bindToLifecycle(
+                                                                    lifecycleOwner,
+                                                                    CameraSelector.DEFAULT_FRONT_CAMERA,
+                                                                    preview,
+                                                                    it,
+                                                                )
+                                                            }
                                                     }
                                                 }
                                             },
@@ -194,10 +199,16 @@ fun QRSignInScreen(
                                     imageAnalysis,
                                 )
                             } catch (exc: Exception) {
-                                Log.e("CAMERA_BIND", StringProvider.getString(R.string.qr_sign_in_camera_bind_fail), exc)
+                                Log.e(
+                                    "CAMERA_BIND",
+                                    StringProvider.getString(R.string.qr_sign_in_camera_bind_fail),
+                                    exc
+                                )
                                 isScanning = false
                                 navController.navigate(SignInScreenState.UserSignIn.name) {
-                                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        inclusive = true
+                                    }
                                 }
                             }
                         }, ContextCompat.getMainExecutor(ctx))
@@ -215,7 +226,9 @@ fun QRSignInScreen(
             ProgressIndicator()
         }
 
-        Spacer(modifier = Modifier.weight(1f).height(40.dp))
+        Spacer(modifier = Modifier
+            .weight(1f)
+            .height(40.dp))
 
         StyledText(
             text = if (!(isUserSignedIn && userData?.name?.isNotEmpty() == true && !signInFailed)) signInMessage else "",

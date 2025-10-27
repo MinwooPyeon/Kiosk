@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.auth
+package com.pixelro.nenoonkiosk.feature.auth.locationlogin
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
@@ -43,6 +43,7 @@ import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.ui.theme.NEURAL200
 import kotlinx.coroutines.Dispatchers

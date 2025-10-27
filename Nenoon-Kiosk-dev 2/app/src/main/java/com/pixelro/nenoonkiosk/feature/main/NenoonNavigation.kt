@@ -26,9 +26,9 @@ import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
 import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
-import com.pixelro.nenoonkiosk.feature.auth.AccountManagementScreen
+import com.pixelro.nenoonkiosk.feature.auth.accountmanagement.AccountManagementScreen
 import com.pixelro.nenoonkiosk.feature.termsofservice.faceid.FaceIdTermsOfServiceRoute
-import com.pixelro.nenoonkiosk.feature.auth.FaceUpdateScreen
+import com.pixelro.nenoonkiosk.feature.auth.faceupdate.FaceUpdateScreen
 import com.pixelro.nenoonkiosk.feature.auth.SignInScreen
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListScreen

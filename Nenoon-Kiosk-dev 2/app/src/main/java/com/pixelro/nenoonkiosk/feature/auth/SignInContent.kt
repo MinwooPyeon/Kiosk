@@ -13,8 +13,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
+import com.pixelro.nenoonkiosk.feature.auth.faceenrollment.FaceEnrollmentScreen
+import com.pixelro.nenoonkiosk.feature.auth.faceidlogin.FaceIdSignInScreen
+import com.pixelro.nenoonkiosk.feature.auth.idpasswordlogin.IdPasswordSignInScreen
+import com.pixelro.nenoonkiosk.feature.auth.locationlogin.LocationSignInScreen
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginScreen
+import com.pixelro.nenoonkiosk.feature.auth.qrlogin.QRSignInScreen
+import com.pixelro.nenoonkiosk.feature.auth.signup.UserSignUpScreen
 import com.pixelro.nenoonkiosk.feature.termsofservice.faceid.FaceIdTermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.termsofservice.signup.SignUpTermsOfServiceRoute
 

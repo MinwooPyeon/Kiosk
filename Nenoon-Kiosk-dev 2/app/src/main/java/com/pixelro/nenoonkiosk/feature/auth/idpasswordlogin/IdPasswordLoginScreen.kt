@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.auth
+package com.pixelro.nenoonkiosk.feature.auth.idpasswordlogin
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -41,6 +41,7 @@ import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.launch
 

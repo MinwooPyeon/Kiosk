@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.auth
+package com.pixelro.nenoonkiosk.feature.auth.faceupdate
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image

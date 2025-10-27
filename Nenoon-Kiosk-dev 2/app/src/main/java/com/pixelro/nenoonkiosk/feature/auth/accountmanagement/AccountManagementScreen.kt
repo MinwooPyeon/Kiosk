@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.auth
+package com.pixelro.nenoonkiosk.feature.auth.accountmanagement
 
 import android.graphics.Bitmap
 import android.util.Log

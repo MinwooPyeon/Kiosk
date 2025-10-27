@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.auth
+package com.pixelro.nenoonkiosk.core.recognizer
 
 import android.app.Application
 import android.content.res.AssetManager
@@ -19,7 +19,6 @@ import java.nio.channels.FileChannel
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.sqrt
-import org.tensorflow.lite.Interpreter.Options as InterpreterOptions
 
 @Singleton
 class TFLiteFaceRecognizer
@@ -46,7 +45,7 @@ class TFLiteFaceRecognizer
 
             try {
                 val modelByteBuffer = loadModelFile(application.assets, modelFileName)
-                val options = InterpreterOptions()
+                val options = Interpreter.Options()
 
                 val compatList = CompatibilityList()
 
