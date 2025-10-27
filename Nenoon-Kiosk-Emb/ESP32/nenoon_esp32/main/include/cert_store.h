@@ -1,5 +1,5 @@
 /*
- * cent_store.h
+ * cert_store.h
  *
  * - Root CA: attach to esp_http_client_config_t (cert_pem or crt_bundle_attach)
  * - SPKI pinning: preflight verify via mbedTLS (no private esp_transport)
@@ -25,7 +25,7 @@ typedef struct{
 }cert_store_cfg_t;
 
 void cert_store_init(const cert_store_cfg_t* cfg);
-esp_err_t cert_store_attack(esp_http_client_config_t* http_cfg);
+esp_err_t cert_store_attach(esp_http_client_config_t* http_cfg);
 esp_err_t cert_store_preverify_spki(const char* url);
 
 #endif /* MAIN_INCLUDE_CERT_STORE_H_ */
