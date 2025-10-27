@@ -2,39 +2,9 @@ package com.harang.data.datasource
 
 import android.util.Log
 import com.harang.data.api.NenoonKioskApi
-import com.harang.data.model.AmslerTestData
-import com.harang.data.model.AmslerTestResult
-import com.harang.data.model.BloodPressureTestData
-import com.harang.data.model.BloodPressureTestResult
-import com.harang.data.model.DementiaTestData
-import com.harang.data.model.DementiaTestResult
-import com.harang.data.model.GetCompoundTestResult
-import com.harang.data.model.GripStrengthTestData
-import com.harang.data.model.GripStrengthTestResult
-import com.harang.data.model.MchartsTestData
-import com.harang.data.model.MchartsTestResult
-import com.harang.data.model.PresbyopiaTestData
-import com.harang.data.model.PresbyopiaTestResult
-import com.harang.data.model.PulmonaryTestData
-import com.harang.data.model.PulmonaryTestResult
-import com.harang.data.model.SendAmslerGridTestResultRequest
-import com.harang.data.model.SendAmslerGridTestResultResponse
-import com.harang.data.model.SendBloodPressureTestResultRequest
-import com.harang.data.model.SendBloodPressureTestResultResponse
-import com.harang.data.model.SendDementiaTestResultRequest
-import com.harang.data.model.SendDementiaTestResultResponse
-import com.harang.data.model.SendGripStrengthTestResultRequest
-import com.harang.data.model.SendGripStrengthTestResultResponse
-import com.harang.data.model.SendMChartTestResultRequest
-import com.harang.data.model.SendMChartTestResultResponse
-import com.harang.data.model.SendPresbyopiaTestResultRequest
-import com.harang.data.model.SendPresbyopiaTestResultResponse
-import com.harang.data.model.SendPulmonaryFunctionTestResultRequest
-import com.harang.data.model.SendPulmonaryFunctionTestResultResponse
-import com.harang.data.model.SendShortVisualAcuityTestResultRequest
-import com.harang.data.model.SendShortVisualAcuityTestResultResponse
-import com.harang.data.model.SightTestData
-import com.harang.data.model.SightTestResult
+import com.harang.data.model.dto.*
+import com.harang.data.model.dto.request.*
+import com.harang.data.model.dto.response.*
 
 class TestResultRemoteDataSource(
     private val api: NenoonKioskApi,

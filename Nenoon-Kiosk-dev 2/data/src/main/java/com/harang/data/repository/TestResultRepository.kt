@@ -1,23 +1,9 @@
 package com.harang.data.repository
 
 import com.harang.data.datasource.TestResultRemoteDataSource
-import com.harang.data.model.GetCompoundTestResult
-import com.harang.data.model.SendAmslerGridTestResultRequest
-import com.harang.data.model.SendAmslerGridTestResultResponse
-import com.harang.data.model.SendBloodPressureTestResultRequest
-import com.harang.data.model.SendBloodPressureTestResultResponse
-import com.harang.data.model.SendDementiaTestResultRequest
-import com.harang.data.model.SendDementiaTestResultResponse
-import com.harang.data.model.SendGripStrengthTestResultRequest
-import com.harang.data.model.SendGripStrengthTestResultResponse
-import com.harang.data.model.SendMChartTestResultRequest
-import com.harang.data.model.SendMChartTestResultResponse
-import com.harang.data.model.SendPresbyopiaTestResultRequest
-import com.harang.data.model.SendPresbyopiaTestResultResponse
-import com.harang.data.model.SendPulmonaryFunctionTestResultRequest
-import com.harang.data.model.SendPulmonaryFunctionTestResultResponse
-import com.harang.data.model.SendShortVisualAcuityTestResultRequest
-import com.harang.data.model.SendShortVisualAcuityTestResultResponse
+import com.harang.data.model.dto.GetCompoundTestResult
+import com.harang.data.model.dto.request.*
+import com.harang.data.model.dto.response.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

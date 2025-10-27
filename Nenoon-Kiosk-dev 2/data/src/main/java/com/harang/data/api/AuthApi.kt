@@ -1,16 +1,7 @@
 package com.harang.data.api
 
-import com.harang.data.model.GetUserProfileResponse
-import com.harang.data.model.SendLocationSignInDataResponse
-import com.harang.data.model.SendSignUpDataRequest
-import com.harang.data.model.SendSignUpDataResponse
-import com.harang.data.model.SendUserFaceSignInDataRequest
-import com.harang.data.model.SendUserFaceUpdateDataRequest
-import com.harang.data.model.SendUserFaceUpdateDataResponse
-import com.harang.data.model.SendUserQrCodeUpdateDataResponse
-import com.harang.data.model.SendUserQrCodeUrlResponse
-import com.harang.data.model.SendUserSignInDataRequest
-import com.harang.data.model.SendUserSignInDataResponse
+import com.harang.data.model.dto.request.*
+import com.harang.data.model.dto.response.*
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response

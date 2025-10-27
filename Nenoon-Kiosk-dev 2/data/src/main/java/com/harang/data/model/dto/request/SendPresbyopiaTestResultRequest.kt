@@ -1,4 +1,4 @@
-package com.harang.data.model
+package com.harang.data.model.dto.request
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
@@ -34,13 +34,4 @@ data class SendPresbyopiaTestResultRequest(
     val presbyopia9: String = "",
     @SerializedName("presbyopia10")
     val presbyopia10: String = "",
-) : Serializable
-
-data class SendPresbyopiaTestResultResponse(
-    @SerializedName("responseId")
-    val responseId: String,
-    @SerializedName("createAt")
-    val createAt: String,
-    @SerializedName("data")
-    val data: Map<String, Any>,
 ) : Serializable

@@ -1,4 +1,4 @@
-package com.harang.data.model
+package com.harang.data.model.dto
 
 data class User(
     val id: String? = null,

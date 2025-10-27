@@ -4,14 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.harang.data.model.SendAmslerGridTestResultRequest
-import com.harang.data.model.SendBloodPressureTestResultRequest
-import com.harang.data.model.SendDementiaTestResultRequest
-import com.harang.data.model.SendGripStrengthTestResultRequest
-import com.harang.data.model.SendMChartTestResultRequest
-import com.harang.data.model.SendPresbyopiaTestResultRequest
-import com.harang.data.model.SendPulmonaryFunctionTestResultRequest
-import com.harang.data.model.SendShortVisualAcuityTestResultRequest
+import com.harang.data.model.dto.request.*
 import com.harang.data.repository.TestResultRepository
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType

@@ -4,7 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.harang.data.model.SendSurveyDataRequest
+import com.harang.data.model.dto.request.SendSurveyDataRequest
 import com.harang.data.repository.SignInRepository
 import com.harang.data.repository.SurveyRepository
 import com.pixelro.nenoonkiosk.R

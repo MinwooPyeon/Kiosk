@@ -1,4 +1,4 @@
-package com.harang.data.model
+package com.harang.data.model.dto.request
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
@@ -36,13 +36,4 @@ data class SendMChartTestResultRequest(
     val mChart9: String = "",
     @SerializedName("mChart10")
     val mChart10: String = "",
-) : Serializable
-
-data class SendMChartTestResultResponse(
-    @SerializedName("responseId")
-    val responseId: String,
-    @SerializedName("createAt")
-    val createAt: String,
-    @SerializedName("data")
-    val data: Map<String, Any>,
 ) : Serializable
