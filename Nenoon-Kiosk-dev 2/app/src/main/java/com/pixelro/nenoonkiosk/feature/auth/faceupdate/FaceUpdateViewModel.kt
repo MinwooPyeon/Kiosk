@@ -4,6 +4,7 @@ import android.app.Application
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.harang.data.model.dto.User
 import com.harang.data.repository.SignInRepository
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
@@ -28,6 +29,7 @@ class FaceUpdateViewModel @Inject constructor(
     override val container: Container<FaceUpdateState, FaceUpdateSideEffect> =
         container(
             FaceUpdateState(
+                faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_detection_status_looking),
                 currentScreenStatus = StringProvider.getString(R.string.user_face_update_initial_status)
             )
         )
@@ -42,9 +44,13 @@ class FaceUpdateViewModel @Inject constructor(
 
     private fun loadRegisteredFaces() {
         registeredFaces = SharedPreferencesManager.getRegisteredFaceEmbeddings().toMutableMap()
+        Log.d("FaceUpdateVM", "Loaded ${registeredFaces.size} registered faces")
     }
 
     fun resetFaceData() = intent {
+        state.lastDetectedFaceBitmap?.recycle()
+        tempFaceEmbedding = null
+
         reduce {
             state.copy(
                 faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_detection_status_looking),
@@ -55,7 +61,6 @@ class FaceUpdateViewModel @Inject constructor(
                 currentScreenStatus = StringProvider.getString(R.string.user_face_update_initial_status)
             )
         }
-        tempFaceEmbedding = null
     }
 
     fun updateFaceDetectionStatus(status: String) = intent {
@@ -76,84 +81,129 @@ class FaceUpdateViewModel @Inject constructor(
             )
         }
 
-        try {
-            val embedding = withContext(Dispatchers.Default) {
+        runCatching {
+            withContext(Dispatchers.Default) {
                 faceRecognizer.getFaceEmbedding(faceBitmap)
             }
-
+        }.onSuccess { embedding ->
             if (embedding != null && !faceBitmap.isRecycled) {
                 tempFaceEmbedding = embedding
 
                 val oldBitmap = state.lastDetectedFaceBitmap
                 oldBitmap?.recycle()
 
+                val copiedBitmap = faceBitmap.config?.let { config ->
+                    faceBitmap.copy(config, true)
+                }
+
                 reduce {
                     state.copy(
-                        lastDetectedFaceBitmap = faceBitmap.config?.let {
-                            faceBitmap.copy(it, true)
-                        },
-                        isFaceEnrollmentDataReady = true
+                        lastDetectedFaceBitmap = copiedBitmap,
+                        isFaceEnrollmentDataReady = true,
+                        isProcessingFace = false,
+                        faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_enrollment_ready)
                     )
                 }
                 Log.d("FaceUpdateVM", "Face captured successfully")
             } else {
-                val oldBitmap = state.lastDetectedFaceBitmap
-                oldBitmap?.recycle()
+                state.lastDetectedFaceBitmap?.recycle()
 
                 reduce {
                     state.copy(
-                        faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_processing),
+                        faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_extraction_failed_retry),
                         lastDetectedFaceBitmap = null,
-                        isFaceEnrollmentDataReady = false
+                        isFaceEnrollmentDataReady = false,
+                        isProcessingFace = false
                     )
                 }
             }
-        } catch (e: Exception) {
+            faceBitmap.recycle()
+            updateScreenStatus()
+        }.onFailure { e ->
             Log.e("FaceUpdateVM", "Error capturing face: ${e.message}", e)
+
+            state.lastDetectedFaceBitmap?.recycle()
+
             reduce {
                 state.copy(
                     faceDetectionStatus = StringProvider.getString(R.string.signin_vm_face_processing_error),
-                    isFaceEnrollmentDataReady = false
+                    isFaceEnrollmentDataReady = false,
+                    isProcessingFace = false,
+                    lastDetectedFaceBitmap = null
                 )
             }
-        } finally {
-            reduce { state.copy(isProcessingFace = false) }
             faceBitmap.recycle()
+            postSideEffect(FaceUpdateSideEffect.ShowToast("얼굴 캡처 중 오류가 발생했습니다"))
             updateScreenStatus()
         }
     }
 
     private fun updateScreenStatus() = intent {
-        val status = if (state.isFaceEnrollmentDataReady) {
-            StringProvider.getString(R.string.user_face_update_ready_status)
-        } else if (state.faceDetectionStatus.isEmpty()) {
-            StringProvider.getString(R.string.user_face_update_scan_prompt)
-        } else if (state.faceDetectionStatus.isNotEmpty()) {
-            state.faceDetectionStatus
-        } else {
-            StringProvider.getString(R.string.user_face_update_retry_scan)
+        val status = when {
+            state.isFaceEnrollmentDataReady -> {
+                StringProvider.getString(R.string.user_face_update_ready_status)
+            }
+            state.faceDetectionStatus.isEmpty() -> {
+                StringProvider.getString(R.string.user_face_update_scan_prompt)
+            }
+            state.faceDetectionStatus.isNotEmpty() -> {
+                state.faceDetectionStatus
+            }
+            else -> {
+                StringProvider.getString(R.string.user_face_update_retry_scan)
+            }
         }
 
         reduce { state.copy(currentScreenStatus = status) }
     }
 
-    suspend fun saveFaceUpdate(userId: String): Boolean {
+    fun saveFaceUpdate(userId: String, accessToken: String? = null) = intent {
         if (tempFaceEmbedding == null) {
-            return false
+            postSideEffect(FaceUpdateSideEffect.ShowToast("저장할 얼굴 정보가 없습니다"))
+            postSideEffect(FaceUpdateSideEffect.UpdateFailed)
+            return@intent
         }
 
-        return try {
+        runCatching {
             if (AppConstants.MANAGE_USERS_INTERNALLY) {
                 registeredFaces[userId] = tempFaceEmbedding!!
                 SharedPreferencesManager.putRegisteredFaceEmbeddings(registeredFaces)
                 true
             } else {
-                // 서버에 업데이트 로직
-                false
+                if (accessToken != null) {
+                    signInRepository.userUpdateFace(accessToken, tempFaceEmbedding.contentToString())
+                    true
+                } else {
+                    false
+                }
             }
-        } catch (e: Exception) {
+        }.onSuccess { success ->
+            if (success) {
+                tempFaceEmbedding = null
+                reduce {
+                    state.copy(
+                        enrollmentMessage = StringProvider.getString(
+                            R.string.signin_vm_face_registration_success,
+                            userId
+                        ),
+                        isFaceEnrollmentDataReady = false
+                    )
+                }
+                postSideEffect(FaceUpdateSideEffect.ShowToast("얼굴 업데이트가 완료되었습니다"))
+                postSideEffect(FaceUpdateSideEffect.UpdateSuccess)
+            } else {
+                reduce {
+                    state.copy(
+                        enrollmentMessage = StringProvider.getString(R.string.signin_vm_face_registration_extraction_failed)
+                    )
+                }
+                postSideEffect(FaceUpdateSideEffect.ShowToast("얼굴 업데이트에 실패했습니다"))
+                postSideEffect(FaceUpdateSideEffect.UpdateFailed)
+            }
+        }.onFailure { e ->
             Log.e("FaceUpdateVM", "Error saving face update: ${e.message}", e)
-            false
+            postSideEffect(FaceUpdateSideEffect.ShowToast("얼굴 업데이트 중 오류가 발생했습니다"))
+            postSideEffect(FaceUpdateSideEffect.UpdateFailed)
         }
     }
 

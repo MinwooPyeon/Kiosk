@@ -19,7 +19,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,8 +35,6 @@ import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -45,6 +42,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun FaceUpdateRoute(
     navController: NavController,
     loggedInUserId: String?,
+    accessToken: String? = null,
     viewModel: FaceUpdateViewModel = hiltViewModel()
 ) {
     val state = viewModel.collectAsState().value
@@ -82,14 +80,12 @@ fun FaceUpdateRoute(
             viewModel.updateFaceDetectionStatus(status)
         },
         onSaveClick = {
-            // Screen에서 처리
+            if (loggedInUserId != null) {
+                viewModel.saveFaceUpdate(loggedInUserId, accessToken)
+            }
         },
         onCancelClick = {
             viewModel.navigateBack()
-        },
-        loggedInUserId = loggedInUserId,
-        saveFaceUpdate = { userId ->
-            viewModel.saveFaceUpdate(userId)
         }
     )
 }
@@ -100,13 +96,10 @@ fun FaceUpdateScreen(
     onCaptureClick: (Bitmap) -> Unit,
     onDetectionStatus: (String) -> Unit,
     onSaveClick: () -> Unit,
-    onCancelClick: () -> Unit,
-    loggedInUserId: String?,
-    saveFaceUpdate: suspend (String) -> Boolean
+    onCancelClick: () -> Unit
 ) {
     var liveCameraBitmap: Bitmap? by remember { mutableStateOf(null) }
     var faceEnrollAttempted by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
 
     DisposableEffect(Unit) {
         onDispose {
@@ -200,19 +193,7 @@ fun FaceUpdateScreen(
 
             PrimaryButton(
                 text = StringProvider.getString(R.string.user_face_update_save_button),
-                onClick = {
-                    if (state.isFaceEnrollmentDataReady &&
-                        state.lastDetectedFaceBitmap != null &&
-                        loggedInUserId != null
-                    ) {
-                        coroutineScope.launch(Dispatchers.Main) {
-                            val success = saveFaceUpdate(loggedInUserId)
-                            if (success) {
-                                onSaveClick()
-                            }
-                        }
-                    }
-                },
+                onClick = onSaveClick,
                 enabled = state.isFaceEnrollmentDataReady && !state.isProcessingFace,
             )
 
