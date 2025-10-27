@@ -35,6 +35,8 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -198,9 +200,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             NenoonKioskTheme {
-                androidx.compose.material3.Surface(
+                Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = androidx.compose.material3.MaterialTheme.colorScheme.background
+                    color = colorScheme.background
                 ) {
                     val systemUiController = rememberSystemUiController()
                     systemUiController.setStatusBarColor(
