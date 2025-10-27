@@ -1,6 +1,6 @@
 package com.pixelro.nenoonkiosk.core.util.dataprovider
 
-import com.harang.data.model.CompoundTestResultAPI
+import com.harang.data.model.dto.CompoundTestResultAPI
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel

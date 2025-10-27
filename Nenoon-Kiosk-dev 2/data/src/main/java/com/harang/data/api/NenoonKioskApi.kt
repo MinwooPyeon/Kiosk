@@ -1,30 +1,16 @@
 package com.harang.data.api
 
-import com.harang.data.model.AmslerTestResult
-import com.harang.data.model.BloodPressureTestResult
-import com.harang.data.model.DementiaTestResult
-import com.harang.data.model.GetCompoundTestResult
-import com.harang.data.model.GripStrengthTestResult
-import com.harang.data.model.MchartsTestResult
-import com.harang.data.model.PresbyopiaTestResult
-import com.harang.data.model.PulmonaryTestResult
-import com.harang.data.model.SendAmslerGridTestResultRequest
-import com.harang.data.model.SendAmslerGridTestResultResponse
-import com.harang.data.model.SendBloodPressureTestResultRequest
-import com.harang.data.model.SendBloodPressureTestResultResponse
-import com.harang.data.model.SendDementiaTestResultRequest
-import com.harang.data.model.SendDementiaTestResultResponse
-import com.harang.data.model.SendGripStrengthTestResultRequest
-import com.harang.data.model.SendGripStrengthTestResultResponse
-import com.harang.data.model.SendMChartTestResultRequest
-import com.harang.data.model.SendMChartTestResultResponse
-import com.harang.data.model.SendPresbyopiaTestResultRequest
-import com.harang.data.model.SendPresbyopiaTestResultResponse
-import com.harang.data.model.SendPulmonaryFunctionTestResultRequest
-import com.harang.data.model.SendPulmonaryFunctionTestResultResponse
-import com.harang.data.model.SendShortVisualAcuityTestResultRequest
-import com.harang.data.model.SendShortVisualAcuityTestResultResponse
-import com.harang.data.model.SightTestResult
+import com.harang.data.model.dto.AmslerTestResult
+import com.harang.data.model.dto.BloodPressureTestResult
+import com.harang.data.model.dto.DementiaTestResult
+import com.harang.data.model.dto.GetCompoundTestResult
+import com.harang.data.model.dto.GripStrengthTestResult
+import com.harang.data.model.dto.MchartsTestResult
+import com.harang.data.model.dto.PresbyopiaTestResult
+import com.harang.data.model.dto.PulmonaryTestResult
+import com.harang.data.model.dto.request.*
+import com.harang.data.model.dto.response.*
+import com.harang.data.model.dto.SightTestResult
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -143,6 +129,4 @@ interface NenoonKioskApi {
     suspend fun getCompoundTestResult(
         @Header("authorization") token: String,
     ): Response<GetCompoundTestResult>
-
-
 }

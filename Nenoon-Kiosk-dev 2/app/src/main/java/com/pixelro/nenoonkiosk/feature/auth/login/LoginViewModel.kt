@@ -11,7 +11,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.RawResourceDataSource
-import com.harang.data.model.User
+import com.harang.data.model.dto.User
 import com.harang.data.repository.SignInRepository
 import com.mangoslab.nemonicsdk.NPrintInfo
 import com.mangoslab.nemonicsdk.NPrinter

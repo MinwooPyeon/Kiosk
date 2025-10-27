@@ -1,7 +1,7 @@
 package com.pixelro.nenoonkiosk.feature.auth.login
 
 import android.graphics.Bitmap
-import com.harang.data.model.User
+import com.harang.data.model.dto.User
 
 // UIState 정의
 data class LoginUiState(

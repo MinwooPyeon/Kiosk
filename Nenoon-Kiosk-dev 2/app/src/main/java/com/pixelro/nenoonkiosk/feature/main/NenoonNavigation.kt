@@ -27,7 +27,7 @@ import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
 import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
 import com.pixelro.nenoonkiosk.feature.auth.AccountManagementScreen
-import com.pixelro.nenoonkiosk.feature.auth.FaceIdTermsOfServiceScreen
+import com.pixelro.nenoonkiosk.feature.termsofservice.faceid.FaceIdTermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.auth.FaceUpdateScreen
 import com.pixelro.nenoonkiosk.feature.auth.SignInScreen
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
@@ -50,8 +50,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.Long
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortDistanceVisualAcuityTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.intro.IntroScreen
-import com.pixelro.nenoonkiosk.feature.intro.PermissionRequestScreen
-import com.pixelro.nenoonkiosk.feature.intro.termsOfServiceScreen
+import com.pixelro.nenoonkiosk.feature.permission.PermissionRequestRoute
 import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BConnectionScreen
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ManagementScreen
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
@@ -63,6 +62,7 @@ import com.pixelro.nenoonkiosk.feature.setting.SettingsScreen
 import com.pixelro.nenoonkiosk.feature.splash.SplashScreen
 import com.pixelro.nenoonkiosk.feature.strabismustest.AppNavigation
 import com.pixelro.nenoonkiosk.feature.survey.SurveyScreen
+import com.pixelro.nenoonkiosk.feature.termsofservice.base.TermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.testcontent.ChildrenVisualAcuityTestContent
 import com.pixelro.nenoonkiosk.feature.testcontent.LongDistanceVisualAcuityTestContent
 import com.pixelro.nenoonkiosk.feature.undeveloped.AdminPageScreen
@@ -214,7 +214,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            FaceIdTermsOfServiceScreen(
+            FaceIdTermsOfServiceRoute(
                 onTermsAccepted = {
                     navController.popBackStack(NavConstants.ROUTE_ACCOUNT_MANAGEMENT, false)
                     navController.navigate(NavConstants.ROUTE_FACE_UPDATE)
@@ -254,7 +254,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            termsOfServiceScreen(
+            TermsOfServiceRoute(
                 onTermsAccepted = {
                     navController.popBackStack(NavConstants.ROUTE_SIGN_IN, false)
                     navController.navigate(NavConstants.ROUTE_INTRO)
@@ -295,7 +295,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            PermissionRequestScreen(
+            PermissionRequestRoute(
                 viewModel,
                 toLoginScreen = { // 권한 다 허용 되면 로그인 화면으로
                     navController.popBackStack(NavConstants.ROUTE_SPLASH, false)

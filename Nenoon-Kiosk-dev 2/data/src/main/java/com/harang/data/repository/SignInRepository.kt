@@ -5,8 +5,8 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import com.harang.data.datasource.SharedPreferencesDataSource
 import com.harang.data.datasource.SignInRemoteDataSource
-import com.harang.data.model.SendLocationSignInDataResponse
-import com.harang.data.model.User
+import com.harang.data.model.dto.User
+import com.harang.data.model.dto.response.SendLocationSignInDataResponse
 import com.harang.data.vo.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
