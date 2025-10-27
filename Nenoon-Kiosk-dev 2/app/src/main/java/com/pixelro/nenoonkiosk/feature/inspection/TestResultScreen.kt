@@ -83,8 +83,8 @@ import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.Long
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortDistanceVisualAcuityTestResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.screen.TypewriterText
-import com.pixelro.nenoonkiosk.feature.testresultcontent.ChildrenVisualAcuityTestResultContent
-import com.pixelro.nenoonkiosk.feature.testresultcontent.LongDistanceVisualAcuityTestResultContent
+import com.pixelro.nenoonkiosk.feature.undeveloped.testresultcontent.ChildrenVisualAcuityTestResultContent
+import com.pixelro.nenoonkiosk.feature.undeveloped.testresultcontent.LongDistanceVisualAcuityTestResultContent
 import kotlinx.coroutines.delay
 
 @Composable
