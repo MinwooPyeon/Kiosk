@@ -2,7 +2,8 @@
  * wifi_mgr.h
  *
  *  Created on: 2025. 10. 26.
- *      Author: SSAFY
+ *  Updated on: 2025. 10. 27.
+ *      Author: Park Joo Hyun
  */
 
 #ifndef MAIN_INCLUDE_WIFI_MGR_H_
@@ -30,13 +31,13 @@ typedef struct{
 
 typedef void(*wifi_mgr_on_state_cb)(wifi_mgr_state_t s, void* user);
 
-esp_err_t wifi_mgr_init(const wifi_mgr_cfg_t* cfg);
-esp_err_t wifi_mgr_start(void);                  // netif/event 루프 + STA start
-esp_err_t wifi_mgr_stop(void);
-wifi_mgr_state_t wifi_mgr_get_state(void);
-esp_err_t wifi_mgr_get_ip(char* buf, size_t len); // "192.168.0.10" 등
+esp_err_t 			wifi_mgr_init(const wifi_mgr_cfg_t* cfg);
+esp_err_t 			wifi_mgr_start(void);                  // netif/event 루프 + STA start
+esp_err_t 			wifi_mgr_stop(void);
+wifi_mgr_state_t 	wifi_mgr_get_state(void);
+esp_err_t 			wifi_mgr_get_ip(char* buf, size_t len); // "192.168.0.10" 등
 
-esp_err_t wifi_mgr_force_reprovision(void);
-void wifi_mgr_set_state_callback(wifi_mgr_on_state_cb cb, void* user);
+esp_err_t 			wifi_mgr_force_reprovision(void);
+void 				wifi_mgr_set_state_callback(wifi_mgr_on_state_cb cb, void* user);
 
 #endif /* MAIN_INCLUDE_WIFI_MGR_H_ */
