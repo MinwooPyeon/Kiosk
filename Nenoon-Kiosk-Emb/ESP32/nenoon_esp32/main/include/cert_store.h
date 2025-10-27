@@ -24,4 +24,8 @@ typedef struct{
 	bool 		use_crt_bundle;
 }cert_store_cfg_t;
 
+void cert_store_init(const cert_store_cfg_t* cfg);
+esp_err_t cert_store_attack(esp_http_client_config_t* http_cfg);
+esp_err_t cert_store_preverify_spki(const char* url);
+
 #endif /* MAIN_INCLUDE_CERT_STORE_H_ */
