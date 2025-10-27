@@ -78,36 +78,25 @@ fun AccountManagementRoute(
     LaunchedEffect(userId, userData, isUserSignedIn) {
         viewModel.loadUserData(userId, userData, isUserSignedIn)
 
-        val currentUserId = userData?.id
-        val currentUserPassword = userData?.password
-
         if (!AppConstants.MANAGE_USERS_INTERNALLY) {
             userData?.accessToken?.let { token ->
-                val qrCode = viewModel.getQrCodeFromServer(token)
-                viewModel.loadQrCode(qrCode)
+                viewModel.loadQrCodeFromServer(token)
             }
         } else if (isUserSignedIn &&
-            !currentUserId.isNullOrBlank() &&
-            !currentUserPassword.isNullOrBlank()
+            !userData?.id.isNullOrBlank() &&
+            !userData?.password.isNullOrBlank()
         ) {
-            viewModel.generateQrCodeBitmap(currentUserId, currentUserPassword)
-        } else {
-            viewModel.loadQrCode(null)
+            viewModel.generateQrCodeBitmap(userData?.id!!, userData?.password!!)
         }
     }
 
     AccountManagementScreen(
         state = state,
-        onPrintQrCodeClick = { userId, password ->
-            viewModel.printQrCode(userId, password)
-        },
-        onPrintExistingQrCodeClick = { qrCode ->
-            viewModel.printExistingQrCode(qrCode)
+        onPrintQrCodeClick = {
+            viewModel.printQrCode()
         },
         onFaceEnrollClick = {
-            if (state.isUserSignedIn && state.userData?.id != null) {
-                viewModel.navigateToFaceEnrollment()
-            }
+            viewModel.navigateToFaceEnrollment()
         },
         onSignOutClick = {
             viewModel.signOut()
@@ -121,8 +110,7 @@ fun AccountManagementRoute(
 @Composable
 fun AccountManagementScreen(
     state: AccountManagementState,
-    onPrintQrCodeClick: (String, String) -> Unit,
-    onPrintExistingQrCodeClick: (android.graphics.Bitmap) -> Unit,
+    onPrintQrCodeClick: () -> Unit,
     onFaceEnrollClick: () -> Unit,
     onSignOutClick: () -> Unit,
     onCloseClick: () -> Unit
@@ -225,23 +213,7 @@ fun AccountManagementScreen(
                 Spacer(modifier = Modifier.weight(1f))
 
                 PrimaryButton(
-                    onClick = {
-                        val currentUserId = state.userData?.id
-                        val currentUserPassword = state.userData?.password
-
-                        if (state.isUserSignedIn) {
-                            if (AppConstants.MANAGE_USERS_INTERNALLY &&
-                                !currentUserId.isNullOrBlank() &&
-                                !currentUserPassword.isNullOrBlank()
-                            ) {
-                                onPrintQrCodeClick(currentUserId, currentUserPassword)
-                            } else if (!AppConstants.MANAGE_USERS_INTERNALLY &&
-                                state.qrCodeBitmap != null
-                            ) {
-                                onPrintExistingQrCodeClick(state.qrCodeBitmap)
-                            }
-                        }
-                    },
+                    onClick = onPrintQrCodeClick,
                     text = StringProvider.getString(R.string.qr_code_print_button),
                     enabled = !state.isUserSignInSkipped && state.isQrPrintButtonEnabled,
                 )
@@ -249,15 +221,15 @@ fun AccountManagementScreen(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 PrimaryButton(
-                    onClick = { onFaceEnrollClick() },
+                    onClick = onFaceEnrollClick,
                     text = StringProvider.getString(R.string.face_enroll_button_text),
-                    enabled = !state.isUserSignInSkipped,
+                    enabled = !state.isUserSignInSkipped && state.isUserSignedIn && state.userData?.id != null,
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 PrimaryButton(
-                    onClick = { onSignOutClick() },
+                    onClick = onSignOutClick,
                     text = if (!state.isUserSignInSkipped) {
                         StringProvider.getString(R.string.settings_signout)
                     } else {

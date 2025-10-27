@@ -9,7 +9,8 @@ data class AccountManagementState(
     val qrCodeBitmap: Bitmap? = null,
     val showProgressIndicator: Boolean = true,
     val isQrPrintButtonEnabled: Boolean = true,
-    val isUserSignInSkipped: Boolean = false
+    val isUserSignInSkipped: Boolean = false,
+    val errorMessage: String? = null
 )
 
 sealed interface AccountManagementSideEffect {

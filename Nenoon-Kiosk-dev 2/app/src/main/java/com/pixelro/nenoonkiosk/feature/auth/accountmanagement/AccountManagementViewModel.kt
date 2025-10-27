@@ -4,7 +4,9 @@ import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
+import androidx.core.graphics.set
 import androidx.lifecycle.ViewModel
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
@@ -24,15 +26,11 @@ import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
-import androidx.core.graphics.set
-import androidx.core.graphics.createBitmap
-import com.pixelro.nenoonkiosk.core.navigation.Navigator
 
 @HiltViewModel
 class AccountManagementViewModel @Inject constructor(
     private val application: Application,
-    private val signInRepository: SignInRepository,
-    private val navigator: Navigator
+    private val signInRepository: SignInRepository
 ) : ViewModel(), ContainerHost<AccountManagementState, AccountManagementSideEffect> {
 
     override val container: Container<AccountManagementState, AccountManagementSideEffect> =
@@ -53,10 +51,10 @@ class AccountManagementViewModel @Inject constructor(
     }
 
     fun generateQrCodeBitmap(userId: String, password: String) = intent {
-        try {
+        runCatching {
             val qrData = "ID:$userId,PW:$password"
             val writer = QRCodeWriter()
-            val bitMatrix = withContext(Dispatchers.IO) {
+            val bitMatrix = withContext(Dispatchers.Default) {
                 writer.encode(qrData, BarcodeFormat.QR_CODE, 512, 512)
             }
 
@@ -71,43 +69,96 @@ class AccountManagementViewModel @Inject constructor(
                 }
             }
 
+            bitmap
+        }.onSuccess { bitmap ->
             reduce {
                 state.copy(
                     qrCodeBitmap = bitmap,
-                    showProgressIndicator = false
+                    showProgressIndicator = false,
+                    errorMessage = null
                 )
             }
-        } catch (e: Exception) {
-            Log.e("AccountManagementVM", "Error generating QR code: ${e.message}")
+        }.onFailure { e ->
+            Log.e("AccountManagementVM", "Error generating QR code: ${e.message}", e)
             reduce {
                 state.copy(
                     qrCodeBitmap = null,
-                    showProgressIndicator = false
+                    showProgressIndicator = false,
+                    errorMessage = "QR 코드 생성에 실패했습니다"
                 )
             }
+            postSideEffect(AccountManagementSideEffect.ShowToast("QR 코드 생성에 실패했습니다"))
         }
     }
 
-    suspend fun getQrCodeFromServer(accessToken: String): Bitmap? {
-        return signInRepository.getQrUrl(accessToken)?.let { url ->
-            signInRepository.getQrCode(url.substringAfter("api/v1/users/qr-image/"))
+    fun loadQrCodeFromServer(accessToken: String) = intent {
+        runCatching {
+            signInRepository.getQrUrl(accessToken)?.let { url ->
+                signInRepository.getQrCode(url.substringAfter("api/v1/users/qr-image/"))
+            }
+        }.onSuccess { qrCode ->
+            reduce {
+                state.copy(
+                    qrCodeBitmap = qrCode,
+                    showProgressIndicator = false,
+                    errorMessage = null
+                )
+            }
+        }.onFailure { e ->
+            Log.e("AccountManagementVM", "Error loading QR code from server: ${e.message}", e)
+            reduce {
+                state.copy(
+                    qrCodeBitmap = null,
+                    showProgressIndicator = false,
+                    errorMessage = "QR 코드 로딩에 실패했습니다"
+                )
+            }
+            postSideEffect(AccountManagementSideEffect.ShowToast("QR 코드 로딩에 실패했습니다"))
         }
     }
 
-    fun loadQrCode(qrCode: Bitmap?) = intent {
-        reduce {
-            state.copy(
-                qrCodeBitmap = qrCode,
-                showProgressIndicator = false
-            )
+    fun printQrCode() = intent {
+        val currentUserId = state.userData?.id
+        val currentUserPassword = state.userData?.password
+        val qrCodeBitmap = state.qrCodeBitmap
+
+        if (!state.isUserSignedIn) {
+            postSideEffect(AccountManagementSideEffect.ShowToast("로그인이 필요합니다"))
+            return@intent
+        }
+
+        runCatching {
+            val bitmapToPrint = if (AppConstants.MANAGE_USERS_INTERNALLY &&
+                !currentUserId.isNullOrBlank() &&
+                !currentUserPassword.isNullOrBlank()
+            ) {
+                generateQrCodeBitmapSync(currentUserId, currentUserPassword)
+            } else if (!AppConstants.MANAGE_USERS_INTERNALLY && qrCodeBitmap != null) {
+                qrCodeBitmap
+            } else {
+                null
+            }
+
+            bitmapToPrint?.let {
+                printQrCodeInternal(it)
+                reduce { state.copy(isQrPrintButtonEnabled = false) }
+                delay(10000)
+                reduce { state.copy(isQrPrintButtonEnabled = true) }
+            } ?: run {
+                postSideEffect(AccountManagementSideEffect.ShowToast("인쇄할 QR 코드가 없습니다"))
+            }
+        }.onFailure { e ->
+            Log.e("AccountManagementVM", "Error printing QR code: ${e.message}", e)
+            postSideEffect(AccountManagementSideEffect.ShowToast("QR 코드 인쇄에 실패했습니다"))
+            reduce { state.copy(isQrPrintButtonEnabled = true) }
         }
     }
 
-    fun printQrCode(userId: String, password: String) = intent {
-        try {
+    private suspend fun generateQrCodeBitmapSync(userId: String, password: String): Bitmap? {
+        return runCatching {
             val qrData = "ID:$userId,PW:$password"
             val writer = QRCodeWriter()
-            val bitMatrix = withContext(Dispatchers.IO) {
+            val bitMatrix = withContext(Dispatchers.Default) {
                 writer.encode(qrData, BarcodeFormat.QR_CODE, 512, 512)
             }
 
@@ -121,28 +172,15 @@ class AccountManagementViewModel @Inject constructor(
                     else android.graphics.Color.WHITE
                 }
             }
-
-            printQrCodeInternal(bitmap)
-
-            reduce { state.copy(isQrPrintButtonEnabled = false) }
-            delay(10000)
-            reduce { state.copy(isQrPrintButtonEnabled = true) }
-        } catch (e: Exception) {
-            Log.e("AccountManagementVM", "Error printing QR code: ${e.message}")
-        }
-    }
-
-    fun printExistingQrCode(qrCode: Bitmap?) = intent {
-        if (qrCode == null) return@intent
-
-        printQrCodeInternal(qrCode)
-
-        reduce { state.copy(isQrPrintButtonEnabled = false) }
-        delay(10000)
-        reduce { state.copy(isQrPrintButtonEnabled = true) }
+            bitmap
+        }.getOrNull()
     }
 
     fun navigateToFaceEnrollment() = intent {
+        if (!state.isUserSignedIn || state.userData?.id == null) {
+            postSideEffect(AccountManagementSideEffect.ShowToast("로그인이 필요합니다"))
+            return@intent
+        }
         postSideEffect(AccountManagementSideEffect.NavigateToFaceEnrollment)
     }
 
@@ -189,7 +227,7 @@ class AccountManagementViewModel @Inject constructor(
 
             Log.d("AccountManagementVM", "Print command sent successfully")
         } catch (e: Exception) {
-            Log.e("AccountManagementVM", "Error during print: ${e.message}")
+            Log.e("AccountManagementVM", "Error during print: ${e.message}", e)
         }
     }
 }
