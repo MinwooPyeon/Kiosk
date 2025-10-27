@@ -2,9 +2,9 @@ package com.harang.data.repository
 
 import com.harang.data.datasource.SharedPreferencesDataSource
 import com.harang.data.datasource.SurveyRemoteDataSource
-import com.harang.data.model.GetPastSurveyId
-import com.harang.data.model.SendSurveyDataRequest
-import com.harang.data.model.SendSurveyDataResponse
+import com.harang.data.model.dto.request.SendSurveyDataRequest
+import com.harang.data.model.dto.response.GetPastSurveyId
+import com.harang.data.model.dto.response.SendSurveyDataResponse
 import com.harang.data.vo.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

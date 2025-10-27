@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.harang.data.model.User
+import com.harang.data.model.dto.User
 import com.mangoslab.nemonicsdk.NPrintInfo
 import com.mangoslab.nemonicsdk.NPrinter
 import com.mangoslab.nemonicsdk.constants.NPrinterType

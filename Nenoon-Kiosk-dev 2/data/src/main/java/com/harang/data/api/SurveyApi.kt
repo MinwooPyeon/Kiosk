@@ -1,8 +1,8 @@
 package com.harang.data.api
 
-import com.harang.data.model.GetPastSurveyId
-import com.harang.data.model.SendSurveyDataRequest
-import com.harang.data.model.SendSurveyDataResponse
+import com.harang.data.model.dto.response.GetPastSurveyId
+import com.harang.data.model.dto.request.*
+import com.harang.data.model.dto.response.*
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

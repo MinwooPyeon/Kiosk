@@ -1,9 +1,9 @@
-package com.harang.data.model
+package com.harang.data.model.dto.response
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-data class GetPastSurveyId(
+data class SendLocationSignInDataResponse(
     @SerializedName("responseId")
     val responseId: String,
     @SerializedName("createAt")
