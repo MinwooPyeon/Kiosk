@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,15 +29,14 @@ import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun FaceEnrollmentRoute(
     navController: NavController,
-    onUpdateFace: suspend (FloatArray?) -> Boolean,
+    userId: String,
+    accessToken: String? = null,
     viewModel: FaceEnrollmentViewModel = hiltViewModel()
 ) {
     val state = viewModel.collectAsState().value
@@ -76,15 +74,11 @@ fun FaceEnrollmentRoute(
             viewModel.updateFaceDetectionStatus(status)
         },
         onEnrollFaceClick = {
-            // Coroutine 처리는 Screen에서
+            viewModel.enrollFace(userId, accessToken)
         },
         onBackClick = {
             viewModel.navigateBack()
-        },
-        getTempFaceEmbedding = {
-            viewModel.getTempFaceEmbedding()
-        },
-        onUpdateFace = onUpdateFace
+        }
     )
 }
 
@@ -94,12 +88,8 @@ fun FaceEnrollmentScreen(
     onFaceDetected: (Bitmap) -> Unit,
     onDetectionStatus: (String) -> Unit,
     onEnrollFaceClick: () -> Unit,
-    onBackClick: () -> Unit,
-    getTempFaceEmbedding: () -> FloatArray?,
-    onUpdateFace: suspend (FloatArray?) -> Boolean
+    onBackClick: () -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     Column(
         modifier = Modifier
             .padding(40.dp)
@@ -168,24 +158,15 @@ fun FaceEnrollmentScreen(
         Column {
             PrimaryButton(
                 text = StringProvider.getString(R.string.user_signup_enroll_face_button),
-                enabled = state.isFaceEnrollmentDataReady,
-                onClick = {
-                    coroutineScope.launch(Dispatchers.Main) {
-                        val embedding = getTempFaceEmbedding()
-                        onUpdateFace(embedding).also { success ->
-                            if (success) {
-                                onEnrollFaceClick()
-                            }
-                        }
-                    }
-                },
+                enabled = state.isFaceEnrollmentDataReady && !state.isProcessingFace,
+                onClick = onEnrollFaceClick,
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             PrimaryButton(
                 text = StringProvider.getString(R.string.back),
-                onClick = { onBackClick() },
+                onClick = onBackClick,
             )
         }
     }
