@@ -11,20 +11,17 @@
 #include <string.h>
  
 #include "esp_event_base.h"
-#include "esp_mesh.h"
 #include "esp_netif_types.h"
 #include "esp_wifi.h"
 #include "esp_event.h"
 #include "esp_log.h"
 #include "esp_netif.h"
- 
-#include "esp_wifi_types_generic.h"
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/projdefs.h"
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
 #include "freertos/queue.h"
-#include "portmacro.h"
 
 #define TAG "wifi_mgr"
 
