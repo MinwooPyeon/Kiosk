@@ -2,7 +2,8 @@
  * ratelimit.h
  *
  *  Created on: 2025. 10. 26.
- *      Author: SSAFY
+ *	Updated on: 2025. 10. 28.
+ *      Author: Park Joo Hyun
  */
 
 #ifndef MAIN_INCLUDE_RATELIMIT_H_

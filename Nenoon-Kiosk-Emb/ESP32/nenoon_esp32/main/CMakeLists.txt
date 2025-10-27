@@ -20,6 +20,7 @@ idf_component_register(
     esp_event
     esp_http_client
     esp_https_ota
+    esp_timer
     mbedtls
     driver
 )
