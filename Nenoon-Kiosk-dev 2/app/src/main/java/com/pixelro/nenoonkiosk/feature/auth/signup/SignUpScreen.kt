@@ -19,18 +19,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -40,6 +31,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
@@ -47,240 +39,217 @@ import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
-import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
+
+@Composable
+fun SignUpRoute(
+    navController: NavController,
+    viewModel: SignUpViewModel = hiltViewModel()
+) {
+    val state = viewModel.collectAsState().value
+
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is SignUpSideEffect.ShowToast -> {
+                // 토스트 표시
+            }
+            is SignUpSideEffect.SignUpSuccess -> {
+                // 회원가입 성공
+            }
+            is SignUpSideEffect.SignUpFailed -> {
+                // 회원가입 실패
+            }
+            is SignUpSideEffect.NavigateToFaceEnrollment -> {
+                // 얼굴 등록 화면으로 이동
+            }
+            is SignUpSideEffect.NavigateBack -> {
+                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
+            }
+        }
+    }
+
+    SignUpScreen(
+        state = state,
+        onIdChange = { viewModel.updateId(it) },
+        onPasswordChange = { viewModel.updatePassword(it) },
+        onNameChange = { viewModel.updateName(it) },
+        onEmailChange = { viewModel.updateEmail(it) },
+        onConfirmPasswordChange = { viewModel.updateConfirmPassword(it) },
+        onPasswordVisibilityToggle = { viewModel.togglePasswordVisibility() },
+        onConfirmPasswordVisibilityToggle = { viewModel.toggleConfirmPasswordVisibility() },
+        onSignUpClick = { viewModel.signUp() },
+        onFaceEnrollmentClick = { viewModel.navigateToFaceEnrollment() },
+        onBackClick = { viewModel.navigateBack() }
+    )
+}
 
 @Composable
 fun SignUpScreen(
-    updateIsSignedIn: (Boolean) -> Unit,
-    toFaceEnrollmentScreen: () -> Unit,
-    loginViewModel: LoginViewModel,
-    navController: NavController,
+    state: SignUpState,
+    onIdChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onNameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onConfirmPasswordChange: (String) -> Unit,
+    onPasswordVisibilityToggle: () -> Unit,
+    onConfirmPasswordVisibilityToggle: () -> Unit,
+    onSignUpClick: () -> Unit,
+    onFaceEnrollmentClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
-    var id by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var name by rememberSaveable { mutableStateOf("") }
-    var email by rememberSaveable { mutableStateOf("") }
-    var confirmPassword by rememberSaveable { mutableStateOf("") }
-    var isFaceEnrollmentTermsOfServiceAccepted by rememberSaveable { mutableStateOf(false) }
-    val isFaceEnrollmentDataReady by loginViewModel.isFaceEnrollmentDataReady.collectAsState()
-    val generatedQrBitmap by loginViewModel.accountQrCode.collectAsState()
-    var isSigningUp by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
-
-    var passwordVisible by remember { mutableStateOf(false) }
-    var confirmPasswordVisible by remember { mutableStateOf(false) }
-
-    var signupSuccess by remember { mutableStateOf(false) }
-
-    var passwordError by remember { mutableStateOf<String?>(null) }
-    var confirmPasswordError by remember { mutableStateOf<String?>(null) }
-    var emailError by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(Unit) {
-        signupSuccess = false
-    }
-
     Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(40.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = if (signupSuccess) Arrangement.Center else Arrangement.Top,
+        verticalArrangement = if (state.signupSuccess) Arrangement.Center else Arrangement.Top,
     ) {
-        if (!signupSuccess) {
-            StyledText(StringProvider.getString(R.string.user_signup_title), com.pixelro.nenoonkiosk.core.ui.TextStyle.Title)
+        if (!state.signupSuccess) {
+            StyledText(
+                StringProvider.getString(R.string.user_signup_title),
+                com.pixelro.nenoonkiosk.core.ui.TextStyle.Title
+            )
 
-            if (isSigningUp) {
+            if (state.isSigningUp) {
                 Spacer(modifier = Modifier.weight(0.5f))
                 ProgressIndicator()
                 Spacer(modifier = Modifier.height(20.dp))
             } else {
                 InputTextField(
-                    value = id,
-                    onValueChange = { id = it },
+                    value = state.id,
+                    onValueChange = onIdChange,
                     label = StringProvider.getString(R.string.user_signup_input_id_hint),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 )
                 Spacer(modifier = Modifier.height(20.dp))
 
                 InputTextField(
-                    value = name,
-                    onValueChange = { name = it },
+                    value = state.name,
+                    onValueChange = onNameChange,
                     label = StringProvider.getString(R.string.user_signup_input_name_hint),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 )
                 Spacer(modifier = Modifier.height(20.dp))
 
                 InputTextField(
-                    value = email,
-                    onValueChange = {
-                        email = it
-                        emailError =
-                            if (it.isNotBlank()) loginViewModel.validateEmail(it) else null
-                    },
+                    value = state.email,
+                    onValueChange = onEmailChange,
                     label = StringProvider.getString(R.string.user_signup_input_email_hint),
-                    keyboardOptions =
-                        KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            keyboardType = KeyboardType.Email,
-                        ),
-                    isError = emailError != null,
-                    errorMessage = emailError,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                        keyboardType = KeyboardType.Email,
+                    ),
+                    isError = state.emailError != null,
+                    errorMessage = state.emailError,
                 )
                 Spacer(modifier = Modifier.height(20.dp))
 
                 InputTextField(
-                    value = password,
-                    onValueChange = {
-                        password = it
-                        passwordError = loginViewModel.validatePassword(it)
-                        if (confirmPassword.isNotBlank()) {
-                            confirmPasswordError =
-                                loginViewModel.validateConfirmPassword(it, confirmPassword)
-                        }
-                    },
+                    value = state.password,
+                    onValueChange = onPasswordChange,
                     label = StringProvider.getString(R.string.user_signup_input_password_hint),
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions =
-                        KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            keyboardType = KeyboardType.Password,
-                        ),
+                    visualTransformation = if (state.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                        keyboardType = KeyboardType.Password,
+                    ),
                     trailingIcon = {
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        IconButton(onClick = onPasswordVisibilityToggle) {
                             Icon(
-                                painter =
-                                    painterResource(
-                                        if (passwordVisible) R.drawable.icon_visibility_on else R.drawable.icon_visibility_off,
-                                    ),
-                                contentDescription =
-                                    StringProvider.getString(
-                                        if (passwordVisible) R.string.user_signup_password_hide_cd else R.string.user_signup_password_show_cd,
-                                    ),
+                                painter = painterResource(
+                                    if (state.passwordVisible) R.drawable.icon_visibility_on else R.drawable.icon_visibility_off
+                                ),
+                                contentDescription = StringProvider.getString(
+                                    if (state.passwordVisible) R.string.user_signup_password_hide_cd else R.string.user_signup_password_show_cd
+                                ),
                             )
                         }
                     },
-                    isError = passwordError != null,
-                    errorMessage = passwordError,
+                    isError = state.passwordError != null,
+                    errorMessage = state.passwordError,
                 )
                 Spacer(modifier = Modifier.height(20.dp))
 
                 InputTextField(
-                    value = confirmPassword,
-                    onValueChange = {
-                        confirmPassword = it
-                        confirmPasswordError = loginViewModel.validateConfirmPassword(password, it)
-                    },
+                    value = state.confirmPassword,
+                    onValueChange = onConfirmPasswordChange,
                     label = StringProvider.getString(R.string.user_signup_input_confirm_password_hint),
-                    visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions =
-                        KeyboardOptions(
-                            imeAction = ImeAction.Done,
-                            keyboardType = KeyboardType.Password,
-                        ),
+                    visualTransformation = if (state.confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        keyboardType = KeyboardType.Password,
+                    ),
                     trailingIcon = {
-                        IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                        IconButton(onClick = onConfirmPasswordVisibilityToggle) {
                             Icon(
-                                painter =
-                                    painterResource(
-                                        if (confirmPasswordVisible) R.drawable.icon_visibility_on else R.drawable.icon_visibility_off,
-                                    ),
-                                contentDescription =
-                                    StringProvider.getString(
-                                        if (confirmPasswordVisible) R.string.user_signup_password_hide_cd else R.string.user_signup_password_show_cd,
-                                    ),
+                                painter = painterResource(
+                                    if (state.confirmPasswordVisible) R.drawable.icon_visibility_on else R.drawable.icon_visibility_off
+                                ),
+                                contentDescription = StringProvider.getString(
+                                    if (state.confirmPasswordVisible) R.string.user_signup_password_hide_cd else R.string.user_signup_password_show_cd
+                                ),
                             )
                         }
                     },
-                    isError = confirmPasswordError != null,
-                    errorMessage = confirmPasswordError,
+                    isError = state.confirmPasswordError != null,
+                    errorMessage = state.confirmPasswordError,
                 )
             }
+
             Spacer(modifier = Modifier.weight(0.5f))
 
-            if (errorMessage != null) {
-                StyledText(errorMessage!!, com.pixelro.nenoonkiosk.core.ui.TextStyle.Error)
+            if (state.errorMessage != null) {
+                StyledText(state.errorMessage, com.pixelro.nenoonkiosk.core.ui.TextStyle.Error)
                 Spacer(modifier = Modifier.height(20.dp))
             }
 
             PrimaryButton(
                 text = StringProvider.getString(R.string.user_signup_signup_and_qr_button),
-                onClick = {
-                    errorMessage = null
-                    isSigningUp = true
-                    coroutineScope.launch {
-                        delay(1000L)
-                        val result =
-                            loginViewModel.userSignUp(
-                                id = id,
-                                password = password,
-                                name = name,
-                                email = email,
-                            )
-                        if (result != null) {
-                            loginViewModel.generateAndPrintQrCode(id, password)
-                            signupSuccess = true
-                        } else {
-                            errorMessage = StringProvider.getString(R.string.user_signup_error_signup_failed)
-                            signupSuccess = false
-                        }
-                        isSigningUp = false
-                    }
-                },
-                enabled =
-                    id.isNotBlank() &&
-                        password.isNotBlank() &&
-                        name.isNotBlank() &&
-                        passwordError == null &&
-                        confirmPasswordError == null &&
-                        (email.isBlank() || emailError == null),
+                onClick = onSignUpClick,
+                enabled = state.id.isNotBlank() &&
+                        state.password.isNotBlank() &&
+                        state.name.isNotBlank() &&
+                        state.passwordError == null &&
+                        state.confirmPasswordError == null &&
+                        (state.email.isBlank() || state.emailError == null),
             )
             Spacer(modifier = Modifier.height(20.dp))
         }
 
-        if (signupSuccess && generatedQrBitmap != null) {
+        if (state.signupSuccess && state.generatedQrBitmap != null) {
             Spacer(modifier = Modifier.weight(1f))
             Column(
-                modifier =
-                    Modifier
-                        .weight(4f)
-                        .padding(20.dp)
-                        .fillMaxSize(),
+                modifier = Modifier
+                    .weight(4f)
+                    .padding(20.dp)
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
                 Image(
-                    bitmap = generatedQrBitmap!!.asImageBitmap(),
+                    bitmap = state.generatedQrBitmap.asImageBitmap(),
                     contentDescription = StringProvider.getString(R.string.user_signup_qr_image_cd),
-                    modifier =
-                        Modifier
-                            .size(400.dp)
-                            .padding(bottom = 32.dp),
+                    modifier = Modifier
+                        .size(400.dp)
+                        .padding(bottom = 32.dp),
                 )
                 StyledText(StringProvider.getString(R.string.user_signup_qr_description))
             }
 
+            Spacer(modifier = Modifier.weight(1f))
+
             PrimaryButton(
                 text = StringProvider.getString(R.string.user_signup_face_enrollment_button),
-                onClick = {
-                    toFaceEnrollmentScreen()
-                },
-                enabled = !isFaceEnrollmentDataReady,
+                onClick = onFaceEnrollmentClick,
+                enabled = !state.isFaceEnrollmentReady,
             )
             Spacer(modifier = Modifier.height(20.dp))
         }
 
         PrimaryButton(
             text = StringProvider.getString(R.string.user_signup_back_button),
-            onClick = {
-                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
-            },
+            onClick = onBackClick,
         )
     }
 }
@@ -301,27 +270,22 @@ private fun InputTextField(
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            textStyle =
-                TextStyle(
-                    fontSize = 30.sp,
-                ),
+            textStyle = TextStyle(fontSize = 30.sp),
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
             decorationBox = { innerTextField ->
                 Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(80.dp)
-                            .border(
-                                border =
-                                    BorderStroke(
-                                        width = 1.dp,
-                                        color = colorResource(if (isError) R.color.error else R.color.gray2),
-                                    ),
-                                shape = RoundedCornerShape(8.dp),
-                            )
-                            .padding(start = 20.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .border(
+                            border = BorderStroke(
+                                width = 1.dp,
+                                color = colorResource(if (isError) R.color.error else R.color.gray2),
+                            ),
+                            shape = RoundedCornerShape(8.dp),
+                        )
+                        .padding(start = 20.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(
