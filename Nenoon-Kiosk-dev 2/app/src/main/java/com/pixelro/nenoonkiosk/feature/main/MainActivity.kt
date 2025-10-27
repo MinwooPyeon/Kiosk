@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -197,54 +198,59 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             NenoonKioskTheme {
-                val systemUiController = rememberSystemUiController()
-                systemUiController.setStatusBarColor(
-                    color = Color(0x00000000),
-                )
-                systemUiController.isNavigationBarVisible = false
-                val context = LocalContext.current
-                val configuration = LocalConfiguration.current
-                LaunchedEffect(true) {
-                    val cameraManager =
-                        context.getSystemService(CAMERA_SERVICE) as CameraManager
-                    val cameraCharacteristics =
-                        (context.getSystemService(CAMERA_SERVICE) as CameraManager).getCameraCharacteristics(
-                            cameraManager.cameraIdList[if (DebugConstants.EMULATOR_MODE) 0 else 1],
+                androidx.compose.material3.Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.background
+                ) {
+                    val systemUiController = rememberSystemUiController()
+                    systemUiController.setStatusBarColor(
+                        color = Color(0x00000000),
+                    )
+                    systemUiController.isNavigationBarVisible = false
+                    val context = LocalContext.current
+                    val configuration = LocalConfiguration.current
+                    LaunchedEffect(true) {
+                        val cameraManager =
+                            context.getSystemService(CAMERA_SERVICE) as CameraManager
+                        val cameraCharacteristics =
+                            (context.getSystemService(CAMERA_SERVICE) as CameraManager).getCameraCharacteristics(
+                                cameraManager.cameraIdList[if (DebugConstants.EMULATOR_MODE) 0 else 1],
+                            )
+                        viewModel.updateLocalConfigurationValues(
+                            pixelDensity = context.resources.displayMetrics.density,
+                            screenWidthDp = configuration.screenWidthDp,
+                            screenHeightDp = configuration.screenHeightDp,
+                            focalLength =
+                                cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
+                                    ?.get(0) ?: 0f,
+                            lensSize =
+                                cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)
+                                    ?: SizeF(0f, 0f),
                         )
-                    viewModel.updateLocalConfigurationValues(
-                        pixelDensity = context.resources.displayMetrics.density,
-                        screenWidthDp = configuration.screenWidthDp,
-                        screenHeightDp = configuration.screenHeightDp,
-                        focalLength =
-                            cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
-                                ?.get(0) ?: 0f,
-                        lensSize =
-                            cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)
-                                ?: SizeF(0f, 0f),
-                    )
-                }
-                val sharedPreferences =
-                    getSharedPreferences(
-                        NavConstants.PREFERENCE_NAME,
-                        MODE_PRIVATE,
-                    )
+                    }
+                    val sharedPreferences =
+                        getSharedPreferences(
+                            NavConstants.PREFERENCE_NAME,
+                            MODE_PRIVATE,
+                        )
 
-                nenoonApp()
+                    nenoonApp()
 
-                if (showPasswordDialog) {
-                    PasswordDialog(
-                        onDismiss = { showPasswordDialog = false },
-                        onPasswordEntered = { password ->
-                            if (password == ADMIN_PASSWORD) {
-                                Toast.makeText(context, "Password correct! Shutting down application...", Toast.LENGTH_SHORT).show()
-                                showPasswordDialog = false
+                    if (showPasswordDialog) {
+                        PasswordDialog(
+                            onDismiss = { showPasswordDialog = false },
+                            onPasswordEntered = { password ->
+                                if (password == ADMIN_PASSWORD) {
+                                    Toast.makeText(context, "Password correct! Shutting down application...", Toast.LENGTH_SHORT).show()
+                                    showPasswordDialog = false
 
-                                Process.killProcess(Process.myPid())
-                            } else {
-                                Toast.makeText(context, "Incorrect password", Toast.LENGTH_SHORT).show()
-                            }
-                        },
-                    )
+                                    Process.killProcess(Process.myPid())
+                                } else {
+                                    Toast.makeText(context, "Incorrect password", Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                        )
+                    }
                 }
             }
         }
