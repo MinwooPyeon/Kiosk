@@ -10,28 +10,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.inbody.bpbio.IB_SDKConst
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
-import com.pixelro.nenoonkiosk.core.ui.AccentedText
-import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
-import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
-import com.pixelro.nenoonkiosk.core.ui.StyledText
-import com.pixelro.nenoonkiosk.core.ui.TextStyle
-import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.ui.*
 import kotlinx.coroutines.delay
 
 enum class BloodPressureConnectionScreenState {
@@ -49,58 +40,98 @@ fun BPBIO320ManagementScreen(
     navController: NavHostController,
     viewModel: BPBIO320ViewModel,
 ) {
-    var bloodPressureConnectionScreenState by remember { mutableStateOf(BloodPressureConnectionScreenState.Standby) }
+    val uiState by viewModel.uiState.collectAsState()
+    var screenState by remember { mutableStateOf(BloodPressureConnectionScreenState.Standby) }
 
-    val connectionState by viewModel.connectionState.collectAsState()
-    val deviceName by viewModel.deviceName.collectAsState()
-    val errorMessage by viewModel.errorMessage.collectAsState()
-
-    LaunchedEffect(connectionState, deviceName) {
-        when (connectionState) {
+    // 연결 상태 감시
+    LaunchedEffect(uiState.connectionState, uiState.deviceName) {
+        when (uiState.connectionState) {
             IB_SDKConst.IDLE, IB_SDKConst.DISCONNECTED -> {
-                if (bloodPressureConnectionScreenState != BloodPressureConnectionScreenState.Standby) {
-                    bloodPressureConnectionScreenState = BloodPressureConnectionScreenState.SearchingOrIdle
+                if (screenState != BloodPressureConnectionScreenState.Standby) {
+                    screenState = BloodPressureConnectionScreenState.SearchingOrIdle
                     delay(2000)
                     viewModel.selectDevice()
                     viewModel.connectDisconnect()
                 }
             }
+
             IB_SDKConst.CONNECTING -> {
-                bloodPressureConnectionScreenState = BloodPressureConnectionScreenState.Connecting
+                screenState = BloodPressureConnectionScreenState.Connecting
             }
+
             IB_SDKConst.CONNECTED -> {
-                bloodPressureConnectionScreenState = BloodPressureConnectionScreenState.AwaitingStart
+                screenState = BloodPressureConnectionScreenState.AwaitingStart
             }
+
             else -> {}
         }
     }
 
-    LaunchedEffect(errorMessage) {
-        errorMessage?.let {
+    // 에러 감시
+    LaunchedEffect(uiState.errorMessage) {
+        uiState.errorMessage?.let {
             if (it.isNotBlank() && it != "null") {
-                Log.e("BPStartScreen", "Error: $it")
-                if (connectionState != IB_SDKConst.CONNECTED && bloodPressureConnectionScreenState != BloodPressureConnectionScreenState.Standby) {
-                    bloodPressureConnectionScreenState = BloodPressureConnectionScreenState.ConnectionError
+                Log.e("BPBIO320Screen", "Error: $it")
+                if (uiState.connectionState != IB_SDKConst.CONNECTED &&
+                    screenState != BloodPressureConnectionScreenState.Standby
+                ) {
+                    screenState = BloodPressureConnectionScreenState.ConnectionError
                 }
             }
         }
     }
 
+    BPBIO320ManagementContent(
+        screenState = screenState,
+        onStart = {
+            viewModel.removeDevice()
+            viewModel.selectDevice()
+            viewModel.connectDisconnect()
+            screenState = BloodPressureConnectionScreenState.Connecting
+        },
+        onRetry = {
+            viewModel.removeDevice()
+            viewModel.selectDevice()
+            viewModel.connectDisconnect()
+            screenState = BloodPressureConnectionScreenState.Connecting
+        },
+        onDisconnect = {
+            viewModel.connectDisconnect()
+            screenState = BloodPressureConnectionScreenState.Standby
+        },
+        onBack = {
+            navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
+        },
+    )
+}
+
+/* ----------------------------- PREVIEW & UI ----------------------------- */
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun BPBIO320ManagementContent(
+    screenState: BloodPressureConnectionScreenState,
+    onStart: () -> Unit,
+    onRetry: () -> Unit,
+    onDisconnect: () -> Unit,
+    onBack: () -> Unit,
+) {
     Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(40.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        StyledText(StringProvider.getString(R.string.blood_pressure_monitor_title), TextStyle.Title)
+        StyledText(stringResource(R.string.blood_pressure_monitor_title), TextStyle.Title)
 
         Image(
             painter = painterResource(R.drawable.blood_pressure_icon),
-            contentDescription = StringProvider.getString(R.string.blood_pressure_monitor_image_content_description),
-            modifier = Modifier.weight(1f).width(500.dp),
+            contentDescription = stringResource(R.string.blood_pressure_monitor_image_content_description),
+            modifier = Modifier
+                .weight(1f)
+                .width(500.dp),
         )
 
         Column(
@@ -108,22 +139,16 @@ fun BPBIO320ManagementScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom,
         ) {
-            when (bloodPressureConnectionScreenState) {
+            when (screenState) {
                 BloodPressureConnectionScreenState.Standby -> {
                     AccentedText(
-                        prefix = StringProvider.getString(R.string.blood_pressure_monitor_standby_instruction1),
-                        accent = StringProvider.getString(R.string.blood_pressure_monitor_standby_instruction2),
-                        suffix = StringProvider.getString(R.string.blood_pressure_monitor_standby_instruction3),
+                        prefix = stringResource(R.string.blood_pressure_monitor_standby_instruction1),
+                        accent = stringResource(R.string.blood_pressure_monitor_standby_instruction2),
+                        suffix = stringResource(R.string.blood_pressure_monitor_standby_instruction3),
                     )
                     PrimaryButton(
-                        onClick = {
-                            viewModel.removeDevice()
-                            viewModel.selectDevice()
-                            viewModel.connectDisconnect()
-                            bloodPressureConnectionScreenState =
-                                BloodPressureConnectionScreenState.Connecting
-                        },
-                        text = StringProvider.getString(R.string.blood_pressure_monitor_start_connection),
+                        onClick = onStart,
+                        text = stringResource(R.string.blood_pressure_monitor_start_connection),
                         modifier = Modifier.padding(top = 180.dp, bottom = 20.dp),
                     )
                 }
@@ -131,13 +156,8 @@ fun BPBIO320ManagementScreen(
                 BloodPressureConnectionScreenState.SearchingOrIdle -> {
                     ProgressIndicator()
                     PrimaryButton(
-                        onClick = {
-                            viewModel.removeDevice()
-                            viewModel.selectDevice()
-                            viewModel.connectDisconnect()
-                            bloodPressureConnectionScreenState = BloodPressureConnectionScreenState.Connecting
-                        },
-                        text = StringProvider.getString(R.string.blood_pressure_monitor_retry_connection),
+                        onClick = onRetry,
+                        text = stringResource(R.string.blood_pressure_monitor_retry_connection),
                         modifier = Modifier.padding(top = 180.dp, bottom = 20.dp),
                     )
                 }
@@ -145,50 +165,51 @@ fun BPBIO320ManagementScreen(
                 BloodPressureConnectionScreenState.Connecting -> {
                     ProgressIndicator()
                     StyledText(
-                        text = StringProvider.getString(R.string.blood_pressure_monitor_connecting),
+                        text = stringResource(R.string.blood_pressure_monitor_connecting),
                         modifier = Modifier.padding(top = 40.dp, bottom = 180.dp),
                     )
                 }
 
                 BloodPressureConnectionScreenState.AwaitingStart -> {
                     StyledText(
-                        text = StringProvider.getString(R.string.blood_pressure_monitor_device_connected),
+                        text = stringResource(R.string.blood_pressure_monitor_device_connected),
                     )
                     PrimaryButton(
-                        onClick = {
-                            viewModel.connectDisconnect()
-                            bloodPressureConnectionScreenState =
-                                BloodPressureConnectionScreenState.Standby
-                        },
-                        text = StringProvider.getString(R.string.blood_pressure_monitor_disconnect),
+                        onClick = onDisconnect,
+                        text = stringResource(R.string.blood_pressure_monitor_disconnect),
                         modifier = Modifier.padding(top = 180.dp, bottom = 20.dp),
                     )
                 }
 
                 BloodPressureConnectionScreenState.ConnectionError -> {
                     StyledText(
-                        text = StringProvider.getString(R.string.blood_pressure_monitor_connection_error),
+                        text = stringResource(R.string.blood_pressure_monitor_connection_error),
                         style = TextStyle.Error,
                     )
                     PrimaryButton(
-                        onClick = {
-                            viewModel.removeDevice()
-                            viewModel.selectDevice()
-                            viewModel.connectDisconnect()
-                            bloodPressureConnectionScreenState = BloodPressureConnectionScreenState.Connecting
-                        },
-                        text = StringProvider.getString(R.string.blood_pressure_monitor_try_again),
+                        onClick = onRetry,
+                        text = stringResource(R.string.blood_pressure_monitor_try_again),
                         modifier = Modifier.padding(top = 180.dp, bottom = 20.dp),
                     )
                 }
             }
 
             PrimaryButton(
-                onClick = {
-                    navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
-                },
-                text = StringProvider.getString(R.string.back),
+                onClick = onBack,
+                text = stringResource(R.string.back),
             )
         }
     }
+}
+
+@Preview(showBackground = true, name = "BPBIO320Management Preview - Connected", apiLevel = 34, widthDp = 800, heightDp = 1280)
+@Composable
+fun BPBIO320ManagementPreview() {
+    BPBIO320ManagementContent(
+        screenState = BloodPressureConnectionScreenState.AwaitingStart,
+        onStart = {},
+        onRetry = {},
+        onDisconnect = {},
+        onBack = {},
+    )
 }

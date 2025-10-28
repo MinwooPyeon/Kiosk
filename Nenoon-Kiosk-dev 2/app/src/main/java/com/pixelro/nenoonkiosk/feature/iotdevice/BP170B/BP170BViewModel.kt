@@ -7,78 +7,103 @@ import androidx.lifecycle.viewModelScope
 import com.pixelro.nenoonkiosk.core.manager.BP170BManager
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// Import the BloodPressureTestResult data class if it's in a different package
-// For this setup, we assume BloodPressureTestResult is defined within the BP170BManager's package
-// or is a globally accessible data class.
 
 @HiltViewModel
-class BP170BViewModel
-    @Inject
-    constructor(application: Application) : AndroidViewModel(application) {
-        init {
-            BP170BManager.init(application)
-        }
+class BP170BViewModel @Inject constructor(
+    application: Application
+) : AndroidViewModel(application) {
 
-        val connectionState: StateFlow<BP170BManager.BluetoothConnectionState> =
-            BP170BManager.connectionState
-        val dataReceived: StateFlow<String?> =
-            BP170BManager.dataReceived
-        val availableDevices: StateFlow<List<BluetoothDevice>> = BP170BManager.availableDevices
-        val isInitialized: StateFlow<Boolean> = BP170BManager.isInitialized
+    private val _uiState = MutableStateFlow(BP170BUiState())
+    val uiState: StateFlow<BP170BUiState> = _uiState.asStateFlow()
 
-        // Add this StateFlow to expose the parsed blood pressure result
-        val bloodPressureResult: StateFlow<BloodPressureTestResult?> = BP170BManager.bloodPressureResult
+    init {
+        BP170BManager.init(application)
 
-        fun startScan() {
-            viewModelScope.launch {
-                BP170BManager.startScan()
+        // Manager의 상태를 Flow로 수집해 UiState로 통합 업데이트
+        viewModelScope.launch {
+            launch {
+                BP170BManager.connectionState.collect { newState ->
+                    _uiState.update { it.copy(connectionState = newState) }
+                }
             }
-        }
-
-        fun connectToDevice(device: BluetoothDevice) {
-            viewModelScope.launch {
-                BP170BManager.connect(device)
+            launch {
+                BP170BManager.dataReceived.collect { data ->
+                    _uiState.update { it.copy(dataReceived = data) }
+                }
             }
-        }
-
-        fun disconnect() {
-            viewModelScope.launch {
-                BP170BManager.disconnect()
+            launch {
+                BP170BManager.availableDevices.collect { devices ->
+                    _uiState.update { it.copy(availableDevices = devices) }
+                }
             }
-        }
-
-        fun sendDeviceStatusCheckCommand() {
-            viewModelScope.launch {
-                BP170BManager.sendDeviceStatusCheckCommand()
+            launch {
+                BP170BManager.isInitialized.collect { initialized ->
+                    _uiState.update { it.copy(isInitialized = initialized) }
+                }
             }
-        }
-
-        fun sendErrorCodeCheckCommand() {
-            viewModelScope.launch {
-                BP170BManager.sendErrorCodeCheckCommand()
-            }
-        }
-
-        fun sendTimeSetupCommand(
-            year: Byte,
-            month: Byte,
-            day: Byte,
-            hour: Byte,
-            minute: Byte,
-            second: Byte,
-        ) {
-            viewModelScope.launch {
-                BP170BManager.sendTimeSetupCommand(year, month, day, hour, minute, second)
-            }
-        }
-
-        fun sendSerialNumberRequestCommand() {
-            viewModelScope.launch {
-                BP170BManager.sendSerialNumberRequestCommand()
+            launch {
+                BP170BManager.bloodPressureResult.collect { result ->
+                    _uiState.update { it.copy(bloodPressureResult = result) }
+                }
             }
         }
     }
+
+    // ---- Bluetooth Actions ----
+    fun startScan() {
+        viewModelScope.launch {
+            BP170BManager.startScan()
+        }
+    }
+
+    fun connectToDevice(device: BluetoothDevice) {
+        viewModelScope.launch {
+            BP170BManager.connect(device)
+        }
+    }
+
+    fun disconnect() {
+        viewModelScope.launch {
+            BP170BManager.disconnect()
+        }
+    }
+
+    // ---- Device Commands ----
+    fun sendDeviceStatusCheckCommand() {
+        viewModelScope.launch {
+            BP170BManager.sendDeviceStatusCheckCommand()
+        }
+    }
+
+    fun sendErrorCodeCheckCommand() {
+        viewModelScope.launch {
+            BP170BManager.sendErrorCodeCheckCommand()
+        }
+    }
+
+    fun sendTimeSetupCommand(
+        year: Byte,
+        month: Byte,
+        day: Byte,
+        hour: Byte,
+        minute: Byte,
+        second: Byte,
+    ) {
+        viewModelScope.launch {
+            BP170BManager.sendTimeSetupCommand(year, month, day, hour, minute, second)
+        }
+    }
+
+    fun sendSerialNumberRequestCommand() {
+        viewModelScope.launch {
+            BP170BManager.sendSerialNumberRequestCommand()
+        }
+    }
+}
