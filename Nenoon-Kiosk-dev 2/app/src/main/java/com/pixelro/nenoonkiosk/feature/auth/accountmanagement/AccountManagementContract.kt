@@ -15,7 +15,5 @@ data class AccountManagementState(
 
 sealed interface AccountManagementSideEffect {
     data class ShowToast(val message: String) : AccountManagementSideEffect
-    data object NavigateToFaceEnrollment : AccountManagementSideEffect
     data object SignOut : AccountManagementSideEffect
-    data object NavigateBack : AccountManagementSideEffect
 }

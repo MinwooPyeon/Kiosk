@@ -11,7 +11,4 @@ data class FaceEnrollmentState(
 
 sealed interface FaceEnrollmentSideEffect {
     data class ShowToast(val message: String) : FaceEnrollmentSideEffect
-    data object EnrollmentSuccess : FaceEnrollmentSideEffect
-    data object EnrollmentFailed : FaceEnrollmentSideEffect
-    data object NavigateBack : FaceEnrollmentSideEffect
 }

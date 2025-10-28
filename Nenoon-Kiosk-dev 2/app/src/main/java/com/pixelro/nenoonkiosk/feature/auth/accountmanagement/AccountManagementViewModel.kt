@@ -18,6 +18,10 @@ import com.mangoslab.nemonicsdk.constants.NPrinterType
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.manager.PrinterManager
+import com.pixelro.nenoonkiosk.core.navigation.AdminRoute
+import com.pixelro.nenoonkiosk.core.navigation.Navigator
+import com.pixelro.nenoonkiosk.core.navigation.Route
+import com.pixelro.nenoonkiosk.core.navigation.TestRoute
 import com.pixelro.nenoonkiosk.feature.inspection.result.TestResultUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +35,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AccountManagementViewModel @Inject constructor(
     private val application: Application,
-    private val signInRepository: SignInRepository
+    private val signInRepository: SignInRepository,
+    private val navigator: Navigator
 ) : ViewModel(), ContainerHost<AccountManagementState, AccountManagementSideEffect> {
 
     override val container: Container<AccountManagementState, AccountManagementSideEffect> =
@@ -182,15 +187,16 @@ class AccountManagementViewModel @Inject constructor(
             postSideEffect(AccountManagementSideEffect.ShowToast("로그인이 필요합니다"))
             return@intent
         }
-        postSideEffect(AccountManagementSideEffect.NavigateToFaceEnrollment)
+        navigator.navigate(AdminRoute.FaceUpdateTermsOfService)
     }
 
     fun signOut() = intent {
+        navigator.navigateAndClearBackStack(Route.SignIn)
         postSideEffect(AccountManagementSideEffect.SignOut)
     }
 
     fun navigateBack() = intent {
-        postSideEffect(AccountManagementSideEffect.NavigateBack)
+        navigator.navigateBack()
     }
 
     private fun printQrCodeInternal(qrCodeImageBitmap: Bitmap) {

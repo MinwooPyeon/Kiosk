@@ -8,6 +8,8 @@ import com.harang.data.repository.SignInRepository
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.core.navigation.Navigator
+import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
 import com.pixelro.nenoonkiosk.core.recognizer.FaceRecognizer
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +25,8 @@ import javax.inject.Inject
 class FaceIdLoginViewModel @Inject constructor(
     application: Application,
     private val faceRecognizer: FaceRecognizer,
-    private val signInRepository: SignInRepository
+    private val signInRepository: SignInRepository,
+    private val navigator: Navigator
 ) : ViewModel(), ContainerHost<FaceIdLoginState, FaceIdLoginSideEffect> {
 
     override val container: Container<FaceIdLoginState, FaceIdLoginSideEffect> =
@@ -96,7 +99,7 @@ class FaceIdLoginViewModel @Inject constructor(
 
                 if (state.attemptsLeft <= 0) {
                     delay(3000)
-                    postSideEffect(FaceIdLoginSideEffect.MaxAttemptsReached)
+                    navigator.navigate(SignInRoute.UserSignIn)
                 }
                 return@intent
             }
@@ -127,9 +130,7 @@ class FaceIdLoginViewModel @Inject constructor(
 
                 if (state.attemptsLeft <= 0) {
                     delay(3000)
-                    postSideEffect(FaceIdLoginSideEffect.MaxAttemptsReached)
-                } else {
-                    postSideEffect(FaceIdLoginSideEffect.LoginFailed)
+                    navigator.navigate(SignInRoute.UserSignIn)
                 }
             }
         }.onFailure { e ->
@@ -146,7 +147,7 @@ class FaceIdLoginViewModel @Inject constructor(
 
             if (state.attemptsLeft <= 0) {
                 delay(3000)
-                postSideEffect(FaceIdLoginSideEffect.MaxAttemptsReached)
+                navigator.navigate(SignInRoute.UserSignIn)
             }
         }
     }
@@ -187,6 +188,6 @@ class FaceIdLoginViewModel @Inject constructor(
     }
 
     fun navigateBack() = intent {
-        postSideEffect(FaceIdLoginSideEffect.NavigateBack)
+        navigator.navigate(SignInRoute.UserSignIn)
     }
 }

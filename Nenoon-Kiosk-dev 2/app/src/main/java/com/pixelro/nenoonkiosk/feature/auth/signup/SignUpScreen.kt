@@ -1,5 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.auth.signup
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -32,39 +34,25 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun SignUpRoute(
-    navController: NavController,
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val state = viewModel.collectAsState().value
+    val context = LocalContext.current
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is SignUpSideEffect.ShowToast -> {
-                // 토스트 표시
-            }
-            is SignUpSideEffect.SignUpSuccess -> {
-                // 회원가입 성공
-            }
-            is SignUpSideEffect.SignUpFailed -> {
-                // 회원가입 실패
-            }
-            is SignUpSideEffect.NavigateToFaceEnrollment -> {
-                // 얼굴 등록 화면으로 이동
-            }
-            is SignUpSideEffect.NavigateBack -> {
-                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
+                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -83,6 +71,7 @@ fun SignUpRoute(
         onBackClick = { viewModel.navigateBack() }
     )
 }
+
 
 @Composable
 fun SignUpScreen(

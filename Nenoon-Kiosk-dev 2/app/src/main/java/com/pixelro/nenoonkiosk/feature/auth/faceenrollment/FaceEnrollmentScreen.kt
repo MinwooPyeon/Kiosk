@@ -1,6 +1,7 @@
 package com.pixelro.nenoonkiosk.feature.auth.faceenrollment
 
 import android.graphics.Bitmap
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,44 +20,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun FaceEnrollmentRoute(
-    navController: NavController,
     userId: String,
     accessToken: String? = null,
     viewModel: FaceEnrollmentViewModel = hiltViewModel()
 ) {
     val state = viewModel.collectAsState().value
+    val context = LocalContext.current
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is FaceEnrollmentSideEffect.ShowToast -> {
-                // 토스트 표시 처리
-            }
-
-            is FaceEnrollmentSideEffect.EnrollmentSuccess -> {
-                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
-            }
-
-            is FaceEnrollmentSideEffect.EnrollmentFailed -> {
-                // 실패 처리
-            }
-
-            is FaceEnrollmentSideEffect.NavigateBack -> {
-                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
+                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

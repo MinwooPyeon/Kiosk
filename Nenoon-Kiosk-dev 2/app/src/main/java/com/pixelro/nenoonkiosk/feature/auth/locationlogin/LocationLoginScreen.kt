@@ -34,13 +34,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
 import com.pixelro.nenoonkiosk.ui.theme.NEURAL200
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -48,8 +45,6 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun LocationLoginRoute(
     updateIsSignedIn: (Boolean) -> Unit,
-    signInNavController: NavController,
-    navController: NavController,
     viewModel: LocationLoginViewModel = hiltViewModel()
 ) {
     val state = viewModel.collectAsState().value
@@ -58,13 +53,6 @@ fun LocationLoginRoute(
         when (sideEffect) {
             is LocationLoginSideEffect.LoginSuccess -> {
                 updateIsSignedIn(true)
-                signInNavController.navigate(SignInScreenState.UserSignIn.name)
-            }
-            is LocationLoginSideEffect.NavigateToUserSignIn -> {
-                signInNavController.navigate(SignInScreenState.UserSignIn.name)
-            }
-            is LocationLoginSideEffect.NavigateToSettings -> {
-                navController.navigate(NavConstants.ROUTE_SETTINGS)
             }
         }
     }

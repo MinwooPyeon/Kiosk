@@ -10,7 +10,4 @@ data class FaceIdLoginState(
 sealed interface FaceIdLoginSideEffect {
     data class ShowToast(val message: String) : FaceIdLoginSideEffect
     data object LoginSuccess : FaceIdLoginSideEffect
-    data object LoginFailed : FaceIdLoginSideEffect
-    data object MaxAttemptsReached : FaceIdLoginSideEffect
-    data object NavigateBack : FaceIdLoginSideEffect
 }

@@ -22,8 +22,4 @@ data class SignUpState(
 
 sealed interface SignUpSideEffect {
     data class ShowToast(val message: String) : SignUpSideEffect
-    data object SignUpSuccess : SignUpSideEffect
-    data object SignUpFailed : SignUpSideEffect
-    data object NavigateToFaceEnrollment : SignUpSideEffect
-    data object NavigateBack : SignUpSideEffect
 }

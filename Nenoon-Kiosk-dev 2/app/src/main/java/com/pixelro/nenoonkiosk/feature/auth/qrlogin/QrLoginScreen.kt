@@ -3,6 +3,7 @@ package com.pixelro.nenoonkiosk.feature.auth.qrlogin
 import android.util.Size
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
@@ -21,64 +22,45 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.qr.QRScannerAnalyzer
-import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import java.util.concurrent.Executors
 
 @Composable
 fun QrLoginRoute(
-    navController: NavController,
     updateIsSignedIn: (Boolean) -> Unit,
     viewModel: QrLoginViewModel = hiltViewModel()
 ) {
     val state = viewModel.collectAsState().value
+    val context = LocalContext.current
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is QrLoginSideEffect.ShowToast -> {
-                // 토스트 표시 처리
+                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
             }
 
             is QrLoginSideEffect.LoginSuccess -> {
                 updateIsSignedIn(true)
             }
-
-            is QrLoginSideEffect.LoginFailed -> {
-                // 실패 처리, 다시 스캔 가능
-            }
-
-            is QrLoginSideEffect.RequestCameraPermission -> {
-                // 카메라 권한 요청 처리
-            }
-
-            is QrLoginSideEffect.NavigateBack -> {
-                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
-            }
         }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.checkCameraPermission()
     }
 
     QrLoginScreen(
@@ -98,7 +80,6 @@ fun QrLoginScreen(
     onQrCodeScanned: (String) -> Unit,
     onBackClick: () -> Unit
 ) {
-    val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
 
@@ -122,7 +103,7 @@ fun QrLoginScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        if (state.isCameraPermissionGranted && !state.isProcessingQr) {
+        if (!state.isProcessingQr) {
             AndroidView(
                 modifier = Modifier
                     .fillMaxWidth(0.7f)
@@ -140,7 +121,7 @@ fun QrLoginScreen(
                         cameraProviderFuture.addListener({
                             val cameraProvider = cameraProviderFuture.get()
                             val preview = Preview.Builder().build().also {
-                                it.setSurfaceProvider(surfaceProvider)
+                                it.surfaceProvider = surfaceProvider
                             }
 
                             val imageAnalysis = ImageAnalysis.Builder()
@@ -168,7 +149,7 @@ fun QrLoginScreen(
                     }
                 }
             )
-        } else if (state.isProcessingQr) {
+        } else {
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.7f)
@@ -179,14 +160,18 @@ fun QrLoginScreen(
             }
         }
 
-        Spacer(modifier = Modifier.weight(1f).height(40.dp))
+        Spacer(
+            modifier = Modifier
+                .weight(1f)
+                .height(40.dp)
+        )
 
         StyledText(
             text = state.qrScanStatus,
             style = when {
-                state.qrScanStatus.contains("success", ignoreCase = true) -> TextStyle.Success
                 state.qrScanStatus.contains("invalid", ignoreCase = true) ||
                         state.qrScanStatus.contains("failed", ignoreCase = true) -> TextStyle.Error
+
                 else -> TextStyle.Message
             },
             textAlign = TextAlign.Center,

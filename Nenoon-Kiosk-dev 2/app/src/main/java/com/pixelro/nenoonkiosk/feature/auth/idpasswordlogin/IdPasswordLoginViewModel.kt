@@ -6,6 +6,8 @@ import com.harang.data.repository.SignInRepository
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.core.navigation.Navigator
+import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.Container
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class IdPasswordLoginViewModel @Inject constructor(
-    private val signInRepository: SignInRepository
+    private val signInRepository: SignInRepository,
+    private val navigator: Navigator
 ) : ViewModel(), ContainerHost<IdPasswordLoginState, IdPasswordLoginSideEffect> {
 
     override val container: Container<IdPasswordLoginState, IdPasswordLoginSideEffect> =
@@ -74,7 +77,6 @@ class IdPasswordLoginViewModel @Inject constructor(
                 reduce {
                     state.copy(errorMessage = StringProvider.getString(R.string.toast_input_id_pw))
                 }
-                postSideEffect(IdPasswordLoginSideEffect.LoginFailed)
             }
         }.onFailure { e ->
             Log.e("IdPasswordLoginVM", "Sign in error: ${e.message}", e)
@@ -84,7 +86,6 @@ class IdPasswordLoginViewModel @Inject constructor(
                     errorMessage = StringProvider.getString(R.string.toast_input_id_pw)
                 )
             }
-            postSideEffect(IdPasswordLoginSideEffect.LoginFailed)
         }
     }
 
@@ -105,7 +106,7 @@ class IdPasswordLoginViewModel @Inject constructor(
     }
 
     fun navigateBack() = intent {
-        postSideEffect(IdPasswordLoginSideEffect.NavigateBack)
+        navigator.navigate(SignInRoute.UserSignIn)
     }
 
     fun clearError() = intent {

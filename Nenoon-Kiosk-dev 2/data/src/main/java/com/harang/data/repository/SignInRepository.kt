@@ -69,7 +69,7 @@ class SignInRepository(
                 } else if (temp == null) {
                     null
                 } else {
-                    temp?.data?.get("accessToken") as String?
+                    temp.data["accessToken"] as String?
                 }
             } catch (e: Exception) {
                 Log.e("SignInRepository", e.toString())

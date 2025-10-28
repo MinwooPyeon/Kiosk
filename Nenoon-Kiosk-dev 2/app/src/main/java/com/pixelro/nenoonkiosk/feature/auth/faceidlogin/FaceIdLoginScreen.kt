@@ -1,6 +1,7 @@
 package com.pixelro.nenoonkiosk.feature.auth.faceidlogin
 
 import android.graphics.Bitmap
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,10 +17,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
@@ -27,46 +28,33 @@ import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun FaceIdLoginRoute(
-    navController: NavController,
     updateIsSignedIn: (Boolean) -> Unit,
     viewModel: FaceIdLoginViewModel = hiltViewModel()
 ) {
     val state = viewModel.collectAsState().value
+    val context = LocalContext.current
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is FaceIdLoginSideEffect.ShowToast -> {
-                // 토스트 표시 처리
+                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
             }
 
             is FaceIdLoginSideEffect.LoginSuccess -> {
                 updateIsSignedIn(true)
-            }
-
-            is FaceIdLoginSideEffect.LoginFailed -> {
-                // 실패 처리
-            }
-
-            is FaceIdLoginSideEffect.MaxAttemptsReached -> {
-                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
-            }
-
-            is FaceIdLoginSideEffect.NavigateBack -> {
-                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
             }
         }
     }
 
     LaunchedEffect(Unit) {
         delay(30000)
-        navController.popBackStack(SignInScreenState.UserSignIn.name, false)
+        viewModel.navigateBack()
     }
 
     FaceIdLoginScreen(

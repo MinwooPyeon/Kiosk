@@ -8,6 +8,4 @@ data class LocationLoginState(
 
 sealed interface LocationLoginSideEffect {
     data object LoginSuccess : LocationLoginSideEffect
-    data object NavigateToUserSignIn : LocationLoginSideEffect
-    data object NavigateToSettings : LocationLoginSideEffect
 }

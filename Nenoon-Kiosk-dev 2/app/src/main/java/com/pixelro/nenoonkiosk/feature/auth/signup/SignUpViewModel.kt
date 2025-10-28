@@ -16,6 +16,8 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.core.navigation.Navigator
+import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.bitmapToFile
 import com.pixelro.nenoonkiosk.core.util.qr.QRCodeGenerator
@@ -33,7 +35,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val application: Application,
-    private val signInRepository: SignInRepository
+    private val signInRepository: SignInRepository,
+    private val navigator: Navigator
 ) : ViewModel(), ContainerHost<SignUpState, SignUpSideEffect> {
 
     override val container: Container<SignUpState, SignUpSideEffect> =
@@ -185,10 +188,9 @@ class SignUpViewModel @Inject constructor(
             reduce {
                 state.copy(
                     isSigningUp = false,
-                    errorMessage = "회원가입에 실패했습니다"
+                    errorMessage = ""
                 )
             }
-            postSideEffect(SignUpSideEffect.SignUpFailed)
         }
     }
 
@@ -271,11 +273,11 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun navigateToFaceEnrollment() = intent {
-        postSideEffect(SignUpSideEffect.NavigateToFaceEnrollment)
+        navigator.navigate(SignInRoute.FaceEnrollment)
     }
 
     fun navigateBack() = intent {
-        postSideEffect(SignUpSideEffect.NavigateBack)
+        navigator.navigate(SignInRoute.UserSignIn)
     }
 
     override fun onCleared() {

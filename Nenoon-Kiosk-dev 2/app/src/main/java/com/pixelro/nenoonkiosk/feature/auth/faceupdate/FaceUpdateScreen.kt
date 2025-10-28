@@ -1,6 +1,7 @@
 package com.pixelro.nenoonkiosk.feature.auth.faceupdate
 
 import android.graphics.Bitmap
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,12 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
@@ -40,29 +40,17 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun FaceUpdateRoute(
-    navController: NavController,
     loggedInUserId: String?,
     accessToken: String? = null,
     viewModel: FaceUpdateViewModel = hiltViewModel()
 ) {
     val state = viewModel.collectAsState().value
+    val context = LocalContext.current
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is FaceUpdateSideEffect.ShowToast -> {
-                // 토스트 표시 처리
-            }
-
-            is FaceUpdateSideEffect.UpdateSuccess -> {
-                navController.popBackStack(NavConstants.ROUTE_ACCOUNT_MANAGEMENT, false)
-            }
-
-            is FaceUpdateSideEffect.UpdateFailed -> {
-                // 실패 처리
-            }
-
-            is FaceUpdateSideEffect.NavigateBack -> {
-                navController.popBackStack(NavConstants.ROUTE_ACCOUNT_MANAGEMENT, false)
+                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

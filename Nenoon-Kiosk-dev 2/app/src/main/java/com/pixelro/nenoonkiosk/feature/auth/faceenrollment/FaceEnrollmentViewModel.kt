@@ -8,6 +8,8 @@ import com.harang.data.repository.SignInRepository
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.core.navigation.Navigator
+import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
 import com.pixelro.nenoonkiosk.core.recognizer.FaceRecognizer
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +24,8 @@ import javax.inject.Inject
 class FaceEnrollmentViewModel @Inject constructor(
     application: Application,
     private val faceRecognizer: FaceRecognizer,
-    private val signInRepository: SignInRepository
+    private val signInRepository: SignInRepository,
+    private val navigator: Navigator
 ) : ViewModel(), ContainerHost<FaceEnrollmentState, FaceEnrollmentSideEffect> {
 
     override val container: Container<FaceEnrollmentState, FaceEnrollmentSideEffect> =
@@ -134,7 +137,6 @@ class FaceEnrollmentViewModel @Inject constructor(
     fun enrollFace(userId: String, accessToken: String? = null) = intent {
         if (tempFaceEmbedding == null) {
             postSideEffect(FaceEnrollmentSideEffect.ShowToast("등록할 얼굴 정보가 없습니다"))
-            postSideEffect(FaceEnrollmentSideEffect.EnrollmentFailed)
             return@intent
         }
 
@@ -155,20 +157,18 @@ class FaceEnrollmentViewModel @Inject constructor(
             if (success) {
                 tempFaceEmbedding = null
                 postSideEffect(FaceEnrollmentSideEffect.ShowToast("얼굴 등록이 완료되었습니다"))
-                postSideEffect(FaceEnrollmentSideEffect.EnrollmentSuccess)
+                navigator.navigate(SignInRoute.UserSignIn)
             } else {
                 postSideEffect(FaceEnrollmentSideEffect.ShowToast("얼굴 등록에 실패했습니다"))
-                postSideEffect(FaceEnrollmentSideEffect.EnrollmentFailed)
             }
         }.onFailure { e ->
             Log.e("FaceEnrollmentVM", "Error enrolling face: ${e.message}", e)
             postSideEffect(FaceEnrollmentSideEffect.ShowToast("얼굴 등록 중 오류가 발생했습니다"))
-            postSideEffect(FaceEnrollmentSideEffect.EnrollmentFailed)
         }
     }
 
     fun navigateBack() = intent {
-        postSideEffect(FaceEnrollmentSideEffect.NavigateBack)
+        navigator.navigate(SignInRoute.UserSignIn)
     }
 
     override fun onCleared() {

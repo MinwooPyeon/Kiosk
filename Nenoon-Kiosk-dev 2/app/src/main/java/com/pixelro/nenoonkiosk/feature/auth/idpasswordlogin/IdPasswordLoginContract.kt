@@ -12,6 +12,4 @@ data class IdPasswordLoginState(
 sealed interface IdPasswordLoginSideEffect {
     data class ShowToast(val message: String) : IdPasswordLoginSideEffect
     data object LoginSuccess : IdPasswordLoginSideEffect
-    data object LoginFailed : IdPasswordLoginSideEffect
-    data object NavigateBack : IdPasswordLoginSideEffect
 }

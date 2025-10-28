@@ -2,11 +2,13 @@ package com.pixelro.nenoonkiosk.feature.auth.locationlogin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.RawResourceDataSource
 import com.harang.data.repository.SignInRepository
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
+import com.pixelro.nenoonkiosk.core.navigation.Navigator
+import com.pixelro.nenoonkiosk.core.navigation.Route
+import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocationLoginViewModel @Inject constructor(
-    private val signInRepository: SignInRepository
+    private val signInRepository: SignInRepository,
+    private val navigator: Navigator
 ) : ViewModel(), ContainerHost<LocationLoginState, LocationLoginSideEffect> {
 
     override val container: Container<LocationLoginState, LocationLoginSideEffect> =
@@ -49,11 +52,11 @@ class LocationLoginViewModel @Inject constructor(
         }.onSuccess { success ->
             if (success) {
                 postSideEffect(LocationLoginSideEffect.LoginSuccess)
+                navigator.navigate(SignInRoute.UserSignIn)
             }
         }
     }
 
-    @androidx.annotation.OptIn(UnstableApi::class)
     fun skipSignIn(updateIsSignedIn: (Boolean) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             signInRepository.updateLocationId(AppConstants.DEFAULT_LOCATION_ID)
@@ -63,12 +66,12 @@ class LocationLoginViewModel @Inject constructor(
         }
         intent {
             updateIsSignedIn(true)
-            postSideEffect(LocationLoginSideEffect.NavigateToUserSignIn)
+            navigator.navigate(SignInRoute.UserSignIn)
         }
     }
 
     fun navigateToSettings() = intent {
-        postSideEffect(LocationLoginSideEffect.NavigateToSettings)
+        navigator.navigate(Route.Settings)
     }
 
     private fun validateLocationSignIn(id: String, password: String): Boolean {

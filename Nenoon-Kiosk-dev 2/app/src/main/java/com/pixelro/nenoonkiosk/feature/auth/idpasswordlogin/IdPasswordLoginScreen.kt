@@ -1,5 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.auth.idpasswordlogin
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -29,40 +31,30 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun IdPasswordLoginRoute(
-    navController: NavController,
     updateIsSignedIn: (Boolean) -> Unit,
     viewModel: IdPasswordLoginViewModel = hiltViewModel()
 ) {
     val state = viewModel.collectAsState().value
+    val context = LocalContext.current
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is IdPasswordLoginSideEffect.ShowToast -> {
-                // 토스트 표시 처리
+                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
             }
 
             is IdPasswordLoginSideEffect.LoginSuccess -> {
                 updateIsSignedIn(true)
-            }
-
-            is IdPasswordLoginSideEffect.LoginFailed -> {
-                // 실패 처리
-            }
-
-            is IdPasswordLoginSideEffect.NavigateBack -> {
-                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
             }
         }
     }

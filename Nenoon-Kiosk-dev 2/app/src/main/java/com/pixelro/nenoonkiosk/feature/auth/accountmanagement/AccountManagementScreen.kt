@@ -1,5 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.auth.accountmanagement
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,16 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
@@ -42,7 +42,6 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun AccountManagementRoute(
-    navController: NavController,
     userId: String?,
     userData: com.harang.data.model.dto.User?,
     isUserSignedIn: Boolean,
@@ -50,27 +49,16 @@ fun AccountManagementRoute(
     viewModel: AccountManagementViewModel = hiltViewModel()
 ) {
     val state = viewModel.collectAsState().value
+    val context = LocalContext.current
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is AccountManagementSideEffect.ShowToast -> {
-                // 토스트 표시 처리
-            }
-
-            is AccountManagementSideEffect.NavigateToFaceEnrollment -> {
-                navController.navigate(NavConstants.ROUTE_FACE_UPDATE_TERMS_OF_SERVICE)
+                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
             }
 
             is AccountManagementSideEffect.SignOut -> {
                 onSignOut()
-                navController.navigate(NavConstants.ROUTE_SIGN_IN) {
-                    popUpTo(navController.graph.startDestinationId) { inclusive = false }
-                    launchSingleTop = true
-                }
-            }
-
-            is AccountManagementSideEffect.NavigateBack -> {
-                navController.popBackStack(NavConstants.ROUTE_CATEGORY_LIST, false)
             }
         }
     }

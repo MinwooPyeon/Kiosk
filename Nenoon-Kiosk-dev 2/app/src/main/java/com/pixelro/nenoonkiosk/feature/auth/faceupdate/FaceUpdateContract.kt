@@ -13,7 +13,4 @@ data class FaceUpdateState(
 
 sealed interface FaceUpdateSideEffect {
     data class ShowToast(val message: String) : FaceUpdateSideEffect
-    data object UpdateSuccess : FaceUpdateSideEffect
-    data object UpdateFailed : FaceUpdateSideEffect
-    data object NavigateBack : FaceUpdateSideEffect
 }
