@@ -54,9 +54,9 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.Advertisement
+import com.pixelro.nenoonkiosk.core.ui.InspectionSelectionButton
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
-import com.pixelro.nenoonkiosk.core.ui.TestSelectionButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
@@ -279,7 +279,7 @@ fun ExternalDeviceTestListScreen(
                  * 검사 항목 박스 내용
                  * 혈압 검사
                  */
-                TestSelectionButton(
+                InspectionSelectionButton(
                     modifier = modifier,
                     title1 =
                         StringProvider.getString(
@@ -312,7 +312,7 @@ fun ExternalDeviceTestListScreen(
                  * 검사 항목 박스 내용
                  * 악력 검사
                  */
-                TestSelectionButton(
+                InspectionSelectionButton(
                     modifier = modifier,
                     title1 =
                         StringProvider.getString(

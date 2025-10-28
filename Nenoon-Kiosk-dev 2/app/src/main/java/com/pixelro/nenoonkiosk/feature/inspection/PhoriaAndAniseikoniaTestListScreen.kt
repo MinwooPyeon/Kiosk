@@ -53,10 +53,10 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.Advertisement
+import com.pixelro.nenoonkiosk.core.ui.InspectionSelectionButton
 import com.pixelro.nenoonkiosk.core.ui.RedGreenFilterGlassDialog
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
-import com.pixelro.nenoonkiosk.core.ui.TestSelectionButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
@@ -293,7 +293,7 @@ fun PhoriaAndAniseikoniaTestListScreen(
                  * 검사 항목 박스 내용
                  * 사위 검사
                  */
-                TestSelectionButton(
+                InspectionSelectionButton(
                     modifier = modifier,
                     title1 =
                         StringProvider.getString(
@@ -317,7 +317,7 @@ fun PhoriaAndAniseikoniaTestListScreen(
                  * 검사 항목 박스 내용
                  * 부등상시 검사
                  */
-                TestSelectionButton(
+                InspectionSelectionButton(
                     modifier = modifier,
                     title1 =
                         StringProvider.getString(
