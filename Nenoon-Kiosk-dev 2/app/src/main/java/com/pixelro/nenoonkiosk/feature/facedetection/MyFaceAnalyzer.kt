@@ -16,139 +16,163 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.util.concurrent.Executor
 
 class MyFaceAnalyzer(
-    val updateFaceDetectionData: (Rect, PointF?, PointF?, Float, Float, Float, Float?, Float?) -> Unit,
-    val updateTextRecognitionData: (Rect?) -> Unit,
-    val updateIsFaceDetected: (Boolean) -> Unit,
-    val updateIsNenoonTextDetected: (Boolean) -> Unit,
+    private val updateFaceDetectionData: (Rect, PointF?, PointF?, Float, Float, Float, Float?, Float?) -> Unit,
+    private val updateTextRecognitionData: (Rect?) -> Unit,
+    private val updateIsFaceDetected: (Boolean) -> Unit,
+    private val updateIsNenoonTextDetected: (Boolean) -> Unit,
+    private val onGazeDetectionResult: (IrisResult) -> Unit,
     private val executor: Executor,
 ) : ImageAnalysis.Analyzer {
+    
+    companion object {
+        // 얼굴 인식 범위 상수
+        private const val EYE_LEFT_MIN_X = 260f
+        private const val EYE_CENTER_X = 544f
+        private const val EYE_RIGHT_MAX_X = 804f
+        private const val EYE_MIN_Y = 400f
+        private const val EYE_DISTANCE_MIN = 100f
+        
+        // 얼굴 미감지 카운트 임계값
+        private const val NO_FACE_COUNT_THRESHOLD = 6
+        
+        // NENOON 텍스트 인식 키워드
+        private const val NENOON_TEXT = "NENOON"
+        private const val NENOON_TEXT_ALT = "NE NOON"
+        
+        // Face Detector 옵션
+        private const val MIN_FACE_SIZE = 0.3f
+    }
+    
     private var lastAnalysisTime = -1L
-
-    private val realTimeOpts =
-        FaceDetectorOptions.Builder().setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-            .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
-            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
-            .setMinFaceSize(0.3f)
-            .enableTracking()
-            .build()
-
-    private val detector = FaceDetection.getClient(realTimeOpts)
-    private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
     private var noFaceCount = 0
+
+    private val faceDetectorOptions = FaceDetectorOptions.Builder()
+        .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
+        .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+        .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+        .setMinFaceSize(MIN_FACE_SIZE)
+        .enableTracking()
+        .build()
+
+    private val faceDetector = FaceDetection.getClient(faceDetectorOptions)
+    private val textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
     @SuppressLint("UnsafeOptInUsageError")
     override fun analyze(imageProxy: ImageProxy) {
-        val now = SystemClock.uptimeMillis()
-        var isNenoonTextDetected = false
-        lastAnalysisTime = now
+        lastAnalysisTime = SystemClock.uptimeMillis()
 
-        /**
-         * original image
-         */
-        val mediaImage = imageProxy.image
-        if (mediaImage != null) {
-            val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-            /**
-             * Text Recognition
-             */
-            recognizer.process(image).addOnSuccessListener(executor) { result ->
-                for (block in result.textBlocks) {
-                    for (line in block.lines) {
-                        if (line.text == "NENOON" || line.text == "NE NOON") {
-                            isNenoonTextDetected = true
+        val mediaImage = imageProxy.image ?: return
+        val inputImage = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+
+        // 텍스트 인식
+        processTextRecognition(inputImage)
+
+        // 얼굴 감지
+        processFaceDetection(inputImage, imageProxy)
+    }
+
+    // 텍스트 인식 처리
+    private fun processTextRecognition(image: InputImage) {
+        textRecognizer.process(image)
+            .addOnSuccessListener(executor) { result ->
+                val nenoonTextDetected = result.textBlocks.any { block ->
+                    block.lines.any { line ->
+                        if (isNenoonText(line.text)) {
                             updateTextRecognitionData(line.boundingBox)
+                            true
+                        } else {
+                            false
                         }
                     }
-                    if (isNenoonTextDetected) {
-                        updateIsNenoonTextDetected(true)
-                        break
-                    }
                 }
-            }.addOnFailureListener {
-                it.printStackTrace()
-            }.addOnCompleteListener {
+                
+                if (nenoonTextDetected) {
+                    updateIsNenoonTextDetected(true)
+                }
             }
+            .addOnFailureListener { it.printStackTrace() }
+    }
 
-            /**
-             * Face Detection
-             */
-            detector.process(image).addOnSuccessListener(executor) { faces ->
-                var centerFace: Face? = null
-
-                for (face in faces) {
-                    val leftEyePosition = face.getLandmark(FaceLandmark.LEFT_EYE)?.position
-                    val rightEyePosition = face.getLandmark(FaceLandmark.RIGHT_EYE)?.position
-                    /**
-                     * 인식 허용 박스 사이즈
-                     */
-                    if (leftEyePosition != null && rightEyePosition != null) {
-                        if ((leftEyePosition.x > 260f) &&
-                            (leftEyePosition.x < 544f) &&
-                            (rightEyePosition.x < 804f) &&
-                            (rightEyePosition.x > 544f) &&
-                            (leftEyePosition.y > 400f) &&
-                            (rightEyePosition.y > 400f) &&
-                            ((rightEyePosition.x - leftEyePosition.x) > 100f)
-                        ) {
-                            centerFace = face
-                            break
-                        }
-                    }
-                }
-
+    // 얼굴 감지 처리
+    private fun processFaceDetection(image: InputImage, imageProxy: ImageProxy) {
+        faceDetector.process(image)
+            .addOnSuccessListener(executor) { faces ->
+                val centerFace = findCenterFace(faces)
+                
                 if (centerFace != null) {
-                    noFaceCount = 0
-                    updateIsFaceDetected(true)
-                    val boundingBox = centerFace.boundingBox
-                    val rotX = centerFace.headEulerAngleX
-                    val rotY = centerFace.headEulerAngleY
-                    val rotZ = centerFace.headEulerAngleZ
-                    val leftEyePosition = centerFace.getLandmark(FaceLandmark.LEFT_EYE)?.position
-                    val rightEyePosition = centerFace.getLandmark(FaceLandmark.RIGHT_EYE)?.position
-                    val leftEyeOpenProbability = centerFace.leftEyeOpenProbability
-                    val rightEyeOpenProbability = centerFace.rightEyeOpenProbability
-
-                    if (leftEyePosition != null && rightEyePosition != null) {
-                        updateFaceDetectionData(
-                            boundingBox,
-                            leftEyePosition,
-                            rightEyePosition,
-                            rotX,
-                            rotY,
-                            rotZ,
-                            leftEyeOpenProbability,
-                            rightEyeOpenProbability,
-                        )
-                        return@addOnSuccessListener
-                    } else {
-                        updateIsFaceDetected(false)
-                    }
+                    handleFaceDetected(centerFace)
                 } else {
-                    noFaceCount++
-                    if (noFaceCount > 6) {
-                        updateIsFaceDetected(false)
-                    }
+                    handleFaceNotDetected()
                 }
-            }.addOnFailureListener {
-                it.printStackTrace()
-            }.addOnCompleteListener {
-                imageProxy.close()
+            }
+            .addOnFailureListener { it.printStackTrace() }
+            .addOnCompleteListener { imageProxy.close() }
+    }
+
+    // 중앙 얼굴 찾기
+    private fun findCenterFace(faces: List<Face>): Face? {
+        return faces.firstOrNull { face ->
+            val leftEye = face.getLandmark(FaceLandmark.LEFT_EYE)?.position
+            val rightEye = face.getLandmark(FaceLandmark.RIGHT_EYE)?.position
+            
+            if (leftEye != null && rightEye != null) {
+                isFaceInValidRange(leftEye, rightEye)
+            } else {
+                false
             }
         }
     }
 
-//        val bitmap = imageProxy.toBitmap()
-//        val matrix = Matrix()
-//        matrix.setScale(-1f, 1f)
-//        matrix.postRotate(90f)
-//        val rotatedImage = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width - 300, bitmap.height, matrix, true)
-//
-//        updateBitmap(rotatedImage)
-    // resized image
-//        val bitmap = imageProxy.toBitmap()
-//        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.width * 2, bitmap.height * 2, false)
-//        val croppedBitmap = Bitmap.createBitmap(resizedBitmap, resizedBitmap.width / 4, resizedBitmap.height / 4, resizedBitmap.width / 2, resizedBitmap.height / 2)
-//        val imageReader = ImageReader.newInstance(resizedBitmap.width, resizedBitmap.height, ImageFormat.YUV_420_888, 1)
-//        val resizedImage = imageReader.acquireLatestImage()
-//        val inputResizedImage = InputImage.fromBitmap(croppedBitmap, imageProxy.imageInfo.rotationDegrees)
+    // 얼굴 감지 성공 처리
+    private fun handleFaceDetected(face: Face) {
+        noFaceCount = 0
+        updateIsFaceDetected(true)
+
+        val leftEye = face.getLandmark(FaceLandmark.LEFT_EYE)?.position
+        val rightEye = face.getLandmark(FaceLandmark.RIGHT_EYE)?.position
+
+        if (leftEye != null && rightEye != null) {
+            // Face Detection 데이터 업데이트
+            updateFaceDetectionData(
+                face.boundingBox,
+                leftEye,
+                rightEye,
+                face.headEulerAngleX,
+                face.headEulerAngleY,
+                face.headEulerAngleZ,
+                face.leftEyeOpenProbability,
+                face.rightEyeOpenProbability
+            )
+
+            // 시선 추적 분석
+            val gazeResult = GazeDetector.detectGazeDirection(face)
+            onGazeDetectionResult(gazeResult)
+        } else {
+            updateIsFaceDetected(false)
+        }
+    }
+
+    // 얼굴 미감지 처리
+    private fun handleFaceNotDetected() {
+        noFaceCount++
+        if (noFaceCount > NO_FACE_COUNT_THRESHOLD) {
+            updateIsFaceDetected(false)
+        }
+    }
+
+    // NENOON 텍스트 확인
+    private fun isNenoonText(text: String): Boolean {
+        return text == NENOON_TEXT || text == NENOON_TEXT_ALT
+    }
+
+    // 얼굴 인식 범위 확인
+    private fun isFaceInValidRange(leftEye: PointF, rightEye: PointF): Boolean {
+        return leftEye.x > EYE_LEFT_MIN_X &&
+                leftEye.x < EYE_CENTER_X &&
+                rightEye.x > EYE_CENTER_X &&
+                rightEye.x < EYE_RIGHT_MAX_X &&
+                leftEye.y > EYE_MIN_Y &&
+                rightEye.y > EYE_MIN_Y &&
+                (rightEye.x - leftEye.x) > EYE_DISTANCE_MIN
+    }
 }

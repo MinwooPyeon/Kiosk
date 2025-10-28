@@ -21,6 +21,8 @@ import com.pixelro.nenoonkiosk.ui.theme.titleTextStyle
  * @param showBackButton 뒤로가기 버튼 표시 여부
  * @param onBackClicked 뒤로가기 버튼 클릭 이벤트
  * @param actions 상단 바 우측에 추가될 액션 버튼들
+ * @param containerColor 상단 바 배경색
+ * @param contentColor 상단 바 텍스트 및 아이콘 색상
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,10 +31,12 @@ fun TopBarVertical(
     showBackButton: Boolean,
     onBackClicked: () -> Unit,
     actions: @Composable RowScope.() -> Unit = {},
+    containerColor: Color = Color.White,
+    contentColor: Color = Color.Black,
 ) {
     CenterAlignedTopAppBar(
         modifier = Modifier.padding(horizontal = 18.dp, vertical = 34.dp),
-        title = { Text(text = title, style = titleTextStyle, color = Color.Black) },
+        title = { Text(text = title, style = titleTextStyle, color = contentColor) },
         navigationIcon = {
             if (showBackButton) {
                 BackButtonVertical(onClick = onBackClicked)
@@ -41,11 +45,11 @@ fun TopBarVertical(
         actions = actions,
         colors =
             TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.White,
-                scrolledContainerColor = Color.White,
-                titleContentColor = Color.Black,
-                actionIconContentColor = Color.Black,
-                navigationIconContentColor = Color.Black,
+                containerColor = containerColor,
+                scrolledContainerColor = containerColor,
+                titleContentColor = contentColor,
+                actionIconContentColor = contentColor,
+                navigationIconContentColor = contentColor,
             ),
     )
 }

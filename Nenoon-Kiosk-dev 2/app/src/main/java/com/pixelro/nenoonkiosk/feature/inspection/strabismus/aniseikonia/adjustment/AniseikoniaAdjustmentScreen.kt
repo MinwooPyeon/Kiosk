@@ -1,7 +1,6 @@
-package com.pixelro.nenoonkiosk.feature.strabismustest
+package com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.adjustment
 
 import android.speech.tts.TextToSpeech
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,17 +10,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,21 +26,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.core.ui.HowToButton
+import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.core.ui.TopBarVertical
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.howtodialog.AniseikoniaHowToDialog
+import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
+/**
+ * 부등상시 검사 조정 화면
+ *
+ * @param onNextClicked 다음 버튼 클릭 콜백 (answer, scaleDifference)
+ * @param onBackClicked 뒤로가기 버튼 클릭 콜백
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FudoAdjustmentScreen(
+fun AniseikoniaAdjustmentScreen(
     onNextClicked: (Int, Float) -> Unit,
     onBackClicked: () -> Unit,
 ) {
@@ -53,32 +57,34 @@ fun FudoAdjustmentScreen(
         TTS.speechTTS(StringProvider.getString(R.string.tts_fudo_adjustment), TextToSpeech.QUEUE_FLUSH)
     }
 
+    // 텍스트 리소스
+    val screenTitle = StringProvider.getStringComposable(R.string.fudo_question_title)
+    val bottomText = StringProvider.getStringComposable(R.string.fudo_adjustment_bottom_text)
+    val nextButtonText = StringProvider.getStringComposable(R.string.common_next)
+    val mainText = StringProvider.getStringComposable(R.string.fudo_adjustment_main_text)
+    val leftSmallerButtonText = StringProvider.getStringComposable(R.string.fudo_adjustment_button_left_smaller)
+    val rightSmallerButtonText = StringProvider.getStringComposable(R.string.fudo_adjustment_button_right_smaller)
+
     var rightMoonScale by remember { mutableStateOf(1f) }
     var scaleDifference by remember { mutableStateOf(0.0f) }
     var showHowToDialog by remember { mutableStateOf(false) }
 
     if (showHowToDialog) {
-        FudoHowToDialog(onDismissRequest = { showHowToDialog = false })
+        AniseikoniaHowToDialog(onDismissRequest = { showHowToDialog = false })
     }
 
     Scaffold(
+        containerColor = Color.Black,
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text(StringProvider.getString(R.string.fudo_question_title), color = Color.White) },
-                navigationIcon = {
-                    TextButton(onClick = onBackClicked) {
-                        Text(StringProvider.getString(R.string.common_exit), color = Color.White, fontSize = 24.sp)
-                    }
-                },
+            TopBarVertical(
+                title = screenTitle,
+                showBackButton = true,
+                onBackClicked = onBackClicked,
                 actions = {
-                    TextButton(onClick = { showHowToDialog = true }) {
-                        Text(StringProvider.getString(R.string.common_test_guide), color = Color.White, fontSize = 24.sp)
-                    }
+                    HowToButton(onClick = { showHowToDialog = true })
                 },
-                colors =
-                    TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = Color.Black,
-                    ),
+                containerColor = Color.Black,
+                contentColor = Color.White
             )
         },
         bottomBar = {
@@ -94,28 +100,16 @@ fun FudoAdjustmentScreen(
                 val locale = LocalConfiguration.current.locale
                 val fontSize = if (locale.language == "ko") 48.sp else 44.sp
                 Text(
-                    text = StringProvider.getString(R.string.fudo_adjustment_bottom_text),
+                    text = bottomText,
                     color = Color.White,
                     fontSize = fontSize,
                     textAlign = TextAlign.Center,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = {
-                        onNextClicked(1, scaleDifference)
-                    },
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(96.dp),
-                    colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = neNoon_blue,
-                        ),
-                    shape = RoundedCornerShape(12.dp),
-                ) {
-                    Text(StringProvider.getString(R.string.common_next), fontSize = 36.sp, color = Color.White)
-                }
+                PrimaryButton(
+                    onClick = { onNextClicked(1, scaleDifference) },
+                    text = nextButtonText,
+                )
             }
         },
     ) { paddingValues ->
@@ -128,40 +122,13 @@ fun FudoAdjustmentScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(500.dp)
-                        .background(Color(0xFFEBF961)),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_fudo_moon_left),
-                    contentDescription = "Left Moon",
-                    modifier = Modifier.size(200.dp, 500.dp),
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.ic_fudo_moon_right),
-                    contentDescription = "Right Moon",
-                    modifier =
-                        Modifier
-                            .size(200.dp, 500.dp)
-                            .graphicsLayer(
-                                scaleX = rightMoonScale,
-                                scaleY = rightMoonScale,
-                                transformOrigin = TransformOrigin(0f, 0.5f),
-                            ),
-                )
-            }
+            AniseikoniaAdjustmentCanvas(rightMoonScale = rightMoonScale)
             Spacer(modifier = Modifier.height(16.dp))
 
             val locale = LocalConfiguration.current.locale
             val fontSize = if (locale.language == "ko") 48.sp else 44.sp
             Text(
-                text = StringProvider.getString(R.string.fudo_adjustment_main_text),
+                text = mainText,
                 color = Color.White,
                 fontSize = fontSize,
                 textAlign = TextAlign.Center,
@@ -186,7 +153,7 @@ fun FudoAdjustmentScreen(
                     shape = RoundedCornerShape(12.dp),
                 ) {
                     Text(
-                        StringProvider.getString(R.string.fudo_adjustment_button_left_smaller),
+                        leftSmallerButtonText,
                         color = Color.White,
                         fontSize = 24.sp,
                         textAlign = TextAlign.Center,
@@ -206,7 +173,7 @@ fun FudoAdjustmentScreen(
                     shape = RoundedCornerShape(12.dp),
                 ) {
                     Text(
-                        StringProvider.getString(R.string.fudo_adjustment_button_right_smaller),
+                        rightSmallerButtonText,
                         color = Color.White,
                         fontSize = 24.sp,
                         textAlign = TextAlign.Center,
@@ -215,5 +182,28 @@ fun FudoAdjustmentScreen(
                 Spacer(modifier = Modifier.width(48.dp))
             }
         }
+    }
+}
+
+//가로 모드 내용 잘림-> 수정 필요
+@Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
+@Composable
+private fun AniseikoniaAdjustmentScreenHorizontalPreview() {
+    NenoonKioskTheme {
+        AniseikoniaAdjustmentScreen(
+            onNextClicked = { _, _ -> },
+            onBackClicked = { }
+        )
+    }
+}
+
+@Preview(showBackground = true, device = "spec:width=800dp,height=1280dp,dpi=240")
+@Composable
+private fun AniseikoniaAdjustmentScreenVerticalPreview() {
+    NenoonKioskTheme {
+        AniseikoniaAdjustmentScreen(
+            onNextClicked = { _, _ -> },
+            onBackClicked = { }
+        )
     }
 }

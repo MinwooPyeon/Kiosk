@@ -61,7 +61,7 @@ import com.pixelro.nenoonkiosk.feature.print.ResultPrintRoute
 import com.pixelro.nenoonkiosk.feature.print.ResultPrintScreen
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverScreen
 import com.pixelro.nenoonkiosk.feature.splash.SplashScreen
-import com.pixelro.nenoonkiosk.feature.strabismustest.AppNavigation
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.AppNavigation
 import com.pixelro.nenoonkiosk.feature.survey.SurveyScreen
 import com.pixelro.nenoonkiosk.feature.termsofservice.base.TermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.undeveloped.testcontent.ChildrenVisualAcuityTestContent

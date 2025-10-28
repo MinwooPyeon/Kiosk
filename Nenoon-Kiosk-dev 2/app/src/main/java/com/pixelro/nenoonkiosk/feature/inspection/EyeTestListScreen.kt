@@ -53,9 +53,9 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.Advertisement
+import com.pixelro.nenoonkiosk.core.ui.InspectionSelectionButton
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
-import com.pixelro.nenoonkiosk.core.ui.TestSelectionButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
@@ -280,7 +280,7 @@ fun EyeTestListScreen(
                  * 검사 항목 박스 내용
                  * 시력 검사 (근거리)
                  */
-                TestSelectionButton(
+                InspectionSelectionButton(
                     modifier = modifier,
                     title1 =
                         StringProvider.getString(
@@ -312,7 +312,7 @@ fun EyeTestListScreen(
                  * 검사 항목 박스 내용
                  * 노안 조절력 검사 (안구 나이 검사)
                  */
-                TestSelectionButton(
+                InspectionSelectionButton(
                     modifier = modifier,
                     title1 =
                         StringProvider.getString(
@@ -344,7 +344,7 @@ fun EyeTestListScreen(
                  * 검사 항목 박스 내용
                  * 암슬러 차트 검사 (황반 변성 검사)
                  */
-                TestSelectionButton(
+                InspectionSelectionButton(
                     modifier = modifier,
                     title1 =
                         StringProvider.getString(
@@ -376,7 +376,7 @@ fun EyeTestListScreen(
                  * 검사 항목 박스 내용
                  * 엠식 변형식 검사 (황반 변성 검사)
                  */
-                TestSelectionButton(
+                InspectionSelectionButton(
                     modifier = modifier,
                     title1 =
                         StringProvider.getString(
@@ -487,3 +487,5 @@ fun EyeTestListScreen(
         }
     }
 }
+
+

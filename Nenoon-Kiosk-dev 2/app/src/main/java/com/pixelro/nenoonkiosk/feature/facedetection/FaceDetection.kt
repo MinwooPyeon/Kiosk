@@ -89,6 +89,7 @@ fun FaceDetectionScreenContent(viewModel: FaceDetectionViewModel = hiltViewModel
                                     viewModel::updateTextRecognitionData,
                                     viewModel::updateIsFaceDetected,
                                     viewModel::updateIsNenoonTextDetected,
+                                    viewModel::onGazeResultDetected,
                                     executor1,
                                 ),
                             )
@@ -142,6 +143,7 @@ fun FaceDetectionScreenContentWithPreview(
                                             viewModel::updateTextRecognitionData,
                                             viewModel::updateIsFaceDetected,
                                             viewModel::updateIsNenoonTextDetected,
+                                            viewModel::onGazeResultDetected,
                                             executor1,
                                         ),
                                     )
