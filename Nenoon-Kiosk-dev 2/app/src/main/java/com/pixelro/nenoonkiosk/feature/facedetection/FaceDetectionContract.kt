@@ -34,4 +34,3 @@ object FaceDetectionContract {
         data class SpeakTTS(val text: String) : SideEffect()
     }
 }
-
