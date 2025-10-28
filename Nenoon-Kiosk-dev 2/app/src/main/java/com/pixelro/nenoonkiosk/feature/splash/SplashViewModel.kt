@@ -1,5 +1,7 @@
 package com.pixelro.nenoonkiosk.feature.splash
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
@@ -12,6 +14,7 @@ import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
+@RequiresApi(Build.VERSION_CODES.S)
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val navigator: Navigator,
@@ -25,6 +28,7 @@ class SplashViewModel @Inject constructor(
         checkPermissionsAfterDelay()
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     private fun checkPermissionsAfterDelay() = intent {
         delay(3000)
 

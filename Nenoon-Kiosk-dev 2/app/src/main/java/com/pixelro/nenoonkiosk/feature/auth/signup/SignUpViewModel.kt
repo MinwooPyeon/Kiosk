@@ -183,7 +183,6 @@ class SignUpViewModel @Inject constructor(
             viewModelScope.launch {
                 printQrCode()
             }
-            postSideEffect(SignUpSideEffect.SignUpSuccess)
         } else {
             reduce {
                 state.copy(

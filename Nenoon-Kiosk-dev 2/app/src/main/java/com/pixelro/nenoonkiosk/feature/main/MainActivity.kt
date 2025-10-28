@@ -5,13 +5,10 @@ import android.annotation.SuppressLint
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.pm.PackageManager
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Process
 import android.util.Log
-import android.util.SizeF
 import android.view.MotionEvent
 import android.view.WindowManager
 import android.widget.Toast
@@ -32,11 +29,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
-import com.pixelro.nenoonkiosk.core.constants.DebugConstants
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
@@ -49,10 +44,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    val viewModel: NenoonViewModel by lazy {
-        ViewModelProvider(this)[NenoonViewModel::class.java]
-    }
 
     private lateinit var dpm: DevicePolicyManager
     private lateinit var adminComponentName: ComponentName
@@ -71,7 +62,6 @@ class MainActivity : ComponentActivity() {
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        viewModel.resetScreenSaverTimer()
         event?.let {
             if (it.action == MotionEvent.ACTION_DOWN) {
                 handleTapEvent(it)
@@ -122,10 +112,8 @@ class MainActivity : ComponentActivity() {
         val locale = SharedPreferencesManager.getString("language")
         if (locale.isBlank()) {
             TTS.initTTS("en")
-            viewModel.updateLanguage("en")
         } else {
             TTS.initTTS(locale)
-            viewModel.updateLanguage(locale)
         }
 
         window.setFlags(
@@ -158,33 +146,32 @@ class MainActivity : ComponentActivity() {
                     val navBackStack = rememberNavBackStack(Route.Splash)
                     LaunchedNavigator(navBackStack = navBackStack)
 
-                    RouteHost(
-                        navBackStack = navBackStack,
-                        viewModel = viewModel
+                    NenoonRouteHost(
+                        navBackStack = navBackStack
                     )
 
-                    if (showPasswordDialog) {
-                        PasswordDialog(
-                            onDismiss = { showPasswordDialog = false },
-                            onPasswordEntered = { password ->
-                                if (password == ADMIN_PASSWORD) {
-                                    Toast.makeText(
-                                        this@MainActivity,
-                                        "Password correct! Shutting down...",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    showPasswordDialog = false
-                                    Process.killProcess(Process.myPid())
-                                } else {
-                                    Toast.makeText(
-                                        this@MainActivity,
-                                        "Incorrect password",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                        )
-                    }
+//                    if (showPasswordDialog) {
+//                        PasswordDialog(
+//                            onDismiss = { showPasswordDialog = false },
+//                            onPasswordEntered = { password ->
+//                                if (password == ADMIN_PASSWORD) {
+//                                    Toast.makeText(
+//                                        this@MainActivity,
+//                                        "Password correct! Shutting down...",
+//                                        Toast.LENGTH_SHORT
+//                                    ).show()
+//                                    showPasswordDialog = false
+//                                    Process.killProcess(Process.myPid())
+//                                } else {
+//                                    Toast.makeText(
+//                                        this@MainActivity,
+//                                        "Incorrect password",
+//                                        Toast.LENGTH_SHORT
+//                                    ).show()
+//                                }
+//                            }
+//                        )
+//                    }
                 }
             }
         }
@@ -243,8 +230,6 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onResume() {
         super.onResume()
-        viewModel.updateToResumed()
-        viewModel.resetScreenSaverTimer()
 
         dpm = getSystemService(DEVICE_POLICY_SERVICE) as DevicePolicyManager
         adminComponentName = ComponentName(this, NenoonDeviceAdminReceiver::class.java)
@@ -258,20 +243,12 @@ class MainActivity : ComponentActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
-    override fun onPause() {
-        super.onPause()
-        viewModel.updateToPaused()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onBackPressed() {
         if (dpm.isDeviceOwnerApp(packageName) &&
             dpm.getLockTaskFeatures(adminComponentName) == DevicePolicyManager.LOCK_TASK_FEATURE_NONE
         ) {
-            viewModel.resetScreenSaverTimer()
             Log.d("MainActivity", "Back button pressed in restricted kiosk mode.")
         } else {
-            viewModel.resetScreenSaverTimer()
             super.onBackPressed()
         }
     }
@@ -280,7 +257,6 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         TTS.tts.stop()
         TTS.destroyTTS()
-        viewModel.exoPlayer.release()
         PrinterManager.disconnectPrinter()
         super.onDestroy()
     }
