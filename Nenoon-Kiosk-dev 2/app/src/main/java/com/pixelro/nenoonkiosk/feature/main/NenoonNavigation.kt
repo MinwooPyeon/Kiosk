@@ -1,5 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.main
 
+import SettingsScreen
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.activity.compose.BackHandler
@@ -59,7 +60,6 @@ import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripManagmentScreen
 import com.pixelro.nenoonkiosk.feature.print.ResultPrintRoute
 import com.pixelro.nenoonkiosk.feature.print.ResultPrintScreen
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverScreen
-import com.pixelro.nenoonkiosk.feature.setting.SettingsScreen
 import com.pixelro.nenoonkiosk.feature.splash.SplashScreen
 import com.pixelro.nenoonkiosk.feature.strabismustest.AppNavigation
 import com.pixelro.nenoonkiosk.feature.survey.SurveyScreen
