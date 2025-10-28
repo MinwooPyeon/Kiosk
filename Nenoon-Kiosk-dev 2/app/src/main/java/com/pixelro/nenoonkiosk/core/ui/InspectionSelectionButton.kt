@@ -9,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -99,28 +98,20 @@ fun InspectionSelectionButton(
                 .clickable(enabled = enabled) { onClickMethod() },
             contentAlignment = alignment,
         ) {
-            Row(
-                modifier = Modifier.align(if (icon != null) Alignment.CenterEnd else Alignment.CenterStart),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // 제목 1
-                Text(
-                    text = title1,
-                    fontFamily = defaultFont,
-                    fontSize = textSize,
-                    fontWeight = FontWeight.Bold,
-                    color = if (enabled) Color.Black else LightGray
+            Text(
+                text = buildString {
+                    append(title1)
+                    append(title2)
+                },
+                fontFamily = defaultFont,
+                fontSize = textSize,
+                fontWeight = FontWeight.Bold,
+                color = if (enabled) Color.Black else LightGray,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(
+                    if (icon != null) Alignment.CenterEnd else Alignment.CenterStart
                 )
-
-                // 제목 2
-                Text(
-                    text = title2,
-                    fontFamily = defaultFont,
-                    fontSize = textSize,
-                    fontWeight = FontWeight.Bold,
-                    color = neNoon_blue
-                )
-            }
+            )
 
             icon?.let {
                 Image(
