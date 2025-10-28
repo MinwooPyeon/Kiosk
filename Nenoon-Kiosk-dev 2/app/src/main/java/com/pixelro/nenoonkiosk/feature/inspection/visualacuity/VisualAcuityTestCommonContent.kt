@@ -42,6 +42,7 @@ import com.pixelro.nenoonkiosk.core.util.AnimationProvider
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetection
+import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetectionViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -77,7 +78,7 @@ fun VisualAcuityTestContent(
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
     )
     
-    val faceDetectionState by faceDetectionViewModel.collectAsState()
+    val faceDetectionState by faceDetectionViewModel.container.stateFlow.collectAsState()
     val isFacingForward = faceDetectionState.isFacingForward
     val isFaceDetected = faceDetectionState.isFaceDetected
     LaunchedEffect(true) {
