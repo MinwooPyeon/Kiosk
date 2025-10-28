@@ -10,6 +10,7 @@
 #include "uart_link.h"
 #include "metrics.h"
 #include "ratelimit.h"
+#include "metrics.h"
 
 #include "esp_http_server.h"
 #include "esp_log.h"
