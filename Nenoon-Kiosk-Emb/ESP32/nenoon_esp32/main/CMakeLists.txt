@@ -12,6 +12,7 @@ idf_component_register(
   INCLUDE_DIRS
     "include"
   REQUIRES
+    freertos
     esp_system
     esp_wifi
     esp_timer
