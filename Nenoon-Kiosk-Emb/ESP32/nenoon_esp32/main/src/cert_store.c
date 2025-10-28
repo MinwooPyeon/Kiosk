@@ -5,6 +5,8 @@
  *  Updated on: 2025. 10. 27.
  *      Author: Park Joo Hyun
  */
+ 
+ /*
 #include "cert_store.h"
 #include <string.h>
 #include <ctype.h>
@@ -44,8 +46,9 @@ typedef struct{
 	bool						net_connected;
 	bool						ssl_setup;
 }cs_tls_ctx_t;
-
+*/
 /*=====Helpers=====*/
+/*
 static bool all_zero32(const uint8_t h[32]){
 	for(int i=0;i<32;i++){
 		if(h[i]!=0)return false;
@@ -94,15 +97,19 @@ static esp_err_t parse_host_port_from_url(const char* url, char* host, size_t ho
 }
 
 static int spki_sha256_from_crt(const mbedtls_x509_crt* crt, uint8_t out32[32]){
-    /* mbedtls_pk_write_pubkey_der()는 SubjectPublicKeyInfo DER을 out buf 끝에서부터 채움 */
+	
+    
+    
     uint8_t tmp[1024]; // 보통 256~512바이트면 충분. 키 종류/길이에 따라 조정
     int len = mbedtls_pk_write_pubkey_der((mbedtls_pk_context*)&crt->pk, tmp, sizeof(tmp));
     if(len <= 0) return -1;
-    /* 결과는 버퍼의 (end-len)부터 시작 */
-    mbedtls_sha256(&tmp[sizeof(tmp)-len], (size_t)len, out32, 0 /*is224*/);
+    
+    mbedtls_sha256(&tmp[sizeof(tmp)-len], (size_t)len, out32, 0 *//*is224*//*);
     return 0;
 }
+*/
 /*=====Preverify Function=====*/
+/*
 static esp_err_t cs_tls_init(cs_tls_ctx_t* c){
 	if(!c) return ESP_ERR_INVALID_ARG;
 	memset(c, 0, sizeof(*c));
@@ -139,7 +146,7 @@ static esp_err_t cs_tls_load_trust(cs_tls_ctx_t* c){
     }
 
     if(g_cs.use_crt_bundle){
-        /* 현재 구현은 번들 preverify 미지원(설계상 최소의존). 필요 시 esp-tls 경로로 확장 */
+  
         ESP_LOGW(TAG, "Preverify + bundle 조합은 미지원. PEM 루트를 제공해 주세요.");
         return ESP_ERR_NOT_SUPPORTED;
     }
@@ -240,7 +247,9 @@ static void cs_tls_cleanup(cs_tls_ctx_t* c){
     mbedtls_ctr_drbg_free(&c->ctr_drbg);
     mbedtls_entropy_free(&c->entropy);
 }
+*/
 /*=====Public API=====*/
+/*
 void cert_store_init(const cert_store_cfg_t* cfg){
     memset(&g_cs, 0, sizeof(g_cs));
     if(cfg){
@@ -272,7 +281,7 @@ esp_err_t cert_store_attach(esp_http_client_config_t* http_cfg){
 
 esp_err_t cert_store_preverify_spki(const char* url){
     if(!g_cs.inited)   return ESP_ERR_INVALID_STATE;
-    if(!g_cs.have_pin) return ESP_OK;  /* 핀 미사용 → 통과 */
+    if(!g_cs.have_pin) return ESP_OK; 
 
     char host[128]; int port = 443;
     esp_err_t er = parse_host_port_from_url(url, host, sizeof(host), &port);
@@ -284,7 +293,7 @@ esp_err_t cert_store_preverify_spki(const char* url){
     cs_tls_ctx_t ctx;
     uint8_t spki_hash[32];
 
-    /* 순서대로 진행하며 실패 시 즉시 정리 */
+    
     if((er = cs_tls_init(&ctx))                       != ESP_OK) goto fail;
     if((er = cs_tls_load_trust(&ctx))                 != ESP_OK) goto fail;
     if((er = cs_tls_setup_ssl(&ctx, host))            != ESP_OK) goto fail;
@@ -293,11 +302,11 @@ esp_err_t cert_store_preverify_spki(const char* url){
     if((er = cs_tls_verify_chain(&ctx))               != ESP_OK) goto fail;
     if((er = cs_tls_get_peer_spki_sha256(&ctx, spki_hash)) != ESP_OK) goto fail;
 
-    /* 핀 비교 */
+    
     if(memcmp(spki_hash, g_cs.pin_spki_sha256, 32) != 0){
         ESP_LOGE(TAG, "SPKI PIN mismatch");
         cs_tls_cleanup(&ctx);
-        return ESP_ERR_NOT_FOUND;  /* 핀 불일치 */
+        return ESP_ERR_NOT_FOUND;  
     }
 
     ESP_LOGI(TAG, "SPKI PIN verified for %s:%d", host, port);
@@ -308,3 +317,4 @@ fail:
     cs_tls_cleanup(&ctx);
     return er == ESP_OK ? ESP_FAIL : er;
 }
+*/
