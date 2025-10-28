@@ -4,7 +4,7 @@ idf_component_register(
     "src/wifi_mgr.c"
     "src/uart_link.c"
     "src/http_srv.c"
-    "src/auth_adapter.c"
+    "src/session_mgr.c"
     "src/cert_store.c"
     "src/ratelimit.c"
     "src/metrics.c"
@@ -12,15 +12,13 @@ idf_component_register(
   INCLUDE_DIRS
     "include"
   REQUIRES
-    freertos
     esp_system
     esp_wifi
+    esp_timer
     esp_netif
     nvs_flash
     esp_event
-    esp_http_client
-    esp_https_ota
-    esp_timer
+    esp_http_server
     mbedtls
     driver
 )
