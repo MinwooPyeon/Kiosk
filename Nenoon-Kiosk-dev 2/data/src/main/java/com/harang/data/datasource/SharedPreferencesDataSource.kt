@@ -8,7 +8,8 @@ import com.harang.data.vo.Constants
 class SharedPreferencesDataSource constructor(
     private val context: Context,
 ) {
-    private val pref: SharedPreferences = context.getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+    private val pref: SharedPreferences =
+        context.getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
     private val editor = pref.edit()
     private val gson = Gson()
 

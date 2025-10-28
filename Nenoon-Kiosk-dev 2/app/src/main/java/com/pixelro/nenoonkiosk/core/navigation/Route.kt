@@ -47,6 +47,35 @@ sealed interface Route : NavKey {
     data object BTDeviceManagement : Route
 }
 
+sealed interface SignInRoute : Route {
+    @Serializable
+    data object LocationSignIn : SignInRoute
+
+    @Serializable
+    data object UserSignIn : SignInRoute
+
+    @Serializable
+    data object FaceId : SignInRoute
+
+    @Serializable
+    data object QR : SignInRoute
+
+    @Serializable
+    data object SignUp : SignInRoute
+
+    @Serializable
+    data object FaceEnrollment : SignInRoute
+
+    @Serializable
+    data object IdPassword : SignInRoute
+
+    @Serializable
+    data object SignUpTermsOfService : SignInRoute
+
+    @Serializable
+    data object FaceIdTermsOfService : SignInRoute
+}
+
 sealed interface TestRoute : Route {
     @Serializable
     data object TestList : TestRoute
@@ -93,9 +122,4 @@ sealed interface AdminRoute : Route {
 
     @Serializable
     data object FaceUpdateTermsOfService : AdminRoute
-}
-
-object SharedPreferencesConstants {
-    const val PREFERENCE_NAME = "nenoon_kiosk_shared_preferences"
-    const val PREFERENCE_VIDEO_URI = "video_uri"
 }
