@@ -1,11 +1,11 @@
 package com.pixelro.nenoonkiosk.feature.screensaver
 
-sealed interface ScreenSaverUiState {
-    data object Initializing : ScreenSaverUiState
-    data class Ready(val isVideoPlaying: Boolean = false) : ScreenSaverUiState
-}
+data class ScreenSaverState(
+    val isVideoReady: Boolean = false,
+    val videoUri: String = "",
+    val language: String = "ko"
+)
 
 sealed interface ScreenSaverSideEffect {
-    data object NavigateToIntro : ScreenSaverSideEffect
-    data object NavigateToCategoryList : ScreenSaverSideEffect
+    data class ShowToast(val message: String) : ScreenSaverSideEffect
 }

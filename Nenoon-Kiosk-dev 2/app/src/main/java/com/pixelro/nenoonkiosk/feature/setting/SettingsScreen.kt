@@ -3,6 +3,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,8 +33,6 @@ fun SettingsScreen(
     loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
     val settingsDialogState by viewModel.settingsDialogState.collectAsState()
-    val isUserSignedIn by loginViewModel.isUserSignedIn.collectAsState(initial = false)
-    val isLocationSignedIn by loginViewModel.isLocationSignedIn.collectAsState(initial = false)
 
     when (settingsDialogState) {
         NenoonViewModel.SettingsDialogState.Language -> {
@@ -81,8 +80,6 @@ fun SettingsScreen(
 
     SettingsScreenContent(
         isSignedIn = isSignedIn,
-        isLocationSignedIn = isLocationSignedIn,
-        isUserSignedIn = isUserSignedIn,
         onLanguageClick = {
             viewModel.setSettingsDialogState(NenoonViewModel.SettingsDialogState.Language)
         },
@@ -91,12 +88,12 @@ fun SettingsScreen(
         },
         onLoginClick = {
             if (isSignedIn) {
-                if (isUserSignedIn) loginViewModel.userSignOut()
-                else loginViewModel.locationSignOut()
             }
             toSignInScreen()
         },
-        onBack = onBack,
+        onBack = TODO(),
+        isLocationSignedIn = TODO(),
+        isUserSignedIn = TODO(),
     )
 }
 
@@ -156,7 +153,7 @@ private fun SettingsScreenPortraitPreview() {
     NenoonKioskTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = androidx.compose.material3.MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background
         ) {
             SettingsScreenContent(
                 isSignedIn = true,
@@ -183,7 +180,7 @@ private fun SettingsScreenLandscapePreview() {
     NenoonKioskTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = androidx.compose.material3.MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background
         ) {
             SettingsScreenContent(
                 isSignedIn = true,

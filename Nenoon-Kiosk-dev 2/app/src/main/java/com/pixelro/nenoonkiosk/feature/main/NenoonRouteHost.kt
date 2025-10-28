@@ -1,10 +1,14 @@
 package com.pixelro.nenoonkiosk.feature.main
 
+import android.os.Build
+import androidx.annotation.OptIn
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation3.runtime.NavBackStack
 import com.harang.data.model.dto.User
 import com.pixelro.nenoonkiosk.core.navigation.AdminRoute
@@ -21,6 +25,7 @@ import com.pixelro.nenoonkiosk.feature.auth.locationlogin.LocationLoginRoute
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginRoute
 import com.pixelro.nenoonkiosk.feature.auth.qrlogin.QrLoginRoute
 import com.pixelro.nenoonkiosk.feature.auth.signup.SignUpRoute
+import com.pixelro.nenoonkiosk.feature.permission.PermissionRoute
 import com.pixelro.nenoonkiosk.feature.print.ResultPrintRoute
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverRoute
 import com.pixelro.nenoonkiosk.feature.splash.SplashRoute
@@ -28,6 +33,8 @@ import com.pixelro.nenoonkiosk.feature.termsofservice.base.TermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.termsofservice.faceid.FaceIdTermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.termsofservice.signup.SignUpTermsOfServiceRoute
 
+@RequiresApi(Build.VERSION_CODES.S)
+@OptIn(UnstableApi::class)
 @Composable
 fun NenoonRouteHost(
     navBackStack: NavBackStack
@@ -41,8 +48,10 @@ fun NenoonRouteHost(
     when (currentRoute) {
         // Base Routes
         is Route.Splash -> SplashRoute()
-        is Route.ScreenSaver -> ScreenSaverRoute()
-//        is Route.Permission -> PermissionRoute()
+        is Route.ScreenSaver -> ScreenSaverRoute(
+            isSignedIn = isSignedIn
+        )
+        is Route.Permission -> PermissionRoute()
 //        is Route.Entries -> EntriesRoute()
 //        is Route.SignIn -> SignInRoute()
 //        is Route.Intro -> IntroRoute()

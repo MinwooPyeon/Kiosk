@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.dagger.hilt.android'
     id 'org.jetbrains.kotlin.plugin.compose'
+    id 'org.jetbrains.kotlin.plugin.serialization'  // ⭐ 이거 추가!
     id 'kotlin-kapt'
 }
 
@@ -80,6 +81,9 @@ dependencies {
     implementation("androidx.navigation3:navigation3-runtime:1.0.0-alpha04")
     implementation("androidx.navigation3:navigation3-ui:1.0.0-alpha04")
 
+    // Kotlinx Serialization ⭐ 이거 추가!
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
     // Animated Navigation
     implementation("com.google.accompanist:accompanist-navigation-animation:0.32.0")
 
@@ -102,9 +106,6 @@ dependencies {
     implementation("androidx.camera:camera-view:${camerax_version}")
     implementation("androidx.camera:camera-extensions:${camerax_version}")
 
-    // com.google.common
-//    implementation "com.google.guava:guava:31.1-android"
-
     // permission
     implementation("com.google.accompanist:accompanist-permissions:0.32.0")
 
@@ -113,9 +114,6 @@ dependencies {
 
     // material3
     implementation("androidx.compose.material3:material3")
-
-    // Nemonic printer (old)
-//    implementation files("./libs/nemonic.aar")
 
     // Nemonic printer (new)
     implementation files("./libs/NemonicSdk.aar")
@@ -140,7 +138,6 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.8.0")
     implementation("androidx.media3:media3-ui:1.8.0")
     implementation("androidx.media3:media3-common:1.8.0")
-//    implementation 'androidx.media3:media3-*:1.0.1'
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:3.0.0")

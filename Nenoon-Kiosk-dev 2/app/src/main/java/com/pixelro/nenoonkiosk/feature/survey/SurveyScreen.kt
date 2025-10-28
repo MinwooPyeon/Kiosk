@@ -336,7 +336,7 @@ fun SurveyScreen(
                                             surveyViewModel.getSurveyId(
                                                 token = userData?.accessToken,
                                                 toCategoryListScreen = toCategoryListScreen,
-                                                isSignInSkipped = { loginViewModel.isUserSignInSkipped() },
+                                                isSignInSkipped = {false},
                                             ) {
                                                 surveyScreenState = SurveyScreenState.Error
                                             }

@@ -22,16 +22,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.feature.permission.PermissionItemUi
+import com.pixelro.nenoonkiosk.feature.permission.PermissionItem
 
 @Composable
-fun PermissionItemRow(item: PermissionItemUi) {
+fun PermissionItemRow(
+    item: PermissionItem,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .height(120.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(color = Color(0xFFEEEEEE), shape = RoundedCornerShape(8.dp))
-            .clickable { item.onClick() },
+            .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
@@ -42,7 +45,6 @@ fun PermissionItemRow(item: PermissionItemUi) {
             painter = painterResource(id = item.iconRes),
             contentDescription = null
         )
-
         Column(
             modifier = Modifier.padding(start = 40.dp)
         ) {
@@ -56,7 +58,6 @@ fun PermissionItemRow(item: PermissionItemUi) {
                 color = Color(0xff878787)
             )
         }
-
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.CenterEnd
@@ -67,10 +68,8 @@ fun PermissionItemRow(item: PermissionItemUi) {
                     .width(32.dp)
                     .height(32.dp),
                 painter = painterResource(
-                    id = if (item.checked)
-                        R.drawable.baseline_check_48_on
-                    else
-                        R.drawable.baseline_check_48_off
+                    id = if (item.checked) R.drawable.baseline_check_48_on
+                    else R.drawable.baseline_check_48_off
                 ),
                 contentDescription = null
             )

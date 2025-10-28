@@ -84,7 +84,6 @@ fun GripStrengthTestContent(
                     navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false)
                 },
                 onLogout = {
-                    loginViewModel.userSignOut()
                     navController.navigate(NavConstants.ROUTE_SIGN_IN)
                 },
                 navController = localNavController,

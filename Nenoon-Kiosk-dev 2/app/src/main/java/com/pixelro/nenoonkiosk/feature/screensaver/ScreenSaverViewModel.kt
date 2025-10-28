@@ -1,7 +1,7 @@
 package com.pixelro.nenoonkiosk.feature.screensaver
 
 import android.app.Application
-import androidx.annotation.OptIn
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -10,73 +10,72 @@ import androidx.media3.datasource.RawResourceDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import com.harang.data.repository.ScreenSaverRepository
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
-import com.pixelro.nenoonkiosk.core.navigation.Route
-import com.pixelro.nenoonkiosk.core.navigation.TestRoute
-import com.pixelro.nenoonkiosk.domain.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
-@OptIn(UnstableApi::class)
+@UnstableApi
 @HiltViewModel
 class ScreenSaverViewModel @Inject constructor(
     application: Application,
-    private val navigator: Navigator,
     private val screenSaverRepository: ScreenSaverRepository,
-    private val authRepository: AuthRepository
-) : AndroidViewModel(application), ContainerHost<ScreenSaverUiState, ScreenSaverSideEffect> {
+    private val navigator: Navigator
+) : AndroidViewModel(application), ContainerHost<ScreenSaverState, ScreenSaverSideEffect> {
 
-    override val container: Container<ScreenSaverUiState, ScreenSaverSideEffect> =
-        container(ScreenSaverUiState.Initializing)
+    override val container: Container<ScreenSaverState, ScreenSaverSideEffect> =
+        container(ScreenSaverState())
 
     val exoPlayer: ExoPlayer = ExoPlayer.Builder(application).build().apply {
         repeatMode = Player.REPEAT_MODE_ONE
         volume = 0f
     }
 
-    fun initializeVideo() = intent {
-        val isSignedIn = authRepository.isSignedIn()
+    fun loadLanguage(context: Context) = intent {
+        val sharedPreferences = context.getSharedPreferences(
+            NavConstants.PREFERENCE_NAME,
+            Context.MODE_PRIVATE
+        )
+        val savedLanguage = sharedPreferences.getString("language", "ko") ?: "ko"
 
-        runCatching {
-            if (isSignedIn) {
-                val videoURI = screenSaverRepository.getScreenSaverVideoURI()
-                exoPlayer.setMediaItem(MediaItem.fromUri(videoURI))
-            } else {
-                val defaultUri = RawResourceDataSource.buildRawResourceUri(R.raw.ad_sub).toString()
-                exoPlayer.setMediaItem(MediaItem.fromUri(defaultUri))
-            }
-            exoPlayer.prepare()
-            exoPlayer.playWhenReady = true
-            reduce { ScreenSaverUiState.Ready(isVideoPlaying = true) }
-        }.onFailure { e ->
-            android.util.Log.e("ScreenSaverVM", "Video initialization failed", e)
+        reduce {
+            state.copy(language = savedLanguage)
         }
     }
 
-    fun onScreenTouched() = intent {
-        val isSignedIn = authRepository.isSignedIn()
-
-        val targetRoute = if (isSignedIn) {
-            TestRoute.CategoryList
+    fun loadVideoUri(isSignedIn: Boolean) = intent {
+        val videoUri = if (isSignedIn) {
+            screenSaverRepository.getScreenSaverVideoURI()
         } else {
-            Route.Intro
+            RawResourceDataSource.buildRawResourceUri(R.raw.ad_sub).toString()
         }
 
-        navigator.navigateAndClearBackStack(targetRoute)
-
-        val sideEffect = if (isSignedIn) {
-            ScreenSaverSideEffect.NavigateToCategoryList
-        } else {
-            ScreenSaverSideEffect.NavigateToIntro
+        reduce {
+            state.copy(
+                videoUri = videoUri,
+                isVideoReady = true
+            )
         }
-        postSideEffect(sideEffect)
+
+        // ExoPlayer 설정
+        exoPlayer.setMediaItem(MediaItem.fromUri(videoUri))
+        exoPlayer.prepare()
+    }
+
+    fun playVideo() {
+        exoPlayer.playWhenReady = true
+        exoPlayer.play()
+    }
+
+    fun stopVideo() {
+        exoPlayer.stop()
     }
 
     override fun onCleared() {
-        exoPlayer.release()
         super.onCleared()
+        exoPlayer.release()
     }
 }

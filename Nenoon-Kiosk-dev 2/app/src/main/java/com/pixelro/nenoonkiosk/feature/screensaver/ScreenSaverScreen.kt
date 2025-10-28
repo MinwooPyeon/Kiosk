@@ -1,14 +1,12 @@
 package com.pixelro.nenoonkiosk.feature.screensaver
 
-import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,44 +48,53 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
-@androidx.annotation.OptIn(UnstableApi::class)
+@UnstableApi
 @Composable
 fun ScreenSaverRoute(
+    isSignedIn: Boolean,
     viewModel: ScreenSaverViewModel = hiltViewModel()
 ) {
     val state = viewModel.collectAsState().value
+    val context = LocalContext.current
 
-    viewModel.collectSideEffect { /* Navigator가 처리 */ }
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is ScreenSaverSideEffect.ShowToast -> {
+                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
-        viewModel.initializeVideo()
+        viewModel.loadLanguage(context)
+        viewModel.loadVideoUri(isSignedIn)
+    }
+
+    DisposableEffect(Unit) {
+        viewModel.playVideo()
+
+        onDispose {
+            viewModel.stopVideo()
+        }
     }
 
     ScreenSaverScreen(
-        exoPlayer = viewModel.exoPlayer,
         state = state,
-        onScreenTouched = { viewModel.onScreenTouched() }
+        exoPlayer = viewModel.exoPlayer
     )
 }
 
-@androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalTextApi::class)
+@UnstableApi
 @Composable
 fun ScreenSaverScreen(
-    exoPlayer: ExoPlayer,
-    state: ScreenSaverUiState,
-    onScreenTouched: () -> Unit
+    state: ScreenSaverState,
+    exoPlayer: ExoPlayer
 ) {
-    val localContext = LocalContext.current
-    val sharedPreferences = remember {
-        localContext.getSharedPreferences(
-            SharedPreferencesConstants.PREFERENCE_NAME,
-            Context.MODE_PRIVATE
-        )
-    }
-    val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
+    val context = LocalContext.current
+    val systemUiController = rememberSystemUiController()
 
-    val transition = rememberInfiniteTransition(label = "shimmer")
+    val transition = rememberInfiniteTransition(label = "baseline shift")
     val shiftVal by transition.animateFloat(
         initialValue = 0f,
         targetValue = 0.5f,
@@ -96,11 +102,20 @@ fun ScreenSaverScreen(
             animation = keyframes { durationMillis = 1000 },
             repeatMode = RepeatMode.Reverse
         ),
-        label = "shift"
+        label = "shift animation"
     )
+
+    DisposableEffect(Unit) {
+        systemUiController.systemBarsDarkContentEnabled = false
+
+        onDispose {
+            systemUiController.systemBarsDarkContentEnabled = true
+        }
+    }
 
     val text = buildAnnotatedString {
         append(StringProvider.getString(R.string.screensaver_description1))
+
         withAnnotation("squiggles", annotation = "ignored") {
             withStyle(
                 SpanStyle(
@@ -111,9 +126,10 @@ fun ScreenSaverScreen(
                 append(StringProvider.getString(R.string.screensaver_description2))
             }
         }
+
         withAnnotation("squiggles2", annotation = "ignored") {
             withStyle(
-                if (savedLanguage == "ko") {
+                if (state.language == "ko") {
                     SpanStyle(fontSize = 42.sp)
                 } else {
                     SpanStyle()
@@ -124,27 +140,10 @@ fun ScreenSaverScreen(
         }
     }
 
-    val systemUiController = rememberSystemUiController()
-
-    DisposableEffect(true) {
-        systemUiController.systemBarsDarkContentEnabled = false
-        if (state is ScreenSaverUiState.Ready && state.isVideoPlaying) {
-            exoPlayer.play()
-        }
-        onDispose {
-            systemUiController.systemBarsDarkContentEnabled = true
-            exoPlayer.stop()
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xff000000))
-            .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            ) { onScreenTouched() },
+            .background(color = Color(0xff000000)),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -171,7 +170,7 @@ fun ScreenSaverScreen(
                 .fillMaxWidth()
                 .height(IntrinsicSize.Max)
                 .background(color = Color(0xff000000)),
-            factory = { context ->
+            factory = {
                 PlayerView(context).apply {
                     resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     player = exoPlayer

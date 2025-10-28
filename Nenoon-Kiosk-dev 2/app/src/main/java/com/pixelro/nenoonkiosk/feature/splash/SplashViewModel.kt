@@ -38,10 +38,8 @@ class SplashViewModel @Inject constructor(
 
         if (allGranted) {
             navigator.navigateAndClearBackStack(Route.SignIn)
-            postSideEffect(SplashSideEffect.NavigateToSignIn)
         } else {
             navigator.navigateAndClearBackStack(Route.Permission)
-            postSideEffect(SplashSideEffect.NavigateToPermission)
         }
     }
 }

@@ -143,7 +143,9 @@ class MainActivity : ComponentActivity() {
                     systemUiController.setStatusBarColor(color = Color(0x00000000))
                     systemUiController.isNavigationBarVisible = false
 
-                    val navBackStack = rememberNavBackStack(Route.Splash)
+                    val navBackStack = rememberNavBackStack<Route>(
+                        Route.Splash
+                    )
                     LaunchedNavigator(navBackStack = navBackStack)
 
                     NenoonRouteHost(

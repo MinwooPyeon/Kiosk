@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
@@ -26,11 +25,10 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.permission.components.PermissionDialog
 import com.pixelro.nenoonkiosk.feature.permission.components.PermissionItemRow
 
-
 @Composable
-fun PermissionRequestScreen(
-    state: PermissionRequestState,
-    items: List<PermissionItemUi>,
+fun PermissionScreen(
+    state: PermissionState,
+    onPermissionItemClick: (PermissionItem) -> Unit,
     onConfirmClick: () -> Unit,
     onDismissDialog: () -> Unit
 ) {
@@ -58,8 +56,11 @@ fun PermissionRequestScreen(
 
             Spacer(modifier = Modifier.height(80.dp))
 
-            items.forEach { item ->
-                PermissionItemRow(item)
+            state.permissionItems.forEach { item ->
+                PermissionItemRow(
+                    item = item,
+                    onClick = { onPermissionItemClick(item) }
+                )
                 Spacer(modifier = Modifier.height(20.dp))
             }
         }
@@ -90,66 +91,4 @@ fun PermissionRequestScreen(
             onDismiss = onDismissDialog
         )
     }
-}
-
-
-
-
-
-@Preview(showBackground = true, widthDp = 800, heightDp = 1280, apiLevel = 34)
-@Composable
-private fun PermissionRequestScreen_Preview_AllGranted() {
-    val dummyState = PermissionRequestState(
-        isWriteSettingsGranted = true,
-        isCameraGranted = true,
-        isBluetoothPermsGranted = true,
-        isBluetoothOn = true,
-        showRequireAllDialog = false
-    )
-    val items = listOf(
-        PermissionItemUi("시스템 설정 변경", "화면 보호기 영상 재생에 이용", R.drawable.icon_settings, true) {},
-        PermissionItemUi("카메라 권한", "거리 측정을 위해 이용", R.drawable.icon_camera, true) {},
-        PermissionItemUi("블루투스 권한", "프린터 연결을 위한 용도", R.drawable.icon_bluetooth, true) {},
-        PermissionItemUi(
-            "블루투스 서비스",
-            "프린터를 연결하기 위한 블루투스 확인 용도",
-            R.drawable.icon_bluetoothon,
-            true
-        ) {}
-    )
-    PermissionRequestScreen(
-        state = dummyState,
-        items = items,
-        onConfirmClick = {},
-        onDismissDialog = {}
-    )
-}
-
-@Preview(showBackground = true, widthDp = 800, heightDp = 1280, apiLevel = 34)
-@Composable
-private fun PermissionRequestScreen_Preview_PartialGranted_WithDialog() {
-    val dummyState = PermissionRequestState(
-        isWriteSettingsGranted = true,
-        isCameraGranted = false,
-        isBluetoothPermsGranted = true,
-        isBluetoothOn = false,
-        showRequireAllDialog = true
-    )
-    val items = listOf(
-        PermissionItemUi("시스템 설정 변경", "화면 보호기 영상 재생에 이용", R.drawable.icon_settings, true) {},
-        PermissionItemUi("카메라 권한", "거리 측정을 위해 이용", R.drawable.icon_camera, false) {},
-        PermissionItemUi("블루투스 권한", "프린터 연결을 위한 용도", R.drawable.icon_bluetooth, true) {},
-        PermissionItemUi(
-            "블루투스 서비스",
-            "프린터를 연결하기 위한 블루투스 확인 용도",
-            R.drawable.icon_bluetoothon,
-            false
-        ) {}
-    )
-    PermissionRequestScreen(
-        state = dummyState,
-        items = items,
-        onConfirmClick = {},
-        onDismissDialog = {}
-    )
 }
