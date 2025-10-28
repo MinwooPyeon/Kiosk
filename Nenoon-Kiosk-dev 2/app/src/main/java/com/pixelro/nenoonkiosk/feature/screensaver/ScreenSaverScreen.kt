@@ -1,6 +1,5 @@
 package com.pixelro.nenoonkiosk.feature.screensaver
 
-import android.content.Context
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -10,57 +9,45 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withAnnotation
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.constants.GlobalValue
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
-import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.ui.theme.Black
+import com.pixelro.nenoonkiosk.ui.theme.Gray
+import com.pixelro.nenoonkiosk.ui.theme.White
+import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
+import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
+import com.pixelro.nenoonkiosk.ui.theme.selectLargeTextStyle
 
-// ScreenSaverScreen
-@OptIn(ExperimentalTextApi::class)
-@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 fun ScreenSaverScreen(
-    exoPlayer: ExoPlayer,
-    isSignedIn: Boolean,
-    initializeTestDoneStatus: () -> Unit,
-    screenSaverViewModel: ScreenSaverViewModel = hiltViewModel(),
+    exoPlayer: ExoPlayer?,
+    savedLanguage: String?,
 ) {
-    val localContext = LocalContext.current
-    val sharedPreferences = remember { localContext.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
-    val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
+    //리소스
+    val description1 = stringResource(R.string.screensaver_description1)
+    val description2 = stringResource(R.string.screensaver_description2)
+    val description3 = stringResource(R.string.screensaver_description3)
 
     val transition = rememberInfiniteTransition()
     val shiftVal by transition.animateFloat(
@@ -75,114 +62,118 @@ fun ScreenSaverScreen(
                 repeatMode = RepeatMode.Reverse,
             ),
     )
-    LaunchedEffect(true) {
-        screenSaverViewModel.setMediaItem(
-            isSignedIn = isSignedIn,
-            exoPlayer = exoPlayer,
-        )
-        initializeTestDoneStatus()
-    }
-    val text =
-        buildAnnotatedString {
-            append(StringProvider.getString(R.string.screensaver_description1))
-            withAnnotation("squiggles", annotation = "ignored") {
-                withStyle(
-                    SpanStyle(
-                        color = Color(0xff1d71e1),
-                        baselineShift = BaselineShift(shiftVal),
-                    ),
-                ) {
-                    append(
-                        StringProvider.getString(
-                            R.string.screensaver_description2,
-                        ),
-                    )
-                }
-            }
-            withAnnotation("squiggles2", annotation = "ignored") {
-                withStyle(
-                    if (savedLanguage == "ko") {
-                        SpanStyle(
-                            fontSize = 42.sp,
-                        )
-                    } else {
-                        SpanStyle()
-                    },
-                ) {
-                    append(
-                        StringProvider.getString(
-                            R.string.screensaver_description3,
-                        ),
-                    )
-                }
-            }
-        }
     val systemUiController = rememberSystemUiController()
     val context = LocalContext.current
+
     Column(
         modifier =
             Modifier
                 .fillMaxSize()
                 .background(
-                    color = Color(0xff000000),
+                    color = Black,
                 ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         DisposableEffect(true) {
             systemUiController.systemBarsDarkContentEnabled = false
-            exoPlayer.play()
+            exoPlayer?.play()
             onDispose {
                 systemUiController.systemBarsDarkContentEnabled = true
-                exoPlayer.stop()
+                exoPlayer?.stop()
             }
         }
-        Spacer(
-            modifier =
-                Modifier
-                    .padding(top = GlobalValue.statusBarPadding.dp),
-        )
+        Spacer(modifier = Modifier.weight(1f))
         // 안내 text
-        Box {
-            Column(
-                modifier =
-                    Modifier
-                        .height(300.dp),
-                verticalArrangement = Arrangement.Bottom,
-            ) {
-                Text(
-                    modifier =
-                        Modifier
-                            .padding(bottom = 20.dp),
-                    text = text,
-                    color = Color(0xffffffff),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 60.sp,
-                    textAlign = TextAlign.Center,
-                )
-            }
-        }
-        // 영상
-        AndroidView(
+        Row(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(IntrinsicSize.Max)
-                    .background(
-                        color = Color(0xff000000),
-                    ),
-            factory = {
-                PlayerView(context).apply {
-                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                    player = exoPlayer
-                    useController = false
-                }
-            },
-        )
+                    .padding(horizontal = 40.dp)
+                    .padding(vertical = 10.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = description1,
+                style = selectLargeTextStyle,
+                color = White,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = description2,
+                style = selectLargeTextStyle,
+                color = neNoon_blue,
+                modifier =
+                    Modifier.graphicsLayer {
+                        translationY = shiftVal * 60f
+                    },
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = description3,
+                style = if (savedLanguage == "ko") bodyTextStyle else selectLargeTextStyle,
+                color = White,
+                textAlign = TextAlign.Center,
+            )
+        }
+        // 영상
+        if (exoPlayer != null) {
+            AndroidView(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(16f / 9f)
+                        .background(
+                            color = White,
+                        ),
+                factory = {
+                    PlayerView(context).apply {
+                        player = exoPlayer
+                        useController = false
+                    }
+                },
+            )
+        } else { //preview용
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(16f / 9f)
+                        .background(
+                            color = Gray,
+                        ),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = "비디오를 삽입해주세요",
+                    color = White,
+                    style = selectLargeTextStyle,
+                )
+            }
+        }
         Spacer(
             modifier =
                 Modifier
-                    .height(300.dp),
+                    .weight(1f),
         )
     }
+}
+
+@Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
+@Composable
+fun PreviewScreenSaverScreenHorizental() {
+    ScreenSaverScreen(
+        exoPlayer = null,
+        savedLanguage = "ko",
+    )
+}
+
+@Preview(showBackground = true, device = "spec:width=800dp,height=1280dp,dpi=240")
+@Composable
+fun PreviewScreenSaverScreenVertical() {
+    ScreenSaverScreen(
+        exoPlayer = null,
+        savedLanguage = "ko",
+    )
 }
