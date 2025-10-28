@@ -20,6 +20,7 @@ idf_component_register(
     nvs_flash
     esp_event
     esp_http_server
+    esp_hw_support
     mbedtls
     driver
 )
