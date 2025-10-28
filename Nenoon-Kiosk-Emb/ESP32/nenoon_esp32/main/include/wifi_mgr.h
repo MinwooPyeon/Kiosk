@@ -12,7 +12,8 @@
 #include <stdbool.h>
 
 #include "esp_err.h"
-#include "portmacro.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/event_groups.h"
 
 
 typedef struct{
