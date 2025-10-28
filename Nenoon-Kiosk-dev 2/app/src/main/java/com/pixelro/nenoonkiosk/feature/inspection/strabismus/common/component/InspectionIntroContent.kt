@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.ui.TopBarVertical
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.ui.theme.inputTextStyle
@@ -47,7 +47,7 @@ fun InspectionIntroContent(
     Scaffold(
         containerColor = Color.White,
         topBar = {
-            TopBarVertical(
+            NenoonTopBar(
                 title = "",
                 showBackButton = true,
                 onBackClicked = onBackClicked

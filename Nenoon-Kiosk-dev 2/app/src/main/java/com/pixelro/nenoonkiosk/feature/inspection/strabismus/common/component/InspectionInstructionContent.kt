@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.HowToButton
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
-import com.pixelro.nenoonkiosk.core.ui.TopBarVertical
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.howtodialog.AniseikoniaHowToDialog
 import com.pixelro.nenoonkiosk.feature.inspection.strabismus.phoria.howtodialog.PhoriaHowToDialog
@@ -70,7 +70,7 @@ fun InspectionInstructionContent(
     Scaffold(
         containerColor = Color.Black,
         topBar = {
-            TopBarVertical(
+            NenoonTopBar(
                 title = headerTitle,
                 showBackButton = true,
                 onBackClicked = onBackClicked,
