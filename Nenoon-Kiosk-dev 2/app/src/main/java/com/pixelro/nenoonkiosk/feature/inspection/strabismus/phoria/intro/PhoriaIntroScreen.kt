@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.inspection.strabismus.common.component.InspectionIntroScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.common.component.InspectionIntroContent
 import com.pixelro.nenoonkiosk.feature.inspection.strabismus.phoria.howtodialog.PhoriaHowToDialog
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
@@ -14,7 +14,7 @@ fun PhoriaIntroScreen(
     onHowToClicked: () -> Unit,
     onBackClicked: () -> Unit,
 ) {
-    InspectionIntroScreen(
+    InspectionIntroContent(
         title = StringProvider.getStringComposable(R.string.sawi_intro_title),
         description = StringProvider.getStringComposable(R.string.sawi_intro_description),
         onStartClicked = onStartClicked,

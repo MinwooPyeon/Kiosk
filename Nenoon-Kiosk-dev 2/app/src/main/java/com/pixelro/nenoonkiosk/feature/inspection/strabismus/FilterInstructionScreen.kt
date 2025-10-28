@@ -19,7 +19,7 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.inspection.strabismus.common.component.InspectionInstructionScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.common.component.InspectionInstructionContent
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
 object FilterInstructionFragment {
@@ -62,7 +62,7 @@ fun FilterInstructionScreen(
             R.drawable.eyefilterimage
         }
 
-    InspectionInstructionScreen(
+    InspectionInstructionContent(
         testType = testType,
         texts = listOf(mainText1, mainText2),
         imageRes = imageRes,

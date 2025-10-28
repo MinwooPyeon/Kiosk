@@ -43,7 +43,7 @@ import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
  * @param bottomBar 하단 버튼 영역
  */
 @Composable
-fun InspectionInstructionScreen(
+fun InspectionInstructionContent(
     testType: String,
     texts: List<String>,
     imageRes: Int,
@@ -118,7 +118,7 @@ fun InspectionInstructionScreen(
 @Composable
 private fun InspectionInstructionScreenHorizontalPreview() {
     NenoonKioskTheme {
-        InspectionInstructionScreen(
+        InspectionInstructionContent(
             testType = "phoria",
             texts = listOf("검사 안내 화면 예시", "두 번째 줄 텍스트"),
             imageRes = R.drawable.glassimage,
@@ -143,9 +143,9 @@ private fun InspectionInstructionScreenHorizontalPreview() {
 
 @Preview(showBackground = true, device = "spec:width=800dp,height=1280dp,dpi=240")
 @Composable
-private fun InspectionInstructionScreenVerticalPreview() {
+private fun InspectionInstructionContentVerticalPreview() {
     NenoonKioskTheme {
-        InspectionInstructionScreen(
+        InspectionInstructionContent(
             testType = "aniseikonia",
             texts = listOf("검사 안내 화면 예시"),
             imageRes = R.drawable.eyefilterimage,
