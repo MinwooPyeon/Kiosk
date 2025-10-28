@@ -163,7 +163,7 @@ class PermissionViewModel @Inject constructor(
         }
     }
 
-    fun updatePermissionResult(granted: Boolean, message: String) = intent {
+    fun updatePermissionResult(message: String) = intent {
         postSideEffect(PermissionSideEffect.ShowToast(message))
         checkAllPermissions()
     }

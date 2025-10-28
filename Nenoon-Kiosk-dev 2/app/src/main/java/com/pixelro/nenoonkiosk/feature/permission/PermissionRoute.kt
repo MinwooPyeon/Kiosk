@@ -31,7 +31,6 @@ fun PermissionRoute(
     ) {
         val granted = Settings.System.canWrite(context)
         viewModel.updatePermissionResult(
-            granted,
             context.getString(if (granted) R.string.allow_system else R.string.not_allow_system)
         )
     }
@@ -50,7 +49,7 @@ fun PermissionRoute(
             }
             else -> R.string.confirm
         }
-        viewModel.updatePermissionResult(allGranted, context.getString(messageRes))
+        viewModel.updatePermissionResult(context.getString(messageRes))
     }
 
     // 블루투스 활성화 런처
@@ -59,7 +58,6 @@ fun PermissionRoute(
     ) { activityResult ->
         val granted = activityResult.resultCode == Activity.RESULT_OK
         viewModel.updatePermissionResult(
-            granted,
             if (granted) "블루투스가 활성화되었습니다" else "블루투스 활성화를 거부했습니다"
         )
     }
