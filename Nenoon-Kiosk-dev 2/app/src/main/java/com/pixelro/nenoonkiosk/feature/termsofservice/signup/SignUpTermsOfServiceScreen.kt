@@ -31,7 +31,7 @@ import com.pixelro.nenoonkiosk.feature.termsofservice.components.TermsTable
 
 @Composable
 fun SignUpTermsOfServiceScreen(
-    state: SignUpTosUiState,
+    state: SignUpTermsOfServiceState,
     personalTable: TermsTableData,
     sensitiveTable: TermsTableData,
     onChangePersonal: (Boolean?) -> Unit,
@@ -99,8 +99,8 @@ fun SignUpTermsOfServiceScreen(
                 Spacer(Modifier.height(30.dp))
                 ConsentRow(
                     description = StringProvider.getStringComposable(R.string.signup_personal_info_checkbox_description),
-                    question    = StringProvider.getStringComposable(R.string.signup_personal_info_checkbox_question),
-                    accepted    = state.acceptedPersonal,
+                    question = StringProvider.getStringComposable(R.string.signup_personal_info_checkbox_question),
+                    accepted = state.acceptedPersonal,
                     onAcceptedChange = onChangePersonal,
                     textSize = state.textSize
                 )
@@ -115,8 +115,8 @@ fun SignUpTermsOfServiceScreen(
                 Spacer(Modifier.height(30.dp))
                 ConsentRow(
                     description = StringProvider.getStringComposable(R.string.signup_sensitive_info_checkbox_description),
-                    question    = StringProvider.getStringComposable(R.string.signup_sensitive_info_checkbox_question),
-                    accepted    = state.acceptedSensitive,
+                    question = StringProvider.getStringComposable(R.string.signup_sensitive_info_checkbox_question),
+                    accepted = state.acceptedSensitive,
                     onAcceptedChange = onChangeSensitive,
                     textSize = state.textSize
                 )
@@ -142,7 +142,7 @@ fun SignUpTermsOfServiceScreen(
 @Composable
 private fun SignUpTermsOfServiceScreen_Preview_Accepted() {
     SignUpTermsOfServiceScreen(
-        state = SignUpTosUiState(
+        state = SignUpTermsOfServiceState(
             acceptedPersonal = true,
             acceptedSensitive = true,
             textSize = 20.sp
@@ -170,7 +170,7 @@ private fun SignUpTermsOfServiceScreen_Preview_Accepted() {
 @Composable
 private fun SignUpTermsOfServiceScreen_Preview_Partial() {
     SignUpTermsOfServiceScreen(
-        state = SignUpTosUiState(
+        state = SignUpTermsOfServiceState(
             acceptedPersonal = true,
             acceptedSensitive = null,
             textSize = 20.sp

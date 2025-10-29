@@ -12,9 +12,12 @@ import androidx.compose.runtime.setValue
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation3.runtime.NavBackStack
 import com.harang.data.model.dto.User
+import com.pixelro.nenoonkiosk.core.constants.DebugConstants
+import com.pixelro.nenoonkiosk.core.navigation.AdminRoute
 import com.pixelro.nenoonkiosk.core.navigation.Route
 import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
 import com.pixelro.nenoonkiosk.core.navigation.TestRoute
+import com.pixelro.nenoonkiosk.feature.auth.accountmanagement.AccountManagementRoute
 import com.pixelro.nenoonkiosk.feature.auth.faceenrollment.FaceEnrollmentRoute
 import com.pixelro.nenoonkiosk.feature.auth.faceidlogin.FaceIdLoginRoute
 import com.pixelro.nenoonkiosk.feature.auth.idpasswordlogin.IdPasswordLoginRoute
@@ -26,6 +29,7 @@ import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListRoute
 import com.pixelro.nenoonkiosk.feature.permission.PermissionRoute
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverRoute
 import com.pixelro.nenoonkiosk.feature.splash.SplashRoute
+import com.pixelro.nenoonkiosk.feature.termsofservice.signup.SignUpTermsOfServiceRoute
 
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(UnstableApi::class)
@@ -87,14 +91,15 @@ fun NenoonRouteHost(
         is SignInRoute.IdPassword -> IdPasswordLoginRoute(
             updateIsSignedIn = { isSignedIn = it }
         )
-//        is SignInRoute.SignUpTermsOfService -> SignUpTermsOfServiceRoute()
+
+        is SignInRoute.SignUpTermsOfService -> SignUpTermsOfServiceRoute()
 //        is SignInRoute.FaceIdTermsOfService -> FaceIdTermsOfServiceRoute()
 
         // Test Routes
 //        is TestRoute.TestList -> TestListRoute()
 //        is TestRoute.ExerciseList -> ExerciseListRoute()
         is TestRoute.CategoryList -> CategoryListRoute(
-            pid = userId,
+            pid = DebugConstants.PLACEHOLDER_PID,
             isSignInSkipped = isSignedIn,
         )
 //        is TestRoute.ExternalDeviceTestList -> ExternalDeviceTestListRoute()
@@ -109,16 +114,16 @@ fun NenoonRouteHost(
 //
 //        // Admin Routes
 //        is AdminRoute.AdminPage -> AdminPageRoute()
-//        is AdminRoute.AccountManagement -> AccountManagementRoute(
-//            userId = userId,
-//            userData = userData,
-//            isUserSignedIn = isSignedIn,
-//            onSignOut = {
-//                isSignedIn = false
-//                userId = null
-//                userData = null
-//            }
-//        )
+        is AdminRoute.AccountManagement -> AccountManagementRoute(
+            userId = userId,
+            userData = userData,
+            isUserSignedIn = isSignedIn,
+            onSignOut = {
+                isSignedIn = false
+                userId = null
+                userData = null
+            }
+        )
 //        is AdminRoute.FaceUpdate -> FaceUpdateRoute(
 //            loggedInUserId = userId,
 //            accessToken = userData?.accessToken

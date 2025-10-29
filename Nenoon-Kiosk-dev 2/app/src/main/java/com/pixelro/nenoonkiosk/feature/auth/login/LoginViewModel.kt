@@ -5,6 +5,7 @@ import com.pixelro.nenoonkiosk.core.navigation.AdminRoute
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.navigation.Route
 import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
+import com.pixelro.nenoonkiosk.core.navigation.TestRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -49,6 +50,6 @@ class LoginViewModel @Inject constructor(
 
     fun userSignInSkip(updateIsSignedIn: (Boolean) -> Unit) = intent {
         updateIsSignedIn(true)
-        navigator.navigate(Route.TermsOfService)
+        navigator.navigate(TestRoute.CategoryList)
     }
 }
