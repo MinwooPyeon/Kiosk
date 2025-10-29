@@ -5,7 +5,6 @@ idf_component_register(
     "src/uart_link.c"
     "src/http_srv.c"
     "src/session_mgr.c"
-    "src/cert_store.c"
     "src/ratelimit.c"
     "src/metrics.c"
     "src/frame.c"

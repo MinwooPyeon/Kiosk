@@ -78,7 +78,7 @@ esp_err_t session_owner_get(char* out, size_t out_sz){ return owner_load(out,out
 esp_err_t session_owner_clear(void){ return owner_save(""); }
 
 /* ===== secret derive ===== */
-esp_err_t session_manager_init(void){
+esp_err_t session_mgr_init(void){
     uint8_t mac[6]={0};
     ESP_ERROR_CHECK(esp_read_mac(mac, ESP_MAC_WIFI_STA));
     for(int i=0;i<32;i++){
