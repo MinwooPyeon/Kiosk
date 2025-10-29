@@ -1,11 +1,11 @@
-package com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.intro
+package com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.intro
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.howtodialog.AniseikoniaHowToDialog
-import com.pixelro.nenoonkiosk.feature.strabismus.common.component.InspectionIntroScreen
+import com.pixelro.nenoonkiosk.feature.strabismus.common.component.InspectionIntroContent
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
 /**
@@ -25,7 +25,7 @@ fun AniseikoniaIntroScreen(
     val title = StringProvider.getStringComposable(R.string.fudo_intro_title)
     val description = StringProvider.getStringComposable(R.string.fudo_intro_description)
 
-    InspectionIntroScreen(
+    InspectionIntroContent(
         title = title,
         description = description,
         onStartClicked = onStartClicked,

@@ -26,8 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.core.ui.HowToButton
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
-import com.pixelro.nenoonkiosk.core.ui.TopBarVertical
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
 /**
@@ -43,7 +43,7 @@ import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
  * @param onShowHowToClicked 도움말 버튼 클릭 콜백
  */
 @Composable
-fun InspectionQuestionScreen(
+fun InspectionQuestionContent(
     title: String,
     mainText: String,
     options: List<String>,
@@ -58,7 +58,7 @@ fun InspectionQuestionScreen(
     Scaffold(
         containerColor = Color.Black,
         topBar = {
-            TopBarVertical(
+            NenoonTopBar(
                 title = title,
                 showBackButton = true,
                 onBackClicked = onBackClicked,
@@ -124,7 +124,7 @@ fun InspectionQuestionScreen(
 @Composable
 private fun InspectionQuestionScreenHorizontalPreview() {
     NenoonKioskTheme {
-        InspectionQuestionScreen(
+        InspectionQuestionContent(
             title = "검사 질문",
             mainText = "어떤 항목이 보이나요?",
             options = listOf(
@@ -153,9 +153,9 @@ private fun InspectionQuestionScreenHorizontalPreview() {
 
 @Preview(showBackground = true, device = "spec:width=800dp,height=1280dp,dpi=240")
 @Composable
-private fun InspectionQuestionScreenVerticalPreview() {
+private fun InspectionQuestionContentVerticalPreview() {
     NenoonKioskTheme {
-        InspectionQuestionScreen(
+        InspectionQuestionContent(
             title = "검사 질문",
             mainText = "어떤 항목이 보이나요?",
             options = listOf(

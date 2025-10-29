@@ -6,13 +6,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
-import com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.adjustment.AniseikoniaAdjustmentScreen
-import com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.intro.AniseikoniaIntroScreen
-import com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.question.AniseikoniaQuestionScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.FilterInstructionScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.GlassInstructionScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.adjustment.AniseikoniaAdjustmentScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.intro.AniseikoniaIntroScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.question.AniseikoniaQuestionScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.phoria.intro.PhoriaIntroScreen
+import com.pixelro.nenoonkiosk.feature.inspection.strabismus.phoria.question.PhoriaQuestionScreen
 import com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.result.AniseikoniaResultScreen
 import com.pixelro.nenoonkiosk.feature.strabismus.phoria.adjustment.PhoriaAdjustmentScreen
-import com.pixelro.nenoonkiosk.feature.strabismus.phoria.intro.*
-import com.pixelro.nenoonkiosk.feature.strabismus.phoria.question.PhoriaQuestionScreen
 import com.pixelro.nenoonkiosk.feature.strabismus.phoria.result.PhoriaResultScreen
 
 @Composable

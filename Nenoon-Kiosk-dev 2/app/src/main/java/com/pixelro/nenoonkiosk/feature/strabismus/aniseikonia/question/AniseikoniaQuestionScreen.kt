@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.question
+package com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.question
 
 import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.Image
@@ -20,7 +20,7 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.howtodialog.AniseikoniaHowToDialog
-import com.pixelro.nenoonkiosk.feature.strabismus.common.component.InspectionQuestionScreen
+import com.pixelro.nenoonkiosk.feature.strabismus.common.component.InspectionQuestionContent
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
 /**
@@ -60,7 +60,7 @@ fun AniseikoniaQuestionScreen(
         AniseikoniaHowToDialog(onDismissRequest = { showHowToDialog = false })
     }
 
-    InspectionQuestionScreen(
+    InspectionQuestionContent(
         title = title,
         mainText = mainText,
         options = options,

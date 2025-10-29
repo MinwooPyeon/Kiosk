@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.strabismus.phoria.question
+package com.pixelro.nenoonkiosk.feature.inspection.strabismus.phoria.question
 
 import android.speech.tts.TextToSpeech
 import androidx.compose.runtime.Composable
@@ -11,8 +11,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.strabismus.common.component.InspectionQuestionScreen
+import com.pixelro.nenoonkiosk.feature.strabismus.common.component.InspectionQuestionContent
 import com.pixelro.nenoonkiosk.feature.strabismus.phoria.howtodialog.PhoriaHowToDialog
+import com.pixelro.nenoonkiosk.feature.strabismus.phoria.question.PhoriaInspectionCanvas
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
 /**
@@ -50,7 +51,7 @@ fun PhoriaQuestionScreen(
         PhoriaHowToDialog(onDismissRequest = { showHowToDialog = false })
     }
 
-    InspectionQuestionScreen(
+    InspectionQuestionContent(
         title = title,
         mainText = mainText,
         options = options,

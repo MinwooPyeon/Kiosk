@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.adjustment
+package com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.adjustment
 
 import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.background
@@ -33,10 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.HowToButton
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.ui.TopBarVertical
+import com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.adjustment.AniseikoniaAdjustmentCanvas
 import com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.howtodialog.AniseikoniaHowToDialog
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
@@ -76,7 +77,7 @@ fun AniseikoniaAdjustmentScreen(
     Scaffold(
         containerColor = Color.Black,
         topBar = {
-            TopBarVertical(
+            NenoonTopBar(
                 title = screenTitle,
                 showBackButton = true,
                 onBackClicked = onBackClicked,
@@ -84,7 +85,7 @@ fun AniseikoniaAdjustmentScreen(
                     HowToButton(onClick = { showHowToDialog = true })
                 },
                 containerColor = Color.Black,
-                contentColor = Color.White,
+                contentColor = Color.White
             )
         },
         bottomBar = {

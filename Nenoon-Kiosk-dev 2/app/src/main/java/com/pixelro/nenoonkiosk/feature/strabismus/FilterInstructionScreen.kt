@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.strabismus
+package com.pixelro.nenoonkiosk.feature.inspection.strabismus
 
 import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.background
@@ -19,13 +19,8 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.strabismus.common.component.InspectionInstructionScreen
+import com.pixelro.nenoonkiosk.feature.strabismus.common.component.InspectionInstructionContent
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
-
-object FilterInstructionFragment {
-    const val TEST_TYPE_PHORIA = "phoria"
-    const val TEST_TYPE_ANISEIKONIA = "aniseikonia"
-}
 
 /**
  * 필터 착용 안내 화면
@@ -62,7 +57,7 @@ fun FilterInstructionScreen(
             R.drawable.eyefilterimage
         }
 
-    InspectionInstructionScreen(
+    InspectionInstructionContent(
         testType = testType,
         texts = listOf(mainText1, mainText2),
         imageRes = imageRes,

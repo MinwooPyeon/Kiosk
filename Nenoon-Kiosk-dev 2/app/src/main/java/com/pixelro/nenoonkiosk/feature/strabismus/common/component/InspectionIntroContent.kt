@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.ui.TopBarVertical
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.ui.theme.inputTextStyle
@@ -31,7 +31,7 @@ import com.pixelro.nenoonkiosk.ui.theme.selectLargeTextStyle
  * @param howToDialog 가이드 다이얼로그 컴포넌트
  */
 @Composable
-fun InspectionIntroScreen(
+fun InspectionIntroContent(
     title: String,
     description: String,
     onStartClicked: () -> Unit,
@@ -47,7 +47,7 @@ fun InspectionIntroScreen(
     Scaffold(
         containerColor = Color.White,
         topBar = {
-            TopBarVertical(
+            NenoonTopBar(
                 title = "",
                 showBackButton = true,
                 onBackClicked = onBackClicked,
@@ -88,7 +88,7 @@ fun InspectionIntroScreen(
 @Composable
 private fun InspectionIntroScreenHorizontalPreview() {
     NenoonKioskTheme {
-        InspectionIntroScreen(
+        InspectionIntroContent(
             title = "사위 검사",
             description = "두 눈의 균형 상태를 평가하는 검사입니다.",
             onStartClicked = {},
@@ -100,9 +100,9 @@ private fun InspectionIntroScreenHorizontalPreview() {
 
 @Preview(showBackground = true, device = "spec:width=800dp,height=1280dp,dpi=240")
 @Composable
-private fun InspectionIntroScreenVerticalPreview() {
+private fun InspectionIntroContentVerticalPreview() {
     NenoonKioskTheme {
-        InspectionIntroScreen(
+        InspectionIntroContent(
             title = "사위 검사",
             description = "두 눈의 균형 상태를 평가하는 검사입니다.",
             onStartClicked = {},

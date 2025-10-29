@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.strabismus
+package com.pixelro.nenoonkiosk.feature.inspection.strabismus
 
 import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.background
@@ -18,7 +18,7 @@ import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.SecondaryButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.strabismus.common.component.InspectionInstructionScreen
+import com.pixelro.nenoonkiosk.feature.strabismus.common.component.InspectionInstructionContent
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
 /**
@@ -47,7 +47,7 @@ fun GlassInstructionScreen(
 
     val imageRes = R.drawable.glassimage
 
-    InspectionInstructionScreen(
+    InspectionInstructionContent(
         testType = testType,
         texts = listOf(mainText),
         imageRes = imageRes,
