@@ -129,6 +129,14 @@ object BP170BManager {
             }
             return
         }
+        
+        if (bluetoothAdapter?.isEnabled != true) {
+            Log.e(TAG, "Bluetooth is not enabled")
+            managerScope.launch {
+                _connectionState.value = BluetoothConnectionState.ERROR("Bluetooth is not enabled")
+            }
+            return
+        }
 
         managerScope.launch {
             _connectionState.value = BluetoothConnectionState.CONNECTING
@@ -149,9 +157,16 @@ object BP170BManager {
                 managerScope.launch {
                     when (newState) {
                         BluetoothProfile.STATE_CONNECTED -> {
-                            Log.d(TAG, "Connected to GATT server.")
-                            _connectionState.value = BluetoothConnectionState.CONNECTED
-                            gatt?.discoverServices()
+                            if (status == BluetoothGatt.GATT_SUCCESS) {
+                                Log.d(TAG, "Connected to GATT server successfully.")
+                                _connectionState.value = BluetoothConnectionState.CONNECTED
+                                gatt?.discoverServices()
+                            } else {
+                                Log.e(TAG, "Connection failed with status: $status")
+                                _connectionState.value = BluetoothConnectionState.ERROR("Connection failed with status: $status")
+                                closeGatt()
+                                device = null
+                            }
                         }
 
                         BluetoothProfile.STATE_DISCONNECTED -> {
@@ -188,13 +203,21 @@ object BP170BManager {
                 managerScope.launch {
                     when (status) {
                         BluetoothGatt.GATT_SUCCESS -> {
-                            Log.i(TAG, "GATT services discovered")
+                            Log.i(TAG, "GATT services discovered successfully")
                             gatt?.getService(SERVICE_UUID)?.let { service ->
                                 writeCharacteristic =
                                     service.getCharacteristic(
                                         WRITE_CHARACTERISTIC_UUID,
                                     )
                                 readCharacteristic = service.getCharacteristic(READ_CHARACTERISTIC_UUID)
+
+                                if (writeCharacteristic == null || readCharacteristic == null) {
+                                    Log.e(TAG, "Required characteristics not found. Write: $writeCharacteristic, Read: $readCharacteristic")
+                                    _connectionState.value = BluetoothConnectionState.ERROR("Required characteristics not found")
+                                    closeGatt()
+                                    return@launch
+                                }
+                                
                                 enableNotifications(readCharacteristic)
 
                                 // Cancel any existing polling job before starting a new one
