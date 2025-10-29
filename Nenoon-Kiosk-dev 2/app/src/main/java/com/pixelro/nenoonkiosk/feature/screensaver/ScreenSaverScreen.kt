@@ -42,7 +42,6 @@ fun ScreenSaverScreen(
                 repeatMode = RepeatMode.Reverse,
             ),
     )
-    val systemUiController = rememberSystemUiController()
 
     Column(
         modifier =
@@ -54,15 +53,7 @@ fun ScreenSaverScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        DisposableEffect(true) {
-            systemUiController.systemBarsDarkContentEnabled = false
-            exoPlayer?.play()
-            onDispose {
-                systemUiController.systemBarsDarkContentEnabled = true
-                exoPlayer?.pause()
-                exoPlayer?.clearVideoSurface()
-            }
-        }
+
         Spacer(modifier = Modifier.weight(1f))
 
         // 안내 텍스트

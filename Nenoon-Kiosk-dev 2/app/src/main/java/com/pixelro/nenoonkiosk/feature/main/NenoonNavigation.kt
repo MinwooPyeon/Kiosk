@@ -61,6 +61,7 @@ import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
 import com.pixelro.nenoonkiosk.feature.iotdevice.BTDeviceManagementScreen
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripManagmentScreen
 import com.pixelro.nenoonkiosk.feature.print.ResultPrintRoute
+import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverRoute
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverScreen
 import com.pixelro.nenoonkiosk.feature.splash.SplashScreen
 import com.pixelro.nenoonkiosk.feature.strabismus.AppNavigation
@@ -279,7 +280,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            ScreenSaverScreen(
+            ScreenSaverRoute(
                 exoPlayer = viewModel.exoPlayer,
                 isSignedIn = viewModel.isSignedIn.collectAsState().value,
                 initializeTestDoneStatus = {
