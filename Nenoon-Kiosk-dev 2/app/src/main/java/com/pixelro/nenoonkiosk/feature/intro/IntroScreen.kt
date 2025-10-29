@@ -15,38 +15,49 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pixelro.nenoonkiosk.feature.intro.components.IntroText
 import com.pixelro.nenoonkiosk.feature.intro.components.IntroTopBar
 import com.pixelro.nenoonkiosk.feature.intro.components.LogoWithVersion
 import com.pixelro.nenoonkiosk.feature.intro.components.StartButton
 
-// 시작 버튼 있는 화면
 @Composable
-fun IntroScreen(
-    toSurveyScreen: () -> Unit,
-    toSettingsScreen: () -> Unit,
+fun IntroRoute(
+    viewModel: IntroViewModel = hiltViewModel()
 ) {
-    val transition = rememberInfiniteTransition()
+    val transition = rememberInfiniteTransition(label = "intro alpha")
     val alphaVal by transition.animateFloat(
         initialValue = 1f,
         targetValue = 0f,
-        animationSpec =
-            infiniteRepeatable(
-                animation =
-                    keyframes {
-                        durationMillis = 700
-                    },
-                repeatMode = RepeatMode.Reverse,
-            ),
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 700
+            },
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "alpha animation"
     )
 
-    Column(
-        modifier =
-            Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+    IntroScreen(
+        alphaVal = alphaVal,
+        toSurveyScreen = { viewModel.navigateToSurvey() },
+        toSettingsScreen = { viewModel.navigateToSettings() }
+    )
+}
 
+// 시작 버튼 있는 화면
+@Composable
+fun IntroScreen(
+    alphaVal: Float,
+    toSurveyScreen: () -> Unit,
+    toSettingsScreen: () -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Spacer(modifier = Modifier.height(40.dp))
+
         /**
          * 상단 바
          */
@@ -57,6 +68,7 @@ fun IntroScreen(
         LogoWithVersion()
 
         Spacer(modifier = Modifier.weight(0.5F))
+
         /**
          * 시작 버튼
          */
@@ -68,11 +80,11 @@ fun IntroScreen(
     }
 }
 
-
 @Preview(showBackground = true, widthDp = 888, heightDp = 1422, apiLevel = 34)
 @Composable
 fun IntroScreenPreview() {
     IntroScreen(
+        alphaVal = 1f,
         toSurveyScreen = {},
         toSettingsScreen = {}
     )

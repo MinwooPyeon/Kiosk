@@ -26,9 +26,11 @@ import com.pixelro.nenoonkiosk.feature.auth.login.LoginRoute
 import com.pixelro.nenoonkiosk.feature.auth.qrlogin.QrLoginRoute
 import com.pixelro.nenoonkiosk.feature.auth.signup.SignUpRoute
 import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListRoute
+import com.pixelro.nenoonkiosk.feature.intro.IntroRoute
 import com.pixelro.nenoonkiosk.feature.permission.PermissionRoute
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverRoute
 import com.pixelro.nenoonkiosk.feature.splash.SplashRoute
+import com.pixelro.nenoonkiosk.feature.termsofservice.faceid.FaceIdTermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.termsofservice.signup.SignUpTermsOfServiceRoute
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -55,7 +57,7 @@ fun NenoonRouteHost(
             updateIsSignedIn = { isSignedIn = it }
         )
 //        is Route.Entries -> EntriesRoute()
-//        is Route.Intro -> IntroRoute()
+        is Route.Intro -> IntroRoute()
 //        is Route.Survey -> SurveyRoute()
 //        is Route.SoftwareInfo -> SoftwareInfoRoute()
 //        is Route.TermsOfService -> TermsOfServiceRoute()
@@ -93,7 +95,7 @@ fun NenoonRouteHost(
         )
 
         is SignInRoute.SignUpTermsOfService -> SignUpTermsOfServiceRoute()
-//        is SignInRoute.FaceIdTermsOfService -> FaceIdTermsOfServiceRoute()
+        is SignInRoute.FaceIdTermsOfService -> FaceIdTermsOfServiceRoute()
 
         // Test Routes
 //        is TestRoute.TestList -> TestListRoute()

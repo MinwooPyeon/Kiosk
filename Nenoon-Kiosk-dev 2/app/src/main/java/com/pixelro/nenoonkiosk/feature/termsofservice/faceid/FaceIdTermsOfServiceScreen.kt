@@ -31,7 +31,7 @@ import com.pixelro.nenoonkiosk.feature.termsofservice.components.TermsTable
 
 @Composable
 fun FaceIdTermsOfServiceScreen(
-    state: FaceIdTosUiState,
+    state: FaceIdTermsOfServiceState,
     tableData: TermsTableData,
     onChangePersonal: (Boolean?) -> Unit,
     onClickAgree: () -> Unit,
@@ -100,8 +100,8 @@ fun FaceIdTermsOfServiceScreen(
                 // Consent
                 ConsentRow(
                     description = StringProvider.getStringComposable(R.string.face_id_checkbox_description),
-                    question    = StringProvider.getStringComposable(R.string.face_id_checkbox_question),
-                    accepted    = state.acceptedPersonal,
+                    question = StringProvider.getStringComposable(R.string.face_id_checkbox_question),
+                    accepted = state.acceptedPersonal,
                     onAcceptedChange = onChangePersonal,
                     textSize = state.textSize
                 )
@@ -143,7 +143,7 @@ fun FaceIdTermsOfServiceScreen(
 @Composable
 private fun FaceIdTermsOfServiceScreen_Preview_Accepted() {
     FaceIdTermsOfServiceScreen(
-        state = FaceIdTosUiState(
+        state = FaceIdTermsOfServiceState(
             acceptedPersonal = true,
             textSize = 20.sp,
             smallTextSize = 18.sp
@@ -165,7 +165,7 @@ private fun FaceIdTermsOfServiceScreen_Preview_Accepted() {
 @Composable
 private fun FaceIdTermsOfServiceScreen_Preview_NotSelected() {
     FaceIdTermsOfServiceScreen(
-        state = FaceIdTosUiState(
+        state = FaceIdTermsOfServiceState(
             acceptedPersonal = null,
             textSize = 20.sp,
             smallTextSize = 18.sp
