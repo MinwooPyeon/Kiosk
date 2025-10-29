@@ -25,7 +25,7 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.bitmapToFile
 import com.pixelro.nenoonkiosk.core.util.qr.QRCodeGenerator
 import com.pixelro.nenoonkiosk.feature.auth.FaceRecognizer
-import com.pixelro.nenoonkiosk.feature.inspection.result.TestResultUtil
+import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.TestResultUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

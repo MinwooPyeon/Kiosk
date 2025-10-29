@@ -1,8 +1,7 @@
-package com.pixelro.nenoonkiosk.feature.inspection
+package com.pixelro.nenoonkiosk.feature.strabismus
 
 import android.content.Context
 import android.os.Build
-import android.speech.tts.TextToSpeech
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.RepeatMode
@@ -55,29 +54,30 @@ import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.Advertisement
 import com.pixelro.nenoonkiosk.core.ui.InspectionSelectionButton
+import com.pixelro.nenoonkiosk.core.ui.RedGreenFilterGlassDialog
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
 import kotlinx.coroutines.delay
 
-// 원하는 검사 항목 선택하는 뷰
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
-fun ExternalDeviceTestListScreen(
+fun PhoriaAndAniseikoniaTestListScreen(
     checkIsTestDone: (InspectionType) -> Boolean,
     toTestScreen: (InspectionType) -> Unit,
     toIntroScreen: () -> Unit,
     toSettingsScreen: () -> Unit,
-    isBloodPressureDone: Boolean,
-    isGripStrengthDone: Boolean,
+    isPhoriaDone: Boolean,
+    isAniseikoniaDone: Boolean,
     viewModel: NenoonViewModel,
 ) {
     val context = LocalContext.current
     val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
-    val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
+    val savedLanguage = sharedPreferences.getString("language", "defaultLanguage") // "defaultLanguage"는 기본값입니다.
     val warningTextSize = if (savedLanguage == "ru") 10.sp else 16.sp
 
     val pagerState =
@@ -89,7 +89,6 @@ fun ExternalDeviceTestListScreen(
     val isDescriptionShowing = remember { mutableStateOf(true) }
     LaunchedEffect(true) {
         TTS.tts.stop()
-        TTS.speechTTS(StringProvider.getString(R.string.select_test_tts), TextToSpeech.QUEUE_ADD)
         while (true) {
             delay(5000)
             pagerState.animateScrollToPage(
@@ -106,7 +105,7 @@ fun ExternalDeviceTestListScreen(
     }
     var isDialogShowing by remember { mutableStateOf(false) }
     var selectedTest by remember { mutableStateOf(InspectionType.None) }
-    val transition = rememberInfiniteTransition(label = "")
+    val transition = rememberInfiniteTransition()
     val shiftVal by transition.animateFloat(
         initialValue = 0f,
         targetValue = 20f,
@@ -122,6 +121,20 @@ fun ExternalDeviceTestListScreen(
     )
     val isSeniorValue by viewModel.isSenior.collectAsState()
 
+    var showDialog by remember { mutableStateOf(false) }
+    val surveyGlass by viewModel.surveyGlass.collectAsState()
+
+    if (showDialog) {
+        RedGreenFilterGlassDialog(
+            onDismissRequest = { showDialog = false },
+            onConfirm = {
+                showDialog = false
+                toTestScreen(InspectionType.Phoria)
+            },
+            wearsGlasses = surveyGlass,
+            tts = TTS.tts,
+        )
+    }
     /**
      * dialog 버튼 작용
      */
@@ -201,12 +214,15 @@ fun ExternalDeviceTestListScreen(
                 Text(
                     text =
                         StringProvider.getString(
-                            R.string.test_list_tittle,
+                            R.string.cross_eye_test,
                         ),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Medium,
                 )
             }
+            /**
+             * 설정 버튼
+             */
             SettingsButton(toSettingsScreen)
         }
         Spacer(
@@ -218,7 +234,6 @@ fun ExternalDeviceTestListScreen(
                         color = Color(0xffebebeb),
                     ),
         )
-
         /**
          * 광고 표시 여부
          */
@@ -276,31 +291,22 @@ fun ExternalDeviceTestListScreen(
                         .weight(1f)
                 /**
                  * 검사 항목 박스 내용
-                 * 혈압 검사
+                 * 사위 검사
                  */
                 InspectionSelectionButton(
                     modifier = modifier,
                     title1 =
                         StringProvider.getString(
-                            R.string.test_predescription_blood_pressure_title1,
+                            R.string.phoria_test,
                         ),
-                    title2 =
-                        StringProvider.getString(
-                            R.string.test_predescription_blood_pressure_title2,
-                        ),
+                    title2 = "",
                     onClickMethod = {
-                        selectedTest = InspectionType.BloodPressure
-                        if (checkIsTestDone(InspectionType.BloodPressure)) {
-                            isDialogShowing = true
-                        } else {
-                            toTestScreen(InspectionType.BloodPressure)
-                        }
+                        toTestScreen(InspectionType.Phoria)
                     },
                     alignment = Alignment.CenterStart,
-                    isDone = isBloodPressureDone,
+                    isDone = isPhoriaDone,
                     isSenior = isSeniorValue,
                     time = 2,
-                    large = true,
                 )
                 Spacer(
                     modifier =
@@ -309,48 +315,38 @@ fun ExternalDeviceTestListScreen(
                 )
                 /**
                  * 검사 항목 박스 내용
-                 * 악력 검사
+                 * 부등상시 검사
                  */
                 InspectionSelectionButton(
                     modifier = modifier,
                     title1 =
                         StringProvider.getString(
-                            R.string.test_predescription_grip_strength_title1,
+                            R.string.aniseikonia_test,
                         ),
-                    title2 =
-                        StringProvider.getString(
-                            R.string.test_predescription_grip_strength_title2,
-                        ),
+                    title2 = "",
                     onClickMethod = {
-                        selectedTest = InspectionType.GripStrength
-                        if (checkIsTestDone(InspectionType.GripStrength)) {
+                        selectedTest = InspectionType.Aniseikonia
+                        if (checkIsTestDone(InspectionType.Aniseikonia)) {
                             isDialogShowing = true
                         } else {
-                            toTestScreen(InspectionType.GripStrength)
+                            toTestScreen(InspectionType.Aniseikonia)
                         }
                     },
                     alignment = Alignment.CenterStart,
-                    isDone = isGripStrengthDone,
+                    isDone = isAniseikoniaDone,
                     isSenior = isSeniorValue,
-                    time = 2,
-                    large = true,
+                    time = 3,
                 )
-
                 Spacer(
                     modifier =
                         Modifier
                             .height(20.dp),
                 )
-
                 /**
                  * 하단 경고문
-                 *
-                 *
                  */
                 Box(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(),
+                    modifier = Modifier,
                     contentAlignment = Alignment.BottomCenter,
                 ) {
                     Row(
@@ -359,6 +355,7 @@ fun ExternalDeviceTestListScreen(
                                 .padding(
                                     start = 40.dp,
                                     bottom = (GlobalValue.navigationBarPadding + 40).dp,
+                                    top = 20.dp,
                                 )
                                 .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,

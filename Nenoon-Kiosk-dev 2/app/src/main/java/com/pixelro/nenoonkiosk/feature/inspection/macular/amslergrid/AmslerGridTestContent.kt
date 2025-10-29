@@ -48,7 +48,7 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetection
 import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetectionViewModel
 import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceContent
@@ -90,7 +90,7 @@ fun AmslerGridTestContent(
                     amslerGridViewModel.updateIsMeasuringDistanceContentVisible(false)
                     amslerGridViewModel.updateIsAmslerGridContentVisible(true)
                 },
-                selectedTestType = TestType.AmslerGrid,
+                selectedTestType = InspectionType.AmslerGrid,
                 isLeftEye = amslerGridViewModel.isLeftEye.collectAsState().value,
             )
             AmslerGridContent(
