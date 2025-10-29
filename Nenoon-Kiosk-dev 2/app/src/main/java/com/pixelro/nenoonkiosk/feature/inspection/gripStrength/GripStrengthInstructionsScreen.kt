@@ -24,6 +24,7 @@ import com.pixelro.nenoonkiosk.core.ui.TtsWarning
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -37,10 +38,28 @@ fun GripStrengthInstructionsScreen(
 
     LaunchedEffect(Unit) {
         TTS.stopTTS()
-        TTS.speechTTS(StringProvider.getString(R.string.tts_ingrip_instructions), TextToSpeech.QUEUE_ADD)
-        ttsSpeaking = true
-        TTS.setOnDoneListener {
-            ttsSpeaking = false
+        
+        // 한국어 설정
+        TTS.forceKoreanLanguage()
+        
+        // TTS 초기화 상태 확인
+        if (TTS.isInitialized()) {
+            TTS.speechTTS(StringProvider.getString(R.string.tts_ingrip_instructions), TextToSpeech.QUEUE_ADD)
+            ttsSpeaking = true
+            TTS.setOnDoneListener {
+                ttsSpeaking = false
+            }
+        } else {
+            // TTS가 초기화되지 않은 경우 재시도
+            kotlinx.coroutines.delay(500)
+            if (TTS.isInitialized()) {
+                TTS.forceKoreanLanguage() 
+                TTS.speechTTS(StringProvider.getString(R.string.tts_ingrip_instructions), TextToSpeech.QUEUE_ADD)
+                ttsSpeaking = true
+                TTS.setOnDoneListener {
+                    ttsSpeaking = false
+                }
+            }
         }
     }
 
