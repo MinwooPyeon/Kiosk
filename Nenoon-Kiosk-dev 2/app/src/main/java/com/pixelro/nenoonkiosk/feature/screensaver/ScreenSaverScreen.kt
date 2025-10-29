@@ -1,6 +1,5 @@
 package com.pixelro.nenoonkiosk.feature.screensaver
 
-import android.widget.Toast
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +34,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
@@ -45,50 +42,12 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import org.orbitmvi.orbit.compose.collectAsState
-import org.orbitmvi.orbit.compose.collectSideEffect
-
-@UnstableApi
-@Composable
-fun ScreenSaverRoute(
-    isSignedIn: Boolean,
-    viewModel: ScreenSaverViewModel = hiltViewModel()
-) {
-    val state = viewModel.collectAsState().value
-    val context = LocalContext.current
-
-    viewModel.collectSideEffect { sideEffect ->
-        when (sideEffect) {
-            is ScreenSaverSideEffect.ShowToast -> {
-                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.loadLanguage(context)
-        viewModel.loadVideoUri(isSignedIn)
-    }
-
-    DisposableEffect(Unit) {
-        viewModel.playVideo()
-
-        onDispose {
-            viewModel.stopVideo()
-        }
-    }
-
-    ScreenSaverScreen(
-        state = state,
-        exoPlayer = viewModel.exoPlayer
-    )
-}
 
 @OptIn(ExperimentalTextApi::class)
 @UnstableApi
 @Composable
 fun ScreenSaverScreen(
-    state: ScreenSaverState,
+    state: ScreenSaverUiState,
     exoPlayer: ExoPlayer
 ) {
     val context = LocalContext.current

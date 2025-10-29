@@ -88,12 +88,12 @@ object TestResultUtil {
                                 StringProvider.getString(
                                     R.string.presbyopia_result_description2_eye_age,
                                 ) + " " + (testResult.age - 2) + " ~ " + (testResult.age + 2) +
-                                    StringProvider.getString(
-                                        R.string.presbyopia_result_description2_abnormal,
-                                    ) +
-                                    StringProvider.getString(
-                                        R.string.presbyopia_result_description3_abnormal,
-                                    ),
+                                        StringProvider.getString(
+                                            R.string.presbyopia_result_description2_abnormal,
+                                        ) +
+                                        StringProvider.getString(
+                                            R.string.presbyopia_result_description3_abnormal,
+                                        ),
                                 300f,
                                 baseline + 200f,
                                 paint,
@@ -121,12 +121,12 @@ object TestResultUtil {
                                 StringProvider.getString(
                                     R.string.presbyopia_result_description2_eye_age,
                                 ) + " " + (testResult.age - 2) + " ~ " + (testResult.age + 2) +
-                                    StringProvider.getString(
-                                        R.string.presbyopia_result_description2_abnormal,
-                                    ) +
-                                    StringProvider.getString(
-                                        R.string.presbyopia_result_description3_abnormal,
-                                    ),
+                                        StringProvider.getString(
+                                            R.string.presbyopia_result_description2_abnormal,
+                                        ) +
+                                        StringProvider.getString(
+                                            R.string.presbyopia_result_description3_abnormal,
+                                        ),
                                 300f,
                                 baseline + 240f,
                                 paint,
@@ -183,20 +183,60 @@ object TestResultUtil {
                 paint.typeface = Typeface.DEFAULT_BOLD
 
                 if (SharedPreferencesManager.getString("language") == "ko") {
-                    canvas.drawText((testResult.leftEye / 10f).toString(), 150f, baseline + 190f, paint)
-                    canvas.drawText((testResult.rightEye / 10f).toString(), 450f, baseline + 190f, paint)
+                    canvas.drawText(
+                        (testResult.leftEye / 10f).toString(),
+                        150f,
+                        baseline + 190f,
+                        paint
+                    )
+                    canvas.drawText(
+                        (testResult.rightEye / 10f).toString(),
+                        450f,
+                        baseline + 190f,
+                        paint
+                    )
                 }
                 if (SharedPreferencesManager.getString("language") == "en") {
-                    canvas.drawText("20/" + (200 / testResult.leftEye).toString(), 150f, baseline + 190f, paint)
-                    canvas.drawText("20/" + (200 / testResult.rightEye).toString(), 450f, baseline + 190f, paint)
+                    canvas.drawText(
+                        "20/" + (200 / testResult.leftEye).toString(),
+                        150f,
+                        baseline + 190f,
+                        paint
+                    )
+                    canvas.drawText(
+                        "20/" + (200 / testResult.rightEye).toString(),
+                        450f,
+                        baseline + 190f,
+                        paint
+                    )
                 }
                 if (SharedPreferencesManager.getString("language") == "zh") {
-                    canvas.drawText((4 + testResult.leftEye / 10f).toString(), 150f, baseline + 190f, paint)
-                    canvas.drawText((4 + testResult.rightEye / 10f).toString(), 450f, baseline + 190f, paint)
+                    canvas.drawText(
+                        (4 + testResult.leftEye / 10f).toString(),
+                        150f,
+                        baseline + 190f,
+                        paint
+                    )
+                    canvas.drawText(
+                        (4 + testResult.rightEye / 10f).toString(),
+                        450f,
+                        baseline + 190f,
+                        paint
+                    )
                 }
                 if (SharedPreferencesManager.getString("language") == "ja") {
-                    canvas.drawText((testResult.leftEye / 10f).toString(), 150f, baseline + 190f, paint)
-                    canvas.drawText((testResult.rightEye / 10f).toString(), 450f, baseline + 190f, paint)
+                    canvas.drawText(
+                        (testResult.leftEye / 10f).toString(),
+                        150f,
+                        baseline + 190f,
+                        paint
+                    )
+                    canvas.drawText(
+                        (testResult.rightEye / 10f).toString(),
+                        450f,
+                        baseline + 190f,
+                        paint
+                    )
                 }
 //                canvas.drawText((testResult.leftEye / 10f).toString(), 150f, baseline + 190f, paint)
 //                canvas.drawText((testResult.rightEye / 10f).toString(), 450f, baseline + 190f, paint)
@@ -561,6 +601,7 @@ object TestResultUtil {
                             StringProvider.getString(
                                 com.pixelro.nenoonkiosk.R.string.printer_horizontal_normal,
                             )
+
                         else ->
                             StringProvider.getString(
                                 com.pixelro.nenoonkiosk.R.string.printer_horizontal_problem,
@@ -576,6 +617,7 @@ object TestResultUtil {
                             StringProvider.getString(
                                 com.pixelro.nenoonkiosk.R.string.printer_vertical_normal,
                             )
+
                         else ->
                             StringProvider.getString(
                                 com.pixelro.nenoonkiosk.R.string.printer_vertical_problem,
@@ -591,6 +633,7 @@ object TestResultUtil {
                             StringProvider.getString(
                                 com.pixelro.nenoonkiosk.R.string.printer_horizontal_normal,
                             )
+
                         else ->
                             StringProvider.getString(
                                 com.pixelro.nenoonkiosk.R.string.printer_horizontal_problem,
@@ -606,6 +649,7 @@ object TestResultUtil {
                             StringProvider.getString(
                                 com.pixelro.nenoonkiosk.R.string.printer_vertical_normal,
                             )
+
                         else ->
                             StringProvider.getString(
                                 com.pixelro.nenoonkiosk.R.string.printer_vertical_problem,
@@ -739,7 +783,8 @@ object TestResultUtil {
                 paint.textAlign = Paint.Align.LEFT
 
                 canvas.drawText(
-                    StringProvider.getString(com.pixelro.nenoonkiosk.R.string.test_result_my_result) + ": " + testResult.countActiveScore().toString(),
+                    StringProvider.getString(com.pixelro.nenoonkiosk.R.string.test_result_my_result) + ": " + testResult.countActiveScore()
+                        .toString(),
                     20f,
                     baseline + 150f,
                     paint,

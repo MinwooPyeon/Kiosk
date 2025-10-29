@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation3.runtime.NavBackStack
 import com.harang.data.model.dto.User
 import com.pixelro.nenoonkiosk.core.constants.DebugConstants
@@ -37,7 +38,8 @@ import com.pixelro.nenoonkiosk.feature.termsofservice.signup.SignUpTermsOfServic
 @OptIn(UnstableApi::class)
 @Composable
 fun NenoonRouteHost(
-    navBackStack: NavBackStack
+    navBackStack: NavBackStack,
+    exoPlayer: ExoPlayer,
 ) {
     val currentRoute = navBackStack.lastOrNull()
 
@@ -49,6 +51,7 @@ fun NenoonRouteHost(
         // Base Routes
         is Route.Splash -> SplashRoute()
         is Route.ScreenSaver -> ScreenSaverRoute(
+            exoPlayer = exoPlayer,
             isSignedIn = isSignedIn
         )
 

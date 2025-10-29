@@ -1,50 +1,44 @@
 package com.pixelro.nenoonkiosk.feature.screensaver
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
+import org.orbitmvi.orbit.compose.collectAsState
 
+@UnstableApi
 @Composable
 fun ScreenSaverRoute(
     exoPlayer: ExoPlayer,
     isSignedIn: Boolean,
-    initializeTestDoneStatus: () -> Unit,
-    screenSaverViewModel: ScreenSaverViewModel = hiltViewModel(),
+    viewModel: ScreenSaverViewModel = hiltViewModel()
 ) {
-    val localContext = LocalContext.current
-    val sharedPreferences = remember {
-        localContext.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE)
-    }
-    val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
+    val state = viewModel.collectAsState().value
     val systemUiController = rememberSystemUiController()
 
-    LaunchedEffect(true) {
-        screenSaverViewModel.setMediaItem(
-            isSignedIn = isSignedIn,
-            exoPlayer = exoPlayer,
-        )
-        initializeTestDoneStatus()
+    LaunchedEffect(Unit) {
+        viewModel.setMediaItem(isSignedIn, exoPlayer)
     }
 
-    DisposableEffect(true) {
+    DisposableEffect(Unit) {
         systemUiController.systemBarsDarkContentEnabled = false
-        exoPlayer.play()
+        viewModel.playVideo(exoPlayer)
+
         onDispose {
             systemUiController.systemBarsDarkContentEnabled = true
-            exoPlayer.pause()
-            exoPlayer.clearVideoSurface()
+            viewModel.pauseVideo(exoPlayer)
         }
     }
 
     ScreenSaverScreen(
-        exoPlayer = exoPlayer,
-        savedLanguage = savedLanguage,
+        state = ScreenSaverUiState(
+            isVideoReady = state.isVideoReady,
+            videoUri = "",
+            language = state.language
+        ),
+        exoPlayer = exoPlayer
     )
 }

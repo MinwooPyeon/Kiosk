@@ -29,6 +29,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation3.runtime.rememberNavBackStack
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
@@ -47,6 +49,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var dpm: DevicePolicyManager
     private lateinit var adminComponentName: ComponentName
+    private lateinit var exoPlayer: ExoPlayer
 
     private var tapCount = 0
     private var lastTapTime: Long = 0
@@ -99,6 +102,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        exoPlayer = ExoPlayer.Builder(this).build().apply {
+            repeatMode = Player.REPEAT_MODE_ONE
+            volume = 0f
+        }
+
         dpm = getSystemService(DEVICE_POLICY_SERVICE) as DevicePolicyManager
         adminComponentName = ComponentName(this, NenoonDeviceAdminReceiver::class.java)
 
@@ -143,37 +151,13 @@ class MainActivity : ComponentActivity() {
                     systemUiController.setStatusBarColor(color = Color(0x00000000))
                     systemUiController.isNavigationBarVisible = false
 
-                    val navBackStack = rememberNavBackStack<Route>(
-                        Route.Splash
-                    )
+                    val navBackStack = rememberNavBackStack<Route>(Route.Splash)
                     LaunchedNavigator(navBackStack = navBackStack)
 
                     NenoonRouteHost(
-                        navBackStack = navBackStack
+                        navBackStack = navBackStack,
+                        exoPlayer = exoPlayer
                     )
-
-//                    if (showPasswordDialog) {
-//                        PasswordDialog(
-//                            onDismiss = { showPasswordDialog = false },
-//                            onPasswordEntered = { password ->
-//                                if (password == ADMIN_PASSWORD) {
-//                                    Toast.makeText(
-//                                        this@MainActivity,
-//                                        "Password correct! Shutting down...",
-//                                        Toast.LENGTH_SHORT
-//                                    ).show()
-//                                    showPasswordDialog = false
-//                                    Process.killProcess(Process.myPid())
-//                                } else {
-//                                    Toast.makeText(
-//                                        this@MainActivity,
-//                                        "Incorrect password",
-//                                        Toast.LENGTH_SHORT
-//                                    ).show()
-//                                }
-//                            }
-//                        )
-//                    }
                 }
             }
         }
@@ -260,6 +244,7 @@ class MainActivity : ComponentActivity() {
         TTS.tts.stop()
         TTS.destroyTTS()
         PrinterManager.disconnectPrinter()
+        exoPlayer.release()
         super.onDestroy()
     }
 

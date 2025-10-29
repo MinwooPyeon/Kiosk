@@ -21,7 +21,7 @@ import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.bitmapToFile
 import com.pixelro.nenoonkiosk.core.util.qr.QRCodeGenerator
-import com.pixelro.nenoonkiosk.feature.inspection.result.TestResultUtil
+import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.TestResultUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -132,7 +132,8 @@ class SignUpViewModel @Inject constructor(
 
                 if (isFaceEnrolled) {
                     tempFaceEmbedding?.let { embedding ->
-                        val registeredFaces = SharedPreferencesManager.getRegisteredFaceEmbeddings().toMutableMap()
+                        val registeredFaces =
+                            SharedPreferencesManager.getRegisteredFaceEmbeddings().toMutableMap()
                         registeredFaces[state.id] = embedding
                         SharedPreferencesManager.putRegisteredFaceEmbeddings(registeredFaces)
                     }

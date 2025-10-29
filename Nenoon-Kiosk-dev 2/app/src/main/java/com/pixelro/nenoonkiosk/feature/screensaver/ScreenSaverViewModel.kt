@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.RawResourceDataSource
 import androidx.media3.exoplayer.ExoPlayer
@@ -24,58 +23,47 @@ class ScreenSaverViewModel @Inject constructor(
     application: Application,
     private val screenSaverRepository: ScreenSaverRepository,
     private val navigator: Navigator
-) : AndroidViewModel(application), ContainerHost<ScreenSaverState, ScreenSaverSideEffect> {
+) : AndroidViewModel(application), ContainerHost<ScreenSaverUiState, Nothing> {
 
-    override val container: Container<ScreenSaverState, ScreenSaverSideEffect> =
-        container(ScreenSaverState())
+    override val container: Container<ScreenSaverUiState, Nothing> =
+        container(ScreenSaverUiState())
 
-    val exoPlayer: ExoPlayer = ExoPlayer.Builder(application).build().apply {
-        repeatMode = Player.REPEAT_MODE_ONE
-        volume = 0f
+    init {
+        loadLanguage()
     }
 
-    fun loadLanguage(context: Context) = intent {
-        val sharedPreferences = context.getSharedPreferences(
-            NavConstants.PREFERENCE_NAME,
-            Context.MODE_PRIVATE
-        )
-        val savedLanguage = sharedPreferences.getString("language", "ko") ?: "ko"
+    private fun loadLanguage() = intent {
+        val context = getApplication<Application>()
+        val sp = context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE)
+        val savedLanguage = sp.getString("language", "ko") ?: "ko"
 
         reduce {
             state.copy(language = savedLanguage)
         }
     }
 
-    fun loadVideoUri(isSignedIn: Boolean) = intent {
+    fun setMediaItem(isSignedIn: Boolean, exoPlayer: ExoPlayer) = intent {
         val videoUri = if (isSignedIn) {
             screenSaverRepository.getScreenSaverVideoURI()
         } else {
             RawResourceDataSource.buildRawResourceUri(R.raw.ad_sub).toString()
         }
 
-        reduce {
-            state.copy(
-                videoUri = videoUri,
-                isVideoReady = true
-            )
-        }
-
-        // ExoPlayer 설정
         exoPlayer.setMediaItem(MediaItem.fromUri(videoUri))
         exoPlayer.prepare()
+        exoPlayer.playWhenReady = true
+
+        reduce {
+            state.copy(isVideoReady = true)
+        }
     }
 
-    fun playVideo() {
-        exoPlayer.playWhenReady = true
+    fun playVideo(exoPlayer: ExoPlayer) {
         exoPlayer.play()
     }
 
-    fun stopVideo() {
-        exoPlayer.stop()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        exoPlayer.release()
+    fun pauseVideo(exoPlayer: ExoPlayer) {
+        exoPlayer.pause()
+        exoPlayer.clearVideoSurface()
     }
 }

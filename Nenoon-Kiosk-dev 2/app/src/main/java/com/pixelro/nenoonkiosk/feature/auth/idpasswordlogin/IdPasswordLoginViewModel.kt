@@ -109,7 +109,4 @@ class IdPasswordLoginViewModel @Inject constructor(
         navigator.navigate(SignInRoute.UserSignIn)
     }
 
-    fun clearError() = intent {
-        reduce { state.copy(errorMessage = null) }
-    }
 }

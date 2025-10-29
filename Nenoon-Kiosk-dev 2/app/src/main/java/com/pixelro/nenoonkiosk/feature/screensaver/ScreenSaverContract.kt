@@ -1,6 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.screensaver
 
-data class ScreenSaverState(
+data class ScreenSaverUiState(
     val isVideoReady: Boolean = false,
     val videoUri: String = "",
     val language: String = "ko"

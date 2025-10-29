@@ -1,7 +1,9 @@
 package com.pixelro.nenoonkiosk.feature.auth.locationlogin
 
+import androidx.annotation.OptIn
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.RawResourceDataSource
 import com.harang.data.repository.SignInRepository
 import com.pixelro.nenoonkiosk.R
@@ -57,6 +59,7 @@ class LocationLoginViewModel @Inject constructor(
         }
     }
 
+    @OptIn(UnstableApi::class)
     fun skipSignIn(updateIsSignedIn: (Boolean) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             signInRepository.updateLocationId(AppConstants.DEFAULT_LOCATION_ID)

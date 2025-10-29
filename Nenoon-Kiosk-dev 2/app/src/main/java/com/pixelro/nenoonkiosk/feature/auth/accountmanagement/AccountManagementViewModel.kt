@@ -21,9 +21,7 @@ import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.navigation.AdminRoute
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.navigation.Route
-import com.pixelro.nenoonkiosk.core.navigation.TestRoute
-import com.pixelro.nenoonkiosk.feature.auth.signup.SignUpRoute
-import com.pixelro.nenoonkiosk.feature.inspection.result.TestResultUtil
+import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.TestResultUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
