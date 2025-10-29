@@ -5,7 +5,7 @@ import com.pixelro.nenoonkiosk.feature.print.model.PrintStrings
 
 data class ResultPrintUiState(
     val loading: Boolean,
-    val summaries: List<ResultSummary>,  // 표시는 이걸로만
+    val summaries: List<ResultSummary>,
     val canPrint: Boolean,
     val title: String
 )

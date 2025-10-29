@@ -152,11 +152,6 @@ internal fun CategoryListScreen(
                 ),
                 Triple(R.string.eye_test, R.drawable.eye_test_icon, onEyeTestClick),
                 Triple(
-                    R.string.pulmonary_function_test,
-                    R.drawable.lung_age_icon,
-                    onPulmonaryTestClick
-                ),
-                Triple(
                     R.string.cross_eye_test,
                     R.drawable.cross_eye_icon,
                     onStrabismusTestClick
