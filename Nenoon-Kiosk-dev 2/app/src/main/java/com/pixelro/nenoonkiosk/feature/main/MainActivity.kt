@@ -18,7 +18,10 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import androidx.annotation.RequiresApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -175,11 +178,17 @@ class MainActivity : ComponentActivity() {
         val locale = SharedPreferencesManager.getString("language")
 
         if (locale.isBlank()) {
-            TTS.initTTS("en")
-            viewModel.updateLanguage("en")
+            TTS.initTTS("ko-KR") 
+            viewModel.updateLanguage("ko-KR")
         } else {
             TTS.initTTS(locale)
             viewModel.updateLanguage(locale)
+        }
+        
+        // TTS 초기화 후 한국어 설정
+        lifecycleScope.launch {
+            delay(1000) 
+            TTS.forceKoreanLanguage()
         }
         window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
