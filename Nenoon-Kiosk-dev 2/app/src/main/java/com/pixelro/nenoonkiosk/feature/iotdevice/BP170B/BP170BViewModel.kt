@@ -1,109 +1,96 @@
 package com.pixelro.nenoonkiosk.feature.iotdevice.BP170B
 
 import android.app.Application
-import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pixelro.nenoonkiosk.core.manager.BP170BManager
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.viewmodel.container
 
 @HiltViewModel
 class BP170BViewModel @Inject constructor(
     application: Application
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application),
+    ContainerHost<BP170BContract.State, BP170BContract.SideEffect> {
 
-    private val _uiState = MutableStateFlow(BP170BUiState())
-    val uiState: StateFlow<BP170BUiState> = _uiState.asStateFlow()
+    override val container =
+        container<BP170BContract.State, BP170BContract.SideEffect>(BP170BContract.State())
 
     init {
         BP170BManager.init(application)
 
-        // Manager의 상태를 Flow로 수집해 UiState로 통합 업데이트
         viewModelScope.launch {
             launch {
                 BP170BManager.connectionState.collect { newState ->
-                    _uiState.update { it.copy(connectionState = newState) }
+                    intent { reduce { state.copy(connectionState = newState) } }
                 }
             }
             launch {
                 BP170BManager.dataReceived.collect { data ->
-                    _uiState.update { it.copy(dataReceived = data) }
+                    intent { reduce { state.copy(dataReceived = data) } }
                 }
             }
             launch {
                 BP170BManager.availableDevices.collect { devices ->
-                    _uiState.update { it.copy(availableDevices = devices) }
+                    intent { reduce { state.copy(availableDevices = devices) } }
                 }
             }
             launch {
                 BP170BManager.isInitialized.collect { initialized ->
-                    _uiState.update { it.copy(isInitialized = initialized) }
+                    intent { reduce { state.copy(isInitialized = initialized) } }
                 }
             }
             launch {
                 BP170BManager.bloodPressureResult.collect { result ->
-                    _uiState.update { it.copy(bloodPressureResult = result) }
+                    intent { reduce { state.copy(bloodPressureResult = result) } }
                 }
             }
         }
     }
 
-    // ---- Bluetooth Actions ----
-    fun startScan() {
-        viewModelScope.launch {
-            BP170BManager.startScan()
-        }
-    }
+    fun onEvent(event: BP170BContract.Event) = intent {
+        when (event) {
+            BP170BContract.Event.StartScan -> {
+                reduce { state.copy(screenState = BP170BContract.ScreenState.Scanning) }
+                BP170BManager.startScan()
+            }
 
-    fun connectToDevice(device: BluetoothDevice) {
-        viewModelScope.launch {
-            BP170BManager.connect(device)
-        }
-    }
+            is BP170BContract.Event.SelectDevice -> {
+                reduce { state.copy(screenState = BP170BContract.ScreenState.Connecting) }
+                BP170BManager.connect(event.device)
+            }
 
-    fun disconnect() {
-        viewModelScope.launch {
-            BP170BManager.disconnect()
-        }
-    }
+            BP170BContract.Event.Retry -> {
+                reduce { state.copy(screenState = BP170BContract.ScreenState.Scanning) }
+                BP170BManager.startScan()
+            }
 
-    // ---- Device Commands ----
-    fun sendDeviceStatusCheckCommand() {
-        viewModelScope.launch {
-            BP170BManager.sendDeviceStatusCheckCommand()
-        }
-    }
+            BP170BContract.Event.Disconnect -> {
+                BP170BManager.disconnect()
+                reduce { state.copy(screenState = BP170BContract.ScreenState.Standby) }
+                postSideEffect(BP170BContract.SideEffect.ShowMessage("장치 연결을 해제합니다"))
+            }
 
-    fun sendErrorCodeCheckCommand() {
-        viewModelScope.launch {
-            BP170BManager.sendErrorCodeCheckCommand()
-        }
-    }
+            BP170BContract.Event.SendDeviceStatusCheck -> {
+                BP170BManager.sendDeviceStatusCheckCommand()
+            }
 
-    fun sendTimeSetupCommand(
-        year: Byte,
-        month: Byte,
-        day: Byte,
-        hour: Byte,
-        minute: Byte,
-        second: Byte,
-    ) {
-        viewModelScope.launch {
-            BP170BManager.sendTimeSetupCommand(year, month, day, hour, minute, second)
-        }
-    }
+            BP170BContract.Event.SendErrorCodeCheck -> {
+                BP170BManager.sendErrorCodeCheckCommand()
+            }
 
-    fun sendSerialNumberRequestCommand() {
-        viewModelScope.launch {
-            BP170BManager.sendSerialNumberRequestCommand()
+            is BP170BContract.Event.SendTimeSetup -> {
+                with(event) {
+                    BP170BManager.sendTimeSetupCommand(year, month, day, hour, minute, second)
+                }
+            }
+
+            BP170BContract.Event.SendSerialNumberRequest -> {
+                BP170BManager.sendSerialNumberRequestCommand()
+            }
         }
     }
 }

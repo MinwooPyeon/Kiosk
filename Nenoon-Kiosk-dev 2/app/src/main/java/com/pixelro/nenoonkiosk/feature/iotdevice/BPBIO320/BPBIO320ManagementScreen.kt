@@ -4,11 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,87 +14,38 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.inbody.bpbio.IB_SDKConst
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.*
-import kotlinx.coroutines.delay
-
-enum class BloodPressureConnectionScreenState {
-    Standby,
-    SearchingOrIdle,
-    Connecting,
-    AwaitingStart,
-    ConnectionError,
-}
+import kotlinx.coroutines.flow.collectLatest
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @SuppressLint("MissingPermission")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BPBIO320ManagementScreen(
     navController: NavHostController,
-    viewModel: BPBIO320ViewModel,
+    viewModel: BPBIO320ViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    var screenState by remember { mutableStateOf(BloodPressureConnectionScreenState.Standby) }
+    val state by viewModel.collectAsState()
 
-    // 연결 상태 감시
-    LaunchedEffect(uiState.connectionState, uiState.deviceName) {
-        when (uiState.connectionState) {
-            IB_SDKConst.IDLE, IB_SDKConst.DISCONNECTED -> {
-                if (screenState != BloodPressureConnectionScreenState.Standby) {
-                    screenState = BloodPressureConnectionScreenState.SearchingOrIdle
-                    delay(2000)
-                    viewModel.selectDevice()
-                    viewModel.connectDisconnect()
-                }
-            }
-
-            IB_SDKConst.CONNECTING -> {
-                screenState = BloodPressureConnectionScreenState.Connecting
-            }
-
-            IB_SDKConst.CONNECTED -> {
-                screenState = BloodPressureConnectionScreenState.AwaitingStart
-            }
-
-            else -> {}
-        }
-    }
-
-    // 에러 감시
-    LaunchedEffect(uiState.errorMessage) {
-        uiState.errorMessage?.let {
-            if (it.isNotBlank() && it != "null") {
-                Log.e("BPBIO320Screen", "Error: $it")
-                if (uiState.connectionState != IB_SDKConst.CONNECTED &&
-                    screenState != BloodPressureConnectionScreenState.Standby
-                ) {
-                    screenState = BloodPressureConnectionScreenState.ConnectionError
-                }
+    // ---- SideEffect 처리 ----
+    viewModel.collectSideEffect { effect ->
+        when (effect) {
+            is BPBIO320Contract.SideEffect.ShowMessage -> {
+                Log.d("BPBIO320", "SideEffect: ${effect.message}")
             }
         }
     }
 
     BPBIO320ManagementContent(
-        screenState = screenState,
-        onStart = {
-            viewModel.removeDevice()
-            viewModel.selectDevice()
-            viewModel.connectDisconnect()
-            screenState = BloodPressureConnectionScreenState.Connecting
-        },
-        onRetry = {
-            viewModel.removeDevice()
-            viewModel.selectDevice()
-            viewModel.connectDisconnect()
-            screenState = BloodPressureConnectionScreenState.Connecting
-        },
-        onDisconnect = {
-            viewModel.connectDisconnect()
-            screenState = BloodPressureConnectionScreenState.Standby
-        },
+        screenState = state.screenState,
+        onStart = { viewModel.onEvent(BPBIO320Contract.Event.Start) },
+        onRetry = { viewModel.onEvent(BPBIO320Contract.Event.Retry) },
+        onDisconnect = { viewModel.onEvent(BPBIO320Contract.Event.Disconnect) },
         onBack = {
             navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
         },
@@ -110,7 +57,7 @@ fun BPBIO320ManagementScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BPBIO320ManagementContent(
-    screenState: BloodPressureConnectionScreenState,
+    screenState: BPBIO320Contract.ScreenState,
     onStart: () -> Unit,
     onRetry: () -> Unit,
     onDisconnect: () -> Unit,
@@ -140,7 +87,7 @@ fun BPBIO320ManagementContent(
             verticalArrangement = Arrangement.Bottom,
         ) {
             when (screenState) {
-                BloodPressureConnectionScreenState.Standby -> {
+                BPBIO320Contract.ScreenState.Standby -> {
                     AccentedText(
                         prefix = stringResource(R.string.blood_pressure_monitor_standby_instruction1),
                         accent = stringResource(R.string.blood_pressure_monitor_standby_instruction2),
@@ -153,7 +100,7 @@ fun BPBIO320ManagementContent(
                     )
                 }
 
-                BloodPressureConnectionScreenState.SearchingOrIdle -> {
+                BPBIO320Contract.ScreenState.SearchingOrIdle -> {
                     ProgressIndicator()
                     PrimaryButton(
                         onClick = onRetry,
@@ -162,7 +109,7 @@ fun BPBIO320ManagementContent(
                     )
                 }
 
-                BloodPressureConnectionScreenState.Connecting -> {
+                BPBIO320Contract.ScreenState.Connecting -> {
                     ProgressIndicator()
                     StyledText(
                         text = stringResource(R.string.blood_pressure_monitor_connecting),
@@ -170,7 +117,7 @@ fun BPBIO320ManagementContent(
                     )
                 }
 
-                BloodPressureConnectionScreenState.AwaitingStart -> {
+                BPBIO320Contract.ScreenState.AwaitingStart -> {
                     StyledText(
                         text = stringResource(R.string.blood_pressure_monitor_device_connected),
                     )
@@ -181,7 +128,7 @@ fun BPBIO320ManagementContent(
                     )
                 }
 
-                BloodPressureConnectionScreenState.ConnectionError -> {
+                BPBIO320Contract.ScreenState.ConnectionError -> {
                     StyledText(
                         text = stringResource(R.string.blood_pressure_monitor_connection_error),
                         style = TextStyle.Error,
@@ -202,11 +149,11 @@ fun BPBIO320ManagementContent(
     }
 }
 
-@Preview(showBackground = true, name = "BPBIO320Management Preview - Connected", apiLevel = 34, widthDp = 800, heightDp = 1280)
+@Preview(showBackground = true, name = "BPBIO320Management Preview", apiLevel = 34, widthDp = 800, heightDp = 1280)
 @Composable
 fun BPBIO320ManagementPreview() {
     BPBIO320ManagementContent(
-        screenState = BloodPressureConnectionScreenState.AwaitingStart,
+        screenState = BPBIO320Contract.ScreenState.AwaitingStart,
         onStart = {},
         onRetry = {},
         onDisconnect = {},

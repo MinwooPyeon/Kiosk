@@ -7,11 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,29 +31,28 @@ import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.manager.BP170BManager
 import com.pixelro.nenoonkiosk.core.ui.*
 import com.pixelro.nenoonkiosk.core.util.TTS
-
-enum class BP170BConnectionScreenState {
-    Standby,
-    Scanning,
-    DeviceSelection,
-    Connecting,
-    Connected,
-    ConnectionError,
-}
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @SuppressLint("MissingPermission")
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BP170BConnectionScreen(
     navController: NavHostController,
     viewModel: BP170BViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState() // ✅ 한 줄로 통합
-    var screenState by remember { mutableStateOf(BP170BConnectionScreenState.Standby) }
-
     val context = LocalContext.current
+    val state by viewModel.collectAsState()
 
-    // 초기 안내 음성
+    // SideEffect 처리 (TTS나 네비게이션)
+    viewModel.collectSideEffect { effect ->
+        when (effect) {
+            is BP170BContract.SideEffect.ShowMessage -> {
+                TTS.speechTTS(effect.message, TextToSpeech.QUEUE_ADD)
+            }
+        }
+    }
+
+    // 초기 음성 안내
     LaunchedEffect(Unit) {
         TTS.speechTTS(
             context.getString(R.string.blood_pressure_monitor_initial_instruction),
@@ -65,94 +60,54 @@ fun BP170BConnectionScreen(
         )
     }
 
-    // 연결 상태 변화 감지 → 화면 상태 반영 + TTS
-    LaunchedEffect(uiState.connectionState) {
-        when (uiState.connectionState) {
-            BP170BManager.BluetoothConnectionState.DISCONNECTED -> {
-                if (screenState != BP170BConnectionScreenState.Standby &&
-                    screenState != BP170BConnectionScreenState.ConnectionError
-                ) {
-                    screenState = BP170BConnectionScreenState.ConnectionError
-                    TTS.speechTTS(
-                        context.getString(R.string.blood_pressure_monitor_disconnected),
-                        TextToSpeech.QUEUE_ADD
-                    )
-                }
-            }
+    // 데이터 수신 로그
+    LaunchedEffect(state.dataReceived) {
+        state.dataReceived?.let {
+            Log.d("BP170BScreen", "Data Received: $it")
+        }
+    }
 
-            BP170BManager.BluetoothConnectionState.CONNECTING -> {
-                screenState = BP170BConnectionScreenState.Connecting
-            }
-
+    // 연결 상태 변화 → 화면 상태 변경 + 음성 피드백
+    LaunchedEffect(state.connectionState) {
+        when (state.connectionState) {
             BP170BManager.BluetoothConnectionState.CONNECTED -> {
-                screenState = BP170BConnectionScreenState.Connected
                 TTS.speechTTS(
                     context.getString(R.string.blood_pressure_monitor_connected),
                     TextToSpeech.QUEUE_ADD
                 )
             }
 
+            BP170BManager.BluetoothConnectionState.DISCONNECTED -> {
+                TTS.speechTTS(
+                    context.getString(R.string.blood_pressure_monitor_disconnected),
+                    TextToSpeech.QUEUE_ADD
+                )
+            }
+
             is BP170BManager.BluetoothConnectionState.ERROR -> {
-                screenState = BP170BConnectionScreenState.ConnectionError
                 TTS.speechTTS(
                     context.getString(R.string.blood_pressure_monitor_connection_failed),
                     TextToSpeech.QUEUE_ADD
                 )
-                Log.e(
-                    "BP170BScreen",
-                    "Connection error: ${(uiState.connectionState as BP170BManager.BluetoothConnectionState.ERROR).message}"
-                )
             }
 
-            else -> {}
-        }
-    }
-
-    // 데이터 수신 로그
-    LaunchedEffect(uiState.dataReceived) {
-        uiState.dataReceived?.let {
-            Log.d("BP170BScreen", "Data Received: $it")
-        }
-    }
-
-    // 스캔 중 기기 발견 → 선택 화면으로 전환
-    LaunchedEffect(uiState.availableDevices) {
-        if (screenState == BP170BConnectionScreenState.Scanning &&
-            uiState.availableDevices.isNotEmpty()
-        ) {
-            screenState = BP170BConnectionScreenState.DeviceSelection
-            TTS.speechTTS(
-                context.getString(R.string.blood_pressure_monitor_select_device),
-                TextToSpeech.QUEUE_ADD
-            )
+            else -> Unit
         }
     }
 
     BP170BConnectionContent(
-        screenState = screenState,
-        availableDevices = uiState.availableDevices.map {
+        screenState = state.screenState,
+        availableDevices = state.availableDevices.map {
             Pair(it.name ?: "Unknown", it.address ?: "")
         },
-        onStartScan = {
-            viewModel.startScan()
-            screenState = BP170BConnectionScreenState.Scanning
-        },
-        onRetry = {
-            viewModel.startScan()
-            screenState = BP170BConnectionScreenState.Scanning
-        },
+        onStartScan = { viewModel.onEvent(BP170BContract.Event.StartScan) },
+        onRetry = { viewModel.onEvent(BP170BContract.Event.Retry) },
         onSelectDevice = { (_, address) ->
-            val device = uiState.availableDevices.find { it.address == address }
-            if (device != null) {
-                viewModel.connectToDevice(device)
-                screenState = BP170BConnectionScreenState.Connecting
-            }
+            val device = state.availableDevices.find { it.address == address }
+            if (device != null)
+                viewModel.onEvent(BP170BContract.Event.SelectDevice(device))
         },
-        onDisconnect = {
-            viewModel.disconnect()
-            screenState = BP170BConnectionScreenState.Standby
-            TTS.speechTTS("장치 연결을 해제합니다.", TextToSpeech.QUEUE_ADD)
-        },
+        onDisconnect = { viewModel.onEvent(BP170BContract.Event.Disconnect) },
         onBack = {
             TTS.tts.stop()
             navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
@@ -163,7 +118,7 @@ fun BP170BConnectionScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BP170BConnectionContent(
-    screenState: BP170BConnectionScreenState,
+    screenState: BP170BContract.ScreenState,
     availableDevices: List<Pair<String, String>>,
     onStartScan: () -> Unit,
     onRetry: () -> Unit,
@@ -196,7 +151,7 @@ fun BP170BConnectionContent(
             verticalArrangement = Arrangement.Bottom,
         ) {
             when (screenState) {
-                BP170BConnectionScreenState.Standby -> {
+                BP170BContract.ScreenState.Standby -> {
                     AccentedText(
                         prefix = stringResource(R.string.blood_pressure_monitor_standby_instruction1),
                         accent = stringResource(R.string.blood_pressure_monitor_standby_instruction2),
@@ -209,7 +164,7 @@ fun BP170BConnectionContent(
                     )
                 }
 
-                BP170BConnectionScreenState.Scanning -> {
+                BP170BContract.ScreenState.Scanning -> {
                     ProgressIndicator()
                     PrimaryButton(
                         onClick = onRetry,
@@ -218,7 +173,7 @@ fun BP170BConnectionContent(
                     )
                 }
 
-                BP170BConnectionScreenState.DeviceSelection -> {
+                BP170BContract.ScreenState.DeviceSelection -> {
                     StyledText(
                         text = stringResource(R.string.blood_pressure_monitor_select_device),
                         style = TextStyle.Message,
@@ -250,11 +205,11 @@ fun BP170BConnectionContent(
                     )
                 }
 
-                BP170BConnectionScreenState.Connecting -> {
+                BP170BContract.ScreenState.Connecting -> {
                     ProgressIndicator()
                 }
 
-                BP170BConnectionScreenState.Connected -> {
+                BP170BContract.ScreenState.Connected -> {
                     StyledText(text = stringResource(R.string.blood_pressure_monitor_device_connected))
                     PrimaryButton(
                         onClick = onDisconnect,
@@ -263,7 +218,7 @@ fun BP170BConnectionContent(
                     )
                 }
 
-                BP170BConnectionScreenState.ConnectionError -> {
+                BP170BContract.ScreenState.ConnectionError -> {
                     StyledText(
                         text = stringResource(R.string.blood_pressure_monitor_connection_failed),
                         style = TextStyle.Error,
@@ -288,7 +243,7 @@ fun BP170BConnectionContent(
 @Composable
 fun BP170BConnectionPreview() {
     BP170BConnectionContent(
-        screenState = BP170BConnectionScreenState.DeviceSelection,
+        screenState = BP170BContract.ScreenState.DeviceSelection,
         availableDevices = listOf(
             "BP170B_01" to "00:11:22:33:44:55",
             "BP170B_02" to "66:77:88:99:AA:BB"
