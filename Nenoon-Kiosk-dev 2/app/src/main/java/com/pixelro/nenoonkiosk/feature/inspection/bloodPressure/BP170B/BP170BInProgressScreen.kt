@@ -64,92 +64,82 @@ fun BP170BInProgressScreen(
         errorMessage = null
     }
 
-    // Effect to observe dataReceived for general status updates
-    LaunchedEffect(dataReceived) {
+    // Timeout handling
+    LaunchedEffect(isMeasurementInProgress) {
+        if (isMeasurementInProgress) {
+            kotlinx.coroutines.delay(120000) // 2 minutes timeout
+            if (isMeasurementInProgress && bloodPressureResult == null) {
+                Log.e("BP170BInProgress", "Measurement timeout - no result received after 2 minutes")
+                errorMessage = "측정 시간이 초과되었습니다. 다시 시도해주세요."
+                navController.navigate(BloodPressureTestScreen.Error.name) {
+                    popUpTo(BloodPressureTestScreen.Start.name) { inclusive = false }
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(dataReceived, bloodPressureResult, connectionState) {
+        Log.d(
+            "BP170BInProgress",
+            "State Update - DataReceived: $dataReceived, Result: ${bloodPressureResult != null}, Connection: $connectionState",
+        )
+
+        if (connectionState is BP170BManager.BluetoothConnectionState.ERROR) {
+            Log.e("BP170BInProgress", "Connection error: ${(connectionState as BP170BManager.BluetoothConnectionState.ERROR).message}")
+            navController.navigate(BloodPressureTestScreen.Error.name) {
+                popUpTo(BloodPressureTestScreen.Start.name) { inclusive = false }
+            }
+            return@LaunchedEffect
+        }
+
+        // Handle blood pressure result
+        bloodPressureResult?.let { result ->
+            Log.d(
+                "BP170BInProgress",
+                "Blood pressure result received: SBP=${result.systolic}, DBP=${result.diastolic}, Pulse=${result.pulseRate}",
+            )
+            if (isResultValid(result)) {
+                currentMeasurementScreenState = BpMeasurementScreenState.Completed
+                isMeasurementInProgress = false
+                TTS.speechTTS(StringProvider.getString(R.string.bp170b_measurement_completed_tts), TextToSpeech.QUEUE_ADD)
+            } else {
+                Log.e("BP170BInProgress", "Invalid blood pressure result. Navigating to error screen.")
+                navController.navigate(BloodPressureTestScreen.Error.name) {
+                    popUpTo(BloodPressureTestScreen.Start.name) { inclusive = false }
+                }
+            }
+            return@LaunchedEffect
+        }
+
+        // Handle status messages
         dataReceived?.let { data ->
             Log.d("BP170BInProgress", "Data received (raw status): $data")
             when {
                 data.contains("Status: During measurement", ignoreCase = true) -> {
                     isMeasurementInProgress = true
                     errorMessage = null
+                    currentMeasurementScreenState = BpMeasurementScreenState.Measuring
                 }
                 data.contains("Error Code:", ignoreCase = true) -> {
                     isMeasurementInProgress = false
                     errorMessage = data
+                    Log.e("BP170BInProgress", "Device error: $data")
+                    navController.navigate(BloodPressureTestScreen.Error.name) {
+                        popUpTo(BloodPressureTestScreen.Start.name) { inclusive = false }
+                    }
                 }
-                // "Status: Measurement complete" is now handled by bloodPressureResult != null
+                data.contains("Checksum mismatch", ignoreCase = true) -> {
+                    Log.w("BP170BInProgress", "Checksum mismatch detected: $data")
+                    // Don't change state for checksum mismatch, just log it
+                }
                 else -> {
                     // Other status messages, don't change core measurement state
+                    Log.d("BP170BInProgress", "Other status message: $data")
                 }
             }
         }
     }
 
-    // Effect to observe bloodPressureResult for measurement completion
-    LaunchedEffect(bloodPressureResult) {
-        bloodPressureResult?.let { result ->
-            Log.d(
-                "BP170BInProgress",
-                "Blood pressure result received: SBP=${result.systolic}, DBP=${result.diastolic}, Pulse=${result.pulseRate}",
-            )
-            if (isResultValid(result) && errorMessage.isNullOrBlank() && connectionState !is BP170BManager.BluetoothConnectionState.ERROR) {
-                currentMeasurementScreenState = BpMeasurementScreenState.Completed
-                isMeasurementInProgress = false // Ensure measurement state is off
-                TTS.speechTTS(StringProvider.getString(R.string.bp170b_measurement_completed_tts), TextToSpeech.QUEUE_ADD)
-            } else {
-                Log.e("BP170BInProgress", "Invalid blood pressure result or existing error. Navigating to error screen.")
-                navController.navigate(BloodPressureTestScreen.Error.name) {
-                    popUpTo(BloodPressureTestScreen.Start.name) { inclusive = false }
-                }
-            }
-        }
-    }
-
-    // Main logic for screen state transitions based on all observed states
-    LaunchedEffect(isMeasurementInProgress, errorMessage, connectionState, bloodPressureResult) {
-        Log.d(
-            "BP170BInProgress",
-            "State Update - InProgress: $isMeasurementInProgress, Result: ${bloodPressureResult != null}, Error: $errorMessage, Connection: $connectionState",
-        )
-
-        if (bloodPressureResult != null) {
-            // Measurement is complete if we have a valid result
-            currentMeasurementScreenState = BpMeasurementScreenState.Completed
-            isMeasurementInProgress = false // Explicitly set to false
-        } else if (isMeasurementInProgress) {
-            // If the manager reports "During measurement" status
-            currentMeasurementScreenState = BpMeasurementScreenState.Measuring
-        } else if (errorMessage != null && errorMessage!!.isNotBlank()) {
-            // If an explicit error message is present
-            navController.navigate(BloodPressureTestScreen.Error.name) {
-                popUpTo(BloodPressureTestScreen.Start.name) { inclusive = false }
-            }
-        } else if (currentMeasurementScreenState == BpMeasurementScreenState.Measuring && bloodPressureResult == null) {
-            // If we were in Measuring state but no result arrived, and no explicit error, it means measurement failed or stopped unexpectedly.
-            Log.e("BP170BInProgress", "Measurement unexpectedly stopped or failed (no result received).")
-            navController.navigate(BloodPressureTestScreen.Error.name) {
-                popUpTo(BloodPressureTestScreen.Start.name) { inclusive = false }
-            }
-            TTS.speechTTS(StringProvider.getString(R.string.bp170b_measurement_error_tts), TextToSpeech.QUEUE_ADD)
-        } else {
-            // Default to instructions if no other state is active
-            currentMeasurementScreenState = BpMeasurementScreenState.Measuring
-        }
-    }
-
-    // Effect to handle connection loss/error
-    LaunchedEffect(connectionState) {
-        if (connectionState == BP170BManager.BluetoothConnectionState.DISCONNECTED || connectionState is BP170BManager.BluetoothConnectionState.ERROR) {
-            if (currentMeasurementScreenState == BpMeasurementScreenState.Measuring || currentMeasurementScreenState == BpMeasurementScreenState.Measuring) {
-                isMeasurementInProgress = false
-                errorMessage = (connectionState as? BP170BManager.BluetoothConnectionState.ERROR)?.message
-                TTS.speechTTS(StringProvider.getString(R.string.bp170b_connection_lost_tts), TextToSpeech.QUEUE_ADD)
-                navController.navigate(BloodPressureTestScreen.Error.name) {
-                    popUpTo(BloodPressureTestScreen.Start.name) { inclusive = false }
-                }
-            }
-        }
-    }
 
     Column(
         modifier =
