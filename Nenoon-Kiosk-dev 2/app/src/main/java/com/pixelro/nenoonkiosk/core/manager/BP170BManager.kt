@@ -271,18 +271,57 @@ object BP170BManager {
                 receivedBytes: ByteArray?,
                 source: String = "unknown",
             ): String? {
+                if (receivedBytes == null) {
+                    Log.w(TAG, "Received $source value is null.")
+                    return null
+                }
+                
+                // Handle very short data (4 bytes) - might be direct measurement result
+                if (receivedBytes.size == 4) {
+                    Log.d(TAG, "Received short data (4 bytes): ${receivedBytes.joinToString(" ") { String.format("%02X", it) }}")
+                    // Try to parse as direct measurement result: systolic, diastolic, pulse, checksum
+                    val systolic = receivedBytes[0].toUByte().toInt()
+                    val diastolic = receivedBytes[1].toUByte().toInt()
+                    val pulse = receivedBytes[2].toUByte().toInt()
+                    val checksum = receivedBytes[3].toUByte().toInt()
+                    
+                    // Simple validation
+                    if (systolic in 30..300 && diastolic in 30..300 && pulse in 30..240) {
+                        _bloodPressureResult.value = BloodPressureTestResult(systolic, diastolic, pulse)
+                        Log.d(TAG, "Parsed short data as BP result: SBP=$systolic, DBP=$diastolic, Pulse=$pulse")
+                        return "Short Data BP Result: SBP=$systolic, DBP=$diastolic, Pulse=$pulse"
+                    } else {
+                        Log.w(TAG, "Short data values out of range: SBP=$systolic, DBP=$diastolic, Pulse=$pulse")
+                        return "Short Data: Invalid values. SBP=$systolic, DBP=$diastolic, Pulse=$pulse"
+                    }
+                }
+                
                 // Minimum frame size: STX(1) + ID(1) + BOD0(1) + BOD1(1) + CMD0(1) + CMD1(1) + CheckSum(1) + ETX(1) = 8 bytes.
-                if (receivedBytes == null || receivedBytes.size < 8) {
-                    Log.w(TAG, "Received $source value is null or too short.")
+                if (receivedBytes.size < 8) {
+                    Log.w(TAG, "Received $source value is too short: ${receivedBytes.size} bytes. Raw: ${receivedBytes.joinToString(" ") { String.format("%02X", it) }}")
                     return null
                 }
 
-                // Validate STX (0x02), ID ('B' or 0x42), and ETX (0x03).
+                // Validate STX (0x02) and ID ('B' or 0x42)
                 if (receivedBytes[0].toUByte().toInt() != 0x02 ||
-                    receivedBytes[1].toUByte().toInt() != 0x42 ||
-                    receivedBytes[receivedBytes.size - 1].toUByte().toInt() != 0x03
+                    receivedBytes[1].toUByte().toInt() != 0x42
                 ) {
-                    Log.w(TAG, "Malformed BP170 response ($source): Missing STX, ID, or ETX.")
+                    Log.w(TAG, "Malformed BP170 response ($source): Missing STX or ID.")
+                    return null
+                }
+                
+                // Check for ETX (0x03) - be more flexible with position
+                val etxPosition = receivedBytes.indexOfLast { it.toUByte().toInt() == 0x03 }
+                if (etxPosition == -1) {
+                    Log.w(TAG, "Malformed BP170 response ($source): Missing ETX. Raw: ${receivedBytes.joinToString(" ") { String.format("%02X", it) }}")
+                    // Try to parse anyway for 0xBA commands which might have different ETX
+                    if (receivedBytes.size >= 6) {
+                        val cmd0 = receivedBytes[4].toUByte().toInt()
+                        if (cmd0 == 0xBA) {
+                            Log.d(TAG, "Attempting to parse 0xBA command without proper ETX")
+                            return parseBACommand(receivedBytes, source)
+                        }
+                    }
                     return null
                 }
 
@@ -307,10 +346,9 @@ object BP170BManager {
                         TAG,
                         "Checksum mismatch for $source. Expected: 0x${expectedChecksum.toString(
                             16,
-                        ).uppercase()}, Received: 0x${receivedChecksum.toString(16).uppercase()}",
+                        ).uppercase()}, Received: 0x${receivedChecksum.toString(16).uppercase()}. Skipping data parsing.",
                     )
-                    // Decide if you want to proceed with parsing corrupted data or return null.
-                    // For now, we log and proceed.
+                    return "Checksum mismatch - data may be corrupted"
                 }
 
                 // Attempt to decode data bytes as UTF-8 string, trim to remove padding nulls/whitespace.
@@ -331,10 +369,16 @@ object BP170BManager {
                             0x02 -> "Status: Checking data stored in M1 (second check)"
                             0x03 -> "Status: Checking last measured data"
                             0x04 -> "Status: During measurement" // This is the status for "during measurement"
-                            0x05 -> {
-                                "Status: Measurement complete"
-                            }
-                            else -> "Status: Unknown (CMD0: 0xB0, Data: ${dataBytes.firstOrNull()?.toUByte()?.toInt()?.toString(16)?.uppercase()})"
+                            0x05 -> "Status: Measurement complete"
+                            0x0E -> "Status: Device ready" 
+                            0x0F -> "Status: Standby mode" 
+                            0x10 -> "Status: Error state"
+                            0x11 -> "Status: Calibration mode"
+                            0x12 -> "Status: Test mode"
+                            0x13 -> "Status: Maintenance mode"
+                            0x14 -> "Status: Low battery"
+                            0x15 -> "Status: High battery"
+                            else -> "Status: Unknown (0x${dataBytes.firstOrNull()?.toUByte()?.toInt()?.toString(16)?.uppercase()})"
                         } + if (responseDataString.isNotEmpty()) ", Raw Data: $responseDataString" else ""
                     }
                     0xB1 -> { // Response for APP Device Error Code Check (command 0xC1)
@@ -347,18 +391,31 @@ object BP170BManager {
                         // Data structure for 0xB4: Year(1), Month(1), Day(1), Hour(1), Minute(1), Second(1)
                         // Systolic BP (2 bytes), Diastolic BP (2 bytes), Pulse Rate (2 bytes), Measurement Result Code (1 byte)
                         if (dataBytes.size >= 13) { // 6 bytes for time + 2*3 bytes for BP/Pulse + 1 byte for result code = 13 bytes
-                            val systolic = (dataBytes[6].toUByte().toInt() shl 8) or dataBytes[7].toUByte().toInt()
-                            val diastolic = (dataBytes[8].toUByte().toInt() shl 8) or dataBytes[9].toUByte().toInt()
-                            val pulseRate = (dataBytes[10].toUByte().toInt() shl 8) or dataBytes[11].toUByte().toInt()
+                            val systolicLE = dataBytes[6].toUByte().toInt() or (dataBytes[7].toUByte().toInt() shl 8)
+                            val diastolicLE = dataBytes[8].toUByte().toInt() or (dataBytes[9].toUByte().toInt() shl 8)
+                            val pulseRateLE = dataBytes[10].toUByte().toInt() or (dataBytes[11].toUByte().toInt() shl 8)
+                            
+                            val systolicBE = (dataBytes[6].toUByte().toInt() shl 8) or dataBytes[7].toUByte().toInt()
+                            val diastolicBE = (dataBytes[8].toUByte().toInt() shl 8) or dataBytes[9].toUByte().toInt()
+                            val pulseRateBE = (dataBytes[10].toUByte().toInt() shl 8) or dataBytes[11].toUByte().toInt()
+                            
                             val measurementResultCode = dataBytes[12].toUByte().toInt()
 
-                            _bloodPressureResult.value =
-                                BloodPressureTestResult(systolic, diastolic, pulseRate)
-                            Log.d(
-                                TAG,
-                                "Parsed BP Result from 0xB4: SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate, ResultCode=$measurementResultCode",
-                            )
-                            "Measurement Data (0xB4): SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate, Result Code: $measurementResultCode"
+                            val systolic = if (systolicLE in 30..300) systolicLE else systolicBE
+                            val diastolic = if (diastolicLE in 30..300) diastolicLE else diastolicBE
+                            val pulseRate = if (pulseRateLE in 30..240) pulseRateLE else pulseRateBE
+
+                            if (systolic in 30..300 && diastolic in 30..300 && pulseRate in 30..240) {
+                                _bloodPressureResult.value = BloodPressureTestResult(systolic, diastolic, pulseRate)
+                                Log.d(
+                                    TAG,
+                                    "Parsed BP Result from 0xB4: SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate, ResultCode=$measurementResultCode",
+                                )
+                                "Measurement Data (0xB4): SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate, Result Code: $measurementResultCode"
+                            } else {
+                                Log.w(TAG, "0xB4 parsed values out of range: SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate")
+                                "Measurement Data (0xB4): Invalid values. SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate, Result Code: $measurementResultCode"
+                            }
                         } else {
                             Log.w(TAG, "0xB4 response data too short: ${dataBytes.size} bytes. Expected at least 13.")
                             "Measurement Data (0xB4): Insufficient data. Raw: ${dataBytes.joinToString(" ") { String.format("%02X", it) }}"
@@ -380,17 +437,25 @@ object BP170BManager {
                             val diastolic = diastolicRaw - 10
                             val pulseRate = pulseRateRaw - 10
 
-                            _bloodPressureResult.value =
-                                BloodPressureTestResult(systolic, diastolic, pulseRate)
-                            Log.d(
-                                TAG,
-                                "Parsed BP Result from 0xBA: SBP=$systolic (raw $systolicRaw), DBP=$diastolic (raw $diastolicRaw), Pulse=$pulseRate (raw $pulseRateRaw)",
-                            )
+                            if (systolic in 30..300 && diastolic in 30..300 && pulseRate in 30..240) {
+                                _bloodPressureResult.value = BloodPressureTestResult(systolic, diastolic, pulseRate)
+                                Log.d(
+                                    TAG,
+                                    "Parsed BP Result from 0xBA: SBP=$systolic (raw $systolicRaw), DBP=$diastolic (raw $diastolicRaw), Pulse=$pulseRate (raw $pulseRateRaw)",
+                                )
 
-                            managerScope.launch {
-                                _testCompletionTrigger.value = true // Set trigger to true to also send C4
+                                managerScope.launch {
+                                    _testCompletionTrigger.value = true // Set trigger to true to also send C4
+                                }
+                                "Test Over (CMD0: 0xBA), Data Decoded: SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate. Also triggering C4 command."
+                            } else {
+                                Log.w(TAG, "0xBA parsed values out of range: SBP=$systolic (raw $systolicRaw), DBP=$diastolic (raw $diastolicRaw), Pulse=$pulseRate (raw $pulseRateRaw)")
+                                // Still trigger C4 command to get more reliable data
+                                managerScope.launch {
+                                    _testCompletionTrigger.value = true
+                                }
+                                "Test Over (CMD0: 0xBA), Data: Invalid values. SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate. Triggering C4 command."
                             }
-                            "Test Over (CMD0: 0xBA), Data Decoded: SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate. Also triggering C4 command."
                         } else {
                             Log.w(TAG, "0xBA response data too short for BP results: ${dataBytes.size} bytes. Expected at least 9.")
                             managerScope.launch {
@@ -408,6 +473,40 @@ object BP170BManager {
                         ).uppercase()}, CMD1: 0x${cmd1.toString(16).uppercase()}), Data: $responseDataString"
                     }
                 }
+            }
+            
+            private fun parseBACommand(receivedBytes: ByteArray, source: String): String? {
+                Log.d(TAG, "Parsing 0xBA command: ${receivedBytes.joinToString(" ") { String.format("%02X", it) }}")
+                
+                if (receivedBytes.size >= 9) {
+                    // Try to find blood pressure data in the byte array
+                    // Look for reasonable values in different positions
+                    for (i in 6 until receivedBytes.size - 1) {
+                        val systolicRaw = receivedBytes[i].toUByte().toInt()
+                        val diastolicRaw = receivedBytes[i + 1].toUByte().toInt()
+                        val pulseRaw = receivedBytes[i + 2].toUByte().toInt()
+                        
+                        val systolic = systolicRaw - 10
+                        val diastolic = diastolicRaw - 10
+                        val pulse = pulseRaw - 10
+                        
+                        if (systolic in 30..300 && diastolic in 30..300 && pulse in 30..240) {
+                            _bloodPressureResult.value = BloodPressureTestResult(systolic, diastolic, pulse)
+                            Log.d(TAG, "Parsed 0xBA BP Result: SBP=$systolic (raw $systolicRaw), DBP=$diastolic (raw $diastolicRaw), Pulse=$pulse (raw $pulseRaw)")
+                            
+                            managerScope.launch {
+                                _testCompletionTrigger.value = true
+                            }
+                            return "0xBA BP Result: SBP=$systolic, DBP=$diastolic, Pulse=$pulse"
+                        }
+                    }
+                }
+                
+                // If no valid BP data found, still trigger C4 command
+                managerScope.launch {
+                    _testCompletionTrigger.value = true
+                }
+                return "0xBA command received but no valid BP data found"
             }
 
             override fun onCharacteristicRead(
@@ -437,8 +536,11 @@ object BP170BManager {
             ) {
                 super.onCharacteristicChanged(gatt, characteristic)
                 managerScope.launch {
-                    val data = parseBP170Data(characteristic.value, "change")
+                    val rawBytes = characteristic.value
+                    Log.d(TAG, "Characteristic changed - Raw bytes: ${rawBytes?.joinToString(" ") { String.format("%02X", it) }}")
+                    val data = parseBP170Data(rawBytes, "change")
                     _dataReceived.value = data
+                    Log.d(TAG, "Parsed data: $data")
                 }
             }
 
