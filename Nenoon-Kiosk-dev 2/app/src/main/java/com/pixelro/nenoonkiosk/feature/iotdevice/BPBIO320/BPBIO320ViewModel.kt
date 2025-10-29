@@ -16,12 +16,12 @@ import org.orbitmvi.orbit.viewmodel.container
 class BPBIO320ViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application),
-    ContainerHost<BPBIO320Contract.State, BPBIO320Contract.SideEffect> {
+    ContainerHost<State, SideEffect> {
 
     private val manager = BPBIO320Manager(application)
 
     override val container =
-        container<BPBIO320Contract.State, BPBIO320Contract.SideEffect>(BPBIO320Contract.State())
+        container<State, SideEffect>(State())
 
     init {
         initializeBluetooth()
@@ -46,7 +46,7 @@ class BPBIO320ViewModel @Inject constructor(
                         manager.batteryLevel
                     )
                 ) { values: Array<Any?> ->
-                    BPBIO320Contract.State(
+                    State(
                         connectionState = values[0] as Int,
                         deviceName = values[1] as String,
                         bloodPressureResult = values[2] as? BloodPressureTestResult,
@@ -63,40 +63,40 @@ class BPBIO320ViewModel @Inject constructor(
         }
     }
 
-    private fun resolveScreenState(connectionState: Int, errorMessage: String?): BPBIO320Contract.ScreenState {
+    private fun resolveScreenState(connectionState: Int, errorMessage: String?): ScreenState {
         return when (connectionState) {
-            com.inbody.bpbio.IB_SDKConst.CONNECTED -> BPBIO320Contract.ScreenState.AwaitingStart
-            com.inbody.bpbio.IB_SDKConst.CONNECTING -> BPBIO320Contract.ScreenState.Connecting
+            com.inbody.bpbio.IB_SDKConst.CONNECTED -> ScreenState.AwaitingStart
+            com.inbody.bpbio.IB_SDKConst.CONNECTING -> ScreenState.Connecting
             com.inbody.bpbio.IB_SDKConst.DISCONNECTED,
-            com.inbody.bpbio.IB_SDKConst.IDLE -> BPBIO320Contract.ScreenState.SearchingOrIdle
-            else -> if (!errorMessage.isNullOrBlank()) BPBIO320Contract.ScreenState.ConnectionError
-            else BPBIO320Contract.ScreenState.Standby
+            com.inbody.bpbio.IB_SDKConst.IDLE -> ScreenState.SearchingOrIdle
+            else -> if (!errorMessage.isNullOrBlank()) ScreenState.ConnectionError
+            else ScreenState.Standby
         }
     }
 
-    fun onEvent(event: BPBIO320Contract.Event) = intent {
+    fun onEvent(event: Event) = intent {
         when (event) {
-            BPBIO320Contract.Event.InitializeBluetooth -> manager.initBluetoothSDK()
-            BPBIO320Contract.Event.Start -> {
+            Event.InitializeBluetooth -> manager.initBluetoothSDK()
+            Event.Start -> {
                 manager.removeDevice()
                 manager.selectDevice()
                 manager.connectDisconnect()
-                reduce { state.copy(screenState = BPBIO320Contract.ScreenState.Connecting) }
+                reduce { state.copy(screenState = ScreenState.Connecting) }
             }
-            BPBIO320Contract.Event.Retry -> {
+            Event.Retry -> {
                 manager.removeDevice()
                 manager.selectDevice()
                 manager.connectDisconnect()
-                reduce { state.copy(screenState = BPBIO320Contract.ScreenState.Connecting) }
+                reduce { state.copy(screenState = ScreenState.Connecting) }
             }
-            BPBIO320Contract.Event.Disconnect -> {
+            Event.Disconnect -> {
                 manager.connectDisconnect()
-                reduce { state.copy(screenState = BPBIO320Contract.ScreenState.Standby) }
-                postSideEffect(BPBIO320Contract.SideEffect.ShowMessage("장치 연결을 해제합니다."))
+                reduce { state.copy(screenState = ScreenState.Standby) }
+                postSideEffect(SideEffect.ShowMessage("장치 연결을 해제합니다."))
             }
-            BPBIO320Contract.Event.RemoveDevice -> manager.removeDevice()
-            BPBIO320Contract.Event.SelectDevice -> manager.selectDevice()
-            BPBIO320Contract.Event.ConnectOrDisconnect -> manager.connectDisconnect()
+            Event.RemoveDevice -> manager.removeDevice()
+            Event.SelectDevice -> manager.selectDevice()
+            Event.ConnectOrDisconnect -> manager.connectDisconnect()
         }
     }
 }

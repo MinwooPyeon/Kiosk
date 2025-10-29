@@ -46,7 +46,7 @@ fun BP170BConnectionScreen(
     // SideEffect 처리 (TTS나 네비게이션)
     viewModel.collectSideEffect { effect ->
         when (effect) {
-            is BP170BContract.SideEffect.ShowMessage -> {
+            is SideEffect.ShowMessage -> {
                 TTS.speechTTS(effect.message, TextToSpeech.QUEUE_ADD)
             }
         }
@@ -100,14 +100,14 @@ fun BP170BConnectionScreen(
         availableDevices = state.availableDevices.map {
             Pair(it.name ?: "Unknown", it.address ?: "")
         },
-        onStartScan = { viewModel.onEvent(BP170BContract.Event.StartScan) },
-        onRetry = { viewModel.onEvent(BP170BContract.Event.Retry) },
+        onStartScan = { viewModel.onEvent(Event.StartScan) },
+        onRetry = { viewModel.onEvent(Event.Retry) },
         onSelectDevice = { (_, address) ->
             val device = state.availableDevices.find { it.address == address }
             if (device != null)
-                viewModel.onEvent(BP170BContract.Event.SelectDevice(device))
+                viewModel.onEvent(Event.SelectDevice(device))
         },
-        onDisconnect = { viewModel.onEvent(BP170BContract.Event.Disconnect) },
+        onDisconnect = { viewModel.onEvent(Event.Disconnect) },
         onBack = {
             TTS.tts.stop()
             navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
@@ -118,7 +118,7 @@ fun BP170BConnectionScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BP170BConnectionContent(
-    screenState: BP170BContract.ScreenState,
+    screenState: ScreenState,
     availableDevices: List<Pair<String, String>>,
     onStartScan: () -> Unit,
     onRetry: () -> Unit,
@@ -151,7 +151,7 @@ fun BP170BConnectionContent(
             verticalArrangement = Arrangement.Bottom,
         ) {
             when (screenState) {
-                BP170BContract.ScreenState.Standby -> {
+                ScreenState.Standby -> {
                     AccentedText(
                         prefix = stringResource(R.string.blood_pressure_monitor_standby_instruction1),
                         accent = stringResource(R.string.blood_pressure_monitor_standby_instruction2),
@@ -164,7 +164,7 @@ fun BP170BConnectionContent(
                     )
                 }
 
-                BP170BContract.ScreenState.Scanning -> {
+                ScreenState.Scanning -> {
                     ProgressIndicator()
                     PrimaryButton(
                         onClick = onRetry,
@@ -173,7 +173,7 @@ fun BP170BConnectionContent(
                     )
                 }
 
-                BP170BContract.ScreenState.DeviceSelection -> {
+                ScreenState.DeviceSelection -> {
                     StyledText(
                         text = stringResource(R.string.blood_pressure_monitor_select_device),
                         style = TextStyle.Message,
@@ -205,11 +205,11 @@ fun BP170BConnectionContent(
                     )
                 }
 
-                BP170BContract.ScreenState.Connecting -> {
+                ScreenState.Connecting -> {
                     ProgressIndicator()
                 }
 
-                BP170BContract.ScreenState.Connected -> {
+                ScreenState.Connected -> {
                     StyledText(text = stringResource(R.string.blood_pressure_monitor_device_connected))
                     PrimaryButton(
                         onClick = onDisconnect,
@@ -218,7 +218,7 @@ fun BP170BConnectionContent(
                     )
                 }
 
-                BP170BContract.ScreenState.ConnectionError -> {
+                ScreenState.ConnectionError -> {
                     StyledText(
                         text = stringResource(R.string.blood_pressure_monitor_connection_failed),
                         style = TextStyle.Error,
@@ -243,7 +243,7 @@ fun BP170BConnectionContent(
 @Composable
 fun BP170BConnectionPreview() {
     BP170BConnectionContent(
-        screenState = BP170BContract.ScreenState.DeviceSelection,
+        screenState = ScreenState.DeviceSelection,
         availableDevices = listOf(
             "BP170B_01" to "00:11:22:33:44:55",
             "BP170B_02" to "66:77:88:99:AA:BB"

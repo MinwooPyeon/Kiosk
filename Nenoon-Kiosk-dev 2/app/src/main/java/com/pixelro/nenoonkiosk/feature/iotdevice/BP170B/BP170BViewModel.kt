@@ -14,10 +14,10 @@ import org.orbitmvi.orbit.viewmodel.container
 class BP170BViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application),
-    ContainerHost<BP170BContract.State, BP170BContract.SideEffect> {
+    ContainerHost<State, SideEffect> {
 
     override val container =
-        container<BP170BContract.State, BP170BContract.SideEffect>(BP170BContract.State())
+        container<State, SideEffect>(State())
 
     init {
         BP170BManager.init(application)
@@ -51,44 +51,44 @@ class BP170BViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: BP170BContract.Event) = intent {
+    fun onEvent(event: Event) = intent {
         when (event) {
-            BP170BContract.Event.StartScan -> {
-                reduce { state.copy(screenState = BP170BContract.ScreenState.Scanning) }
+            Event.StartScan -> {
+                reduce { state.copy(screenState = ScreenState.Scanning) }
                 BP170BManager.startScan()
             }
 
-            is BP170BContract.Event.SelectDevice -> {
-                reduce { state.copy(screenState = BP170BContract.ScreenState.Connecting) }
+            is Event.SelectDevice -> {
+                reduce { state.copy(screenState = ScreenState.Connecting) }
                 BP170BManager.connect(event.device)
             }
 
-            BP170BContract.Event.Retry -> {
-                reduce { state.copy(screenState = BP170BContract.ScreenState.Scanning) }
+            Event.Retry -> {
+                reduce { state.copy(screenState = ScreenState.Scanning) }
                 BP170BManager.startScan()
             }
 
-            BP170BContract.Event.Disconnect -> {
+            Event.Disconnect -> {
                 BP170BManager.disconnect()
-                reduce { state.copy(screenState = BP170BContract.ScreenState.Standby) }
-                postSideEffect(BP170BContract.SideEffect.ShowMessage("장치 연결을 해제합니다"))
+                reduce { state.copy(screenState = ScreenState.Standby) }
+                postSideEffect(SideEffect.ShowMessage("장치 연결을 해제합니다"))
             }
 
-            BP170BContract.Event.SendDeviceStatusCheck -> {
+            Event.SendDeviceStatusCheck -> {
                 BP170BManager.sendDeviceStatusCheckCommand()
             }
 
-            BP170BContract.Event.SendErrorCodeCheck -> {
+            Event.SendErrorCodeCheck -> {
                 BP170BManager.sendErrorCodeCheckCommand()
             }
 
-            is BP170BContract.Event.SendTimeSetup -> {
+            is Event.SendTimeSetup -> {
                 with(event) {
                     BP170BManager.sendTimeSetupCommand(year, month, day, hour, minute, second)
                 }
             }
 
-            BP170BContract.Event.SendSerialNumberRequest -> {
+            Event.SendSerialNumberRequest -> {
                 BP170BManager.sendSerialNumberRequestCommand()
             }
         }

@@ -19,7 +19,6 @@ import androidx.navigation.NavHostController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.*
-import kotlinx.coroutines.flow.collectLatest
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -35,7 +34,7 @@ fun BPBIO320ManagementScreen(
     // ---- SideEffect 처리 ----
     viewModel.collectSideEffect { effect ->
         when (effect) {
-            is BPBIO320Contract.SideEffect.ShowMessage -> {
+            is SideEffect.ShowMessage -> {
                 Log.d("BPBIO320", "SideEffect: ${effect.message}")
             }
         }
@@ -43,9 +42,9 @@ fun BPBIO320ManagementScreen(
 
     BPBIO320ManagementContent(
         screenState = state.screenState,
-        onStart = { viewModel.onEvent(BPBIO320Contract.Event.Start) },
-        onRetry = { viewModel.onEvent(BPBIO320Contract.Event.Retry) },
-        onDisconnect = { viewModel.onEvent(BPBIO320Contract.Event.Disconnect) },
+        onStart = { viewModel.onEvent(Event.Start) },
+        onRetry = { viewModel.onEvent(Event.Retry) },
+        onDisconnect = { viewModel.onEvent(Event.Disconnect) },
         onBack = {
             navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
         },
@@ -57,7 +56,7 @@ fun BPBIO320ManagementScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BPBIO320ManagementContent(
-    screenState: BPBIO320Contract.ScreenState,
+    screenState: ScreenState,
     onStart: () -> Unit,
     onRetry: () -> Unit,
     onDisconnect: () -> Unit,
@@ -87,7 +86,7 @@ fun BPBIO320ManagementContent(
             verticalArrangement = Arrangement.Bottom,
         ) {
             when (screenState) {
-                BPBIO320Contract.ScreenState.Standby -> {
+                ScreenState.Standby -> {
                     AccentedText(
                         prefix = stringResource(R.string.blood_pressure_monitor_standby_instruction1),
                         accent = stringResource(R.string.blood_pressure_monitor_standby_instruction2),
@@ -100,7 +99,7 @@ fun BPBIO320ManagementContent(
                     )
                 }
 
-                BPBIO320Contract.ScreenState.SearchingOrIdle -> {
+                ScreenState.SearchingOrIdle -> {
                     ProgressIndicator()
                     PrimaryButton(
                         onClick = onRetry,
@@ -109,7 +108,7 @@ fun BPBIO320ManagementContent(
                     )
                 }
 
-                BPBIO320Contract.ScreenState.Connecting -> {
+                ScreenState.Connecting -> {
                     ProgressIndicator()
                     StyledText(
                         text = stringResource(R.string.blood_pressure_monitor_connecting),
@@ -117,7 +116,7 @@ fun BPBIO320ManagementContent(
                     )
                 }
 
-                BPBIO320Contract.ScreenState.AwaitingStart -> {
+                ScreenState.AwaitingStart -> {
                     StyledText(
                         text = stringResource(R.string.blood_pressure_monitor_device_connected),
                     )
@@ -128,7 +127,7 @@ fun BPBIO320ManagementContent(
                     )
                 }
 
-                BPBIO320Contract.ScreenState.ConnectionError -> {
+                ScreenState.ConnectionError -> {
                     StyledText(
                         text = stringResource(R.string.blood_pressure_monitor_connection_error),
                         style = TextStyle.Error,
@@ -149,11 +148,17 @@ fun BPBIO320ManagementContent(
     }
 }
 
-@Preview(showBackground = true, name = "BPBIO320Management Preview", apiLevel = 34, widthDp = 800, heightDp = 1280)
+@Preview(
+    showBackground = true,
+    name = "BPBIO320Management Preview",
+    apiLevel = 34,
+    widthDp = 800,
+    heightDp = 1280
+)
 @Composable
 fun BPBIO320ManagementPreview() {
     BPBIO320ManagementContent(
-        screenState = BPBIO320Contract.ScreenState.AwaitingStart,
+        screenState = ScreenState.AwaitingStart,
         onStart = {},
         onRetry = {},
         onDisconnect = {},
