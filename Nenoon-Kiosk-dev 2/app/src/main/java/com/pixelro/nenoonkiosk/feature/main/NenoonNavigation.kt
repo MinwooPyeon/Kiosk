@@ -39,7 +39,6 @@ import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseContent
 import com.pixelro.nenoonkiosk.feature.inspection.ExternalDeviceTestListScreen
 import com.pixelro.nenoonkiosk.feature.inspection.EyeTestInspectionRoute
-import com.pixelro.nenoonkiosk.feature.inspection.EyeTestInspectionScreen
 import com.pixelro.nenoonkiosk.feature.strabismus.PhoriaAndAniseikoniaTestListScreen
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.TestResultScreen
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionScreenRoute
@@ -55,14 +54,13 @@ import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.Sho
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.intro.IntroScreen
 import com.pixelro.nenoonkiosk.feature.permission.PermissionRequestRoute
-import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BConnectionScreen
+import com.pixelro.nenoonkiosk.feature.undeveloped.iotdevice.BP170B.BP170BConnectionScreen
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ManagementScreen
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
 import com.pixelro.nenoonkiosk.feature.iotdevice.BTDeviceManagementScreen
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripManagmentScreen
 import com.pixelro.nenoonkiosk.feature.print.ResultPrintRoute
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverRoute
-import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverScreen
 import com.pixelro.nenoonkiosk.feature.splash.SplashScreen
 import com.pixelro.nenoonkiosk.feature.strabismus.AppNavigation
 import com.pixelro.nenoonkiosk.feature.survey.SurveyScreen

@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.iotdevice.BP170B
+package com.pixelro.nenoonkiosk.feature.undeveloped.iotdevice.BP170B
 
 import android.annotation.SuppressLint
 import android.speech.tts.TextToSpeech
@@ -33,6 +33,7 @@ import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.manager.BP170BManager
 import com.pixelro.nenoonkiosk.core.ui.*
 import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BViewModel
 
 enum class BP170BConnectionScreenState {
     Standby,
@@ -42,6 +43,8 @@ enum class BP170BConnectionScreenState {
     Connected,
     ConnectionError,
 }
+
+// 사용하지 않는 화면으로 확인되어 undeveloped로 이동함.
 
 @SuppressLint("MissingPermission")
 @OptIn(ExperimentalMaterialApi::class)
@@ -154,7 +157,7 @@ fun BP170BConnectionContent(
         Image(
             painter = painterResource(R.drawable.blood_pressure_icon),
             contentDescription = stringResource(R.string.blood_pressure_monitor_image_content_description),
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f).width(500.dp)
         )
 
         Column(
