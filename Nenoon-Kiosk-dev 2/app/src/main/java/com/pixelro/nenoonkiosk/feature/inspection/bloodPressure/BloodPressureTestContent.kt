@@ -17,7 +17,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BInP
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BStartScreen
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.BPBIO320InProgressScreen
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.BPBIO320StartScreen
-import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BViewModel
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BViewModel
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 
