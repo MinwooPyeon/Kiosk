@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.inspection.dementia
+package com.pixelro.nenoonkiosk.feature.inspection.dementia.process
 
 import android.content.Context
 import androidx.compose.runtime.Composable
@@ -13,12 +13,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun DementiaTestRoute(
-    toResultScreen: (DementiaTestResult) -> Unit,
+fun DementiaInspectionRoute(
+    toResultScreen: (DementiaInspectionResult) -> Unit,
     viewModel: DementiaViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -38,7 +40,7 @@ fun DementiaTestRoute(
         viewModel.init()
     }
 
-    DementiaTestScreen(
+    DementiaInspectionContent(
         currentIndex = currentIndex,
         totalQuestions = QUESTIONS.size,
         questionResId = QUESTIONS[currentIndex],

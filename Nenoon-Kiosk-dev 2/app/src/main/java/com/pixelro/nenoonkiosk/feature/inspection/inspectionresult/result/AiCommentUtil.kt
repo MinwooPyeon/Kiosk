@@ -11,7 +11,7 @@ import com.pixelro.nenoonkiosk.core.util.ColorProvider
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
@@ -350,7 +350,7 @@ fun AiComment(
 
         InspectionType.Dementia -> {
             try {
-                val parsedResult = testResult as DementiaTestResult
+                val parsedResult = testResult as DementiaInspectionResult
 
                 when {
                     parsedResult.countActiveScore() < 6 ->

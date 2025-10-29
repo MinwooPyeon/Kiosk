@@ -17,3 +17,11 @@ enum class DementiaScore {
     Thirteen,
     Fourteen,
 }
+
+data class DementiaInspectionResult(
+    val scores: List<DementiaViewModel.DementiaAnswer>,
+) {
+    fun countActiveScore(): Int {
+        return scores.count { it == DementiaViewModel.DementiaAnswer.Yes }
+    }
+}

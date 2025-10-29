@@ -63,8 +63,8 @@ import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exe
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.result.DementiaInspectionResultRoute
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
@@ -358,9 +358,8 @@ fun TestResultScreen(
                 }
 
                 InspectionType.Dementia -> {
-                    DementiaTestResultContent(
-                        testResult = testResult as DementiaTestResult,
-                        navController = navController,
+                    DementiaInspectionResultRoute(
+                        testResult = testResult as DementiaInspectionResult,
                     )
                 }
 

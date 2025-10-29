@@ -9,7 +9,7 @@ import com.harang.data.repository.TestResultRepository
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
@@ -145,7 +145,7 @@ class TestResultViewModel
                         Log.d("TestResultViewModel", "MChart result sent to server: $response")
                     }
                     InspectionType.Dementia -> {
-                        testResult as DementiaTestResult
+                        testResult as DementiaInspectionResult
                         // Internal Save
                         SharedPreferencesManager.updateDementiaResult(
                             q1 = testResult.scores.getOrNull(0)?.toString(),

@@ -33,7 +33,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_exercise.ConcentrationExerciseResult
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResult
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
@@ -464,7 +464,7 @@ class NenoonViewModel
         var childrenVisualAcuityTestResult = ChildrenVisualAcuityTestResult()
         var amslerGridTestResult = AmslerGridTestResult()
         var mChartTestResult = MChartTestResult()
-        var dementiaTestResult = DementiaTestResult(scores = List(14) { DementiaViewModel.DementiaAnswer.None })
+        var dementiaTestResult = DementiaInspectionResult(scores = List(14) { DementiaViewModel.DementiaAnswer.None })
         var presbyopiaExerciseResult = PresbyopiaExerciseResult()
         var concentrationExerciseResult = ConcentrationExerciseResult()
         var bloodPressureTestResult = BloodPressureTestResult(systolic = 0, diastolic = 0, pulseRate = 0)
