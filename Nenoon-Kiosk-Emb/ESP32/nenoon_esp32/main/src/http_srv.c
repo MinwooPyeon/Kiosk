@@ -17,6 +17,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 static const char* TAG = "http_srv";
 static httpd_handle_t s_srv;
@@ -80,7 +81,8 @@ static bool auth_ok(httpd_req_t* r){
 
 static esp_err_t h_session_open(httpd_req_t* r){
     char body[256]; int n=httpd_req_recv(r, body, sizeof(body)-1);
-    if(n<0) n=0; body[n]=0;
+    if(n<0) n=0; 
+    body[n]=0;
 
     char ssaid[64];
     if(json_get_str(body,"ssaid", ssaid, sizeof(ssaid))!=ESP_OK)
@@ -129,7 +131,7 @@ static esp_err_t h_media_list(httpd_req_t* r){
 	httpd_resp_sendstr(r, ",\"gen\":");
 	
 	char num[16];
-	snprintf(num, sizeof(num), "%u", idx.gen);
+	snprintf(num, sizeof(num), "%" PRIu32, idx.gen);
 	httpd_resp_sendstr_chunk(r, num);
 	httpd_resp_sendstr_chunk(r, ",\"files\":[");
 	
@@ -170,7 +172,7 @@ static esp_err_t h_media_chunk(httpd_req_t* r){
     esp_err_t er = uart_link_read_chunk(id, off, len, buf, &got, &crc);
     if(er!=ESP_OK){ free(buf); metrics_inc_err(); return httpd_resp_send_err(r, HTTPD_500_INTERNAL_SERVER_ERROR, "read fail"); }
 
-    char h[16]; snprintf(h,sizeof(h),"%08x", crc);
+    char h[16]; snprintf(h,sizeof(h),"%08" PRIx32, crc);
     httpd_resp_set_type(r, "application/octet-stream");
     httpd_resp_set_hdr(r, "X-CRC32", h);
     esp_err_t ret = httpd_resp_send(r, (const char*)buf, got);

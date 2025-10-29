@@ -146,7 +146,8 @@ bool session_verify_get_ssaid(const char* token, char* out_ssaid, size_t out_sz)
     if(memcmp(mac, mac2, 32)!=0) return false;
 
     uint8_t payload[192]; size_t plen=b64url_decode(p64, payload, sizeof(payload));
-    if(plen==0) return false; payload[plen]=0;
+    if(plen==0) return false; 
+    payload[plen]=0;
 
     const char* exp = strstr((char*)payload,"\"exp\":");
     if(!exp) return false;
@@ -155,7 +156,8 @@ bool session_verify_get_ssaid(const char* token, char* out_ssaid, size_t out_sz)
     if(now_ms>=exp_ms) return false;
 
     const char* s1 = strstr((char*)payload,"\"ssaid\":\"");
-    if(!s1) return false; s1+=9;
+    if(!s1) return false; 
+    s1+=9;
     const char* s2 = strchr(s1,'\"'); if(!s2) return false;
     size_t n = (size_t)(s2 - s1);
 
