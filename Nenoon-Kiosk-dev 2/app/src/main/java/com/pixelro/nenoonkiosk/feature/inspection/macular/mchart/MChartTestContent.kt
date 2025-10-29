@@ -45,7 +45,7 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetection
 import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceContent
 import kotlinx.coroutines.delay
@@ -92,7 +92,7 @@ fun MChartTestContent(
                     mChartViewModel.updateIsMeasuringDistanceContentVisible(false)
                     mChartViewModel.updateIsMChartContentVisible(true)
                 },
-                selectedTestType = TestType.MChart,
+                selectedTestType = InspectionType.MChart,
                 isLeftEye = mChartViewModel.isLeftEye.collectAsState().value,
             )
             MChartContent(

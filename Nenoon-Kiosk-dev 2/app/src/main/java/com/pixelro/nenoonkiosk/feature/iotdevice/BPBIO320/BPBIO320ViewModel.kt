@@ -87,4 +87,16 @@ class BPBIO320ViewModel
                 manager.getDeviceInfo()
             }
         }
+        
+        fun cancelDeviceSelection() {
+            viewModelScope.launch {
+                manager.cancelDeviceSelection()
+            }
+        }
+        
+        fun resetScanState() {
+            viewModelScope.launch {
+                manager.resetScanState()
+            }
+        }
     }

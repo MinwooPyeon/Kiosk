@@ -1,15 +1,10 @@
 package com.pixelro.nenoonkiosk.feature.inspection
 
-import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,464 +23,309 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.Advertisement
 import com.pixelro.nenoonkiosk.core.ui.InspectionSelectionButton
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
-import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
-import kotlinx.coroutines.delay
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.WarningBar
+import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 
-// 원하는 검사 항목 선택하는 뷰
-@RequiresApi(Build.VERSION_CODES.S)
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun EyeTestListScreen(
-    checkIsTestDone: (TestType) -> Boolean,
-    toTestScreen: (TestType) -> Unit,
-    toIntroScreen: () -> Unit,
-    toSettingsScreen: () -> Unit,
+fun EyeTestInspectionScreen(
+    savedLanguage: String?,
+    isSenior: Boolean,
+    isDialogShowing: Boolean,
+    selectedTest: InspectionType,
     isPresbyopiaDone: Boolean,
     isShortVisualAcuityDone: Boolean,
     isAmslerGridDone: Boolean,
     isMChartDone: Boolean,
-    viewModel: NenoonViewModel,
+    isDescriptionShowing: Boolean,
+    pagerState: PagerState,
+    onBackToIntro: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onOpenTest: (InspectionType) -> Unit,
+    onDismissDialog: () -> Unit,
+    toTestScreen: (InspectionType) -> Unit,
 ) {
-    val context = LocalContext.current
-    val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
-    val savedLanguage = sharedPreferences.getString("language", "defaultLanguage") // "defaultLanguage"는 기본값입니다.
     val warningTextSize = if (savedLanguage == "ru") 10.sp else 16.sp
+    val titleBackFontSize = if (savedLanguage == "es") 12.sp else 24.sp
 
-    val pagerState =
-        rememberPagerState(
-            initialPage = Int.MAX_VALUE / 2,
-            initialPageOffsetFraction = 0f,
-            pageCount = { Int.MAX_VALUE },
-        )
-    val isDescriptionShowing = remember { mutableStateOf(true) }
-    LaunchedEffect(true) {
-        TTS.tts.stop()
-        while (true) {
-            delay(5000)
-            pagerState.animateScrollToPage(
-                page = (pagerState.currentPage + 1),
-                animationSpec = tween(1000),
-            )
-            for (i in 1..3) {
-                isDescriptionShowing.value = false
-                delay(250)
-                isDescriptionShowing.value = true
-                delay(250)
-            }
-        }
-    }
-    var isDialogShowing by remember { mutableStateOf(false) }
-    var selectedTest by remember { mutableStateOf(TestType.None) }
-    val transition = rememberInfiniteTransition()
+    val transition = rememberInfiniteTransition(label = "descShift")
     val shiftVal by transition.animateFloat(
         initialValue = 0f,
         targetValue = 20f,
-        animationSpec =
-            infiniteRepeatable(
-                animation =
-                    keyframes {
-                        durationMillis = 2000
-                    },
-                repeatMode = RepeatMode.Reverse,
-            ),
-        label = "",
+        animationSpec = infiniteRepeatable(
+            animation = keyframes { durationMillis = 2000 },
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "descShiftAnim"
     )
-    val isSeniorValue by viewModel.isSenior.collectAsState()
-    /**
-     * dialog 버튼 작용
-     */
+
     if (isDialogShowing) {
         SurveyRecommendationDialog(
-            onDismissRequest = {
-                isDialogShowing = false
-            },
+            onDismissRequest = onDismissDialog,
             toTestScreen = toTestScreen,
-            toIntroScreen = toIntroScreen,
-            selectedTest = selectedTest,
+            toIntroScreen = onBackToIntro,
+            selectedTest = selectedTest
         )
     }
+
     Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(
-                    color = Color(0xffffffff),
-                ),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xFFFFFFFF))
     ) {
-        /**
-         * 상단 바
-         */
-        Box(
-            modifier =
-                Modifier
-                    .padding(
-                        start = 40.dp,
-                        top = (GlobalValue.statusBarPadding + 20).dp,
-                        end = 40.dp,
-                        bottom = 20.dp,
-                    )
-                    .fillMaxWidth()
-                    .height(40.dp),
-        ) {
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxHeight()
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() },
-                        ) {
-                            toIntroScreen()
-                        },
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Image(
-                    modifier =
-                        Modifier
-                            .padding(top = 4.dp)
-                            .width(28.dp),
-                    painter = painterResource(id = R.drawable.icon_back_black),
-                    contentDescription = "",
-                )
-                Text(
-                    text =
-                        StringProvider.getString(
-                            R.string.navigation_tosurvey_button,
-                        ),
-                    fontSize =
-                        if (savedLanguage == "es") {
-                            12.sp
-                        } else {
-                            24.sp
-                        },
-                    fontWeight = FontWeight.Medium,
-                )
-            }
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text =
-                        StringProvider.getString(
-                            R.string.test_list_tittle,
-                        ),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Medium,
-                )
-            }
-            /**
-             * 설정 버튼
-             */
-            SettingsButton(toSettingsScreen)
-        }
-        Spacer(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(
-                        color = Color(0xffebebeb),
-                    ),
+        TopBar(
+            savedLanguage = savedLanguage,
+            titleText = StringProvider.getStringComposable(R.string.test_list_tittle),
+            onBackToIntro = onBackToIntro,
+            onOpenSettings = onOpenSettings,
+            titleBackFontSize = titleBackFontSize
         )
-        /**
-         * 광고 표시 여부
-         */
-        when (isSeniorValue) {
-            true -> {
-            }
-            false -> {
-                HorizontalPager(
-                    contentPadding = PaddingValues(start = 40.dp, top = 20.dp, end = 40.dp, bottom = 20.dp),
-                    pageSpacing = 40.dp,
-                    state = pagerState,
-                ) {
-                    Advertisement(it)
-                }
+
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(color = Color(0xFFEBEBEB))
+        )
+
+        if (!isSenior) {
+            HorizontalPager(
+                contentPadding = PaddingValues(start = 40.dp, top = 20.dp, end = 40.dp, bottom = 20.dp),
+                pageSpacing = 40.dp,
+                state = pagerState
+            ) { page ->
+                Advertisement(page)
             }
         }
+
         Box(
-            modifier =
-                Modifier
-                    .padding(start = 40.dp, end = 40.dp, bottom = 20.dp)
-                    .fillMaxWidth()
-                    .height(80.dp),
-            contentAlignment = Alignment.TopCenter,
+            modifier = Modifier
+                .padding(start = 40.dp, end = 40.dp, bottom = 20.dp)
+                .fillMaxWidth()
+                .height(80.dp),
+            contentAlignment = Alignment.TopCenter
         ) {
-            if (isDescriptionShowing.value) {
+            if (isDescriptionShowing) {
                 Text(
-                    modifier =
-                        Modifier
-                            .offset(x = 0.dp, y = shiftVal.dp),
-                    text =
-                        StringProvider.getString(
-                            R.string.test_list_description,
-                        ),
-                    fontSize =
-                        if (savedLanguage == "es") {
-                            20.sp
-                        } else {
-                            38.sp
-                        },
-                    fontWeight = FontWeight.ExtraBold,
-                    textAlign = TextAlign.Center,
+                    modifier = Modifier.offset(y = shiftVal.dp).align(Alignment.Center),
+                    text = StringProvider.getStringComposable(R.string.test_list_description),
+                    style = bodyTextStyle,
+                    textAlign = TextAlign.Center
                 )
             }
         }
 
-        Box {
-            /**
-             * 검사 목록 내용
-             */
-            Column(
-                modifier = Modifier,
-            ) {
-                val modifier =
-                    Modifier
-                        .weight(1f)
-                /**
-                 * 검사 항목 박스 내용
-                 * 시력 검사 (근거리)
-                 */
-                InspectionSelectionButton(
-                    modifier = modifier,
-                    title1 =
-                        StringProvider.getString(
-                            R.string.test_predescription_short_visual_acuity_title1,
-                        ),
-                    title2 =
-                        StringProvider.getString(
-                            R.string.test_predescription_short_visual_acuity_title2,
-                        ),
-                    onClickMethod = {
-                        selectedTest = TestType.ShortDistanceVisualAcuity
-                        if (checkIsTestDone(TestType.ShortDistanceVisualAcuity)) {
-                            isDialogShowing = true
-                        } else {
-                            toTestScreen(TestType.ShortDistanceVisualAcuity)
-                        }
-                    },
-                    alignment = Alignment.CenterStart,
-                    isDone = isShortVisualAcuityDone,
-                    isSenior = isSeniorValue,
-                    time = 2,
-                )
-                Spacer(
-                    modifier =
-                        Modifier
-                            .height(20.dp),
-                )
-                /**
-                 * 검사 항목 박스 내용
-                 * 노안 조절력 검사 (안구 나이 검사)
-                 */
-                InspectionSelectionButton(
-                    modifier = modifier,
-                    title1 =
-                        StringProvider.getString(
-                            R.string.test_predescription_presbyopia_title1,
-                        ),
-                    title2 =
-                        StringProvider.getString(
-                            R.string.test_predescription_presbyopia_title2,
-                        ),
-                    onClickMethod = {
-                        selectedTest = TestType.Presbyopia
-                        if (checkIsTestDone(TestType.Presbyopia)) {
-                            isDialogShowing = true
-                        } else {
-                            toTestScreen(TestType.Presbyopia)
-                        }
-                    },
-                    alignment = Alignment.CenterStart,
-                    isDone = isPresbyopiaDone,
-                    isSenior = isSeniorValue,
-                    time = 3,
-                )
-                Spacer(
-                    modifier =
-                        Modifier
-                            .height(20.dp),
-                )
-                /**
-                 * 검사 항목 박스 내용
-                 * 암슬러 차트 검사 (황반 변성 검사)
-                 */
-                InspectionSelectionButton(
-                    modifier = modifier,
-                    title1 =
-                        StringProvider.getString(
-                            R.string.test_predescription_amsler_title1,
-                        ),
-                    title2 =
-                        StringProvider.getString(
-                            R.string.test_predescription_amsler_title2,
-                        ),
-                    onClickMethod = {
-                        selectedTest = TestType.AmslerGrid
-                        if (checkIsTestDone(TestType.AmslerGrid)) {
-                            isDialogShowing = true
-                        } else {
-                            toTestScreen(TestType.AmslerGrid)
-                        }
-                    },
-                    alignment = Alignment.CenterStart,
-                    isDone = isAmslerGridDone,
-                    isSenior = isSeniorValue,
-                    time = 2,
-                )
-                Spacer(
-                    modifier =
-                        Modifier
-                            .height(20.dp),
-                )
-                /**
-                 * 검사 항목 박스 내용
-                 * 엠식 변형식 검사 (황반 변성 검사)
-                 */
-                InspectionSelectionButton(
-                    modifier = modifier,
-                    title1 =
-                        StringProvider.getString(
-                            R.string.test_predescription_mchart_title1,
-                        ),
-                    title2 =
-                        StringProvider.getString(
-                            R.string.test_predescription_mchart_title2,
-                        ),
-                    onClickMethod = {
-                        selectedTest = TestType.MChart
-                        if (checkIsTestDone(TestType.MChart)) {
-                            isDialogShowing = true
-                        } else {
-                            toTestScreen(TestType.MChart)
-                        }
-                    },
-                    alignment = Alignment.CenterStart,
-                    isDone = isMChartDone,
-                    isSenior = isSeniorValue,
-                    time = 2,
-                )
+        // 검사 목록
+        TestListSection(
+            isSenior = isSenior,
+            isShortVisualAcuityDone = isShortVisualAcuityDone,
+            isPresbyopiaDone = isPresbyopiaDone,
+            isAmslerGridDone = isAmslerGridDone,
+            isMChartDone = isMChartDone,
+            onOpenTest = onOpenTest
+        )
 
-                Spacer(
-                    modifier =
-                        Modifier
-                            .height(20.dp),
-                )
-
-                /**
-                 * 하단 경고문
-                 */
-                Box(
-                    modifier = Modifier,
-                    contentAlignment = Alignment.BottomCenter,
-                ) {
-                    Row(
-                        modifier =
-                            Modifier
-                                .padding(
-                                    start = 40.dp,
-                                    bottom = (GlobalValue.navigationBarPadding + 40).dp,
-                                    top = 20.dp,
-                                )
-                                .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Image(
-                            modifier =
-                                Modifier
-                                    .padding(end = 20.dp)
-                                    .width(44.dp),
-                            painter = painterResource(id = R.drawable.icon_warning),
-                            contentDescription = "",
-                        )
-                        Text(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(end = 40.dp),
-                            text =
-                                buildAnnotatedString {
-                                    withStyle(
-                                        style =
-                                            SpanStyle(
-                                                color = Color(0xff999999),
-                                                fontSize = warningTextSize,
-                                            ),
-                                    ) {
-                                        append(
-                                            StringProvider.getString(
-                                                R.string.test_list_screen_warning1,
-                                            ),
-                                        )
-                                    }
-                                    withStyle(
-                                        style =
-                                            SpanStyle(
-                                                color = Color(0xffff0000),
-                                                fontSize = warningTextSize,
-                                                fontWeight = FontWeight.Bold,
-                                            ),
-                                    ) {
-                                        append(
-                                            StringProvider.getString(
-                                                R.string.test_list_screen_warning2,
-                                            ),
-                                        )
-                                    }
-                                    withStyle(
-                                        style =
-                                            SpanStyle(
-                                                color = Color(0xff999999),
-                                                fontSize = warningTextSize,
-                                            ),
-                                    ) {
-                                        append(
-                                            StringProvider.getString(
-                                                R.string.test_list_screen_warning3,
-                                            ),
-                                        )
-                                    }
-                                },
-                        )
-                    }
-                }
-            }
-        }
+        WarningBar(warningTextSize = warningTextSize)
     }
 }
 
+@Composable
+private fun TopBar(
+    savedLanguage: String?,
+    titleText: String,
+    onBackToIntro: () -> Unit,
+    onOpenSettings: () -> Unit,
+    titleBackFontSize: androidx.compose.ui.unit.TextUnit
+) {
+    Box(
+        modifier = Modifier
+            .padding(
+                start = 40.dp,
+                top = (GlobalValue.statusBarPadding + 20).dp,
+                end = 40.dp,
+                bottom = 20.dp
+            )
+            .fillMaxWidth()
+            .height(40.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxHeight()
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) { onBackToIntro() },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .width(28.dp),
+                painter = painterResource(id = R.drawable.icon_back_black),
+                contentDescription = ""
+            )
+            Text(
+                text = StringProvider.getStringComposable(R.string.navigation_tosurvey_button),
+                fontSize = titleBackFontSize,
+                fontWeight = FontWeight.Medium
+            )
+        }
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = titleText,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Medium
+            )
+        }
+        SettingsButton(onOpenSettings)
+    }
+}
 
+@Composable
+private fun TestListSection(
+    isSenior: Boolean,
+    isShortVisualAcuityDone: Boolean,
+    isPresbyopiaDone: Boolean,
+    isAmslerGridDone: Boolean,
+    isMChartDone: Boolean,
+    onOpenTest: (InspectionType) -> Unit
+) {
+    Column {
+        val itemModifier = Modifier.weight(1f)
+
+        // 단거리 시력
+        InspectionSelectionButton(
+            modifier = itemModifier,
+            title1 = StringProvider.getStringComposable(R.string.test_predescription_short_visual_acuity_title1),
+            title2 = StringProvider.getStringComposable(R.string.test_predescription_short_visual_acuity_title2),
+            alignment = Alignment.CenterStart,
+            isDone = isShortVisualAcuityDone,
+            isSenior = isSenior,
+            time = 2,
+            onClickMethod = { onOpenTest(InspectionType.ShortDistanceVisualAcuity) }
+        )
+
+        Spacer(Modifier.height(20.dp))
+
+        // 노안(안구 나이)
+        InspectionSelectionButton(
+            modifier = itemModifier,
+            title1 = StringProvider.getStringComposable(R.string.test_predescription_presbyopia_title1),
+            title2 = StringProvider.getStringComposable(R.string.test_predescription_presbyopia_title2),
+            alignment = Alignment.CenterStart,
+            isDone = isPresbyopiaDone,
+            isSenior = isSenior,
+            time = 3,
+            onClickMethod = { onOpenTest(InspectionType.Presbyopia) }
+        )
+
+        Spacer(Modifier.height(20.dp))
+
+        // 암슬러
+        InspectionSelectionButton(
+            modifier = itemModifier,
+            title1 = StringProvider.getStringComposable(R.string.test_predescription_amsler_title1),
+            title2 = StringProvider.getStringComposable(R.string.test_predescription_amsler_title2),
+            alignment = Alignment.CenterStart,
+            isDone = isAmslerGridDone,
+            isSenior = isSenior,
+            time = 2,
+            onClickMethod = { onOpenTest(InspectionType.AmslerGrid) }
+        )
+
+        Spacer(Modifier.height(20.dp))
+
+        // M-Chart
+        InspectionSelectionButton(
+            modifier = itemModifier,
+            title1 = StringProvider.getStringComposable(R.string.test_predescription_mchart_title1),
+            title2 = StringProvider.getStringComposable(R.string.test_predescription_mchart_title2),
+            alignment = Alignment.CenterStart,
+            isDone = isMChartDone,
+            isSenior = isSenior,
+            time = 2,
+            onClickMethod = { onOpenTest(InspectionType.MChart) }
+        )
+
+        Spacer(Modifier.height(20.dp))
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "EyeTestList - Senior False", apiLevel = 34)
+@Composable
+private fun Preview_EyeTestList_SeniorFalse() {
+    val fakePager = rememberPagerState(
+        initialPage = Int.MAX_VALUE / 2,
+        pageCount = { Int.MAX_VALUE }
+    )
+    EyeTestInspectionScreen(
+        savedLanguage = "ko",
+        isSenior = false,
+        isDialogShowing = false,
+        selectedTest = InspectionType.None,
+        isPresbyopiaDone = false,
+        isShortVisualAcuityDone = true,
+        isAmslerGridDone = false,
+        isMChartDone = true,
+        isDescriptionShowing = true,
+        pagerState = fakePager,
+        onBackToIntro = {},
+        onOpenSettings = {},
+        onOpenTest = {},
+        onDismissDialog = {},
+        toTestScreen = {}
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "EyeTestList - Senior True (No Ads)", apiLevel = 34)
+@Composable
+private fun Preview_EyeTestList_SeniorTrue() {
+    val fakePager = rememberPagerState(
+        initialPage = Int.MAX_VALUE / 2,
+        pageCount = { Int.MAX_VALUE }
+    )
+    EyeTestInspectionScreen(
+        savedLanguage = "es",
+        isSenior = true,
+        isDialogShowing = true,
+        selectedTest = InspectionType.MChart,
+        isPresbyopiaDone = true,
+        isShortVisualAcuityDone = true,
+        isAmslerGridDone = false,
+        isMChartDone = false,
+        isDescriptionShowing = true,
+        pagerState = fakePager,
+        onBackToIntro = {},
+        onOpenSettings = {},
+        onOpenTest = {},
+        onDismissDialog = {},
+        toTestScreen = {}
+    )
+}

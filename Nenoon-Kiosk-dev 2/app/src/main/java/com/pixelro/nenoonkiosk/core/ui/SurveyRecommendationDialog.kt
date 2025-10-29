@@ -36,7 +36,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 
 /**
  * Dialog 내용
@@ -44,9 +44,9 @@ import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
 @Composable
 fun SurveyRecommendationDialog(
     onDismissRequest: () -> Unit,
-    toTestScreen: (TestType) -> Unit,
+    toTestScreen: (InspectionType) -> Unit,
     toIntroScreen: () -> Unit,
-    selectedTest: TestType,
+    selectedTest: InspectionType,
 ) {
     val context = LocalContext.current
     val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }

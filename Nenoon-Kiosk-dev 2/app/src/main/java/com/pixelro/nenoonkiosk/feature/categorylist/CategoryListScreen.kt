@@ -41,7 +41,7 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.InspectionSelectionButton
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 import kotlinx.coroutines.delay
@@ -53,7 +53,7 @@ fun CategoryListScreen(
     isSignInSkipped: () -> Boolean,
     toEyeTestScreen: () -> Unit,
     toContact: () -> Unit,
-    toDementiaTestScreen: (TestType) -> Unit,
+    toDementiaTestScreen: (InspectionType) -> Unit,
     toExternalDeviceTestListScreen: () -> Unit,
     toStrabismusTestListScreen: () -> Unit,
     toIntroScreen: () -> Unit,
@@ -146,7 +146,7 @@ fun CategoryListScreen(
                 toStrabismusTestListScreen()
             },
             Triple(R.string.dementia_test, R.drawable.dementia_icon) {
-                toDementiaTestScreen(TestType.Dementia)
+                toDementiaTestScreen(InspectionType.Dementia)
             }
         )
 

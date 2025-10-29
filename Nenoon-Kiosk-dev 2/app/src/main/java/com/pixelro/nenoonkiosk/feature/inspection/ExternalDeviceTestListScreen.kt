@@ -59,7 +59,6 @@ import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
 import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
 import kotlinx.coroutines.delay
 
@@ -68,8 +67,8 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun ExternalDeviceTestListScreen(
-    checkIsTestDone: (TestType) -> Boolean,
-    toTestScreen: (TestType) -> Unit,
+    checkIsTestDone: (InspectionType) -> Boolean,
+    toTestScreen: (InspectionType) -> Unit,
     toIntroScreen: () -> Unit,
     toSettingsScreen: () -> Unit,
     isBloodPressureDone: Boolean,
@@ -106,7 +105,7 @@ fun ExternalDeviceTestListScreen(
         }
     }
     var isDialogShowing by remember { mutableStateOf(false) }
-    var selectedTest by remember { mutableStateOf(TestType.None) }
+    var selectedTest by remember { mutableStateOf(InspectionType.None) }
     val transition = rememberInfiniteTransition(label = "")
     val shiftVal by transition.animateFloat(
         initialValue = 0f,
@@ -290,11 +289,11 @@ fun ExternalDeviceTestListScreen(
                             R.string.test_predescription_blood_pressure_title2,
                         ),
                     onClickMethod = {
-                        selectedTest = TestType.BloodPressure
-                        if (checkIsTestDone(TestType.BloodPressure)) {
+                        selectedTest = InspectionType.BloodPressure
+                        if (checkIsTestDone(InspectionType.BloodPressure)) {
                             isDialogShowing = true
                         } else {
-                            toTestScreen(TestType.BloodPressure)
+                            toTestScreen(InspectionType.BloodPressure)
                         }
                     },
                     alignment = Alignment.CenterStart,
@@ -323,11 +322,11 @@ fun ExternalDeviceTestListScreen(
                             R.string.test_predescription_grip_strength_title2,
                         ),
                     onClickMethod = {
-                        selectedTest = TestType.GripStrength
-                        if (checkIsTestDone(TestType.GripStrength)) {
+                        selectedTest = InspectionType.GripStrength
+                        if (checkIsTestDone(InspectionType.GripStrength)) {
                             isDialogShowing = true
                         } else {
-                            toTestScreen(TestType.GripStrength)
+                            toTestScreen(InspectionType.GripStrength)
                         }
                     },
                     alignment = Alignment.CenterStart,

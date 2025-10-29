@@ -58,7 +58,7 @@ import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -67,7 +67,7 @@ import kotlin.math.roundToInt
 fun MeasuringDistanceContent(
     measuringDistanceContentVisibleState: MutableTransitionState<Boolean>,
     toNextContent: () -> Unit,
-    selectedTestType: TestType,
+    selectedTestType: InspectionType,
     isLeftEye: Boolean,
     faceDetectionViewModel: FaceDetectionViewModel = hiltViewModel(),
 ) {
@@ -471,7 +471,7 @@ fun MeasuringDistanceContent(
                                 .padding(bottom = (GlobalValue.navigationBarPadding + 100).dp),
                         color =
                             when (selectedTestType) {
-                                TestType.ShortDistanceVisualAcuity -> {
+                                InspectionType.ShortDistanceVisualAcuity -> {
                                     when (faceDetectionViewModel.screenToFaceDistance.collectAsState().value) {
                                         in 396.0..505.0 -> Color(0xff1d71e1)
                                         else -> Color(0xffff0000)
@@ -500,7 +500,7 @@ fun MeasuringDistanceContent(
                                 .border(
                                     border =
                                         when (selectedTestType) {
-                                            TestType.ShortDistanceVisualAcuity -> {
+                                            InspectionType.ShortDistanceVisualAcuity -> {
                                                 if (faceDetectionViewModel.screenToFaceDistance.collectAsState().value > 505.0 ||
                                                     faceDetectionViewModel.screenToFaceDistance.collectAsState().value < 396.0
                                                 ) {
@@ -528,7 +528,7 @@ fun MeasuringDistanceContent(
                         Text(
                             text =
                                 when (selectedTestType) {
-                                    TestType.ShortDistanceVisualAcuity ->
+                                    InspectionType.ShortDistanceVisualAcuity ->
                                         buildAnnotatedString {
                                             append(
                                                 StringProvider.getString(
@@ -602,7 +602,7 @@ fun MeasuringDistanceContent(
                     }
                 ) {
                     when (selectedTestType) {
-                        TestType.ShortDistanceVisualAcuity -> {
+                        InspectionType.ShortDistanceVisualAcuity -> {
                             when (faceDetectionViewModel.screenToFaceDistance.collectAsState().value) {
                                 in 0.1..396.0 -> {
                                     faceDetectionViewModel.updateIsDistanceOK(0)
