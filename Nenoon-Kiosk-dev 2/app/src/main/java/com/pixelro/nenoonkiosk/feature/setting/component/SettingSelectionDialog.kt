@@ -33,7 +33,7 @@ fun SettingSelectionDialog(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(vertical = 50.dp), // 다이얼로그 외부 여백
+                .padding(vertical = 50.dp),
             contentAlignment = Alignment.Center
         ) {
             Column(
@@ -48,7 +48,6 @@ fun SettingSelectionDialog(
                     onBackClicked = {}
                 )
 
-                // 스크롤 가능하도록 LazyColumn 사용
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
@@ -57,7 +56,6 @@ fun SettingSelectionDialog(
                             text = text,
                             onClick = {
                                 onItemSelected(value)
-                                onDismissRequest()
                             }
                         )
                     }
@@ -67,9 +65,6 @@ fun SettingSelectionDialog(
     }
 }
 
-
-/* ---------------- 프리뷰 UI ---------------- */
-
 @Preview(
     name = "언어 선택 다이얼로그 (세로형)",
     showBackground = true,
@@ -78,82 +73,6 @@ fun SettingSelectionDialog(
 )
 @Composable
 private fun LanguageDialogPortraitPreview() {
-    DialogPreviewContent(
-        title = stringResource(id = R.string.settings_language),
-        items = listOf(
-            "ko" to "한국어",
-            "en" to "English",
-            "zh" to "汉语",
-            "ja" to "日本語",
-            "fr" to "Français",
-            "ru" to "Русский",
-            "es" to "Español"
-        )
-    )
-}
-
-@Preview(
-    name = "언어 선택 다이얼로그 (가로형)",
-    showBackground = true,
-    widthDp = 1280,
-    heightDp = 800
-)
-@Composable
-private fun LanguageDialogLandscapePreview() {
-    DialogPreviewContent(
-        title = stringResource(id = R.string.settings_language),
-        items = listOf(
-            "ko" to "한국어",
-            "en" to "English",
-            "zh" to "汉语",
-            "ja" to "日本語",
-            "fr" to "Français",
-            "ru" to "Русский",
-            "es" to "Español"
-        )
-    )
-}
-
-@Preview(
-    name = "혈압계 선택 다이얼로그 (세로형)",
-    showBackground = true,
-    widthDp = 800,
-    heightDp = 1280
-)
-@Composable
-private fun BloodPressureDialogPortraitPreview() {
-    DialogPreviewContent(
-        title = stringResource(id = R.string.blood_pressure_monitor_image_content_description),
-        items = listOf(
-            "BPBIO320" to "BPBIO320",
-            "BP170B" to "BP170B"
-        )
-    )
-}
-
-@Preview(
-    name = "혈압계 선택 다이얼로그 (가로형)",
-    showBackground = true,
-    widthDp = 1280,
-    heightDp = 800
-)
-@Composable
-private fun BloodPressureDialogLandscapePreview() {
-    DialogPreviewContent(
-        title = stringResource(id = R.string.blood_pressure_monitor_image_content_description),
-        items = listOf(
-            "BPBIO320" to "BPBIO320",
-            "BP170B" to "BP170B"
-        )
-    )
-}
-
-/* ---------------- 공통 프리뷰 UI ---------------- */
-@Composable
-private fun DialogPreviewContent(
-    title: String,
-    items: List<Pair<String, String>>
-) {
     NenoonKioskTheme {
         Box(
             modifier = Modifier
@@ -169,7 +88,7 @@ private fun DialogPreviewContent(
                     .background(Color.White, RoundedCornerShape(8.dp))
             ) {
                 NenoonTopBar(
-                    title = title,
+                    title = stringResource(id = R.string.settings_language),
                     showBackButton = false,
                     onBackClicked = {}
                 )
@@ -177,7 +96,65 @@ private fun DialogPreviewContent(
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
-                    items(items) { (_, text) ->
+                    items(
+                        listOf(
+                            "ko" to "한국어",
+                            "en" to "English",
+                            "zh" to "汉语",
+                            "ja" to "日本語",
+                            "fr" to "Français",
+                            "ru" to "Русский",
+                            "es" to "Español"
+                        )
+                    ) { (_, text) ->
+                        SettingItem(
+                            text = text,
+                            onClick = {}
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview(
+    name = "혈압계 선택 다이얼로그 (세로형)",
+    showBackground = true,
+    widthDp = 800,
+    heightDp = 1280
+)
+@Composable
+private fun BloodPressureDialogPortraitPreview() {
+    NenoonKioskTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0x99000000))
+                .padding(vertical = 50.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                modifier = Modifier
+                    .width(600.dp)
+                    .height(1000.dp)
+                    .background(Color.White, RoundedCornerShape(8.dp))
+            ) {
+                NenoonTopBar(
+                    title = stringResource(id = R.string.blood_pressure_monitor_image_content_description),
+                    showBackButton = false,
+                    onBackClicked = {}
+                )
+
+                LazyColumn(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    items(
+                        listOf(
+                            "BPBIO320" to "BPBIO320",
+                            "BP170B" to "BP170B"
+                        )
+                    ) { (_, text) ->
                         SettingItem(
                             text = text,
                             onClick = {}

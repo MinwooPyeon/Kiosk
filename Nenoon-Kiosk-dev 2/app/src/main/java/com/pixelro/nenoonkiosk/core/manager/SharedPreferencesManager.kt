@@ -16,6 +16,7 @@ object SharedPreferencesManager {
     private const val KEY_COMPOUND_TEST_RESULT_PREFIX = "compound_test_result_"
     private const val KEY_USER_ACCOUNTS = "user_accounts"
     private const val KEY_BLOOD_PRESSURE_MONITOR_TYPE = "blood_pressure_monitor_type"
+    private const val KEY_LANGUAGE = "language"
 
     enum class BloodPressureMonitorType {
         BPBIO320,
@@ -55,6 +56,15 @@ object SharedPreferencesManager {
 
     private fun getLongAndReturn(key: String): Long {
         return pref.getLong(key, 0)
+    }
+
+    fun putLanguage(languageCode: String) {
+        editor.putString(KEY_LANGUAGE, languageCode)
+        editor.commit()
+    }
+
+    fun getLanguage(): String {
+        return pref.getString(KEY_LANGUAGE, "ko") ?: "ko"
     }
 
     fun putBloodPressureMonitorType(type: BloodPressureMonitorType) {

@@ -1,41 +1,49 @@
-
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
-import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
-import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
+import com.pixelro.nenoonkiosk.feature.setting.SettingsSideEffect
+import com.pixelro.nenoonkiosk.feature.setting.SettingsUiState
+import com.pixelro.nenoonkiosk.feature.setting.SettingsViewModel
 import com.pixelro.nenoonkiosk.feature.setting.component.SettingItem
 import com.pixelro.nenoonkiosk.feature.setting.component.SettingSelectionDialog
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
+
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun SettingsScreen(
-    isSignedIn: Boolean,
-    toSignInScreen: () -> Unit,
-    toSoftwareInfoScreen: () -> Unit,
-    onBack: () -> Unit,
-    viewModel: NenoonViewModel = hiltViewModel(),
-    loginViewModel: LoginViewModel = hiltViewModel(),
+fun SettingsRoute(
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val settingsDialogState by viewModel.settingsDialogState.collectAsState()
+    val state by viewModel.collectAsState()
+    val context = LocalContext.current
 
-    when (settingsDialogState) {
-        NenoonViewModel.SettingsDialogState.Language -> {
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is SettingsSideEffect.ShowToast -> {
+                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    when (state.showDialog) {
+        is SettingsUiState.DialogType.Language -> {
             SettingSelectionDialog(
                 titleResId = R.string.settings_language,
                 items = listOf(
@@ -47,100 +55,89 @@ fun SettingsScreen(
                     "ru" to "Русский",
                     "es" to "Español"
                 ),
-                onItemSelected = { langCode ->
-                    viewModel.updateLanguage(langCode)
-                },
-                onDismissRequest = {
-                    viewModel.setSettingsDialogState(NenoonViewModel.SettingsDialogState.None)
-                }
+                onItemSelected = viewModel::onLanguageSelected,
+                onDismissRequest = viewModel::onDialogDismiss
             )
         }
 
-        NenoonViewModel.SettingsDialogState.BloodPressureMonitorType -> {
+        is SettingsUiState.DialogType.BloodPressureMonitor -> {
             SettingSelectionDialog(
                 titleResId = R.string.blood_pressure_monitor_image_content_description,
                 items = listOf(
                     "BPBIO320" to "BPBIO320",
                     "BP170B" to "BP170B"
                 ),
-                onItemSelected = { type ->
-                    SharedPreferencesManager.putBloodPressureMonitorType(
-                        SharedPreferencesManager.BloodPressureMonitorType.valueOf(type)
-                    )
-                },
-                onDismissRequest = {
-                    viewModel.setSettingsDialogState(NenoonViewModel.SettingsDialogState.None)
-                }
+                onItemSelected = viewModel::onBloodPressureMonitorSelected,
+                onDismissRequest = viewModel::onDialogDismiss
             )
         }
 
-        else -> {}
+        is SettingsUiState.DialogType.None -> {}
     }
 
-
-    SettingsScreenContent(
-        isSignedIn = isSignedIn,
-        onLanguageClick = {
-            viewModel.setSettingsDialogState(NenoonViewModel.SettingsDialogState.Language)
-        },
-        onBloodPressureClick = {
-            viewModel.setSettingsDialogState(NenoonViewModel.SettingsDialogState.BloodPressureMonitorType)
-        },
-        onLoginClick = {
-            if (isSignedIn) {
-            }
-            toSignInScreen()
-        },
-        onBack = TODO(),
-        isLocationSignedIn = TODO(),
-        isUserSignedIn = TODO(),
+    SettingsScreen(
+        state = state,
+        onBackClick = viewModel::onBackClick,
+        onLanguageClick = viewModel::onLanguageClick,
+        onBloodPressureMonitorClick = viewModel::onBloodPressureMonitorClick,
+        onLoginClick = viewModel::onLoginClick
     )
 }
 
 @Composable
-private fun SettingsScreenContent(
-    isSignedIn: Boolean,
-    isLocationSignedIn: Boolean,
-    isUserSignedIn: Boolean,
+fun SettingsScreen(
+    state: SettingsUiState,
+    onBackClick: () -> Unit,
     onLanguageClick: () -> Unit,
-    onBloodPressureClick: () -> Unit,
-    onLoginClick: () -> Unit,
-    onBack: () -> Unit,
+    onBloodPressureMonitorClick: () -> Unit,
+    onLoginClick: () -> Unit
 ) {
-    Column(Modifier.fillMaxSize()) {
+    val languageDisplayName = when (state.currentLanguage) {
+        "ko" -> "한국어"
+        "en" -> "English"
+        "zh" -> "汉语"
+        "ja" -> "日本語"
+        "fr" -> "Français"
+        "ru" -> "Русский"
+        "es" -> "Español"
+        else -> "한국어"
+    }
 
-        // 상단바
+    val monitorDisplayName = when (state.currentBloodPressureMonitorType) {
+        SharedPreferencesManager.BloodPressureMonitorType.BPBIO320 -> "BPBIO320"
+        SharedPreferencesManager.BloodPressureMonitorType.BP170B -> "BP170B"
+    }
+
+    Column(Modifier.fillMaxSize()) {
         NenoonTopBar(
             title = stringResource(R.string.settings_title),
             showBackButton = true,
-            onBackClicked = onBack,
+            onBackClicked = onBackClick
         )
 
-        // 언어 설정
         SettingItem(
-            text = stringResource(R.string.settings_language),
+            text = "${stringResource(R.string.settings_language)}: $languageDisplayName",
             onClick = onLanguageClick
         )
 
-        // 로그인 / 로그아웃
-        if (isLocationSignedIn) {
+        if (state.isLocationSignedIn) {
             SettingItem(
-                text = if (isSignedIn)
+                text = if (state.isUserSignedIn)
                     stringResource(R.string.settings_signout)
                 else
                     stringResource(R.string.signin),
-                textColor = if (isSignedIn) Color.Red else Color.Black,
+                textColor = if (state.isUserSignedIn) Color.Red else Color.Black,
                 onClick = onLoginClick
             )
         }
 
-        // 혈압계 선택
         SettingItem(
-            text = stringResource(R.string.blood_pressure_monitor_image_content_description),
-            onClick = onBloodPressureClick
+            text = "${stringResource(R.string.blood_pressure_monitor_image_content_description)}: $monitorDisplayName",
+            onClick = onBloodPressureMonitorClick
         )
     }
 }
+
 @Preview(
     name = "설정 화면 세로형 프리뷰",
     showBackground = true,
@@ -155,14 +152,18 @@ private fun SettingsScreenPortraitPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            SettingsScreenContent(
-                isSignedIn = true,
-                isLocationSignedIn = true,
-                isUserSignedIn = true,
+            SettingsScreen(
+                state = SettingsUiState(
+                    isLocationSignedIn = true,
+                    isUserSignedIn = true,
+                    currentLanguage = "ko",
+                    currentBloodPressureMonitorType = SharedPreferencesManager.BloodPressureMonitorType.BPBIO320,
+                    showDialog = SettingsUiState.DialogType.None
+                ),
+                onBackClick = {},
                 onLanguageClick = {},
-                onBloodPressureClick = {},
-                onLoginClick = {},
-                onBack = {}
+                onBloodPressureMonitorClick = {},
+                onLoginClick = {}
             )
         }
     }
@@ -182,14 +183,18 @@ private fun SettingsScreenLandscapePreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            SettingsScreenContent(
-                isSignedIn = true,
-                isLocationSignedIn = true,
-                isUserSignedIn = true,
+            SettingsScreen(
+                state = SettingsUiState(
+                    isLocationSignedIn = true,
+                    isUserSignedIn = false,
+                    currentLanguage = "en",
+                    currentBloodPressureMonitorType = SharedPreferencesManager.BloodPressureMonitorType.BP170B,
+                    showDialog = SettingsUiState.DialogType.None
+                ),
+                onBackClick = {},
                 onLanguageClick = {},
-                onBloodPressureClick = {},
-                onLoginClick = {},
-                onBack = {}
+                onBloodPressureMonitorClick = {},
+                onLoginClick = {}
             )
         }
     }
