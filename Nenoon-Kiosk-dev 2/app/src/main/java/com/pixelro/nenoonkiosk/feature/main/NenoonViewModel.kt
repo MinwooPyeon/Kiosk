@@ -29,11 +29,11 @@ import com.pixelro.nenoonkiosk.core.constants.DebugConstants
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
-import com.pixelro.nenoonkiosk.feature.exerciseglasses.concentration_exercise.ConcentrationExerciseResult
-import com.pixelro.nenoonkiosk.feature.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResult
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
+import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_exercise.ConcentrationExerciseResult
+import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResult
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
@@ -309,8 +309,8 @@ class NenoonViewModel
             }
         }
 
-        private val _selectedTestType = MutableStateFlow(TestType.None)
-        val selectedTestType: StateFlow<TestType> = _selectedTestType
+        private val _selectedTestType = MutableStateFlow(InspectionType.None)
+        val selectedTestType: StateFlow<InspectionType> = _selectedTestType
 
         fun updateToResumed() {
             _isResumed.update { true }
@@ -322,7 +322,7 @@ class NenoonViewModel
             _isPaused.update { true }
         }
 
-        fun updateSelectedTestType(testType: TestType) {
+        fun updateSelectedTestType(testType: InspectionType) {
             _selectedTestType.update { testType }
         }
 
@@ -418,37 +418,37 @@ class NenoonViewModel
             _isAniseikoniaTestDone.update { false }
         }
 
-        fun checkIsTestDone(testType: TestType): Boolean {
+        fun checkIsTestDone(testType: InspectionType): Boolean {
             when (testType) {
-                TestType.Phoria -> {
+                InspectionType.Phoria -> {
                     return _isPhoriaTestDone.value
                 }
 
-                TestType.Aniseikonia -> {
+                InspectionType.Aniseikonia -> {
                     return _isAniseikoniaTestDone.value
                 }
 
-                TestType.Presbyopia -> {
+                InspectionType.Presbyopia -> {
                     return _isPresbyopiaTestDone.value
                 }
 
-                TestType.ShortDistanceVisualAcuity -> {
+                InspectionType.ShortDistanceVisualAcuity -> {
                     return _isShortVisualAcuityTestDone.value
                 }
 
-                TestType.AmslerGrid -> {
+                InspectionType.AmslerGrid -> {
                     return _isAmslerGridTestDone.value
                 }
 
-                TestType.MChart -> {
+                InspectionType.MChart -> {
                     return _isMChartTestDone.value
                 }
 
-                TestType.BloodPressure -> {
+                InspectionType.BloodPressure -> {
                     return _isBloodPressureTestDone.value
                 }
 
-                TestType.GripStrength -> {
+                InspectionType.GripStrength -> {
                     return _isGripStrengthTestDone.value
                 }
 
@@ -464,7 +464,7 @@ class NenoonViewModel
         var childrenVisualAcuityTestResult = ChildrenVisualAcuityTestResult()
         var amslerGridTestResult = AmslerGridTestResult()
         var mChartTestResult = MChartTestResult()
-        var dementiaTestResult = DementiaTestResult(scores = List(14) { DementiaViewModel.DementiaAnswer.None })
+        var dementiaTestResult = DementiaInspectionResult(scores = List(14) { DementiaViewModel.DementiaAnswer.None })
         var presbyopiaExerciseResult = PresbyopiaExerciseResult()
         var concentrationExerciseResult = ConcentrationExerciseResult()
         var bloodPressureTestResult = BloodPressureTestResult(systolic = 0, diastolic = 0, pulseRate = 0)

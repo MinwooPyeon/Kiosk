@@ -44,7 +44,7 @@ import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.ui.GlassesExerciseSelectionButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import kotlinx.coroutines.delay
 
 // 미개발
@@ -52,7 +52,7 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun ExerciseListScreen(
-    toTestScreen: (TestType) -> Unit,
+    toTestScreen: (InspectionType) -> Unit,
     toIntroScreen: () -> Unit,
 ) {
     val pagerState =
@@ -79,7 +79,7 @@ fun ExerciseListScreen(
             }
         }
     }
-    var selectedTest by remember { mutableStateOf(TestType.None) }
+    var selectedTest by remember { mutableStateOf(InspectionType.None) }
     val transition = rememberInfiniteTransition()
     val shiftVal by transition.animateFloat(
         initialValue = 0f,
@@ -177,7 +177,7 @@ fun ExerciseListScreen(
                         R.string.presbyopia_glasses,
                     ),
                 onClickMethod = {
-                    toTestScreen(TestType.Presbyopia_Glasses)
+                    toTestScreen(InspectionType.Presbyopia_Glasses)
                 },
                 painter = painterResource(id = R.drawable.presbyopiaglasses_1),
             )
@@ -193,7 +193,7 @@ fun ExerciseListScreen(
                         R.string.concentration_glasses,
                     ),
                 onClickMethod = {
-                    toTestScreen(TestType.Concentration_Glasses)
+                    toTestScreen(InspectionType.Concentration_Glasses)
                 },
                 painter = painterResource(id = R.drawable.presbyopiaglasses_2),
             )
