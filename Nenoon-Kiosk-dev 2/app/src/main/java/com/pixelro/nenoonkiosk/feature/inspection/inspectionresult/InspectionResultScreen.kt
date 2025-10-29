@@ -24,6 +24,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.components.Da
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.components.LightBottomArea
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.components.LoadingView
 import com.pixelro.nenoonkiosk.feature.screen.TypewriterText
+import com.pixelro.nenoonkiosk.ui.theme.Black
 import com.pixelro.nenoonkiosk.ui.theme.White
 
 @Composable
@@ -41,7 +42,7 @@ fun InspectionResultScreen(
 ) {
     Column(
         modifier = if (isDarkBackground) {
-            Modifier.fillMaxSize().background(color = Color(0xff000000))
+            Modifier.fillMaxSize().background(color = Black)
         } else {
             Modifier.fillMaxSize()
         },
@@ -50,8 +51,8 @@ fun InspectionResultScreen(
         NenoonTopBar(
             title = titleText,
             showBackButton = false,
-            containerColor = if (isDarkBackground) Color(0xff000000) else White,
-            contentColor = if (isDarkBackground) White else Color(0xff000000)
+            containerColor = if (isDarkBackground) Black else White,
+            contentColor = if (isDarkBackground) White else Black
         )
         InspectionDivider()
 
