@@ -33,7 +33,7 @@ import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.manager.BP170BManager
 import com.pixelro.nenoonkiosk.core.ui.*
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BViewModel
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BViewModel
 
 enum class BP170BConnectionScreenState {
     Standby,

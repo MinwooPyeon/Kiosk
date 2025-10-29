@@ -33,7 +33,6 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestScreen
-import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BViewModel
 
 enum class BpMeasurementScreenState {
     Measuring,

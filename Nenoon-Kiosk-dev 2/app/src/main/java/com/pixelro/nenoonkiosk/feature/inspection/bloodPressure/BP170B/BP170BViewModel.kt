@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.iotdevice.BP170B
+package com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B
 
 import android.app.Application
 import android.bluetooth.BluetoothDevice
