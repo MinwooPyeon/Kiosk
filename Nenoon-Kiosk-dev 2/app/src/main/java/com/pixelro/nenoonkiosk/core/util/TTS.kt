@@ -31,22 +31,27 @@ object TTS {
     fun initTTS(language: String) {
         this.tts = TextToSpeech(NenoonKioskApplication.applicationContext()) { status ->
             if (status == TextToSpeech.SUCCESS) {
-                val koreanLocale = Locale.KOREAN
-                val koKRLocale = Locale.forLanguageTag("ko-KR")
-                val koLocale = Locale.forLanguageTag("ko")
-                
-                var result = tts.setLanguage(koreanLocale)
+                val targetLocale = Locale.forLanguageTag(language)
+                var result = tts.setLanguage(targetLocale)
                 
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    result = tts.setLanguage(koKRLocale)
-                }
-                
-                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    result = tts.setLanguage(koLocale)
-                }
-                
-                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    tts.setLanguage(Locale.getDefault())
+                    val koreanLocale = Locale.KOREAN
+                    val koKRLocale = Locale.forLanguageTag("ko-KR")
+                    val koLocale = Locale.forLanguageTag("ko")
+                    
+                    result = tts.setLanguage(koreanLocale)
+                    
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        result = tts.setLanguage(koKRLocale)
+                    }
+                    
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        result = tts.setLanguage(koLocale)
+                    }
+                    
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        tts.setLanguage(Locale.getDefault())
+                    }
                 }
             }
         }
@@ -106,22 +111,27 @@ object TTS {
     
     fun setLanguage(language: String) {
         if (::tts.isInitialized) {
-            val koreanLocale = Locale.KOREAN
-            val koKRLocale = Locale.forLanguageTag("ko-KR")
-            val koLocale = Locale.forLanguageTag("ko")
-            
-            var result = tts.setLanguage(koreanLocale)
+            val targetLocale = Locale.forLanguageTag(language)
+            var result = tts.setLanguage(targetLocale)
             
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                result = tts.setLanguage(koKRLocale)
-            }
-            
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                result = tts.setLanguage(koLocale)
-            }
-            
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                tts.setLanguage(Locale.getDefault())
+                val koreanLocale = Locale.KOREAN
+                val koKRLocale = Locale.forLanguageTag("ko-KR")
+                val koLocale = Locale.forLanguageTag("ko")
+                
+                result = tts.setLanguage(koreanLocale)
+                
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    result = tts.setLanguage(koKRLocale)
+                }
+                
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    result = tts.setLanguage(koLocale)
+                     }
+                
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    tts.setLanguage(Locale.getDefault())
+                }
             }
         }
     }
