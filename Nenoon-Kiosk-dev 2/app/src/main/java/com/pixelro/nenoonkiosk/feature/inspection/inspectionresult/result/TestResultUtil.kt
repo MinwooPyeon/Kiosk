@@ -10,7 +10,7 @@ import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
@@ -720,7 +720,7 @@ object TestResultUtil {
             }
 
             InspectionType.Dementia -> {
-                testResult as DementiaTestResult
+                testResult as DementiaInspectionResult
                 val image = Bitmap.createBitmap(width, 400, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(image)
                 canvas.drawARGB(255, 255, 255, 255)

@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.inspection.dementia
+package com.pixelro.nenoonkiosk.feature.inspection.dementia.process
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -17,13 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.AnswerRow
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.BottomCounter
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.QuestionBox
 
 
 @Composable
-fun DementiaTestScreen(
+fun DementiaInspectionContent(
     currentIndex: Int,
     totalQuestions: Int,
     @StringRes questionResId: Int,
@@ -79,7 +80,7 @@ val QUESTIONS = listOf(
 @Preview(showBackground = true, widthDp = 900, heightDp = 1400, name = "Dementia - Start", apiLevel = 34)
 @Composable
 private fun Preview_DementiaTestScreen_Start() {
-    DementiaTestScreen(
+    DementiaInspectionContent(
         currentIndex = 0,
         totalQuestions = 14,
         questionResId = R.string.dementia_survey_question0,
@@ -92,7 +93,7 @@ private fun Preview_DementiaTestScreen_Start() {
 @Preview(showBackground = true, widthDp = 900, heightDp = 1400, name = "Dementia - Mid Selected", apiLevel = 34)
 @Composable
 private fun Preview_DementiaTestScreen_Mid() {
-    DementiaTestScreen(
+    DementiaInspectionContent(
         currentIndex = 6,
         totalQuestions = 14,
         questionResId = R.string.dementia_survey_question6,

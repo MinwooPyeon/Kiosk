@@ -39,12 +39,11 @@ import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseContent
 import com.pixelro.nenoonkiosk.feature.inspection.ExternalDeviceTestListScreen
 import com.pixelro.nenoonkiosk.feature.inspection.EyeTestInspectionRoute
-import com.pixelro.nenoonkiosk.feature.inspection.EyeTestInspectionScreen
 import com.pixelro.nenoonkiosk.feature.strabismus.PhoriaAndAniseikoniaTestListScreen
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.TestResultScreen
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionScreenRoute
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestContent
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestRoute
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.process.DementiaInspectionRoute
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestContent
@@ -643,7 +642,7 @@ fun nenoonApp(
                             }
 
                             InspectionType.Dementia -> {
-                                DementiaTestRoute(
+                                DementiaInspectionRoute(
                                     toResultScreen = {
                                         viewModel.dementiaTestResult = it
                                         navigateToResult.value()

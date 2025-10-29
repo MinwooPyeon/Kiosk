@@ -2,7 +2,7 @@ package com.pixelro.nenoonkiosk.core.util.dataprovider
 
 import com.harang.data.model.dto.CompoundTestResultAPI
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
@@ -19,7 +19,7 @@ data class CompoundTestResult(
     val mChartTestResult: MChartTestResult?,
     val bloodPressureTestResult: BloodPressureTestResult?,
     val gripStrengthTestResult: GripStrengthTestResult?,
-    val dementiaTestResult: DementiaTestResult?,
+    val dementiaTestResult: DementiaInspectionResult?,
     val pulmonaryFunctionTestResult: PulmonaryFunctionTestResult?,
     val createAt: String?, // Added createAt property
 ) {
@@ -118,7 +118,7 @@ data class CompoundTestResult(
                 if (scores.any { it == null || it == "null" }) {
                     null
                 } else {
-                    DementiaTestResult(scores.map { it!!.toDementiaAnswer() })
+                    DementiaInspectionResult(scores.map { it!!.toDementiaAnswer() })
                 }
             },
         pulmonaryFunctionTestResult =
