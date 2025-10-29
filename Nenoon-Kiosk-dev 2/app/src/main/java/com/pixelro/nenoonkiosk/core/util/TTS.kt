@@ -56,23 +56,6 @@ object TTS {
             }
         }
     }
-    
-    suspend fun initTTSAsync(language: String) {
-        this.tts = TextToSpeech(NenoonKioskApplication.applicationContext()) { status ->
-            if (status == TextToSpeech.SUCCESS) {
-                val locale = Locale.forLanguageTag(language)
-                val result = tts.setLanguage(locale)
-                
-                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    tts.setLanguage(Locale.KOREAN)
-                }
-            }
-        }
-        
-        while (!::tts.isInitialized) {
-            kotlinx.coroutines.delay(100)
-        }
-    }
 
     fun destroyTTS() {
         tts.shutdown()
