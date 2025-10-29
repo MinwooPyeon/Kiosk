@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
+import com.pixelro.nenoonkiosk.core.ui.TopBarVertical
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
 @Composable
@@ -42,7 +42,7 @@ fun SettingSelectionDialog(
                     .height(1000.dp)
                     .background(Color.White, RoundedCornerShape(8.dp))
             ) {
-                NenoonTopBar(
+                TopBarVertical(
                     title = stringResource(id = titleResId),
                     showBackButton = false,
                     onBackClicked = {}
@@ -168,7 +168,7 @@ private fun DialogPreviewContent(
                     .height(1000.dp)
                     .background(Color.White, RoundedCornerShape(8.dp))
             ) {
-                NenoonTopBar(
+                TopBarVertical(
                     title = title,
                     showBackButton = false,
                     onBackClicked = {}

@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
+import com.pixelro.nenoonkiosk.core.ui.TopBarVertical
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.print.components.ResultsGrid
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
@@ -32,7 +32,7 @@ fun ResultPrintScreen(
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             // Top bar
-            NenoonTopBar(
+            TopBarVertical(
                 title = state.title,
                 showBackButton = true,
                 onBackClicked = onBack,

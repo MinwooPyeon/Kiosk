@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
-import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
+import com.pixelro.nenoonkiosk.core.ui.TopBarVertical
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
 import com.pixelro.nenoonkiosk.feature.setting.component.SettingItem
@@ -113,7 +113,7 @@ private fun SettingsScreenContent(
     Column(Modifier.fillMaxSize()) {
 
         // 상단바
-        NenoonTopBar(
+        TopBarVertical(
             title = stringResource(R.string.settings_title),
             showBackButton = true,
             onBackClicked = onBack,

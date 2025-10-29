@@ -26,8 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.core.ui.HowToButton
-import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
+import com.pixelro.nenoonkiosk.core.ui.TopBarVertical
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
 /**
@@ -58,7 +58,7 @@ fun InspectionQuestionContent(
     Scaffold(
         containerColor = Color.Black,
         topBar = {
-            NenoonTopBar(
+            TopBarVertical(
                 title = title,
                 showBackButton = true,
                 onBackClicked = onBackClicked,
