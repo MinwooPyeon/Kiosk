@@ -40,11 +40,12 @@ import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exe
 import com.pixelro.nenoonkiosk.feature.inspection.ExternalDeviceTestListScreen
 import com.pixelro.nenoonkiosk.feature.inspection.EyeTestInspectionRoute
 import com.pixelro.nenoonkiosk.feature.strabismus.PhoriaAndAniseikoniaTestListScreen
-import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.TestResultScreen
+import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.InspectionResultScreen
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionScreenRoute
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.process.DementiaInspectionRoute
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestContent
+import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.InspectionResultRoute
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestContent
@@ -724,7 +725,7 @@ fun nenoonApp(
                 }
             }
             val surveyId = viewModel.surveyId.collectAsState().value
-            TestResultScreen(
+            InspectionResultRoute(
                 surveyId = surveyId,
                 testType = viewModel.selectedTestType.collectAsState().value,
                 testResult =

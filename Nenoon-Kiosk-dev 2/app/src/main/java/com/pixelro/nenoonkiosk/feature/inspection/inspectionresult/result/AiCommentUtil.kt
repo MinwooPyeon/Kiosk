@@ -18,7 +18,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResul
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
 
-fun AiComment(
+fun aiComment(
     testType: InspectionType,
     testResult: Any,
 ): AnnotatedString {

@@ -25,7 +25,7 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.bitmapToFile
 import com.pixelro.nenoonkiosk.core.util.qr.QRCodeGenerator
 import com.pixelro.nenoonkiosk.feature.auth.FaceRecognizer
-import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.TestResultUtil
+import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.InspectionResultUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -667,7 +667,7 @@ constructor(
                 BitmapFactory.decodeResource(resources, R.drawable.pixelro_logo_black)
                     .scale(240, 80, false)
             val qrImg = qrCodeImageBitmap.scale(80, 80, false)
-            val bm = TestResultUtil.formatQrCode(qrImg = qrImg, logoImg = logoImg)
+            val bm = InspectionResultUtil.formatQrCode(qrImg = qrImg, logoImg = logoImg)
 
             NPrintInfo(
                 NPrinter(
