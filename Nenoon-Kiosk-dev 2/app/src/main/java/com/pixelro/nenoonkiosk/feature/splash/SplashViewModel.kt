@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.navigation.Route
+import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
 import com.pixelro.nenoonkiosk.core.permission.PermissionChecker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -37,7 +38,7 @@ class SplashViewModel @Inject constructor(
         val allGranted = permissionChecker.areAllPermissionsGranted()
 
         if (allGranted) {
-            navigator.navigateAndClearBackStack(Route.SignIn)
+            navigator.navigateAndClearBackStack(Route.LogIn)
         } else {
             navigator.navigateAndClearBackStack(Route.Permission)
         }

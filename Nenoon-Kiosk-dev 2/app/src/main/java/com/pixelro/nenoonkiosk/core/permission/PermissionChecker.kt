@@ -58,14 +58,14 @@ class PermissionChecker @Inject constructor(
     fun isBluetoothEnabled(): Boolean {
         val bluetoothManager = application.getSystemService(Context.BLUETOOTH_SERVICE)
                 as? BluetoothManager
-        return bluetoothManager?.adapter?.isEnabled ?: false
+        return bluetoothManager?.adapter?.isEnabled == true
     }
 
     fun isLocationEnabled(): Boolean {
         val locationManager = ContextCompat.getSystemService(
             application,
             LocationManager::class.java
-        ) as? LocationManager
-        return locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
+        )
+        return locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true
     }
 }

@@ -1,5 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.main
 
+import SettingsRoute
 import android.os.Build
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
@@ -11,27 +12,20 @@ import androidx.compose.runtime.setValue
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation3.runtime.NavBackStack
 import com.harang.data.model.dto.User
-import com.pixelro.nenoonkiosk.core.navigation.AdminRoute
-import com.pixelro.nenoonkiosk.core.navigation.DeviceConnectRoute
 import com.pixelro.nenoonkiosk.core.navigation.Route
 import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
 import com.pixelro.nenoonkiosk.core.navigation.TestRoute
-import com.pixelro.nenoonkiosk.feature.auth.accountmanagement.AccountManagementRoute
 import com.pixelro.nenoonkiosk.feature.auth.faceenrollment.FaceEnrollmentRoute
 import com.pixelro.nenoonkiosk.feature.auth.faceidlogin.FaceIdLoginRoute
-import com.pixelro.nenoonkiosk.feature.auth.faceupdate.FaceUpdateRoute
 import com.pixelro.nenoonkiosk.feature.auth.idpasswordlogin.IdPasswordLoginRoute
 import com.pixelro.nenoonkiosk.feature.auth.locationlogin.LocationLoginRoute
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginRoute
 import com.pixelro.nenoonkiosk.feature.auth.qrlogin.QrLoginRoute
 import com.pixelro.nenoonkiosk.feature.auth.signup.SignUpRoute
+import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListRoute
 import com.pixelro.nenoonkiosk.feature.permission.PermissionRoute
-import com.pixelro.nenoonkiosk.feature.print.ResultPrintRoute
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverRoute
 import com.pixelro.nenoonkiosk.feature.splash.SplashRoute
-import com.pixelro.nenoonkiosk.feature.termsofservice.base.TermsOfServiceRoute
-import com.pixelro.nenoonkiosk.feature.termsofservice.faceid.FaceIdTermsOfServiceRoute
-import com.pixelro.nenoonkiosk.feature.termsofservice.signup.SignUpTermsOfServiceRoute
 
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(UnstableApi::class)
@@ -51,15 +45,18 @@ fun NenoonRouteHost(
         is Route.ScreenSaver -> ScreenSaverRoute(
             isSignedIn = isSignedIn
         )
+
         is Route.Permission -> PermissionRoute()
+        is Route.LogIn -> LoginRoute(
+            updateIsSignedIn = { isSignedIn = it }
+        )
 //        is Route.Entries -> EntriesRoute()
-//        is Route.SignIn -> SignInRoute()
 //        is Route.Intro -> IntroRoute()
 //        is Route.Survey -> SurveyRoute()
 //        is Route.SoftwareInfo -> SoftwareInfoRoute()
 //        is Route.TermsOfService -> TermsOfServiceRoute()
 //        is Route.ResultPrint -> ResultPrintRoute()
-//        is Route.Settings -> SettingsRoute()
+        is Route.Settings -> SettingsRoute()
 //        is Route.Contact -> ContactRoute()
 //        is Route.Videotelephony -> VideotelephonyRoute()
 //        is Route.BTDeviceManagement -> BTDeviceManagementRoute()
@@ -68,20 +65,25 @@ fun NenoonRouteHost(
         is SignInRoute.LocationSignIn -> LocationLoginRoute(
             updateIsSignedIn = { isSignedIn = it }
         )
+
         is SignInRoute.UserSignIn -> LoginRoute(
             updateIsSignedIn = { isSignedIn = it }
         )
+
         is SignInRoute.FaceId -> FaceIdLoginRoute(
             updateIsSignedIn = { isSignedIn = it }
         )
+
         is SignInRoute.QR -> QrLoginRoute(
             updateIsSignedIn = { isSignedIn = it }
         )
+
         is SignInRoute.SignUp -> SignUpRoute()
         is SignInRoute.FaceEnrollment -> FaceEnrollmentRoute(
             userId = userId ?: "",
             accessToken = userData?.accessToken
         )
+
         is SignInRoute.IdPassword -> IdPasswordLoginRoute(
             updateIsSignedIn = { isSignedIn = it }
         )
@@ -91,7 +93,10 @@ fun NenoonRouteHost(
         // Test Routes
 //        is TestRoute.TestList -> TestListRoute()
 //        is TestRoute.ExerciseList -> ExerciseListRoute()
-//        is TestRoute.CategoryList -> CategoryListRoute()
+        is TestRoute.CategoryList -> CategoryListRoute(
+            pid = userId,
+            isSignInSkipped = isSignedIn,
+        )
 //        is TestRoute.ExternalDeviceTestList -> ExternalDeviceTestListRoute()
 //        is TestRoute.StrabismusTestList -> StrabismusTestListRoute()
 //        is TestRoute.TestContent -> TestContentRoute()
