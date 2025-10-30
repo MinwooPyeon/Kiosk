@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.inspection.presbyopia.process.components
+package com.pixelro.nenoonkiosk.feature.inspection.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

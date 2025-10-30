@@ -33,7 +33,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.process.components.
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.process.components.InspectionDescriptionBox
 import com.pixelro.nenoonkiosk.core.ui.StyledAnnotatedText
 import com.pixelro.nenoonkiosk.core.ui.TextSegment
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.process.components.WarningOverlay
+import com.pixelro.nenoonkiosk.feature.inspection.components.WarningOverlay
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue

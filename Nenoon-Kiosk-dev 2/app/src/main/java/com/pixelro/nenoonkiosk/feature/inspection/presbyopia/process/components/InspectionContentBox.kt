@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.sp
 import androidx.media3.exoplayer.ExoPlayer
 import com.pixelro.nenoonkiosk.core.ui.StyledAnnotatedText
 import com.pixelro.nenoonkiosk.core.ui.TextSegment
+import com.pixelro.nenoonkiosk.feature.inspection.components.VideoPlayerView
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.process.PresbyopiaInspectionUiState
 import com.pixelro.nenoonkiosk.ui.theme.Black
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
