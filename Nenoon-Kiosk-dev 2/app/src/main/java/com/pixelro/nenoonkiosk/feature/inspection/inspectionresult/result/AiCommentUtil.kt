@@ -10,7 +10,7 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.ColorProvider
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
@@ -186,7 +186,7 @@ fun aiComment(
 
         InspectionType.BloodPressure -> {
             try {
-                val parsedResult = testResult as BloodPressureTestResult
+                val parsedResult = testResult as BloodPressureInspectionResultContract
 
                 if (parsedResult.systolic < 120 && parsedResult.diastolic < 80) {
                     buildAnnotatedString {

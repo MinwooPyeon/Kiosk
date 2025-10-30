@@ -9,7 +9,7 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
@@ -673,7 +673,7 @@ object InspectionResultUtil {
             }
 
             InspectionType.BloodPressure -> {
-                testResult as BloodPressureTestResult
+                testResult as BloodPressureInspectionResultContract
                 val image = Bitmap.createBitmap(width, 400, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(image)
                 canvas.drawARGB(255, 255, 255, 255)

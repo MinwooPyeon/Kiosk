@@ -41,7 +41,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.ExternalDeviceTestListScreen
 import com.pixelro.nenoonkiosk.feature.inspection.EyeTestInspectionRoute
 import com.pixelro.nenoonkiosk.feature.strabismus.PhoriaAndAniseikoniaTestListScreen
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionScreenRoute
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestContent
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureInspectionEntryPoint
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.process.DementiaInspectionRoute
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthInspectionEntryPoint
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.InspectionResultRoute
@@ -668,7 +668,7 @@ fun nenoonApp(
                             }
 
                             InspectionType.BloodPressure -> {
-                                BloodPressureTestContent(
+                                BloodPressureInspectionEntryPoint(
                                     toResultScreen = {
                                         viewModel.bloodPressureTestResult = it
                                         navigateToResult.value()

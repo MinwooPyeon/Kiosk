@@ -1,6 +1,5 @@
-package com.pixelro.nenoonkiosk.feature.inspection.bloodPressure
+package com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.error
 
-import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,36 +11,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.IconTextButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.core.util.TTS
 
 @Composable
 fun BloodPressureErrorScreen(
     onReturn: () -> Unit,
     onLogout: () -> Unit,
-    navController: NavHostController,
     isSignedIn: Boolean,
+    toStart: () -> Unit,
 ) {
-    LaunchedEffect(Unit) {
-        TTS.stopTTS()
-        TTS.speechTTS(
-            StringProvider.getString(R.string.bpbio320_error_message),
-            TextToSpeech.QUEUE_ADD,
-        )
-    }
-
     Column(
         modifier =
             Modifier
@@ -61,34 +51,57 @@ fun BloodPressureErrorScreen(
         )
         Spacer(modifier = Modifier.height(20.dp))
         StyledText(
-            text = StringProvider.getString(R.string.bpbio320_error_title),
+            text = stringResource(R.string.bpbio320_error_title),
             style = TextStyle.Error,
             modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.weight(1f))
-        Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(20.dp)) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
             IconTextButton(
                 onClick = {
-                    navController.navigate(BloodPressureTestScreen.Start.name) {
-                        popUpTo(BloodPressureTestScreen.Start.name) { inclusive = false }
-                    }
+                    toStart
                 },
                 iconId = R.drawable.icon_retry,
-                text = StringProvider.getString(R.string.retest),
+                text = stringResource(R.string.retest),
             )
             IconTextButton(
                 onClick = onReturn,
                 iconId = R.drawable.icon_back2,
-                text = StringProvider.getString(R.string.result_button2_back),
+                text = stringResource(R.string.result_button2_back),
             )
             if (isSignedIn) {
                 IconTextButton(
                     onClick = onLogout,
                     iconId = R.drawable.icon_logout,
-                    text = StringProvider.getString(R.string.settings_signout),
+                    text = stringResource(R.string.settings_signout),
                 )
             }
         }
     }
+}
+
+@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "BP Error – Idle")
+@Composable
+private fun Preview_BP_Error_Idle() {
+    BloodPressureErrorScreen(
+        onReturn = {},
+        onLogout = {},
+        isSignedIn = true,
+        toStart = {},
+    )
+}
+
+@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "BP Error – false")
+@Composable
+private fun Preview_BP_Error_false() {
+    BloodPressureErrorScreen(
+        onReturn = {},
+        onLogout = {},
+        isSignedIn = false,
+        toStart = {},
+    )
 }

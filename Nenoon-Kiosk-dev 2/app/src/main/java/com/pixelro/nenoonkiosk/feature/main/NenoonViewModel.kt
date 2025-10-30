@@ -32,7 +32,7 @@ import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_exercise.ConcentrationExerciseResult
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResult
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
@@ -468,7 +468,7 @@ class NenoonViewModel
         var dementiaTestResult = DementiaInspectionResult(scores = List(14) { DementiaViewModel.DementiaAnswer.None })
         var presbyopiaExerciseResult = PresbyopiaExerciseResult()
         var concentrationExerciseResult = ConcentrationExerciseResult()
-        var bloodPressureTestResult = BloodPressureTestResult(systolic = 0, diastolic = 0, pulseRate = 0)
+        var bloodPressureTestResult = BloodPressureInspectionResultContract(systolic = 0, diastolic = 0, pulseRate = 0)
         var gripStrengthTestResult = GripStrengthInspectionResultContract(leftGrip = 0.0, rightGrip = 0.0)
         var pulmonaryFunctionTestResult = PulmonaryFunctionTestResult()
 

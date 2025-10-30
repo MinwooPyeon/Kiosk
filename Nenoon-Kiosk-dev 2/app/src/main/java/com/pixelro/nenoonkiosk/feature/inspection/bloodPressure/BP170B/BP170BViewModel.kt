@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pixelro.nenoonkiosk.core.manager.BP170BManager
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResultContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -31,7 +31,7 @@ class BP170BViewModel
         val isInitialized: StateFlow<Boolean> = BP170BManager.isInitialized
 
         // Add this StateFlow to expose the parsed blood pressure result
-        val bloodPressureResult: StateFlow<BloodPressureTestResult?> = BP170BManager.bloodPressureResult
+        val bloodPressureResult: StateFlow<BloodPressureInspectionResultContract?> = BP170BManager.bloodPressureResult
 
         fun startScan() {
             viewModelScope.launch {
