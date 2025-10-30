@@ -11,17 +11,17 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
 
 // TODO STR
 
-object TestResultUtil {
+object InspectionResultUtil {
     fun textAsBitmap(
         testType: InspectionType,
         testResult: Any?,
@@ -36,7 +36,7 @@ object TestResultUtil {
         val baseline = -paint.ascent()
         when (testType) {
             InspectionType.Presbyopia -> {
-                testResult as PresbyopiaTestResult
+                testResult as PresbyopiaInspectionResult
                 val image = Bitmap.createBitmap(width, 400, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(image)
                 canvas.drawARGB(255, 255, 255, 255)
@@ -671,7 +671,7 @@ object TestResultUtil {
             }
 
             InspectionType.GripStrength -> {
-                testResult as GripStrengthTestResult
+                testResult as GripStrengthInspectionResultContract
                 val image = Bitmap.createBitmap(width, 400, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(image)
                 canvas.drawARGB(255, 255, 255, 255)

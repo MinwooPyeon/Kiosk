@@ -3,7 +3,6 @@ package com.pixelro.nenoonkiosk.core.ui
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -11,7 +10,6 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.ui.theme.defaultFont
-import com.pixelro.nenoonkiosk.ui.theme.inputTextStyle
 
 /**
  * 검사 단계 가이드 보기 버튼 컴포넌트

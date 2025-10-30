@@ -14,9 +14,14 @@ import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.manager.InGripManager
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripViewModel
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.error.GripStrengthErrorRoute
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.inprogress.GripStrengthInProgressRoute
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.instructions.GripStrengthInstructionsRoute
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.start.GripStrengthStartRoute
 import kotlinx.coroutines.flow.collectLatest
 
-enum class GripStrengthTestScreen {
+enum class GripStrengthInspectionNavRoute {
     Start,
     Instructions,
     InProgress,
@@ -24,62 +29,62 @@ enum class GripStrengthTestScreen {
 }
 
 @Composable
-fun GripStrengthTestContent(
-    toResultScreen: (GripStrengthTestResult) -> Unit,
+fun GripStrengthInspectionEntryPoint(
+    toResultScreen: (GripStrengthInspectionResultContract) -> Unit,
     navController: NavHostController,
     isSignedIn: Boolean,
     gripStrengthViewModel: InGripViewModel = hiltViewModel(),
     loginViewModel: LoginViewModel,
 ) {
-//    toResultScreen(gripStrengthViewModel.getGripStrengthData())
-
     val localNavController = rememberNavController()
     val context = LocalContext.current
     val isDynamometerInitialized by InGripManager.isInitialized.collectAsState()
 
-    // LaunchedEffect for handling Bluetooth connection state and data reception
     LaunchedEffect(Unit) {
         InGripManager.connectionState.collectLatest { state ->
-
             if (!isDynamometerInitialized) {
                 InGripManager.init(context)
             }
 
             when (state) {
                 is InGripManager.BluetoothConnectionState.DISCONNECTED -> {
-                    localNavController.popBackStack(GripStrengthTestScreen.Start.name, false)
+                    localNavController.popBackStack(GripStrengthInspectionNavRoute.Start.name, false)
                 }
                 else -> { /* CONNECTING, ERROR states do not change main testState yet */ }
             }
         }
     }
 
-    NavHost(navController = localNavController, startDestination = GripStrengthTestScreen.Start.name) {
-        composable(GripStrengthTestScreen.Start.name) {
-            GripStrengthStartScreen(
+    NavHost(navController = localNavController, startDestination = GripStrengthInspectionNavRoute.Start.name) {
+        composable(GripStrengthInspectionNavRoute.Start.name) {
+            GripStrengthStartRoute(
                 navController = localNavController,
                 viewModel = gripStrengthViewModel,
-                onBack = { navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false) },
+                onBack = {
+                    navController.popBackStack(
+                        NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST,
+                        false
+                    )
+                },
             )
         }
-        composable(GripStrengthTestScreen.Instructions.name) {
-            GripStrengthInstructionsScreen(
+        composable(GripStrengthInspectionNavRoute.Instructions.name) {
+            GripStrengthInstructionsRoute(
                 navController = localNavController,
-                viewModel = gripStrengthViewModel,
             )
         }
-        composable(GripStrengthTestScreen.InProgress.name) {
+        composable(GripStrengthInspectionNavRoute.InProgress.name) {
             LaunchedEffect(Unit) {
                 gripStrengthViewModel.resetTest()
             }
-            GripStrengthInProgressScreen(
+            GripStrengthInProgressRoute(
                 navController = localNavController,
                 viewModel = gripStrengthViewModel,
                 toResultScreen = toResultScreen,
             )
         }
-        composable(GripStrengthTestScreen.Error.name) {
-            GripStrengthErrorScreen(
+        composable(GripStrengthInspectionNavRoute.Error.name) {
+            GripStrengthErrorRoute(
                 onReturn = {
                     navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false)
                 },
@@ -88,7 +93,6 @@ fun GripStrengthTestContent(
                 },
                 navController = localNavController,
                 isSignedIn = isSignedIn,
-                viewModel = gripStrengthViewModel,
             )
         }
     }

@@ -1,19 +1,26 @@
-package com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result
+package com.pixelro.nenoonkiosk.feature.inspection.inspectionresult
 
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.harang.data.model.dto.request.*
+import com.harang.data.model.dto.request.SendAmslerGridTestResultRequest
+import com.harang.data.model.dto.request.SendBloodPressureTestResultRequest
+import com.harang.data.model.dto.request.SendDementiaTestResultRequest
+import com.harang.data.model.dto.request.SendGripStrengthTestResultRequest
+import com.harang.data.model.dto.request.SendMChartTestResultRequest
+import com.harang.data.model.dto.request.SendPresbyopiaTestResultRequest
+import com.harang.data.model.dto.request.SendPulmonaryFunctionTestResultRequest
+import com.harang.data.model.dto.request.SendShortVisualAcuityTestResultRequest
 import com.harang.data.repository.TestResultRepository
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +30,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TestResultViewModel
+class InspectionResultViewModel
     @Inject
     constructor(
         application: Application,
@@ -47,7 +54,7 @@ class TestResultViewModel
             viewModelScope.launch {
                 when (testType) {
                     InspectionType.Presbyopia -> {
-                        testResult as PresbyopiaTestResult
+                        testResult as PresbyopiaInspectionResult
                         // Internal Save
                         SharedPreferencesManager.updatePresbyopiaResult(
                             firstDistance = testResult.firstDistance,
@@ -187,7 +194,7 @@ class TestResultViewModel
                         val response = testResultRepository.sendDementiaTestResult(token, request)
                     }
                     InspectionType.GripStrength -> {
-                        testResult as GripStrengthTestResult
+                        testResult as GripStrengthInspectionResultContract
                         // Internal Save
                         SharedPreferencesManager.updateGripStrengthResult(
                             leftGrip = testResult.leftGrip.toFloat(),

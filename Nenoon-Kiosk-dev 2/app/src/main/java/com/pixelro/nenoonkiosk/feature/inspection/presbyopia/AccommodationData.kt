@@ -3,7 +3,7 @@ package com.pixelro.nenoonkiosk.feature.inspection.presbyopia
 import com.github.mikephil.charting.data.Entry
 
 /**
- * 거리 대응 나이표
+ * 거리 대응 나이표 (거리, 나이)
  */
 object AccommodationData {
     val allEntries =

@@ -4,21 +4,21 @@ import com.harang.data.model.dto.CompoundTestResultAPI
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
 
 data class CompoundTestResult(
     val shortVisualAcuityTestResult: ShortVisualAcuityTestResult?,
-    val presbyopiaTestResult: PresbyopiaTestResult?,
+    val presbyopiaInspectionResult: PresbyopiaInspectionResult?,
     val amslerGridTestResult: AmslerGridTestResult?,
     val mChartTestResult: MChartTestResult?,
     val bloodPressureTestResult: BloodPressureTestResult?,
-    val gripStrengthTestResult: GripStrengthTestResult?,
+    val gripStrengthTestResult: GripStrengthInspectionResultContract?,
     val dementiaTestResult: DementiaInspectionResult?,
     val pulmonaryFunctionTestResult: PulmonaryFunctionTestResult?,
     val createAt: String?, // Added createAt property
@@ -39,7 +39,7 @@ data class CompoundTestResult(
                     }
                 }
             },
-        presbyopiaTestResult =
+        presbyopiaInspectionResult =
             apiResult.eyePresbyopia?.run {
                 val d1 = distance1
                 val d2 = distance2
@@ -48,7 +48,7 @@ data class CompoundTestResult(
                 if (d1 == null || d2 == null || d3 == null || dAvg == null) {
                     null
                 } else {
-                    PresbyopiaTestResult(d1.toFloat(), d2.toFloat(), d3.toFloat(), dAvg.toFloat())
+                    PresbyopiaInspectionResult(d1.toFloat(), d2.toFloat(), d3.toFloat(), dAvg.toFloat())
                 }
             },
         amslerGridTestResult =
@@ -102,7 +102,7 @@ data class CompoundTestResult(
                 if (right == null || left == null) {
                     null
                 } else {
-                    GripStrengthTestResult(right, left)
+                    GripStrengthInspectionResultContract(right, left)
                 }
             },
         dementiaTestResult =

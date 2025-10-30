@@ -4,6 +4,9 @@ import android.app.Application
 import android.speech.tts.TextToSpeech
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.datasource.RawResourceDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
@@ -43,7 +46,8 @@ class PresbyopiaViewModel
          * TTS
          */
         fun checkCondition(dist: Float) {
-            if (!TTS.tts.isSpeaking) {
+            val isTTSSpeaking = try { TTS.tts.isSpeaking } catch (e: Exception) { false }
+            if (!isTTSSpeaking) {
                 when (_testState.value) {
                     TestState.Started -> {
                         isTTSDescriptionDone = false
@@ -238,8 +242,20 @@ class PresbyopiaViewModel
 
         /**
          * 거리 계산 공식
+         *
+         * TODO: 노안 판별 로직 버그 수정 필요
+         * 문제점:
+         * 1. NoPresbyopia일 때 avgDistance = 25f로 저장됨 (193줄, 205줄, 219줄)
+         * 2. AccommodationData에서 25cm는 48세에 해당
+         * 3. 정상(NoPresbyopia)인데 age = 48로 계산되는 모순 발생
+         * 4. PresbyopiaTestResultContent에서 avgDistance == 25 체크로 강제 정상 처리
+         *
+         * 제안:
+         * - NoPresbyopia일 때 age를 25세로 고정하거나
+         * - avgDistance를 9.1f (실제 25세 거리)로 저장
+         * - 또는 별도의 isNormal 플래그 추가
          */
-        fun getPresbyopiaTestResult(): PresbyopiaTestResult {
+        fun getPresbyopiaTestResult(): PresbyopiaInspectionResult {
             var max = 2147483647f
             val avgDistance = (firstDistance + secondDistance + thirdDistance) / 3
             var age = 25
@@ -251,11 +267,39 @@ class PresbyopiaViewModel
                     age = entry.y.toInt()
                 }
             }
-            return PresbyopiaTestResult(firstDistance, secondDistance, thirdDistance, avgDistance, age)
+            return PresbyopiaInspectionResult(firstDistance, secondDistance, thirdDistance, avgDistance, age)
         }
 
         fun init() {
             _isTextShowing.update { true }
+        }
+
+        /**
+         * 거리 조정 비디오 준비 (반복 재생)
+         */
+        fun prepareAdjustingDistanceVideo() {
+            exoPlayer.repeatMode = Player.REPEAT_MODE_ONE
+            exoPlayer.setMediaItem(
+                MediaItem.fromUri(
+                    RawResourceDataSource.buildRawResourceUri(R.raw.measuring_distance_video_2)
+                )
+            )
+            exoPlayer.prepare()
+            exoPlayer.play()
+        }
+
+        /**
+         * 가까이 다가가기 비디오 준비 (1회 재생)
+         */
+        fun prepareComingCloserVideo() {
+            exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
+            exoPlayer.setMediaItem(
+                MediaItem.fromUri(
+                    RawResourceDataSource.buildRawResourceUri(R.raw.presbyopia_video_2_new)
+                )
+            )
+            exoPlayer.prepare()
+            exoPlayer.play()
         }
 
         enum class TestState {

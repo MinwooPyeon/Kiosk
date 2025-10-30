@@ -15,10 +15,10 @@ import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionRes
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
 
-fun AiComment(
+fun aiComment(
     testType: InspectionType,
     testResult: Any,
 ): AnnotatedString {
@@ -69,7 +69,7 @@ fun AiComment(
 
         InspectionType.Presbyopia -> {
             try {
-                val parsedResult = testResult as PresbyopiaTestResult
+                val parsedResult = testResult as PresbyopiaInspectionResult
 
                 when (parsedResult.firstDistance.toInt() == 25 || parsedResult.secondDistance.toInt() == 25 || parsedResult.thirdDistance.toInt() == 25) {
                     true ->
