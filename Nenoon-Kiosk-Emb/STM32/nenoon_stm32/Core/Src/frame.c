@@ -32,5 +32,19 @@ frame_err_t frame_build(uint8_t type, const uint8_t* payload, uint16_t len, uint
 	if(len && !payload) 		return FRAME_ERR_ARG;
 
 	size_t need = FRAME_HDR_SIZE + len + FRAME_ERR_ORB;
+	if(out_cap < need) return FRAME_ERR_OOB;
 
+	out_buf[0] = FRAME_MAGIC_MSB;
+	out_buf[1] = FRAME_MAGIC_LSB;
+	out_buf[2] = FRAME_VER;
+	out_buf[3] = type;
+	be16_write(&out_buf[4], len);
+
+	if(len) memcpy(&out_buf[6], payload, len);
+
+	uint16_t crc = frame_crc16_ccitt(&out_buf[2], 4u+len);
+	be16_write(&out_buf[6+len], crc);
+
+	if(out_len) *out_len = need;
+	return FRAME_OK;
 }
