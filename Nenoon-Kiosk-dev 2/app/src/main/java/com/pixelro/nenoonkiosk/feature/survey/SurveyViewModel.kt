@@ -208,7 +208,7 @@ class SurveyViewModel @Inject constructor(
     }
 
     fun navigateToCategoryList(pid: Long) = intent {
-//        navigator.navigate(TestRoute.CategoryList(pid))
+        navigator.navigate(TestRoute.CategoryList)
     }
 
     private fun updateQuestionType(type: QuestionType) = intent {
