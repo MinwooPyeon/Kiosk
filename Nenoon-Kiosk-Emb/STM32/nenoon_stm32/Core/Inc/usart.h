@@ -27,7 +27,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stm32f4xx_hal.h"
+
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
@@ -54,7 +54,10 @@ HAL_StatusTypeDef UART2_RecvBytes(const uint8_t* buf, uint16_t len, uint32_t to_
 
 //UART3 - ST-LINK
 
-
+HAL_StatusTypeDef STLINK_UART_PutChar(uint8_t ch);
+HAL_StatusTypeDef STLINK_UART_Print(const char* s);
+HAL_StatusTypeDef STLINK_UART_Println(const char* s);
+uint8_t STLINK_UART_GetChar(uint32_t timeout_ms);
 //UART6 - ESP32
 HAL_StatusTypeDef UART6_SendString(const char* s);
 HAL_StatusTypeDef UART6_SendBytes(const uint8_t* buf, uint16_t len);

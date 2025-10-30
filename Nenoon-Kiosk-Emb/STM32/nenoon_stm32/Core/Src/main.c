@@ -21,8 +21,9 @@
 #include "cmsis_os.h"
 #include "dma.h"
 #include "eth.h"
+#include "fatfs.h"
 #include "usart.h"
-#include "usb_otg.h"
+#include "usb_host.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -97,20 +98,18 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USART2_UART_Init();
   MX_USART6_UART_Init();
-  MX_USB_OTG_FS_PCD_Init();
-  STLINK_UART_Println("[STM32] Configure All Peripheral Configure Initialize");
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
   /* Init scheduler */
   osKernelInitialize();  /* Call init function for freertos objects (in cmsis_os2.c) */
-
   MX_FREERTOS_Init();
-  ST_LINK_UART_Println("[STM32] OS Scheduler Initialization");
+
   /* Start scheduler */
   osKernelStart();
-  ST_LINK_UART_Println("[STM32] OS Kernel Start");
+
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
