@@ -5,7 +5,6 @@ import com.pixelro.nenoonkiosk.core.navigation.AdminRoute
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.navigation.Route
 import com.pixelro.nenoonkiosk.core.navigation.TestRoute
-import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.Container
@@ -47,18 +46,6 @@ class CategoryListViewModel @Inject constructor(
         navigator.navigate(TestRoute.ExternalDeviceTestList)
     }
 
-    fun navigateToPulmonaryTest(pid: Int) = intent {
-        postSideEffect(
-            CategoryListSideEffect.LaunchPulmonaryTest(
-                pid = pid,
-                height = 0,
-                birthday = 0,
-                weight = 0,
-                gender = "m"
-            )
-        )
-    }
-
     fun navigateToStrabismusTestList() = intent {
         navigator.navigate(TestRoute.StrabismusTestList)
     }
@@ -73,10 +60,6 @@ class CategoryListViewModel @Inject constructor(
 
     fun navigateToAccountManagement() = intent {
         navigator.navigate(AdminRoute.AccountManagement)
-    }
-
-    fun navigateToPulmonaryTestResult(result: PulmonaryFunctionTestResult) = intent {
-        navigator.navigate(TestRoute.TestResult)
     }
 
     fun navigateToContact() = intent {

@@ -1,9 +1,5 @@
 package com.pixelro.nenoonkiosk.feature.categorylist
 
-import android.app.Activity
-import android.content.Intent
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -24,8 +20,6 @@ import androidx.compose.material.Card
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,8 +34,8 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.InspectionSelectionButton
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
@@ -56,50 +50,16 @@ fun CategoryListRoute(
         viewModel.setPid(pid)
     }
 
-    val activityResultLauncher = if (!isPreview) {
-        rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.StartActivityForResult(),
-        ) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val isGood = result.data?.getBooleanExtra("isGood", false)
-                val lungAge = result.data?.getDoubleExtra("lungAge", -1.0)
-                val capacity = result.data?.getDoubleExtra("capacity", -1.0)
-                val power = result.data?.getDoubleExtra("power", -1.0)
-
-                val pulmonaryResult = PulmonaryFunctionTestResult().apply {
-                    isGood?.let { pulmonaryStatus = it }
-                    capacity?.let { pulmonaryCapacity = it }
-                    power?.let { pulmonaryPower = it }
-                    lungAge?.let { pulmonaryAge = it.toInt() }
-                }
-                viewModel.navigateToPulmonaryTestResult(pulmonaryResult)
-            }
-        }
-    } else null
-
     LaunchedEffect(!isPreview) {
         if (!isPreview) {
             viewModel.startDescriptionAnimation()
         }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.container.sideEffectFlow.collect { sideEffect ->
-            when (sideEffect) {
-                is CategoryListSideEffect.StopTts -> {
-                    TTS.tts.stop()
-                }
-
-                is CategoryListSideEffect.LaunchPulmonaryTest -> {
-                    val intent = Intent("android.intent.action.BREATHINGS").apply {
-                        putExtra("id", sideEffect.pid.toString())
-                        putExtra("height", sideEffect.height)
-                        putExtra("birthday", sideEffect.birthday)
-                        putExtra("weight", sideEffect.weight)
-                        putExtra("gender", sideEffect.gender)
-                    }
-                    activityResultLauncher?.launch(intent)
-                }
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is CategoryListSideEffect.StopTts -> {
+                TTS.tts.stop()
             }
         }
     }
@@ -108,7 +68,6 @@ fun CategoryListRoute(
         isSignInSkipped = isSignInSkipped,
         onEyeTestClick = viewModel::navigateToEyeTest,
         onExternalDeviceTestClick = viewModel::navigateToExternalDeviceTestList,
-        onPulmonaryTestClick = { viewModel.navigateToPulmonaryTest(pid) },
         onStrabismusTestClick = viewModel::navigateToStrabismusTestList,
         onDementiaTestClick = viewModel::navigateToDementiaTest,
         onPrintClick = viewModel::navigateToPrint,
@@ -116,14 +75,12 @@ fun CategoryListRoute(
     )
 }
 
-
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 internal fun CategoryListScreen(
     isSignInSkipped: Boolean,
     onEyeTestClick: () -> Unit,
     onExternalDeviceTestClick: () -> Unit,
-    onPulmonaryTestClick: () -> Unit,
     onStrabismusTestClick: () -> Unit,
     onDementiaTestClick: () -> Unit,
     onPrintClick: () -> Unit,
@@ -236,7 +193,6 @@ fun CategoryListScreenPreview() {
         isSignInSkipped = false,
         onEyeTestClick = {},
         onExternalDeviceTestClick = {},
-        onPulmonaryTestClick = {},
         onStrabismusTestClick = {},
         onDementiaTestClick = {},
         onPrintClick = {},
