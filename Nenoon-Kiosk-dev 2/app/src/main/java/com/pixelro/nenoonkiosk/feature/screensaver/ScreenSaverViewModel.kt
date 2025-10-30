@@ -12,6 +12,8 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
@@ -43,15 +45,18 @@ class ScreenSaverViewModel @Inject constructor(
     }
 
     fun setMediaItem(isSignedIn: Boolean, exoPlayer: ExoPlayer) = intent {
-        val videoUri = if (isSignedIn) {
-            screenSaverRepository.getScreenSaverVideoURI()
-        } else {
-            RawResourceDataSource.buildRawResourceUri(R.raw.ad_sub).toString()
-        }
+        // ExoPlayer는 Main 스레드에서만 접근 가능하므로 Dispatchers.Main으로 전환
+        withContext(Dispatchers.Main) {
+            val videoUri = if (isSignedIn) {
+                screenSaverRepository.getScreenSaverVideoURI()
+            } else {
+                RawResourceDataSource.buildRawResourceUri(R.raw.ad_sub).toString()
+            }
 
-        exoPlayer.setMediaItem(MediaItem.fromUri(videoUri))
-        exoPlayer.prepare()
-        exoPlayer.playWhenReady = true
+            exoPlayer.setMediaItem(MediaItem.fromUri(videoUri))
+            exoPlayer.prepare()
+            exoPlayer.playWhenReady = true
+        }
 
         reduce {
             state.copy(isVideoReady = true)
@@ -59,10 +64,12 @@ class ScreenSaverViewModel @Inject constructor(
     }
 
     fun playVideo(exoPlayer: ExoPlayer) {
+        // ExoPlayer는 Main 스레드에서만 접근 가능
         exoPlayer.play()
     }
 
     fun pauseVideo(exoPlayer: ExoPlayer) {
+        // ExoPlayer는 Main 스레드에서만 접근 가능
         exoPlayer.pause()
         exoPlayer.clearVideoSurface()
     }

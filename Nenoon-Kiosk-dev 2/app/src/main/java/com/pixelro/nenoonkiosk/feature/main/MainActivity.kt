@@ -1,17 +1,14 @@
 package com.pixelro.nenoonkiosk.feature.main
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Process
 import android.util.Log
 import android.view.MotionEvent
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,6 +16,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -38,14 +36,22 @@ import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.core.navigation.LaunchedNavigator
+import com.pixelro.nenoonkiosk.core.navigation.LocalNavigator
+import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.navigation.Route
 import com.pixelro.nenoonkiosk.core.receiver.NenoonDeviceAdminReceiver
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import dagger.hilt.android.AndroidEntryPoint
+import ke.co.banit.idle_detector_compose.IdleDetectorProvider
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var navigator: Navigator
 
     private lateinit var dpm: DevicePolicyManager
     private lateinit var adminComponentName: ComponentName
@@ -143,21 +149,32 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             NenoonKioskTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = colorScheme.background
-                ) {
-                    val systemUiController = rememberSystemUiController()
-                    systemUiController.setStatusBarColor(color = Color(0x00000000))
-                    systemUiController.isNavigationBarVisible = false
+                CompositionLocalProvider(LocalNavigator provides navigator) {
+                    IdleDetectorProvider(
+                        idleTimeout = 30.seconds,
+                        checkInterval = 1.seconds,
+                        onIdle = {}
+                    ) {
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = colorScheme.background
+                        ) {
+                            val systemUiController = rememberSystemUiController()
+                            systemUiController.setStatusBarColor(color = Color(0x00000000))
+                            systemUiController.isNavigationBarVisible = false
 
-                    val navBackStack = rememberNavBackStack<Route>(Route.Splash)
-                    LaunchedNavigator(navBackStack = navBackStack)
+                            val navBackStack = rememberNavBackStack<Route>(Route.Splash)
 
-                    NenoonRouteHost(
-                        navBackStack = navBackStack,
-                        exoPlayer = exoPlayer
-                    )
+                            IdleScreenSaverHandler(navBackStack = navBackStack)
+
+                            LaunchedNavigator(navBackStack = navBackStack)
+
+                            NenoonRouteHost(
+                                navBackStack = navBackStack,
+                                exoPlayer = exoPlayer
+                            )
+                        }
+                    }
                 }
             }
         }
