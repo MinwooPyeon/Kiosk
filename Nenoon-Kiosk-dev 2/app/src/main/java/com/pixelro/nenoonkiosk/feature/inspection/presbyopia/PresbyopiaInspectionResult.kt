@@ -1,6 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.inspection.presbyopia
 
-data class PresbyopiaTestResult(
+data class PresbyopiaInspectionResult(
     val firstDistance: Float = 1f,
     val secondDistance: Float = 1f,
     val thirdDistance: Float = 1f,

@@ -38,7 +38,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.ChildrenVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.LongVisualAcuityTestResult
@@ -459,7 +459,7 @@ class NenoonViewModel
             }
         }
 
-        var presbyopiaTestResult = PresbyopiaTestResult()
+        var presbyopiaInspectionResult = PresbyopiaInspectionResult()
         var shortVisualAcuityTestResult = ShortVisualAcuityTestResult()
         var longVisualAcuityTestResult = LongVisualAcuityTestResult()
         var childrenVisualAcuityTestResult = ChildrenVisualAcuityTestResult()

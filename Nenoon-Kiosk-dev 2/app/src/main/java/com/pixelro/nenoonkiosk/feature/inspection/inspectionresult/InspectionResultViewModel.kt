@@ -20,7 +20,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionRes
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -54,7 +54,7 @@ class InspectionResultViewModel
             viewModelScope.launch {
                 when (testType) {
                     InspectionType.Presbyopia -> {
-                        testResult as PresbyopiaTestResult
+                        testResult as PresbyopiaInspectionResult
                         // Internal Save
                         SharedPreferencesManager.updatePresbyopiaResult(
                             firstDistance = testResult.firstDistance,

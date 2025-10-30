@@ -48,7 +48,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestC
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.InspectionResultRoute
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestContent
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestContent
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionRoute
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.ChildrenVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.LongVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortDistanceVisualAcuityTestContent
@@ -585,9 +585,9 @@ fun nenoonApp(
                     key(selectedTest) {
                         when (selectedTest) {
                             InspectionType.Presbyopia -> {
-                                PresbyopiaTestContent(
+                                PresbyopiaInspectionRoute(
                                     toResultScreen = {
-                                        viewModel.presbyopiaTestResult = it
+                                        viewModel.presbyopiaInspectionResult = it
                                         navigateToResult.value()
                                     }
                                 )
@@ -732,7 +732,7 @@ fun nenoonApp(
                     when (
                         viewModel.selectedTestType.collectAsState().value
                     ) {
-                        InspectionType.Presbyopia -> viewModel.presbyopiaTestResult
+                        InspectionType.Presbyopia -> viewModel.presbyopiaInspectionResult
                         InspectionType.ShortDistanceVisualAcuity -> viewModel.shortVisualAcuityTestResult
                         InspectionType.LongDistanceVisualAcuity -> viewModel.longVisualAcuityTestResult
                         InspectionType.ChildrenVisualAcuity -> viewModel.childrenVisualAcuityTestResult
