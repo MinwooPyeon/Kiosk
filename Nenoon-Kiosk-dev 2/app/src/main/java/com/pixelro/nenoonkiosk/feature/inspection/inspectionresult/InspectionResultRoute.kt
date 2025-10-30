@@ -46,8 +46,6 @@ import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResul
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.result.PresbyopiaInspectionResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResultTestResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.ChildrenVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.LongVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortDistanceVisualAcuityTestResultContent
@@ -78,12 +76,10 @@ fun InspectionResultRoute(
     val navBack: () -> Unit = remember(testType, navController) {
         {
             when (testType) {
-                InspectionType.Dementia, InspectionType.PulmonaryFunction ->
+                InspectionType.Dementia ->
                     navController.popBackStack(NavConstants.ROUTE_CATEGORY_LIST, false)
-
                 InspectionType.GripStrength, InspectionType.BloodPressure ->
                     navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false)
-
                 else ->
                     navController.popBackStack(NavConstants.ROUTE_TEST_LIST, false)
             }
@@ -118,83 +114,66 @@ fun InspectionResultRoute(
         {
             when (testType) {
                 InspectionType.Presbyopia -> {
-                    PresbyopiaInspectionResultContent(testResult = testResult as PresbyopiaInspectionResult)
+                    PresbyopiaInspectionResultContent(testResult =  testResult as PresbyopiaInspectionResult)
                 }
-
                 InspectionType.ShortDistanceVisualAcuity -> {
                     ShortDistanceVisualAcuityTestResultContent(
                         testResult = testResult as ShortVisualAcuityTestResult,
                         navController = navController,
                     )
                 }
-
                 InspectionType.LongDistanceVisualAcuity -> {
                     LongDistanceVisualAcuityTestResultContent(
                         testResult = testResult as LongVisualAcuityTestResult,
                         navController = navController,
                     )
                 }
-
                 InspectionType.ChildrenVisualAcuity -> {
                     ChildrenVisualAcuityTestResultContent(
                         testResult = testResult as ChildrenVisualAcuityTestResult,
                         navController = navController,
                     )
                 }
-
                 InspectionType.AmslerGrid -> {
                     AmslerGridTestResultContent(
                         testResult = testResult as AmslerGridTestResult,
                         navController = navController,
                     )
                 }
-
                 InspectionType.MChart -> {
                     MChartTestResultContent(
                         testResult = testResult as MChartTestResult,
                         navController = navController,
                     )
                 }
-
                 InspectionType.Dementia -> {
                     DementiaInspectionResultRoute(
                         testResult = testResult as com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult,
                     )
                 }
-
                 InspectionType.Presbyopia_Glasses -> {
                     PresbyopiaExerciseResultContent(
                         testResult = testResult as PresbyopiaExerciseResult,
                         navController = navController,
                     )
                 }
-
                 InspectionType.Concentration_Glasses -> {
                     ConcentrationExerciseResultContent(
                         testResult = testResult as ConcentrationExerciseResult,
                         navController = navController,
                     )
                 }
-
                 InspectionType.GripStrength -> {
                     GripStrengthInspectionResultContent(
                         testResult = testResult as GripStrengthInspectionResultContract,
                     )
                 }
-
                 InspectionType.BloodPressure -> {
                     BloodPressureTestResultContent(
                         testResult = testResult as BloodPressureTestResult,
                         navController = navController,
                     )
                 }
-
-                InspectionType.PulmonaryFunction -> {
-                    PulmonaryFunctionTestResultTestResultContent(
-                        testResult = testResult as PulmonaryFunctionTestResult,
-                    )
-                }
-
                 else -> {
                     Text("None TestResultScreen")
                 }
@@ -235,11 +214,7 @@ private fun doPrint(
     val nPrinterController = PrinterManager.getPrinterController()
 
     if (printerMacAddress.isEmpty() || nPrinterController == null) {
-        Toast.makeText(
-            context,
-            StringProvider.getString(R.string.not_exist_print),
-            Toast.LENGTH_SHORT
-        ).show()
+        Toast.makeText(context, StringProvider.getString(R.string.not_exist_print), Toast.LENGTH_SHORT).show()
         Log.d("TestResultScreen", "Printer MAC Address is empty or controller is null")
         return
     }

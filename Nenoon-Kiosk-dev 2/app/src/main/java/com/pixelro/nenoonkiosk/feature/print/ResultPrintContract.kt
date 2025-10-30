@@ -29,6 +29,5 @@ fun mapToSummaries(
         ResultSummary(strings.bloodPressure, latest.bloodPressureTestResult != null),
         ResultSummary(strings.gripStrength, latest.gripStrengthTestResult != null),
         ResultSummary(strings.dementia, latest.dementiaTestResult != null),
-        ResultSummary(strings.pulmonary, latest.pulmonaryFunctionTestResult != null)
     )
 }

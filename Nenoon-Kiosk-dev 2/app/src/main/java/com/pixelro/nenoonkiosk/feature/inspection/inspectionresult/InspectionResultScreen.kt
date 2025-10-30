@@ -105,7 +105,6 @@ internal fun titleFor(testType: InspectionType): String {
         InspectionType.Dementia -> StringProvider.getString(R.string.dementia_result_title)
         InspectionType.Presbyopia_Glasses -> StringProvider.getString(R.string.presbyopia_glasses_result_title)
         InspectionType.Concentration_Glasses -> StringProvider.getString(R.string.concentration_glasses_result_title)
-        InspectionType.PulmonaryFunction -> StringProvider.getString(R.string.pulmonary_function_test_result)
         InspectionType.GripStrength -> StringProvider.getString(R.string.grip_strength_result)
         InspectionType.BloodPressure -> StringProvider.getString(R.string.blood_pressure_result)
         else -> "None TestResultScreen"

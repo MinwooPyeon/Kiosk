@@ -9,7 +9,6 @@ import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridT
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
 
 data class CompoundTestResult(
@@ -20,7 +19,6 @@ data class CompoundTestResult(
     val bloodPressureTestResult: BloodPressureTestResult?,
     val gripStrengthTestResult: GripStrengthInspectionResultContract?,
     val dementiaTestResult: DementiaInspectionResult?,
-    val pulmonaryFunctionTestResult: PulmonaryFunctionTestResult?,
     val createAt: String?, // Added createAt property
 ) {
     // This constructor now takes CompoundTestResultAPI as a parameter
@@ -119,17 +117,6 @@ data class CompoundTestResult(
                     null
                 } else {
                     DementiaInspectionResult(scores.map { it!!.toDementiaAnswer() })
-                }
-            },
-        pulmonaryFunctionTestResult =
-            apiResult.pulmonary?.run {
-                val age = pulmonaryAge
-                val power = pulmonaryPower
-                val capacity = pulmonaryCapacity
-                if (age == null || power == null || capacity == null) {
-                    null
-                } else {
-                    PulmonaryFunctionTestResult(power, capacity, age)
                 }
             },
         createAt = apiResult.createAt, // Assigning the createAt value
