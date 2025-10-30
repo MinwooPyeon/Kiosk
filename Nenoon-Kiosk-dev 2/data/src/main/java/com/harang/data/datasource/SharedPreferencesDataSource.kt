@@ -5,8 +5,8 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.harang.data.vo.Constants
 
-class SharedPreferencesDataSource constructor(
-    private val context: Context,
+class SharedPreferencesDataSource(
+    context: Context,
 ) {
     private val pref: SharedPreferences =
         context.getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
