@@ -40,11 +40,10 @@ import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exe
 import com.pixelro.nenoonkiosk.feature.inspection.ExternalDeviceTestListScreen
 import com.pixelro.nenoonkiosk.feature.inspection.EyeTestInspectionRoute
 import com.pixelro.nenoonkiosk.feature.strabismus.PhoriaAndAniseikoniaTestListScreen
-import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.InspectionResultScreen
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionScreenRoute
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.process.DementiaInspectionRoute
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestContent
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthInspectionEntryPoint
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.InspectionResultRoute
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestContent
@@ -682,7 +681,7 @@ fun nenoonApp(
                             }
 
                             InspectionType.GripStrength -> {
-                                GripStrengthTestContent(
+                                GripStrengthInspectionEntryPoint(
                                     toResultScreen = {
                                         viewModel.gripStrengthTestResult = it
                                         navigateToResult.value()

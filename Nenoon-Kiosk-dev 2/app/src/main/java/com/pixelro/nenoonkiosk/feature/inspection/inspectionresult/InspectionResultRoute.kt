@@ -35,8 +35,8 @@ import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_exercise.ConcentrationExerciseResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResult
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.aiComment
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.InspectionResultUtil.textAsBitmap
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
@@ -166,9 +166,8 @@ fun InspectionResultRoute(
                     )
                 }
                 InspectionType.GripStrength -> {
-                    GripStrengthTestResultContent(
-                        testResult = testResult as GripStrengthTestResult,
-                        navController = navController,
+                    GripStrengthInspectionResultContent(
+                        testResult = testResult as GripStrengthInspectionResultContract,
                     )
                 }
                 InspectionType.BloodPressure -> {

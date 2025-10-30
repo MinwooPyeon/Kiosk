@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.inspection.gripStrength
+package com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,18 +10,17 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 
 @Composable
-fun GripStrengthTestResultContent(
-    testResult: GripStrengthTestResult,
-    navController: NavHostController,
+fun GripStrengthInspectionResultContent(
+    testResult: GripStrengthInspectionResultContract,
 ) {
     Column(
         modifier =
@@ -30,7 +29,7 @@ fun GripStrengthTestResultContent(
                 .padding(40.dp),
     ) {
         Text(
-            text = StringProvider.getString(R.string.test_result_my_result),
+            text = stringResource(R.string.test_result_my_result),
             fontSize = 28.sp,
             fontWeight = FontWeight.Medium,
         )
@@ -39,7 +38,7 @@ fun GripStrengthTestResultContent(
 
         Row {
             Text(
-                text = StringProvider.getString(R.string.test_result_left) + " : ",
+                text = stringResource(R.string.test_result_left) + " : ",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Medium,
             )
@@ -60,7 +59,7 @@ fun GripStrengthTestResultContent(
 
         Row {
             Text(
-                text = StringProvider.getString(R.string.test_result_right) + " : ",
+                text = stringResource(R.string.test_result_right) + " : ",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Medium,
             )
@@ -77,4 +76,12 @@ fun GripStrengthTestResultContent(
             )
         }
     }
+}
+
+@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "Grip Result – Example")
+@Composable
+private fun Preview_GripStrengthTestResultContent() {
+    GripStrengthInspectionResultContent(
+        testResult = GripStrengthInspectionResultContract(leftGrip = 28.4, rightGrip = 32.1)
+    )
 }
