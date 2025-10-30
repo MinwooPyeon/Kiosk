@@ -4,7 +4,7 @@ import com.harang.data.model.dto.CompoundTestResultAPI
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
@@ -18,7 +18,7 @@ data class CompoundTestResult(
     val amslerGridTestResult: AmslerGridTestResult?,
     val mChartTestResult: MChartTestResult?,
     val bloodPressureTestResult: BloodPressureTestResult?,
-    val gripStrengthTestResult: GripStrengthTestResult?,
+    val gripStrengthTestResult: GripStrengthInspectionResultContract?,
     val dementiaTestResult: DementiaInspectionResult?,
     val pulmonaryFunctionTestResult: PulmonaryFunctionTestResult?,
     val createAt: String?, // Added createAt property
@@ -102,7 +102,7 @@ data class CompoundTestResult(
                 if (right == null || left == null) {
                     null
                 } else {
-                    GripStrengthTestResult(right, left)
+                    GripStrengthInspectionResultContract(right, left)
                 }
             },
         dementiaTestResult =

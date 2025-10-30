@@ -17,7 +17,7 @@ import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
@@ -194,7 +194,7 @@ class InspectionResultViewModel
                         val response = testResultRepository.sendDementiaTestResult(token, request)
                     }
                     InspectionType.GripStrength -> {
-                        testResult as GripStrengthTestResult
+                        testResult as GripStrengthInspectionResultContract
                         // Internal Save
                         SharedPreferencesManager.updateGripStrengthResult(
                             leftGrip = testResult.leftGrip.toFloat(),

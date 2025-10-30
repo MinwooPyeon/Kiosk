@@ -35,7 +35,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exe
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
@@ -469,7 +469,7 @@ class NenoonViewModel
         var presbyopiaExerciseResult = PresbyopiaExerciseResult()
         var concentrationExerciseResult = ConcentrationExerciseResult()
         var bloodPressureTestResult = BloodPressureTestResult(systolic = 0, diastolic = 0, pulseRate = 0)
-        var gripStrengthTestResult = GripStrengthTestResult(leftGrip = 0.0, rightGrip = 0.0)
+        var gripStrengthTestResult = GripStrengthInspectionResultContract(leftGrip = 0.0, rightGrip = 0.0)
         var pulmonaryFunctionTestResult = PulmonaryFunctionTestResult()
 
         init {
