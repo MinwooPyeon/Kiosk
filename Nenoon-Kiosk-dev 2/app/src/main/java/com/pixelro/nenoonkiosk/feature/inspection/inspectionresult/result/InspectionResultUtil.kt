@@ -21,7 +21,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.Sho
 
 // TODO STR
 
-object TestResultUtil {
+object InspectionResultUtil {
     fun textAsBitmap(
         testType: InspectionType,
         testResult: Any?,

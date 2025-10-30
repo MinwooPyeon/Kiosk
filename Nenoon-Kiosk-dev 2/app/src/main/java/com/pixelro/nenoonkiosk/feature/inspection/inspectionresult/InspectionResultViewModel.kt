@@ -1,10 +1,17 @@
-package com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result
+package com.pixelro.nenoonkiosk.feature.inspection.inspectionresult
 
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.harang.data.model.dto.request.*
+import com.harang.data.model.dto.request.SendAmslerGridTestResultRequest
+import com.harang.data.model.dto.request.SendBloodPressureTestResultRequest
+import com.harang.data.model.dto.request.SendDementiaTestResultRequest
+import com.harang.data.model.dto.request.SendGripStrengthTestResultRequest
+import com.harang.data.model.dto.request.SendMChartTestResultRequest
+import com.harang.data.model.dto.request.SendPresbyopiaTestResultRequest
+import com.harang.data.model.dto.request.SendPulmonaryFunctionTestResultRequest
+import com.harang.data.model.dto.request.SendShortVisualAcuityTestResultRequest
 import com.harang.data.repository.TestResultRepository
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
@@ -23,7 +30,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TestResultViewModel
+class InspectionResultViewModel
     @Inject
     constructor(
         application: Application,
