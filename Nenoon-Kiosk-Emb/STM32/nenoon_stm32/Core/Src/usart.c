@@ -396,5 +396,34 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
-
+/*UART2*/
+HAL_StatusTypeDef UART2_SendString(const char* s){
+	return HAL_UART_Transmit(&huart2, (uint8_t*)s, (uint16_t)strlen(s), 100);
+}
+HAL_StatusTypeDef UART2_SendBytes(const uint8_t* buf, uint16_t len){
+	return HAL_UART_Transmit(&huart2, buf, len, 100);
+}
+HAL_StatusTypeDef UART2_RecvBytes(const uint8_t* buf, uint16_t len, uint32_t to_ms){
+	return HAL_UART_Receive(&huart2, buf, len, to_ms);
+}
+/*UART3*/
+HAL_StatusTypeDef UART3_SendString(const char* s){
+	return HAL_UART_Transmit(&huart3, (uint8_t*)s, (uint16_t)strlen(s), 100);
+}
+HAL_StatusTypeDef UART3_SendBytes(const uint8_t* buf, uint16_t len){
+	return HAL_UART_Transmit(&huart3, buf, len, 100);
+}
+HAL_StatusTypeDef UART3_RecvBytes(const uint8_t* buf, uint16_t len, uint32_t to_ms){
+	return HAL_UART_Receive(&huart3, buf, len, to_ms);
+}
+/*UART6*/
+HAL_StatusTypeDef UART6_SendString(const char* s){
+	return HAL_UART_Transmit(&huart6, (uint8_t*)s, (uint16_t)strlen(s), 100);
+}
+HAL_StatusTypeDef UART6_SendBytes(const uint8_t* buf, uint16_t len){
+	return HAL_UART_Transmit(&huart6, buf, len, 100);
+}
+HAL_StatusTypeDef UART6_RecvBytes(const uint8_t* buf, uint16_t len, uint32_t to_ms){
+	return HAL_UART_Receive(&huart6, buf, len, to_ms);
+}
 /* USER CODE END 1 */

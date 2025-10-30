@@ -27,7 +27,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include "stm32f4xx_hal.h"
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
@@ -47,7 +47,17 @@ void MX_USART3_UART_Init(void);
 void MX_USART6_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+HAL_StatusTypeDef UART2_SendString(const char* s);
+HAL_StatusTypeDef UART2_SendBytes(const uint8_t* buf, uint16_t len);
+HAL_StatusTypeDef UART2_RecvBytes(const uint8_t* buf, uint16_t len, uint32_t to_ms);
 
+HAL_StatusTypeDef UART3_SendString(const char* s);
+HAL_StatusTypeDef UART3_SendBytes(const uint8_t* buf, uint16_t len);
+HAL_StatusTypeDef UART3_RecvBytes(const uint8_t* buf, uint16_t len, uint32_t to_ms);
+
+HAL_StatusTypeDef UART6_SendString(const char* s);
+HAL_StatusTypeDef UART6_SendBytes(const uint8_t* buf, uint16_t len);
+HAL_StatusTypeDef UART6_RecvBytes(const uint8_t* buf, uint16_t len, uint32_t to_ms);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
