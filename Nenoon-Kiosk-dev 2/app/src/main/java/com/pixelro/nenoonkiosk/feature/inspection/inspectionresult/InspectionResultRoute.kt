@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.graphics.scale
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.harang.data.model.dto.User
@@ -35,18 +36,16 @@ import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_exercise.ConcentrationExerciseResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResult
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.aiComment
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.InspectionResultUtil.textAsBitmap
+import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.aiComment
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResultTestResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.result.PresbyopiaInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.ChildrenVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.LongVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortDistanceVisualAcuityTestResultContent
@@ -54,7 +53,6 @@ import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.Sho
 import com.pixelro.nenoonkiosk.feature.undeveloped.testresultcontent.ChildrenVisualAcuityTestResultContent
 import com.pixelro.nenoonkiosk.feature.undeveloped.testresultcontent.LongDistanceVisualAcuityTestResultContent
 import kotlinx.coroutines.delay
-import androidx.core.graphics.scale
 
 @Composable
 fun InspectionResultRoute(
@@ -78,7 +76,7 @@ fun InspectionResultRoute(
     val navBack: () -> Unit = remember(testType, navController) {
         {
             when (testType) {
-                InspectionType.Dementia, InspectionType.PulmonaryFunction ->
+                InspectionType.Dementia ->
                     navController.popBackStack(NavConstants.ROUTE_CATEGORY_LIST, false)
                 InspectionType.GripStrength, InspectionType.BloodPressure ->
                     navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false)
@@ -116,7 +114,7 @@ fun InspectionResultRoute(
         {
             when (testType) {
                 InspectionType.Presbyopia -> {
-                    PresbyopiaTestResultContent(testResult = testResult as PresbyopiaTestResult)
+                    PresbyopiaInspectionResultContent(testResult =  testResult as PresbyopiaInspectionResult)
                 }
                 InspectionType.ShortDistanceVisualAcuity -> {
                     ShortDistanceVisualAcuityTestResultContent(
@@ -174,11 +172,6 @@ fun InspectionResultRoute(
                     BloodPressureTestResultContent(
                         testResult = testResult as BloodPressureTestResult,
                         navController = navController,
-                    )
-                }
-                InspectionType.PulmonaryFunction -> {
-                    PulmonaryFunctionTestResultTestResultContent(
-                        testResult = testResult as PulmonaryFunctionTestResult,
                     )
                 }
                 else -> {
