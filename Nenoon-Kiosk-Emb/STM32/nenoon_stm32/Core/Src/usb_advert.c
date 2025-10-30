@@ -53,14 +53,11 @@ usb_advert_err_t USB_Advert_Scan(void){
 	STLINK_UART_Println(TAG "Scan Start");
 
 	res = f_mount(&USBH_fatfs, (TCHAR const*)USBHPath, 0);
-	if(res != FR_OK){
-		return USB_ADVERT_ERR_NOT_MOUNTED;
-	}
+	if(res != FR_OK) return USB_ADVERT_ERR_NOT_MOUNTED;
 
 	res = f_opendir(&dir, "/");
-	if(res != FR_OK){
-		return USB_ADVERT_ERR_OPENDIR;
-	}
+	if(res != FR_OK) return USB_ADVERT_ERR_OPENDIR;
+
 
 	s_count = 0;
 	while(1){
@@ -91,7 +88,36 @@ usb_advert_err_t USB_Advert_Scan(void){
 	if(s_count == 0) return USB_ADVERT_ERR_NO_FILES;
 	return USB_ADVERT_OK;
 }
-usb_advert_err_t USB_Advert_ReadByName(const char* filename);
+usb_advert_err_t USB_Advert_ReadByName(const char* filename){
+	if(filename == null) return USB_ADVERT_ERR_PARAM;
+
+	FIL		file;
+	FRESULT	res;
+	UINT	br;
+	char	buf[128];
+	char	path[128];
+
+	snprintf(path, sizeof(path), "/%s", filename);
+
+	res = f_open(&file, path, FA_READ);
+	if(res != FR_OK) return USB_ADVERT_ERR_FOPEN;
+
+	STLINK_UART_Println(TAG "Reading File...");
+	while(1){
+		res = f_read(&file, buf, sizeof(buf)-1, &br);
+		if (res != FR_OK){
+			f_close(&file);
+			return USB_ADVERT_ERR_FREAD;
+		}
+
+		if (br == 0) break;
+		buf[br] = '\0';
+		STLINK_UART_Print(buf);
+	}
+	STLINK_UART_Println("\r\n[EOF]");
+	f_close(&file);
+	return USB_ADVERT_OK;
+}
 usb_advert_err_t USB_Advert_ReadByIndex(uint32_t index);
 uint32_t USB_Advert_GetFileCount(void);
 
