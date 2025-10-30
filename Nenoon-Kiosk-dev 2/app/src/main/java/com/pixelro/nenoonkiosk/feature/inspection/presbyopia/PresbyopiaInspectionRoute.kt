@@ -36,6 +36,7 @@ fun PresbyopiaInspectionRoute(
 
     // ViewModel 상태
     val distance = faceDetectionViewModel.screenToFaceDistance.collectAsState().value
+    val isFaceDetected = faceDetectionViewModel.isFaceDetected.collectAsState().value
     val testState = presbyopiaViewModel.testState.collectAsState().value
     val tryCount = presbyopiaViewModel.tryCount.collectAsState().value
     val isComingCloserTTSDone = presbyopiaViewModel.isComingCloserTTSDone.collectAsState().value
@@ -45,9 +46,36 @@ fun PresbyopiaInspectionRoute(
     val coroutineScope = rememberCoroutineScope()
     val isWarningShowing = remember { mutableStateOf(false) }
     var progress by remember { mutableStateOf(0.1f) }
+    var lastDistance by remember { mutableStateOf(0f) }
+    var distanceNotChangingCount by remember { mutableStateOf(0) }
 
     // 얼굴 인식
     FaceDetection()
+
+    // 얼굴 인식 및 거리 측정 문제 감지
+    LaunchedEffect(distance, isFaceDetected, testState) {
+        // Started, AdjustingDistance, ComingCloser 상태에서 체크
+        if (testState == PresbyopiaViewModel.TestState.Started ||
+            testState == PresbyopiaViewModel.TestState.AdjustingDistance ||
+            testState == PresbyopiaViewModel.TestState.ComingCloser) {
+
+            // 얼굴이 감지되지 않으면 경고 표시
+            if (!isFaceDetected) {
+                isWarningShowing.value = true
+            }
+            // 거리가 0이거나 유효하지 않으면 경고 표시
+            else if (distance <= 0f || distance > 1000f) {
+                isWarningShowing.value = true
+            }
+            // 정상이면 경고 숨김
+            else {
+                isWarningShowing.value = false
+            }
+        } else {
+            // 다른 상태에서는 경고 숨김
+            isWarningShowing.value = false
+        }
+    }
 
     // 비디오 준비
     LaunchedEffect(testState, tryCount) {
@@ -101,5 +129,6 @@ fun PresbyopiaInspectionRoute(
         } catch (e: Exception) {
             false
         },
+        isFaceDetected = isFaceDetected,
     )
 }

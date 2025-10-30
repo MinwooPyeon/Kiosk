@@ -40,9 +40,9 @@ fun DistanceDisplay(
         Text(
             text = "${(distance / 10).roundToInt()}cm",
             style = selectLargeTextStyle.copy(
-                fontSize = 140.sp,
+                fontSize = 60.sp,
                 color = textColor,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.ExtraBold
             ),
         )
     }

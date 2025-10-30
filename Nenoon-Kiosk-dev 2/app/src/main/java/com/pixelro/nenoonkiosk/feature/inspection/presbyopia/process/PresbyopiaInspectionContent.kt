@@ -84,11 +84,12 @@ fun PresbyopiaInspectionContent(
     exoPlayer: ExoPlayer?,
     savedLanguage: String?,
     videoGuideText: TextUnit,
-    progress: Float,
+progress: Float,
     isWarningShowing: Boolean,
     onWarningShow: (Boolean) -> Unit,
     onNextStep: () -> Unit,
     isTTSSpeaking: Boolean = false,
+    isFaceDetected: Boolean = true,
 ) {
     // 리소스
     val description1_1 = stringResource(R.string.presbyopia_description1_1)
@@ -118,10 +119,11 @@ fun PresbyopiaInspectionContent(
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
     )
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
         /**
          * 검사 방법 안내 문구
          */
@@ -165,21 +167,13 @@ fun PresbyopiaInspectionContent(
             modifier =
                 Modifier
                     .padding(top = 20.dp)
-                    .height(600.dp)
+                    .height(500.dp)
                     .width(600.dp)
                     .background(
                         color = White,
                         shape = RoundedCornerShape(8.dp),
                     ),
         ) {
-            if (isWarningShowing) {
-                WarningOverlay(
-                    text1 = dialogAnnouncement1,
-                    text2 = dialogAnnouncement2,
-                    text3 = dialogAnnouncement3,
-                )
-            }
-
             InspectionContentBox(
                 context = context,
                 uiState = uiState,
@@ -270,6 +264,42 @@ fun PresbyopiaInspectionContent(
             )
         }
     }
+
+    // 전체 화면 경고 오버레이 (중앙 배치)
+    if (isWarningShowing) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            when {
+                !isFaceDetected -> {
+                    // 얼굴 인식 실패 경고 (최우선)
+                    WarningOverlay(
+                        text1 = "화면에 ",
+                        text2 = "얼굴",
+                        text3 = "을 비춰주세요",
+                    )
+                }
+                isTTSSpeaking -> {
+                    // TTS 재생 중 경고 (버튼 클릭 시에만)
+                    WarningOverlay(
+                        text1 = dialogAnnouncement1,
+                        text2 = dialogAnnouncement2,
+                        text3 = dialogAnnouncement3,
+                    )
+                }
+                else -> {
+                    // 거리 측정 중 (기본값)
+                    WarningOverlay(
+                        text1 = "거리를 ",
+                        text2 = "측정",
+                        text3 = "하고 있습니다",
+                    )
+                }
+            }
+        }
+    }
+  }
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFF000000, device = "spec:width=800dp,height=1280dp,dpi=240")
