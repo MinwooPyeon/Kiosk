@@ -39,4 +39,14 @@ const char* usb_advert_strerr(usb_advert_err_t err)
     }
 }
 
+void USB_Advert_Init(void){
+	s_count = 0;
+	s_scanned = false;
+}
+usb_advert_err_t USB_Advert_Scan(void);
+usb_advert_err_t USB_Advert_ReadByName(const char* filename);
+usb_advert_err_t USB_Advert_ReadByIndex(uint32_t index);
+uint32_t USB_Advert_GetFileCount(void);
 
+const char* USB_Advert_GetName(uint32_t index);
+const char* usb_advert_errstr(usb_advert_err_t err);
