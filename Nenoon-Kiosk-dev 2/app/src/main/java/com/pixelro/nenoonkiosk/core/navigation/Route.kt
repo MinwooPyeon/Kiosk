@@ -62,12 +62,6 @@ sealed interface SignInRoute : Route {
 
     @Serializable
     data object IdPassword : SignInRoute
-
-    @Serializable
-    data object SignUpTermsOfService : SignInRoute
-
-    @Serializable
-    data object FaceIdTermsOfService : SignInRoute
 }
 
 sealed interface TestRoute : Route {
@@ -113,7 +107,19 @@ sealed interface AdminRoute : Route {
 
     @Serializable
     data object FaceUpdate : AdminRoute
+}
+
+sealed interface TermsOfServiceRoute : Route {
 
     @Serializable
-    data object FaceUpdateTermsOfService : AdminRoute
+    data object FaceUpdate : TermsOfServiceRoute
+
+    @Serializable
+    data object SignUp : TermsOfServiceRoute
+
+    @Serializable
+    data object FaceId : TermsOfServiceRoute
+
+    @Serializable
+    data object Base : TermsOfServiceRoute
 }

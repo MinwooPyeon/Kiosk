@@ -17,6 +17,7 @@ import com.pixelro.nenoonkiosk.core.constants.DebugConstants
 import com.pixelro.nenoonkiosk.core.navigation.AdminRoute
 import com.pixelro.nenoonkiosk.core.navigation.Route
 import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
+import com.pixelro.nenoonkiosk.core.navigation.TermsOfServiceRoute
 import com.pixelro.nenoonkiosk.core.navigation.TestRoute
 import com.pixelro.nenoonkiosk.feature.auth.accountmanagement.AccountManagementRoute
 import com.pixelro.nenoonkiosk.feature.auth.faceenrollment.FaceEnrollmentRoute
@@ -31,6 +32,8 @@ import com.pixelro.nenoonkiosk.feature.intro.IntroRoute
 import com.pixelro.nenoonkiosk.feature.permission.PermissionRoute
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverRoute
 import com.pixelro.nenoonkiosk.feature.splash.SplashRoute
+import com.pixelro.nenoonkiosk.feature.survey.SurveyRoute
+import com.pixelro.nenoonkiosk.feature.termsofservice.base.TermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.termsofservice.faceid.FaceIdTermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.termsofservice.signup.SignUpTermsOfServiceRoute
 
@@ -48,7 +51,6 @@ fun NenoonRouteHost(
     var userData by remember { mutableStateOf<User?>(null) }
 
     when (currentRoute) {
-        // Base Routes
         is Route.Splash -> SplashRoute()
         is Route.ScreenSaver -> ScreenSaverRoute(
             exoPlayer = exoPlayer,
@@ -56,18 +58,13 @@ fun NenoonRouteHost(
         )
 
         is Route.Permission -> PermissionRoute()
-//        is Route.Entries -> EntriesRoute()
         is Route.Intro -> IntroRoute()
-//        is Route.Survey -> SurveyRoute()
-//        is Route.SoftwareInfo -> SoftwareInfoRoute()
-//        is Route.TermsOfService -> TermsOfServiceRoute()
-//        is Route.ResultPrint -> ResultPrintRoute()
-        is Route.Settings -> SettingsRoute()
-//        is Route.Contact -> ContactRoute()
-//        is Route.Videotelephony -> VideotelephonyRoute()
-//        is Route.BTDeviceManagement -> BTDeviceManagementRoute()
+        is Route.Survey -> SurveyRoute(
+            userData = userData
+        )
 
-        // SignIn Routes
+        is Route.Settings -> SettingsRoute()
+
         is SignInRoute.LocationSignIn -> LocationLoginRoute(
             updateIsSignedIn = { isSignedIn = it }
         )
@@ -94,28 +91,15 @@ fun NenoonRouteHost(
             updateIsSignedIn = { isSignedIn = it }
         )
 
-        is SignInRoute.SignUpTermsOfService -> SignUpTermsOfServiceRoute()
-        is SignInRoute.FaceIdTermsOfService -> FaceIdTermsOfServiceRoute()
+        is TermsOfServiceRoute.SignUp -> SignUpTermsOfServiceRoute()
+        is TermsOfServiceRoute.FaceId -> FaceIdTermsOfServiceRoute()
+        is TermsOfServiceRoute.Base -> TermsOfServiceRoute()
 
-        // Test Routes
-//        is TestRoute.TestList -> TestListRoute()
-//        is TestRoute.ExerciseList -> ExerciseListRoute()
         is TestRoute.CategoryList -> CategoryListRoute(
             pid = DebugConstants.PLACEHOLDER_PID,
             isSignInSkipped = isSignedIn,
         )
-//        is TestRoute.ExternalDeviceTestList -> ExternalDeviceTestListRoute()
-//        is TestRoute.StrabismusTestList -> StrabismusTestListRoute()
-//        is TestRoute.TestContent -> TestContentRoute()
-//        is TestRoute.TestResult -> TestResultRoute()
-//
-//        // Device Connect Routes
-//        is DeviceConnectRoute.InGripConnect -> InGripConnectRoute()
-//        is DeviceConnectRoute.BPBIO320Connect -> BPBIO320ConnectRoute()
-//        is DeviceConnectRoute.BP170BConnect -> BP170BConnectRoute()
-//
-//        // Admin Routes
-//        is AdminRoute.AdminPage -> AdminPageRoute()
+
         is AdminRoute.AccountManagement -> AccountManagementRoute(
             userId = userId,
             userData = userData,
@@ -126,11 +110,6 @@ fun NenoonRouteHost(
                 userData = null
             }
         )
-//        is AdminRoute.FaceUpdate -> FaceUpdateRoute(
-//            loggedInUserId = userId,
-//            accessToken = userData?.accessToken
-//        )
-//        is AdminRoute.FaceUpdateTermsOfService -> FaceUpdateTermsOfServiceRoute()
 
         else -> SplashRoute()
     }

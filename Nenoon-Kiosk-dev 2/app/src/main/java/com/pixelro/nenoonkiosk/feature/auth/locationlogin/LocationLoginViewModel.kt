@@ -11,6 +11,7 @@ import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.navigation.Route
 import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
+import com.pixelro.nenoonkiosk.core.navigation.TestRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,7 +55,7 @@ class LocationLoginViewModel @Inject constructor(
         }.onSuccess { success ->
             if (success) {
                 postSideEffect(LocationLoginSideEffect.LoginSuccess)
-                navigator.navigate(SignInRoute.UserSignIn)
+                navigator.navigate(TestRoute.CategoryList)
             }
         }
     }

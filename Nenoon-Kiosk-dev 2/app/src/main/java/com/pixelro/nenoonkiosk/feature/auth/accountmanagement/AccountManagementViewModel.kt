@@ -18,10 +18,9 @@ import com.mangoslab.nemonicsdk.constants.NPrinterType
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.manager.PrinterManager
-import com.pixelro.nenoonkiosk.core.navigation.AdminRoute
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
-import com.pixelro.nenoonkiosk.core.navigation.Route
 import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
+import com.pixelro.nenoonkiosk.core.navigation.TermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.TestResultUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -187,7 +186,7 @@ class AccountManagementViewModel @Inject constructor(
             postSideEffect(AccountManagementSideEffect.ShowToast("로그인이 필요합니다"))
             return@intent
         }
-        navigator.navigate(AdminRoute.FaceUpdateTermsOfService)
+        navigator.navigate(TermsOfServiceRoute.FaceUpdate)
     }
 
     fun signOut() = intent {

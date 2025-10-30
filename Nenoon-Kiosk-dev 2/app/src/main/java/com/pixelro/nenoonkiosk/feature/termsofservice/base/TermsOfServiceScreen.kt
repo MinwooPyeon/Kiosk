@@ -31,7 +31,7 @@ fun TermsOfServiceScreen(
     onChangePersonal: (Boolean?) -> Unit,
     onChangeSensitive: (Boolean?) -> Unit,
     onClickAgree: () -> Unit,
-    onClickBack: () -> Unit
+    onClickBack: () -> Unit,
 ) {
     Scaffold { paddingValues ->
         Surface(
@@ -63,7 +63,10 @@ fun TermsOfServiceScreen(
                     textSize = state.textSize
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 18.dp), color = Color(0x1F000000))
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 18.dp),
+                    color = Color(0x1F000000)
+                )
 
                 TermsTable(
                     data = sensitiveTable,

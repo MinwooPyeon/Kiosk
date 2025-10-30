@@ -1,26 +1,58 @@
 package com.pixelro.nenoonkiosk.feature.termsofservice.base
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import android.content.Context
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.AndroidViewModel
+import com.pixelro.nenoonkiosk.core.constants.NavConstants
+import com.pixelro.nenoonkiosk.core.navigation.Navigator
+import com.pixelro.nenoonkiosk.core.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
-class TermsOfServiceViewModel
-@Inject
-constructor() : ViewModel() {
-    private val _acceptedPersonalInformationTerms = mutableStateOf<Boolean?>(null)
-    val acceptedPersonalInformationTerms: State<Boolean?> = _acceptedPersonalInformationTerms
+class TermsOfServiceViewModel @Inject constructor(
+    application: Application,
+    private val navigator: Navigator
+) : AndroidViewModel(application),
+    ContainerHost<TermsOfServiceUiState, Nothing> {
 
-    private val _acceptedSensitiveInformationTerms = mutableStateOf<Boolean?>(null)
-    val acceptedSensitiveInformationTerms: State<Boolean?> = _acceptedSensitiveInformationTerms
+    override val container: Container<TermsOfServiceUiState, Nothing> =
+        container(TermsOfServiceUiState())
 
-    fun onPersonalInformationTermsAcceptedChange(newValue: Boolean?) {
-        _acceptedPersonalInformationTerms.value = newValue
+    fun loadLanguageBasedTextSize() = intent {
+        val context = getApplication<Application>()
+        val sp = context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE)
+        val savedLanguage = sp.getString("language", "defaultLanguage")
+        val textSize = if (savedLanguage == "en") 16.sp else 20.sp
+
+        reduce {
+            state.copy(textSize = textSize)
+        }
     }
 
-    fun onSensitiveInformationTermsAcceptedChange(newValue: Boolean?) {
-        _acceptedSensitiveInformationTerms.value = newValue
+    fun onPersonalInformationTermsAcceptedChange(accepted: Boolean?) = intent {
+        reduce {
+            state.copy(acceptedPersonal = accepted)
+        }
+    }
+
+    fun onSensitiveInformationTermsAcceptedChange(accepted: Boolean?) = intent {
+        reduce {
+            state.copy(acceptedSensitive = accepted)
+        }
+    }
+
+    fun onClickAgree() = intent {
+        if (state.acceptedPersonal == true && state.acceptedSensitive == true) {
+            navigator.navigate(Route.Intro)
+        }
+    }
+
+    fun onClickBack() = intent {
+        navigator.navigateBack()
     }
 }
