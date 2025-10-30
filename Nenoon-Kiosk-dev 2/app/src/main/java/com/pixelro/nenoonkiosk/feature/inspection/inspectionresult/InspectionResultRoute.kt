@@ -29,8 +29,8 @@ import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.result.DementiaInspectionResultRoute
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_exercise.ConcentrationExerciseResult
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_exercise.ConcentrationExerciseResultContent
@@ -169,9 +169,8 @@ fun InspectionResultRoute(
                     )
                 }
                 InspectionType.BloodPressure -> {
-                    BloodPressureTestResultContent(
-                        testResult = testResult as BloodPressureTestResult,
-                        navController = navController,
+                    BloodPressureInspectionResultContent(
+                        testResult = testResult as BloodPressureInspectionResult,
                     )
                 }
                 else -> {
