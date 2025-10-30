@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_exercise
+package com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.concentration_exercise
 
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility

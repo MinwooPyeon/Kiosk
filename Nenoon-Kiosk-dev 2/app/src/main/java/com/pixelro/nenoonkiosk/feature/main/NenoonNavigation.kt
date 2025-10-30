@@ -35,8 +35,8 @@ import com.pixelro.nenoonkiosk.feature.auth.FaceUpdateScreen
 import com.pixelro.nenoonkiosk.feature.auth.SignInScreen
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListScreen
-import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_exercise.ConcentrationExerciseContent
-import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseContent
+import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.concentration_exercise.ConcentrationExerciseContent
+import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseContent
 import com.pixelro.nenoonkiosk.feature.inspection.ExternalDeviceTestListScreen
 import com.pixelro.nenoonkiosk.feature.inspection.EyeTestInspectionRoute
 import com.pixelro.nenoonkiosk.feature.strabismus.PhoriaAndAniseikoniaTestListScreen
