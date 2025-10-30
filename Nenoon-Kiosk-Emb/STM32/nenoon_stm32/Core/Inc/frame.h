@@ -38,7 +38,8 @@ typedef enum{
 extern "C"{
 #endif
 
-
+uint16_t frame_crc_ccitt(const uint8_t* data, size_t len);
+frame_err_t frame_build(uint8_t type, const uint8_t* payload, uint16_t len, uint8_t* out_buf, size_t out_cap, size_t* out_len);
 
 #ifdef __cplusplus
 }
