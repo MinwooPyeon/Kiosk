@@ -71,8 +71,8 @@ import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridT
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.result.PresbyopiaInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResultTestResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.AiComment
@@ -317,8 +317,8 @@ fun TestResultScreen(
         } else {
             when (testType) {
                 InspectionType.Presbyopia -> {
-                    PresbyopiaTestResultContent(
-                        testResult = testResult as PresbyopiaTestResult,
+                    PresbyopiaInspectionResultContent(
+                        testResult = testResult as PresbyopiaInspectionResult,
                     )
                 }
 

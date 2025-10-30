@@ -15,7 +15,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestR
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
 
@@ -36,7 +36,7 @@ object TestResultUtil {
         val baseline = -paint.ascent()
         when (testType) {
             InspectionType.Presbyopia -> {
-                testResult as PresbyopiaTestResult
+                testResult as PresbyopiaInspectionResult
                 val image = Bitmap.createBitmap(width, 400, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(image)
                 canvas.drawARGB(255, 255, 255, 255)

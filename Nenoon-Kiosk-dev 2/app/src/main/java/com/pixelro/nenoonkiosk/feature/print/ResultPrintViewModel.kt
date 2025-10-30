@@ -714,7 +714,7 @@ class ResultPrintViewModel
                 canvas.drawText(pfText, xOffset, currentY, textPaint)
                 xOffset += pfWidth + columnGap
 
-                val presbyopiaText = result.presbyopiaTestResult?.let { "${it.avgDistance}cm" } ?: "--"
+                val presbyopiaText = result.presbyopiaInspectionResult?.let { "${it.avgDistance}cm" } ?: "--"
                 canvas.drawText(presbyopiaText, xOffset, currentY, textPaint)
                 xOffset += presbyopiaWidth + columnGap
 
