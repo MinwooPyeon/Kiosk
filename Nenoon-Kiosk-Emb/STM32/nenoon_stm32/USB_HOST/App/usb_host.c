@@ -107,8 +107,10 @@ static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
   break;
 
   case HOST_USER_CLASS_ACTIVE:
-
 	  Appli_state = APPLICATION_READY;
+	  USB_Advert_Init();
+	  usb_advert_err_t err = USB_Advert_Scan();
+	  if(err == USB_ADVERT_OK) USB_Advert_StreamAll();
   break;
 
   case HOST_USER_CONNECTION:
