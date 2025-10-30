@@ -16,7 +16,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridT
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityInspectionResult
 
 fun aiComment(
     testType: InspectionType,
@@ -29,7 +29,7 @@ fun aiComment(
     return when (testType) {
         InspectionType.ShortDistanceVisualAcuity -> {
             try {
-                val parsedResult = testResult as ShortVisualAcuityTestResult
+                val parsedResult = testResult as ShortVisualAcuityInspectionResult
 
                 if (parsedResult.leftEye >= 5 && parsedResult.rightEye >= 5) {
                     buildAnnotatedString {

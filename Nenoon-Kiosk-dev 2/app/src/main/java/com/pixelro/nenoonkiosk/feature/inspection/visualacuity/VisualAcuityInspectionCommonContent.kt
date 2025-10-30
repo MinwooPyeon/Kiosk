@@ -25,7 +25,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,29 +42,29 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetection
 import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetectionViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.pixelro.nenoonkiosk.ui.theme.White
+import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 @Composable
-fun VisualAcuityTestCommonContent(
-    visualAcuityTestCommonContentVisibleState: MutableTransitionState<Boolean>,
-    toResultScreen: (VisualAcuityTestResult) -> Unit,
+fun VisualAcuityInspectionCommonContent(
+    visualAcuityInspectionCommonContentVisibleState: MutableTransitionState<Boolean>,
+    toResultScreen: (VisualAcuityInspectionResult) -> Unit,
 ) {
     AnimatedVisibility(
-        visibleState = visualAcuityTestCommonContentVisibleState,
+        visibleState = visualAcuityInspectionCommonContentVisibleState,
         enter = AnimationProvider.enterTransition,
         exit = AnimationProvider.exitTransition,
     ) {
         FaceDetection()
-        VisualAcuityTestContent(
+        VisualAcuityInspectionContent(
             toResultScreen = toResultScreen,
         )
     }
 }
 
 @Composable
-fun VisualAcuityTestContent(
-    toResultScreen: (VisualAcuityTestResult) -> Unit,
+fun VisualAcuityInspectionContent(
+    toResultScreen: (VisualAcuityInspectionResult) -> Unit,
     visualAcuityViewModel: VisualAcuityViewModel = hiltViewModel(),
     faceDetectionViewModel: FaceDetectionViewModel = hiltViewModel(),
 ) {
@@ -105,7 +104,7 @@ fun VisualAcuityTestContent(
                     .height(500.dp)
                     .width(500.dp)
                     .background(
-                        color = Color(0xffffffff),
+                        color = White,
                         shape = RoundedCornerShape(8.dp),
                     ),
             contentAlignment = Alignment.Center,
@@ -271,7 +270,7 @@ fun VisualAcuityTestContent(
                     R.string.visual_acuity_description,
                 ),
             fontSize = 40.sp,
-            color = Color(0xffffffff),
+            color = White,
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center,
         )
@@ -287,7 +286,7 @@ fun VisualAcuityTestContent(
                     .width(490.dp)
                     .height(20.dp),
             progress = animatedProgress,
-            color = Color(0xff1d71e1),
+            color = neNoon_blue,
         )
         /**
          * 선택지
@@ -307,7 +306,7 @@ fun VisualAcuityTestContent(
                             .height(150.dp)
                             .width(150.dp)
                             .background(
-                                color = Color(0xffffffff),
+                                color = White,
                                 shape = RoundedCornerShape(8.dp),
                             )
                             .clickable {
@@ -318,7 +317,7 @@ fun VisualAcuityTestContent(
                                     },
                                 ) {
                                     toResultScreen(
-                                        visualAcuityViewModel.getVisualAcuityTestResult(),
+                                        visualAcuityViewModel.getVisualAcuityInspectionResult(),
                                     )
                                 }
                             },
@@ -363,7 +362,7 @@ fun VisualAcuityTestContent(
                             .height(150.dp)
                             .width(150.dp)
                             .background(
-                                color = Color(0xffffffff),
+                                color = White,
                                 shape = RoundedCornerShape(8.dp),
                             )
                             .clickable {
@@ -374,7 +373,7 @@ fun VisualAcuityTestContent(
                                     },
                                 ) {
                                     toResultScreen(
-                                        visualAcuityViewModel.getVisualAcuityTestResult(),
+                                        visualAcuityViewModel.getVisualAcuityInspectionResult(),
                                     )
                                 }
                             },
@@ -419,7 +418,7 @@ fun VisualAcuityTestContent(
                             .height(150.dp)
                             .width(150.dp)
                             .background(
-                                color = Color(0xffffffff),
+                                color = White,
                                 shape = RoundedCornerShape(8.dp),
                             )
                             .clickable {
@@ -430,7 +429,7 @@ fun VisualAcuityTestContent(
                                     },
                                 ) {
                                     toResultScreen(
-                                        visualAcuityViewModel.getVisualAcuityTestResult(),
+                                        visualAcuityViewModel.getVisualAcuityInspectionResult(),
                                     )
                                 }
                             },
@@ -476,7 +475,7 @@ fun VisualAcuityTestContent(
                         .height(150.dp)
                         .width(490.dp)
                         .background(
-                            color = Color(0xffffffff),
+                            color = White,
                             shape = RoundedCornerShape(8.dp),
                         )
                         .clickable {
@@ -487,7 +486,7 @@ fun VisualAcuityTestContent(
                                 },
                             ) {
                                 toResultScreen(
-                                    visualAcuityViewModel.getVisualAcuityTestResult(),
+                                    visualAcuityViewModel.getVisualAcuityInspectionResult(),
                                 )
                             }
                         },

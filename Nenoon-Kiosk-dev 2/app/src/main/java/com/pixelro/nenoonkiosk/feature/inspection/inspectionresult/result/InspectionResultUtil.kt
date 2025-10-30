@@ -16,7 +16,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridT
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityInspectionResult
 
 // TODO STR
 
@@ -144,7 +144,7 @@ object InspectionResultUtil {
             }
 
             InspectionType.ShortDistanceVisualAcuity -> {
-                testResult as ShortVisualAcuityTestResult
+                testResult as ShortVisualAcuityInspectionResult
                 val image = Bitmap.createBitmap(width, 400, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(image)
                 canvas.drawARGB(255, 255, 255, 255)

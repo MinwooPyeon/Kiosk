@@ -11,17 +11,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceContent
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuityTestCommonContent
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuityTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuityInspectionCommonContent
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuityInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuityViewModel
+import com.pixelro.nenoonkiosk.ui.theme.Black
 
 @Composable
-fun ShortDistanceVisualAcuityTestContent(
-    toResultScreen: (VisualAcuityTestResult) -> Unit,
+fun ShortDistanceVisualAcuityInspectionContent(
+    toResultScreen: (VisualAcuityInspectionResult) -> Unit,
     visualAcuityViewModel: VisualAcuityViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(true) {
@@ -36,7 +36,7 @@ fun ShortDistanceVisualAcuityTestContent(
             Modifier
                 .fillMaxSize()
                 .background(
-                    Color(0xff000000),
+                    Black,
                 ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -61,8 +61,8 @@ fun ShortDistanceVisualAcuityTestContent(
             /**
              * 시력 검사 화면
              */
-            VisualAcuityTestCommonContent(
-                visualAcuityTestCommonContentVisibleState = visualAcuityContentVisibleState,
+            VisualAcuityInspectionCommonContent(
+                visualAcuityInspectionCommonContentVisibleState = visualAcuityContentVisibleState,
                 toResultScreen = toResultScreen,
             )
         }

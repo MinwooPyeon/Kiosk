@@ -9,10 +9,10 @@ import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridT
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityInspectionResult
 
 data class CompoundTestResult(
-    val shortVisualAcuityTestResult: ShortVisualAcuityTestResult?,
+    val shortVisualAcuityInspectionResult: ShortVisualAcuityInspectionResult?,
     val presbyopiaInspectionResult: PresbyopiaInspectionResult?,
     val amslerGridTestResult: AmslerGridTestResult?,
     val mChartTestResult: MChartTestResult?,
@@ -23,7 +23,7 @@ data class CompoundTestResult(
 ) {
     // This constructor now takes CompoundTestResultAPI as a parameter
     constructor(apiResult: CompoundTestResultAPI) : this(
-        shortVisualAcuityTestResult =
+        shortVisualAcuityInspectionResult =
             apiResult.eyeSight?.run {
                 val left = leftSight
                 val right = rightSight
@@ -31,7 +31,7 @@ data class CompoundTestResult(
                     null
                 } else {
                     try {
-                        ShortVisualAcuityTestResult(left.toInt(), right.toInt())
+                        ShortVisualAcuityInspectionResult(left.toInt(), right.toInt())
                     } catch (e: NumberFormatException) {
                         null
                     }

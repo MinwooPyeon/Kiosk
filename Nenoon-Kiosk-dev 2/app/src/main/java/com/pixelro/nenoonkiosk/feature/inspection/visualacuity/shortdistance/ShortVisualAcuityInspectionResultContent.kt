@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -21,11 +20,12 @@ import androidx.navigation.NavHostController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.ui.theme.White
 
 // 광주
 @Composable
-fun ShortDistanceVisualAcuityTestResultContent(
-    testResult: ShortVisualAcuityTestResult,
+fun ShortDistanceVisualAcuityInspectionResultContent(
+    inspectionResult: ShortVisualAcuityInspectionResult,
     navController: NavHostController,
 ) {
     Column(
@@ -51,7 +51,7 @@ fun ShortDistanceVisualAcuityTestResultContent(
             modifier =
                 Modifier
                     .background(
-                        color = Color(0xfff7f9f9),
+                        color = White,
                         shape = RoundedCornerShape(8.dp),
                     )
                     .padding(20.dp),
@@ -75,11 +75,11 @@ fun ShortDistanceVisualAcuityTestResultContent(
             Text(
                 text =
                     when (SharedPreferencesManager.getString("language")) {
-                        "ko" -> "${testResult.leftEye.toFloat() / 10}"
-                        "en" -> "20/" + "${(200 / testResult.leftEye).toInt()}"
-                        "zh" -> "${4 + (testResult.leftEye.toFloat() / 10)}"
-                        "ja" -> "${testResult.leftEye.toFloat() / 10}"
-                        else -> "${testResult.leftEye.toFloat() / 10}"
+                        "ko" -> "${inspectionResult.leftEye.toFloat() / 10}"
+                        "en" -> "20/" + "${(200 / inspectionResult.leftEye).toInt()}"
+                        "zh" -> "${4 + (inspectionResult.leftEye.toFloat() / 10)}"
+                        "ja" -> "${inspectionResult.leftEye.toFloat() / 10}"
+                        else -> "${inspectionResult.leftEye.toFloat() / 10}"
                     },
                 fontSize = 40.sp,
                 fontWeight = FontWeight.Bold,
@@ -91,7 +91,7 @@ fun ShortDistanceVisualAcuityTestResultContent(
             modifier =
                 Modifier
                     .background(
-                        color = Color(0xfff7f9f9),
+                        color = White,
                         shape = RoundedCornerShape(8.dp),
                     )
                     .padding(20.dp),
@@ -116,11 +116,11 @@ fun ShortDistanceVisualAcuityTestResultContent(
             Text(
                 text =
                     when (SharedPreferencesManager.getString("language")) {
-                        "ko" -> "${testResult.rightEye.toFloat() / 10}"
-                        "en" -> "20/" + "${(200 / testResult.rightEye).toInt()}"
-                        "zh" -> "${4 + (testResult.rightEye.toFloat() / 10)}"
-                        "ja" -> "${testResult.rightEye.toFloat() / 10}"
-                        else -> "${testResult.rightEye.toFloat() / 10}"
+                        "ko" -> "${inspectionResult.rightEye.toFloat() / 10}"
+                        "en" -> "20/" + "${(200 / inspectionResult.rightEye).toInt()}"
+                        "zh" -> "${4 + (inspectionResult.rightEye.toFloat() / 10)}"
+                        "ja" -> "${inspectionResult.rightEye.toFloat() / 10}"
+                        else -> "${inspectionResult.rightEye.toFloat() / 10}"
                     },
                 fontSize = 40.sp,
                 fontWeight = FontWeight.Bold,

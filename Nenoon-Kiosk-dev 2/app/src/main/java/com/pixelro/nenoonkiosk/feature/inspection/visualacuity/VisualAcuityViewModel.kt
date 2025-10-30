@@ -170,8 +170,8 @@ class VisualAcuityViewModel
             if (!isEnd) updateRandomList()
         }
 
-        fun getVisualAcuityTestResult(): VisualAcuityTestResult {
-            return VisualAcuityTestResult(
+        fun getVisualAcuityInspectionResult(): VisualAcuityInspectionResult {
+            return VisualAcuityInspectionResult(
                 leftEyeSightValue,
                 rightEyeSightValue,
             )

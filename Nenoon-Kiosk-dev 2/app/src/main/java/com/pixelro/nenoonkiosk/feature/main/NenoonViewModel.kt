@@ -39,9 +39,9 @@ import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStreng
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.ChildrenVisualAcuityTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.LongVisualAcuityTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.ChildrenVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.LongVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityInspectionResult
 import com.pixelro.nenoonkiosk.feature.survey.model.SurveyGlass
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineName
@@ -459,9 +459,9 @@ class NenoonViewModel
         }
 
         var presbyopiaInspectionResult = PresbyopiaInspectionResult()
-        var shortVisualAcuityTestResult = ShortVisualAcuityTestResult()
-        var longVisualAcuityTestResult = LongVisualAcuityTestResult()
-        var childrenVisualAcuityTestResult = ChildrenVisualAcuityTestResult()
+        var shortVisualAcuityInspectionResult = ShortVisualAcuityInspectionResult()
+        var longVisualAcuityInspectionResult = LongVisualAcuityInspectionResult()
+        var childrenVisualAcuityTestResult = ChildrenVisualAcuityInspectionResult()
         var amslerGridTestResult = AmslerGridTestResult()
         var mChartTestResult = MChartTestResult()
         var dementiaTestResult = DementiaInspectionResult(scores = List(14) { DementiaViewModel.DementiaAnswer.None })
