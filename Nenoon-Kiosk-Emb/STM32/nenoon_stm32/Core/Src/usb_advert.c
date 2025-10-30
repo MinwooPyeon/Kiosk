@@ -125,7 +125,7 @@ usb_advert_err_t USB_Advert_ReadByIndex(uint32_t index){
 
 	return USB_Advert_ReadByName(s_files[index]);
 }
-usb_advert_err_t USB_Advert_Stream_File(const char* filename){
+usb_advert_err_t USB_Advert_StreamFile(const char* filename){
 	FIL 	file;
 	FRESULT res;
 	UINT 	br;
@@ -159,6 +159,13 @@ usb_advert_err_t USB_Advert_Stream_File(const char* filename){
 	f_close(&file);
 
 	UART6_SendString(TAG + USB_Advert_errstr(USB_ADVERT_OK) +" " +total +"bytes\r\n");
+	return USB_ADVERT_OK;
+}
+usb_advert_err_t USB_Advert_StreamAll(void){
+	for(uint8_t i = 0;i<s_count;i++){
+		USB_Advert_StreamFile(s_files[i]);
+	}
+	UART6_SendString(TAG + USB_Advert_errstr(USB_ADVERT_OK) +" " + s_count +"files\r\n");
 	return USB_ADVERT_OK;
 }
 
