@@ -56,6 +56,6 @@ enum class SurveyScreenState {
 }
 
 sealed interface SurveySideEffect {
-    data class NavigateToCategoryList(val tid: Long) : SurveySideEffect
+    data class ShowToast(val message: String) : SurveySideEffect
     data object ShowError : SurveySideEffect
 }

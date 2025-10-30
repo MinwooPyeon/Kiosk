@@ -1,12 +1,5 @@
 package com.pixelro.nenoonkiosk.feature.survey
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,13 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,7 +37,6 @@ import com.harang.data.model.dto.User
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.DebugConstants
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
-import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
@@ -59,167 +47,109 @@ import com.pixelro.nenoonkiosk.feature.survey.component.SurveyProgressBar
 import com.pixelro.nenoonkiosk.feature.survey.component.SurveyTwoOptionsQuestion
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
-import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.compose.collectSideEffect
 
-// 시력검사 전 설문조사 뷰
 @Composable
-fun SurveyScreen(
-    isLoggedIn: Boolean,
-    toCategoryListScreen: (Long) -> Unit,
-    surveyViewModel: SurveyViewModel = hiltViewModel(),
-    loginViewModel: LoginViewModel,
+fun SurveyRoute(
     userData: User?,
-    onBack: () -> Unit,
-    signOut: () -> Unit,
+    viewModel: SurveyViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
+    val state by viewModel.state.collectAsState()
+    val question by viewModel.currentQuestion.collectAsState()
 
-    val coroutineScope = rememberCoroutineScope()
-    val state = surveyViewModel.state.collectAsState().value
-    val question = surveyViewModel.currentQuestion.collectAsState().value
-
-    var surveyScreenState by remember { mutableStateOf(SurveyScreenState.InProgress) }
-
-    var isPressed by remember { mutableStateOf(false) }
-    val buttonColor by animateColorAsState(
-        targetValue = if (isPressed) neNoon_blue else White,
-        animationSpec = tween(durationMillis = 500),
-    )
-
-    val textColor by animateColorAsState(
-        targetValue = if (isPressed) White else neNoon_blue,
-        animationSpec = tween(durationMillis = 500),
-    )
-    val transition = rememberInfiniteTransition()
-    val alpha by transition.animateFloat(
-        initialValue = 1f,
-        targetValue = 0f,
-        animationSpec =
-            infiniteRepeatable(
-                animation =
-                    keyframes {
-                        durationMillis = 1000
-                    },
-                repeatMode = RepeatMode.Restart,
-            ),
-    )
-    val size by transition.animateFloat(
-        initialValue = 60f,
-        targetValue = 100f,
-        animationSpec =
-            infiniteRepeatable(
-                animation =
-                    keyframes {
-                        durationMillis = 1000
-                    },
-                repeatMode = RepeatMode.Restart,
-            ),
-    )
-
-    LaunchedEffect(state.isPastSurveyFetched, state.pastSurveyId) {
-//        if (!isLoggedIn) {
-//            toCategoryListScreen(DebugConstants.SAMPLE_SURVEY_ID)
-//        }
-
-        if (state.isPastSurveyFetched) {
-            if (state.pastSurveyId != null) {
-                toCategoryListScreen(state.pastSurveyId!!)
-            } else {
-                surveyViewModel.initSurveyData()
-                surveyScreenState = SurveyScreenState.InProgress
-            }
-        } else if (userData?.accessToken != null) {
-            surveyViewModel.checkIsSurveyCompleted(userData.accessToken!!)
-            surveyScreenState = SurveyScreenState.Loading
-        } else if (state.pastSurveyId != null) {
-            toCategoryListScreen(state.pastSurveyId!!)
-        }
-    }
-
-    LaunchedEffect(state.currentQuestion) {
-        if (surveyScreenState != SurveyScreenState.Loading) {
-            surveyScreenState = SurveyScreenState.InProgress
-        }
-    }
-
+    // Route 진입 시 처리
     LaunchedEffect(Unit) {
         if (DebugConstants.SKIP_SURVEY) {
-            toCategoryListScreen(DebugConstants.SAMPLE_SURVEY_ID)
+            viewModel.navigateToCategoryList(DebugConstants.SAMPLE_SURVEY_ID)
+        } else {
+            userData?.accessToken?.let { token ->
+                viewModel.checkIsSurveyCompleted(token)
+            }
         }
     }
 
+    // Past Survey 가져온 후 처리
+    LaunchedEffect(state.isPastSurveyFetched, state.pastSurveyId) {
+        if (state.isPastSurveyFetched) {
+            state.pastSurveyId?.let { tid ->
+                viewModel.navigateToCategoryList(tid)
+            } ?: run {
+                viewModel.initSurveyData()
+            }
+        }
+    }
+
+    // SideEffect 처리
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is SurveySideEffect.ShowError -> {
+                // Error 처리
+            }
+
+            is SurveySideEffect.ShowToast -> {
+                // Toast 처리
+            }
+        }
+    }
+
+    SurveyScreen(
+        state = state,
+        question = question,
+        userData = userData,
+        onBackClick = { viewModel.navigateToPreviousQuestion() },
+        onOptionSelected = { index ->
+            viewModel.handleSelection(index, userData?.accessToken)
+        }
+    )
+}
+
+@Composable
+fun SurveyScreen(
+    state: SurveyUiState,
+    question: SurveyQuestion,
+    userData: User?,
+    onBackClick: () -> Unit,
+    onOptionSelected: (Int) -> Unit
+) {
     Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(White),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(White),
     ) {
-        /**
-         * 상단 바
-         */
+        // 상단 바
         Box(
-            modifier =
-                Modifier
-                    .padding(
-                        top = (GlobalValue.statusBarPadding + 20).dp,
-                        bottom = 20.dp,
-                    )
-                    .fillMaxWidth()
-                    .height(40.dp),
+            modifier = Modifier
+                .padding(
+                    top = (GlobalValue.statusBarPadding + 20).dp,
+                    bottom = 20.dp,
+                )
+                .fillMaxWidth()
+                .height(40.dp),
             contentAlignment = Alignment.Center,
         ) {
             Box(
-                modifier =
-                    Modifier
-                        .padding(start = 20.dp)
-                        .fillMaxSize(),
+                modifier = Modifier
+                    .padding(start = 20.dp)
+                    .fillMaxSize(),
                 contentAlignment = Alignment.CenterStart,
             ) {
-                /**
-                 * 뒤로 가기 버튼
-                 * 설문 한칸 뒤로 가기
-                 */
                 Row(
-                    modifier =
-                        Modifier
-                            .fillMaxHeight()
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() },
-                            ) {
-                                if (surveyScreenState == SurveyScreenState.InProgress) {
-                                    when (state.currentQuestion) {
-                                        QuestionType.Age -> {
-                                            onBack()
-                                        }
-
-                                        QuestionType.Sex -> {
-                                            surveyViewModel.updateQuestionType(QuestionType.Age)
-                                        }
-
-                                        QuestionType.Glass -> {
-                                            surveyViewModel.updateQuestionType(QuestionType.Sex)
-                                        }
-
-                                        QuestionType.Surgery -> {
-                                            surveyViewModel.updateQuestionType(QuestionType.Glass)
-                                        }
-
-                                        QuestionType.Diabetes -> {
-                                            surveyViewModel.updateQuestionType(QuestionType.Surgery)
-                                        }
-                                    }
-                                }
-                            },
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                        ) {
+                            if (state.screenState == SurveyScreenState.InProgress) {
+                                onBackClick()
+                            }
+                        },
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Image(
-                        modifier =
-                            Modifier
-                                .padding(top = 4.dp)
-                                .width(28.dp),
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .width(28.dp),
                         painter = painterResource(id = R.drawable.icon_back_black),
                         contentDescription = "",
                     )
@@ -236,16 +166,15 @@ fun SurveyScreen(
                 fontWeight = FontWeight.Medium,
             )
         }
+
         Spacer(
-            modifier =
-                Modifier
-                    .padding(bottom = 20.dp)
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    ,
+            modifier = Modifier
+                .padding(bottom = 20.dp)
+                .fillMaxWidth()
+                .height(1.dp)
         )
 
-        when (surveyScreenState) {
+        when (state.screenState) {
             SurveyScreenState.Loading -> {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -260,20 +189,18 @@ fun SurveyScreen(
 
             SurveyScreenState.Error -> {
                 Column(
-                    modifier =
-                        Modifier
-                            .padding(40.dp)
-                            .fillMaxSize(),
+                    modifier = Modifier
+                        .padding(40.dp)
+                        .fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
-                    StyledText(StringProvider.getString(R.string.survey_error_message), TextStyle.Error)
-                    Spacer(modifier = Modifier.weight(1f))
-                    PrimaryButton(
-                        text = StringProvider.getString(R.string.settings_signout),
-                        onClick = signOut,
+                    StyledText(
+                        StringProvider.getString(R.string.survey_error_message),
+                        TextStyle.Error
                     )
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
 
@@ -283,21 +210,17 @@ fun SurveyScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    /**
-                     * 질문 진행 상황
-                     */
                     SurveyProgressBar(
                         currentStep = state.currentQuestion.ordinal + 1,
                         totalSteps = 5,
                     )
 
                     Column(
-                        modifier =
-                            Modifier
-                                .background(White)
-                                .fillMaxWidth()
-                                .fillMaxHeight(0.7f)
-                                .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
+                        modifier = Modifier
+                            .background(White)
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.7f)
+                            .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         when (question) {
@@ -307,9 +230,7 @@ fun SurveyScreen(
                                     leftOptions = question.leftOptions,
                                     rightOptions = question.rightOptions,
                                     selectedOption = question.selectedIndex,
-                                    onOptionSelected = { index ->
-                                        surveyViewModel.handleSelection(index)
-                                    },
+                                    onOptionSelected = onOptionSelected,
                                 )
                             }
 
@@ -319,9 +240,7 @@ fun SurveyScreen(
                                     topOptions = question.topOptions,
                                     bottomOptions = question.bottomOptions,
                                     selectedOption = question.selectedIndex,
-                                    onOptionSelected = { index ->
-                                        surveyViewModel.handleSelection(index)
-                                    },
+                                    onOptionSelected = onOptionSelected,
                                 )
                             }
 
@@ -331,62 +250,7 @@ fun SurveyScreen(
                                     option1Text = question.option1Text,
                                     option2Text = question.option2Text,
                                     selectedOption = question.selectedIndex,
-                                    onOptionSelected = { index ->
-                                        surveyViewModel.handleSelection(index) {
-                                            surveyViewModel.getSurveyId(
-                                                token = userData?.accessToken,
-                                                toCategoryListScreen = toCategoryListScreen,
-                                                isSignInSkipped = {false},
-                                            ) {
-                                                surveyScreenState = SurveyScreenState.Error
-                                            }
-                                        }
-                                    },
-                                )
-                            }
-                        }
-                    }
-
-
-                    Column(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .background(
-                                    color = White,
-                                )
-                                .padding(40.dp),
-                        verticalArrangement = Arrangement.Center,
-                    ) {
-                        Box(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight(),
-                            contentAlignment = Alignment.BottomCenter,
-                        ) {
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .width(70.dp)
-                                        .height(70.dp)
-                                        .background(color = neNoon_blue)
-                                        .border(
-                                            border =
-                                                BorderStroke(
-                                                    width = 4.dp,
-                                                    color = White,
-                                                ),
-                                            shape = RoundedCornerShape(8.dp),
-                                        ),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                Text(
-                                    text = (state.currentQuestion.ordinal + 1).toString(),
-                                    textAlign = TextAlign.Center,
-                                    fontSize = 40.sp,
-                                    color = White,
-                                    fontWeight = FontWeight.ExtraBold,
+                                    onOptionSelected = onOptionSelected,
                                 )
                             }
                         }

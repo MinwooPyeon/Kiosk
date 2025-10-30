@@ -21,6 +21,7 @@ import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.navigation.AdminRoute
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.navigation.Route
+import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.TestResultUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -190,7 +191,7 @@ class AccountManagementViewModel @Inject constructor(
     }
 
     fun signOut() = intent {
-        navigator.navigateAndClearBackStack(Route.LogIn)
+        navigator.navigateAndClearBackStack(SignInRoute.UserSignIn)
         postSideEffect(AccountManagementSideEffect.SignOut)
     }
 

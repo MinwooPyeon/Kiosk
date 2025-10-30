@@ -56,9 +56,6 @@ fun NenoonRouteHost(
         )
 
         is Route.Permission -> PermissionRoute()
-        is Route.LogIn -> LoginRoute(
-            updateIsSignedIn = { isSignedIn = it }
-        )
 //        is Route.Entries -> EntriesRoute()
         is Route.Intro -> IntroRoute()
 //        is Route.Survey -> SurveyRoute()

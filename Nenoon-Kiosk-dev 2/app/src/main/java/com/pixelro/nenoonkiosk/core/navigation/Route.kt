@@ -17,9 +17,6 @@ sealed interface Route : NavKey {
     data object Entries : Route
 
     @Serializable
-    data object LogIn : Route
-
-    @Serializable
     data object Intro : Route
 
     @Serializable
@@ -39,9 +36,6 @@ sealed interface Route : NavKey {
 
     @Serializable
     data object Contact : Route
-
-    @Serializable
-    data object Videotelephony : Route
 
     @Serializable
     data object BTDeviceManagement : Route

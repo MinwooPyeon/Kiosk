@@ -38,7 +38,7 @@ class SplashViewModel @Inject constructor(
         val allGranted = permissionChecker.areAllPermissionsGranted()
 
         if (allGranted) {
-            navigator.navigateAndClearBackStack(Route.LogIn)
+            navigator.navigateAndClearBackStack(SignInRoute.LocationSignIn)
         } else {
             navigator.navigateAndClearBackStack(Route.Permission)
         }

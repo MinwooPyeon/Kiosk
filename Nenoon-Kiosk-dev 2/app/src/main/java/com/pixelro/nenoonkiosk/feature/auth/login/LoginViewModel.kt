@@ -50,6 +50,6 @@ class LoginViewModel @Inject constructor(
 
     fun userSignInSkip(updateIsSignedIn: (Boolean) -> Unit) = intent {
         updateIsSignedIn(true)
-        navigator.navigate(TestRoute.CategoryList)
+        navigator.navigate(Route)
     }
 }
