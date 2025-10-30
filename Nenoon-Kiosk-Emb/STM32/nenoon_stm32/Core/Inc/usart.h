@@ -47,14 +47,15 @@ void MX_USART3_UART_Init(void);
 void MX_USART6_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+//UART2 - USB Converter
 HAL_StatusTypeDef UART2_SendString(const char* s);
 HAL_StatusTypeDef UART2_SendBytes(const uint8_t* buf, uint16_t len);
 HAL_StatusTypeDef UART2_RecvBytes(const uint8_t* buf, uint16_t len, uint32_t to_ms);
 
-HAL_StatusTypeDef UART3_SendString(const char* s);
-HAL_StatusTypeDef UART3_SendBytes(const uint8_t* buf, uint16_t len);
-HAL_StatusTypeDef UART3_RecvBytes(const uint8_t* buf, uint16_t len, uint32_t to_ms);
+//UART3 - ST-LINK
 
+
+//UART6 - ESP32
 HAL_StatusTypeDef UART6_SendString(const char* s);
 HAL_StatusTypeDef UART6_SendBytes(const uint8_t* buf, uint16_t len);
 HAL_StatusTypeDef UART6_RecvBytes(const uint8_t* buf, uint16_t len, uint32_t to_ms);

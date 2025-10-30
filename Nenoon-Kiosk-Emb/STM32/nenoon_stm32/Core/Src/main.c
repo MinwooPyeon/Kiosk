@@ -98,17 +98,19 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USART6_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
+  STLINK_UART_Println("[STM32] Configure All Peripheral Configure Initialize");
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
   /* Init scheduler */
   osKernelInitialize();  /* Call init function for freertos objects (in cmsis_os2.c) */
-  MX_FREERTOS_Init();
 
+  MX_FREERTOS_Init();
+  ST_LINK_UART_Println("[STM32] OS Scheduler Initialization");
   /* Start scheduler */
   osKernelStart();
-
+  ST_LINK_UART_Println("[STM32] OS Kernel Start");
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */

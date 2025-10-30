@@ -396,7 +396,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
-/*UART2*/
+/*UART2 - USB Converter*/
 HAL_StatusTypeDef UART2_SendString(const char* s){
 	return HAL_UART_Transmit(&huart2, (uint8_t*)s, (uint16_t)strlen(s), 100);
 }
@@ -406,17 +406,27 @@ HAL_StatusTypeDef UART2_SendBytes(const uint8_t* buf, uint16_t len){
 HAL_StatusTypeDef UART2_RecvBytes(const uint8_t* buf, uint16_t len, uint32_t to_ms){
 	return HAL_UART_Receive(&huart2, buf, len, to_ms);
 }
-/*UART3*/
-HAL_StatusTypeDef UART3_SendString(const char* s){
+/*UART3 - ST-LINK*/
+HAL_StatusTypeDef STLINK_UART_PutChar(uint8_t ch){
+	return HAL_UART_Transmit(&huart3, &ch, 1, 100);
+}
+HAL_StatusTypeDef STLINK_UART_Print(const char* s){
 	return HAL_UART_Transmit(&huart3, (uint8_t*)s, (uint16_t)strlen(s), 100);
 }
-HAL_StatusTypeDef UART3_SendBytes(const uint8_t* buf, uint16_t len){
-	return HAL_UART_Transmit(&huart3, buf, len, 100);
+HAL_StatusTypeDef STLINK_UART_Println(const char* s){
+	HAL_UART_Transmit(&huart3, (uint8_t*)s, (uint16_t)strlen(s), 100);
+	const char* crlf[] = "\r\n";
+	return HAL_UART_Transmit(&huart3, (uint8_t*)crlf, (uint16_t)strlen(crlf), 100);
 }
-HAL_StatusTypeDef UART3_RecvBytes(const uint8_t* buf, uint16_t len, uint32_t to_ms){
-	return HAL_UART_Receive(&huart3, buf, len, to_ms);
+uint8_t STLINK_UART_GetChar(uint32_t timeout_ms){
+	uint8_t ch = 0xFF;
+	if(HAL_UART_Receive(&huart3, &ch, 1, timeout_ms) == HAL_OK){
+		return ch;
+	}
+	return 0xFF;
 }
-/*UART6*/
+
+/*UART6 - ESP32*/
 HAL_StatusTypeDef UART6_SendString(const char* s){
 	return HAL_UART_Transmit(&huart6, (uint8_t*)s, (uint16_t)strlen(s), 100);
 }
