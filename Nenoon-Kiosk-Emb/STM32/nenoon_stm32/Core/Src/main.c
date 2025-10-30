@@ -22,7 +22,7 @@
 #include "dma.h"
 #include "eth.h"
 #include "usart.h"
-#include "usb_device.h"
+#include "usb_otg.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -96,6 +96,8 @@ int main(void)
   MX_ETH_Init();
   MX_USART3_UART_Init();
   MX_USART2_UART_Init();
+  MX_USART6_UART_Init();
+  MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
