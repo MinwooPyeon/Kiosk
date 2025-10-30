@@ -528,43 +528,6 @@ class ResultPrintViewModel
                         lineHeightAmplifier = lineHeightAmplifier,
                     )
 
-                val pulmonaryFunctionData =
-                    listOf(
-                        Triple(
-                            StringProvider.getString(R.string.pdf_pf_range_normal),
-                            StringProvider.getString(R.string.pdf_pf_interp_normal),
-                            StringProvider.getString(R.string.pdf_pf_recomm_normal),
-                        ),
-                        Triple(
-                            StringProvider.getString(R.string.pdf_pf_range_mild),
-                            StringProvider.getString(R.string.pdf_pf_interp_mild),
-                            StringProvider.getString(R.string.pdf_pf_recomm_mild),
-                        ),
-                        Triple(
-                            StringProvider.getString(R.string.pdf_pf_range_moderate),
-                            StringProvider.getString(R.string.pdf_pf_interp_moderate),
-                            StringProvider.getString(R.string.pdf_pf_recomm_moderate),
-                        ),
-                    )
-                currentY =
-                    drawResultRow(
-                        canvas,
-                        StringProvider.getString(R.string.pdf_pulmonary_age_title),
-                        if (latestResult.pulmonaryFunctionTestResult != null) {
-                            "${latestResult.pulmonaryFunctionTestResult.pulmonaryAge} ${StringProvider.getString(R.string.pdf_age_unit)}"
-                        } else {
-                            StringProvider.getString(R.string.pdf_test_not_conducted)
-                        },
-                        pulmonaryFunctionData,
-                        columnStarts,
-                        col1Width, col2Width, col3Width, col4Width,
-                        currentY,
-                        titlePaint, textPaint, notTestedPaint, linePaint,
-                        tipText = StringProvider.getString(R.string.pdf_pf_tip),
-                        context,
-                        lineHeightAmplifier = lineHeightAmplifier,
-                    )
-
                 val macularDegenerationData =
                     listOf(
                         Triple(
@@ -709,10 +672,6 @@ class ResultPrintViewModel
                 val gsText = result.gripStrengthTestResult?.let { "L: ${it.leftGrip} / R: ${it.rightGrip}" } ?: "--"
                 canvas.drawText(gsText, xOffset, currentY, textPaint)
                 xOffset += gsWidth + columnGap
-
-                val pfText = result.pulmonaryFunctionTestResult?.let { StringProvider.getString(R.string.pdf_label_age) + "${it.pulmonaryAge}" } ?: "--"
-                canvas.drawText(pfText, xOffset, currentY, textPaint)
-                xOffset += pfWidth + columnGap
 
                 val presbyopiaText = result.presbyopiaInspectionResult?.let { "${it.avgDistance}cm" } ?: "--"
                 canvas.drawText(presbyopiaText, xOffset, currentY, textPaint)

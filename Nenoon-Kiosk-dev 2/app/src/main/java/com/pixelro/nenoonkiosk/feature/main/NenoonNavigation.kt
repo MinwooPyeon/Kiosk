@@ -395,11 +395,6 @@ fun nenoonApp(
                 toAccountManagementScreen = {
                     navController.navigate(NavConstants.ROUTE_ACCOUNT_MANAGEMENT)
                 },
-                toPulmonaryTestResultScreen = {
-                    viewModel.pulmonaryFunctionTestResult = it
-                    viewModel.updateSelectedTestType(InspectionType.PulmonaryFunction)
-                    navController.navigate(NavConstants.ROUTE_TEST_RESULT)
-                },
                 toSettingsScreen = {
                     navController.navigate(NavConstants.ROUTE_SETTINGS)
                 },
@@ -719,7 +714,6 @@ fun nenoonApp(
                 InspectionType.MChart -> viewModel.updateIsMChartTestDone(true)
                 InspectionType.BloodPressure -> viewModel.updateIsBloodPressureTestDone(true)
                 InspectionType.GripStrength -> viewModel.updateIsGripStrengthTestDone(true)
-                InspectionType.PulmonaryFunction -> viewModel.updateIsPulmonaryFunctionTestDone(true)
                 else -> {
                 }
             }
@@ -742,7 +736,6 @@ fun nenoonApp(
                         InspectionType.Concentration_Glasses -> viewModel.concentrationExerciseResult
                         InspectionType.BloodPressure -> viewModel.bloodPressureTestResult
                         InspectionType.GripStrength -> viewModel.gripStrengthTestResult
-                        InspectionType.PulmonaryFunction -> viewModel.pulmonaryFunctionTestResult
                         InspectionType.None -> null
                         InspectionType.Phoria -> TODO()
                         InspectionType.Aniseikonia -> TODO()

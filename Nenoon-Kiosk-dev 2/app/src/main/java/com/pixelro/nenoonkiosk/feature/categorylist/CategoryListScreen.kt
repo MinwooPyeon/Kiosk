@@ -42,7 +42,6 @@ import com.pixelro.nenoonkiosk.core.ui.InspectionSelectionButton
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
-import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 import kotlinx.coroutines.delay
 
@@ -59,7 +58,6 @@ fun CategoryListScreen(
     toIntroScreen: () -> Unit,
     toPrintScreen: () -> Unit,
     toAccountManagementScreen: () -> Unit,
-    toPulmonaryTestResultScreen: (PulmonaryFunctionTestResult) -> Unit,
     toSettingsScreen: () -> Unit,
 ) {
     val isPreview = LocalInspectionMode.current
@@ -81,29 +79,6 @@ fun CategoryListScreen(
             }
         }
     }
-
-    // Safe launcher (dummy in preview)
-    val activityResultLauncher =
-        if (!isPreview) {
-            rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.StartActivityForResult(),
-            ) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    val isGood = result.data?.getBooleanExtra("isGood", false)
-                    val lungAge = result.data?.getDoubleExtra("lungAge", -1.0)
-                    val capacity = result.data?.getDoubleExtra("capacity", -1.0)
-                    val power = result.data?.getDoubleExtra("power", -1.0)
-
-                    val pulmonaryResult = PulmonaryFunctionTestResult().apply {
-                        isGood?.let { pulmonaryStatus = it }
-                        capacity?.let { pulmonaryCapacity = it }
-                        power?.let { pulmonaryPower = it }
-                        lungAge?.let { pulmonaryAge = it.toInt() }
-                    }
-                    toPulmonaryTestResultScreen(pulmonaryResult)
-                }
-            }
-        } else null
 
     Column(
         modifier = Modifier
@@ -129,18 +104,6 @@ fun CategoryListScreen(
             },
             Triple(R.string.eye_test, R.drawable.eye_test_icon) {
                 toEyeTestScreen()
-            },
-            Triple(R.string.pulmonary_function_test, R.drawable.lung_age_icon) {
-                if (!isPreview) {
-                    val intent = Intent("android.intent.action.BREATHINGS").apply {
-                        putExtra("id", pid.toString())
-                        putExtra("height", 0)
-                        putExtra("birthday", 0)
-                        putExtra("weight", 0)
-                        putExtra("gender", "m")
-                    }
-                    activityResultLauncher?.launch(intent)
-                }
             },
             Triple(R.string.cross_eye_test, R.drawable.cross_eye_icon) {
                 toStrabismusTestListScreen()
@@ -227,7 +190,6 @@ fun CategoryListScreenPreview() {
         toIntroScreen = {},
         toPrintScreen = {},
         toAccountManagementScreen = {},
-        toPulmonaryTestResultScreen = {},
         toSettingsScreen = {}
     )
 }

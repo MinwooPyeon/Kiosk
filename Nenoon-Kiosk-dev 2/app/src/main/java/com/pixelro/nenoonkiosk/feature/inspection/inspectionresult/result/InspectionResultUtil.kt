@@ -16,7 +16,6 @@ import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridT
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
 
 // TODO STR
@@ -746,84 +745,6 @@ object InspectionResultUtil {
                 )
 
                 return image!!
-            }
-
-            InspectionType.PulmonaryFunction -> {
-                testResult as PulmonaryFunctionTestResult
-                val image = Bitmap.createBitmap(width, 400, Bitmap.Config.ARGB_8888)
-                val canvas = Canvas(image)
-                canvas.drawARGB(255, 255, 255, 255)
-
-                canvas.drawBitmap(logoImg, 360f, 320f, null)
-
-                canvas.drawText(
-                    StringProvider.getString(
-                        (com.pixelro.nenoonkiosk.R.string.pulmonary_function_test_result),
-                    ),
-                    300f,
-                    baseline,
-                    paint,
-                )
-
-                paint.textAlign = Paint.Align.LEFT
-
-                val roundedPulmonaryCapacity = String.format("%.1f", testResult.pulmonaryCapacity)
-                val roundedPulmonaryPower = String.format("%.1f", testResult.pulmonaryPower)
-
-                canvas.drawText(
-                    StringProvider.getString(
-                        com.pixelro.nenoonkiosk.R.string.pulmonary_capacity_label,
-                    ) + " : ${roundedPulmonaryCapacity}L",
-                    20f,
-                    baseline + 80f,
-                    paint,
-                )
-                canvas.drawText(
-                    StringProvider.getString(
-                        com.pixelro.nenoonkiosk.R.string.pulmonary_power_label,
-                    ) + " : ${roundedPulmonaryPower}F",
-                    20f,
-                    baseline + 150f,
-                    paint,
-                )
-                canvas.drawText(
-                    StringProvider.getString(
-                        com.pixelro.nenoonkiosk.R.string.pulmonary_age_label,
-                    ) + " : ${testResult.pulmonaryAge}",
-                    20f,
-                    baseline + 220f,
-                    paint,
-                )
-
-                return image!!
-
-//                testResult as PulmonaryFunctionTestResult
-//                val image = Bitmap.createBitmap(width, 400, Bitmap.Config.ARGB_8888)
-//                val canvas = Canvas(image)
-//                canvas.drawARGB(255, 255, 255, 255)
-//                canvas.drawBitmap(logoImg, 360f, 320f, null)
-//
-//                canvas.drawText(StringProvider.getString(R.string.pulmonary_function_test), 300f, baseline, paint)
-//
-//                if(SharedPreferencesManager.getString("language") != "ko") {
-//                    paint.textSize = 28.0f;
-//                }
-//                canvas.drawText(StringProvider.getString(R.string.pulmonary_capacity_label), 100f, baseline + 60f, paint)
-//                canvas.drawText(StringProvider.getString(R.string.pulmonary_power_label), 300f, baseline + 60f, paint)
-//                canvas.drawText(StringProvider.getString(R.string.pulmonary_age_label), 500f, baseline + 60f, paint)
-//
-//                paint.textSize = 40.0f;
-//
-//                paint.typeface = Typeface.DEFAULT_BOLD
-//                canvas.drawText(String.format("%.1fL", testResult.pulmonaryCapacity), 100f, baseline + 190f, paint)
-//                canvas.drawText(String.format("%.1f", testResult.pulmonaryPower), 300f, baseline + 190f, paint)
-//                canvas.drawText(String.format(StringProvider.getString(R.string.pulmonary_age_short_format), testResult.pulmonaryAge.toString()), 500f, baseline + 190f, paint)
-//                paint.typeface = Typeface.DEFAULT
-//
-//                paint.textAlign = Paint.Align.LEFT
-//                canvas.drawLine(200f, 100f, 200f, 300f, paint)
-//                canvas.drawLine(400f, 100f, 400f, 300f, paint)
-//                return image!!
             }
 
             else -> {

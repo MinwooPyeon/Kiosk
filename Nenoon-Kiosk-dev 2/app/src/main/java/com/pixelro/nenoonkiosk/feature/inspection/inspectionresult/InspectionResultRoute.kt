@@ -29,8 +29,8 @@ import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResultContract
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureTestResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.result.DementiaInspectionResultRoute
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_exercise.ConcentrationExerciseResult
 import com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_exercise.ConcentrationExerciseResultContent
@@ -46,8 +46,6 @@ import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResul
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.result.PresbyopiaInspectionResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResultTestResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.ChildrenVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.LongVisualAcuityTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortDistanceVisualAcuityTestResultContent
@@ -78,7 +76,7 @@ fun InspectionResultRoute(
     val navBack: () -> Unit = remember(testType, navController) {
         {
             when (testType) {
-                InspectionType.Dementia, InspectionType.PulmonaryFunction ->
+                InspectionType.Dementia ->
                     navController.popBackStack(NavConstants.ROUTE_CATEGORY_LIST, false)
                 InspectionType.GripStrength, InspectionType.BloodPressure ->
                     navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false)
@@ -116,7 +114,7 @@ fun InspectionResultRoute(
         {
             when (testType) {
                 InspectionType.Presbyopia -> {
-                    PresbyopiaInspectionResultContent(testResult = testResult as PresbyopiaInspectionResult)
+                    PresbyopiaInspectionResultContent(testResult =  testResult as PresbyopiaInspectionResult)
                 }
                 InspectionType.ShortDistanceVisualAcuity -> {
                     ShortDistanceVisualAcuityTestResultContent(
@@ -172,12 +170,8 @@ fun InspectionResultRoute(
                 }
                 InspectionType.BloodPressure -> {
                     BloodPressureTestResultContent(
-                        testResult = testResult as BloodPressureInspectionResultContract,
-                    )
-                }
-                InspectionType.PulmonaryFunction -> {
-                    PulmonaryFunctionTestResultTestResultContent(
-                        testResult = testResult as PulmonaryFunctionTestResult,
+                        testResult = testResult as BloodPressureTestResult,
+                        navController = navController,
                     )
                 }
                 else -> {
