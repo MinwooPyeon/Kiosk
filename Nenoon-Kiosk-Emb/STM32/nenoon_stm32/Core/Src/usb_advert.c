@@ -23,7 +23,7 @@ static bool     s_scanned = false;
 extern FATFS	USBH_fatfs;
 extern char		USBHPath[4];
 
-const char* usb_advert_strerr(usb_advert_err_t err)
+const char* usb_advert_errstr(usb_advert_err_t err)
 {
     switch(err){
     case USB_ADVERT_OK:             return "OK";
@@ -124,7 +124,10 @@ usb_advert_err_t USB_Advert_ReadByIndex(uint32_t index){
 
 	return USB_Advert_ReadByName(s_files[index]);
 }
-uint32_t USB_Advert_GetFileCount(void);
-
-const char* USB_Advert_GetName(uint32_t index);
-const char* usb_advert_errstr(usb_advert_err_t err);
+uint32_t USB_Advert_GetFileCount(void){
+	return s_count;
+}
+const char* USB_Advert_GetName(uint32_t index){
+	if(index < s_count) return s_files[index];
+	return NULL;
+}
