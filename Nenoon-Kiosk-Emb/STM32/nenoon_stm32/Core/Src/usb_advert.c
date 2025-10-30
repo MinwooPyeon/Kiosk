@@ -15,6 +15,7 @@
 #define TAG 					"[USB_ADVERT]"
 #define USB_ADVERT_MAX_FILES   	16
 #define USB_ADVERT_MAX_NAME    	64
+#define CHUNK_SIZE 1024
 
 static char     s_files[USB_ADVERT_MAX_FILES][USB_ADVERT_MAX_NAME];
 static uint32_t s_count = 0;
@@ -23,7 +24,7 @@ static bool     s_scanned = false;
 extern FATFS	USBH_fatfs;
 extern char		USBHPath[4];
 
-const char* usb_advert_errstr(usb_advert_err_t err)
+const char* USB_Advert_errstr(usb_advert_err_t err)
 {
     switch(err){
     case USB_ADVERT_OK:             return "OK";
@@ -124,6 +125,43 @@ usb_advert_err_t USB_Advert_ReadByIndex(uint32_t index){
 
 	return USB_Advert_ReadByName(s_files[index]);
 }
+usb_advert_err_t USB_Advert_Stream_File(const char* filename){
+	FIL 	file;
+	FRESULT res;
+	UINT 	br;
+	uint8_t buf[CHUNK_SIZE];
+	char 	path[128];
+
+	snprintf(path, sizeof(path), "/%s", filename);
+
+	res = f_open(&file, path, FA_READ);
+	if(res != FR_OK){
+		UART6_SendString(TAG + USB_Advert_errstr(USB_ADVERT_ERR_FOPEN) + "\r\n");
+		return USB_ADVERT_ERR_FOPEN;
+	}
+
+	UART6_SendString("Streaming Start" + "\r\n");
+
+	uin32_t total = 0;
+	while(1){
+		res = f_read(&file, buf, sizeof(buf), &br);
+		if(res != FR_OK){
+			UART6_SendString(TAG + USB_Advert_errstr(USB_ADVERT_ERR_FREAD) + "\r\n");
+			f_close(&file);
+			return USB_ADVERT_ERR_FREAD;
+		}
+		if(br == 0) break;
+
+		UART6_TransmitString(buf);
+		total += br;
+	}
+
+	f_close(&file);
+
+	UART6_SendString(TAG + USB_Advert_errstr(USB_ADVERT_OK) +" " +total +"bytes\r\n");
+	return USB_ADVERT_OK;
+}
+
 uint32_t USB_Advert_GetFileCount(void){
 	return s_count;
 }

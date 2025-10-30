@@ -32,6 +32,8 @@ void USB_Advert_Init(void);
 usb_advert_err_t USB_Advert_Scan(void);
 usb_advert_err_t USB_Advert_ReadByName(const char* filename);
 usb_advert_err_t USB_Advert_ReadByIndex(uint32_t index);
+usb_advert_err_t USB_Advert_Stream_File(const char* filename);
+
 uint32_t USB_Advert_GetFileCount(void);
 
 const char* USB_Advert_GetName(uint32_t index);
