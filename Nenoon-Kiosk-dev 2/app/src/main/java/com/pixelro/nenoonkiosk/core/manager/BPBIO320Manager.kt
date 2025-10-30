@@ -7,7 +7,7 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import com.inbody.bpbio.IB_BleManager
 import com.inbody.bpbio.IB_SDKConst
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResultContract
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.json.JSONException
@@ -22,7 +22,7 @@ class BPBIO320Manager(private val context: Context) {
     private val _deviceName = MutableStateFlow("N/A")
     val deviceName = _deviceName.asStateFlow()
 
-    private val _bloodPressureResult = MutableStateFlow<BloodPressureInspectionResultContract?>(null)
+    private val _bloodPressureResult = MutableStateFlow<BloodPressureInspectionResult?>(null)
     val bloodPressureResult = _bloodPressureResult.asStateFlow()
 
     private val _errorMessage = MutableStateFlow<String?>(null)
@@ -225,7 +225,7 @@ class BPBIO320Manager(private val context: Context) {
                             val hr = jsonObj.optInt("HR", 0)
                             val sdkIsComplete = jsonObj.optInt("IsComplete", 0) == IB_SDKConst.SUCCESS
 
-                            _bloodPressureResult.value = BloodPressureInspectionResultContract(sbp, dbp, hr)
+                            _bloodPressureResult.value = BloodPressureInspectionResult(sbp, dbp, hr)
                             _isLastResultComplete.value = sdkIsComplete
 
                             if (sdkIsComplete) {
@@ -237,7 +237,7 @@ class BPBIO320Manager(private val context: Context) {
                             }
                         } else {
                             _testInProgress.value = true
-                            _bloodPressureResult.value = BloodPressureInspectionResultContract(0, 0, 0)
+                            _bloodPressureResult.value = BloodPressureInspectionResult(0, 0, 0)
                             _isLastResultComplete.value = false
                             _errorMessage.value = null
                         }

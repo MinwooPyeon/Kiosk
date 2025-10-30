@@ -21,7 +21,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BInP
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BpMeasurementScreenState
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureInspectionNavRoute
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResultContract
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
 import kotlinx.coroutines.delay
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -29,7 +29,7 @@ import kotlinx.coroutines.delay
 fun BP170BInProgressRoute(
     navController: NavHostController,
     viewModel: BP170BViewModel = hiltViewModel(),
-    toResultScreen: (BloodPressureInspectionResultContract) -> Unit,
+    toResultScreen: (BloodPressureInspectionResult) -> Unit,
 ) {
     val connectionState by viewModel.connectionState.collectAsState()
     val dataReceived by viewModel.dataReceived.collectAsState()
@@ -145,7 +145,7 @@ fun BP170BInProgressRoute(
     )
 }
 
-private fun isResultValid(result: BloodPressureInspectionResultContract): Boolean {
+private fun isResultValid(result: BloodPressureInspectionResult): Boolean {
     val systolic = result.systolic
     val diastolic = result.diastolic
     val pulseRate = result.pulseRate

@@ -19,7 +19,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BpMeasure
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.BPBIO320InProgressEvent
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.BPBIO320InProgressUiState
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureInspectionNavRoute
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResultContract
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
 import kotlinx.coroutines.delay
 
@@ -28,7 +28,7 @@ import kotlinx.coroutines.delay
 fun BPBIO320InProgressRoute(
     navController: NavHostController,
     viewModel: BPBIO320ViewModel,
-    toResultScreen: (BloodPressureInspectionResultContract) -> Unit,
+    toResultScreen: (BloodPressureInspectionResult) -> Unit,
 ) {
     val bloodPressureResult by viewModel.bloodPressureResult.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
@@ -134,7 +134,7 @@ fun BPBIO320InProgressRoute(
     )
 }
 
-private fun isResultValid(result: BloodPressureInspectionResultContract): Boolean {
+private fun isResultValid(result: BloodPressureInspectionResult): Boolean {
     val systolic = result.systolic
     val diastolic = result.diastolic
     val pulseRate = result.pulseRate

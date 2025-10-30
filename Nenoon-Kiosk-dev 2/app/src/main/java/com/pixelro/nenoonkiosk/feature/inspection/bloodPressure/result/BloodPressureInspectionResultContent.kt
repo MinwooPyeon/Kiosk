@@ -41,8 +41,8 @@ private fun BloodPressureMetricRow(
     }
 }
 @Composable
-fun BloodPressureTestResultContent(
-    testResult: BloodPressureInspectionResultContract,
+fun BloodPressureInspectionResultContent(
+    testResult: BloodPressureInspectionResult,
 ) {
     Column(
         modifier = Modifier
@@ -81,8 +81,8 @@ fun BloodPressureTestResultContent(
 @Preview(showBackground = true, widthDp = 888, heightDp = 600, name = "BP Result – Normal")
 @Composable
 private fun Preview_BloodPressureTestResultContent_Normal() {
-    BloodPressureTestResultContent(
-        testResult = BloodPressureInspectionResultContract(
+    BloodPressureInspectionResultContent(
+        testResult = BloodPressureInspectionResult(
             systolic = 118,
             diastolic = 76,
             pulseRate = 68,
@@ -93,8 +93,8 @@ private fun Preview_BloodPressureTestResultContent_Normal() {
 @Preview(showBackground = true, widthDp = 888, heightDp = 600, name = "BP Result – High")
 @Composable
 private fun Preview_BloodPressureTestResultContent_High() {
-    BloodPressureTestResultContent(
-        testResult = BloodPressureInspectionResultContract(
+    BloodPressureInspectionResultContent(
+        testResult = BloodPressureInspectionResult(
             systolic = 148,
             diastolic = 96,
             pulseRate = 88,

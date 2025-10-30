@@ -21,7 +21,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.inprogr
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.start.BPBIO320StartRoute
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.error.BloodPressureErrorRoute
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.instructions.BloodPressureInstructionsRoute
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResultContract
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
 
 enum class BloodPressureInspectionNavRoute {
@@ -33,7 +33,7 @@ enum class BloodPressureInspectionNavRoute {
 
 @Composable
 fun BloodPressureInspectionEntryPoint(
-    toResultScreen: (BloodPressureInspectionResultContract) -> Unit,
+    toResultScreen: (BloodPressureInspectionResult) -> Unit,
     navController: NavHostController,
     isSignedIn: Boolean,
     bpbiO320ViewModel: BPBIO320ViewModel,
