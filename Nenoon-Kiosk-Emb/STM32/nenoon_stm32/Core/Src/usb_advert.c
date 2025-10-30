@@ -118,7 +118,12 @@ usb_advert_err_t USB_Advert_ReadByName(const char* filename){
 	f_close(&file);
 	return USB_ADVERT_OK;
 }
-usb_advert_err_t USB_Advert_ReadByIndex(uint32_t index);
+usb_advert_err_t USB_Advert_ReadByIndex(uint32_t index){
+	if(!s_scanned) return USB_ADVERT_ERR_PARAM;
+	if(index >= s_count) return USB_ADVERT_ERR_IDX_RANGE;
+
+	return USB_Advert_ReadByName(s_files[index]);
+}
 uint32_t USB_Advert_GetFileCount(void);
 
 const char* USB_Advert_GetName(uint32_t index);
