@@ -212,7 +212,7 @@ class SurveyViewModel @Inject constructor(
     }
 
     private fun updateQuestionType(type: QuestionType) = intent {
-        delay(1000)
+        delay(500) // 300ms에서 500ms로 증가
         reduce {
             state.copy(currentQuestion = type)
         }
@@ -305,8 +305,10 @@ class SurveyViewModel @Inject constructor(
 
     private fun getSurveyId(token: String?) = intent {
         if (AppConstants.MANAGE_USERS_INTERNALLY) {
+            delay(800) // 마지막 설문 후 잠시 대기
             navigateToCategoryList(DebugConstants.SAMPLE_SURVEY_ID)
         } else if (AppConstants.ALLOW_OFFLINE_BYPASS_FOR_SIGN_IN_SKIP && token == null) {
+            delay(800) // 마지막 설문 후 잠시 대기
             navigateToCategoryList(DebugConstants.SAMPLE_SURVEY_ID)
         } else {
             val currentState = state
@@ -358,6 +360,7 @@ class SurveyViewModel @Inject constructor(
                                                     generateResultsChartResponse?.data?.get("tid") as Double
                                                 ).toLong()
                                                 reduce { state.copy(pastSurveyId = tid) }
+                                                delay(800) // 마지막 설문 후 잠시 대기
                                                 navigateToCategoryList(tid)
                                             } catch (_: Exception) {
                                                 Log.e(
@@ -377,6 +380,7 @@ class SurveyViewModel @Inject constructor(
                     try {
                         val tid = floor(response.data["tid"] as Double).toLong()
                         reduce { state.copy(pastSurveyId = tid) }
+                        delay(800) // 마지막 설문 후 잠시 대기
                         navigateToCategoryList(tid)
                     } catch (_: Exception) {
                         Log.e("SurveyViewModel", "Error reading survey ID")

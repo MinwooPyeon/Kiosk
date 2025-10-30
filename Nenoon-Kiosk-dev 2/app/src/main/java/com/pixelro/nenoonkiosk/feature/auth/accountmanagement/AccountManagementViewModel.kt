@@ -21,7 +21,7 @@ import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
 import com.pixelro.nenoonkiosk.core.navigation.TermsOfServiceRoute
-import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.TestResultUtil
+import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.InspectionResultUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -218,7 +218,7 @@ class AccountManagementViewModel @Inject constructor(
             ).scale(240, 80, false)
 
             val qrImg = qrCodeImageBitmap.scale(80, 80, false)
-            val bm = TestResultUtil.formatQrCode(qrImg = qrImg, logoImg = logoImg)
+            val bm = InspectionResultUtil.formatQrCode(qrImg = qrImg, logoImg = logoImg)
 
             NPrintInfo(
                 NPrinter(

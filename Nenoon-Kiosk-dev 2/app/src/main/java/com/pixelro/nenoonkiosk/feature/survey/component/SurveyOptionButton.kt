@@ -17,7 +17,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,7 +36,6 @@ import com.pixelro.nenoonkiosk.ui.theme.selectLargeTextStyle
  * @param isSelected 선택 여부
  * @param onClick 클릭 이벤트
  * @param modifier Modifier
- *
  */
 @Composable
 fun SurveyOptionButton(
@@ -43,33 +44,45 @@ fun SurveyOptionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var isClicked by remember { mutableStateOf(false) }
+
     val buttonColor by animateColorAsState(
-        targetValue = if (isSelected) neNoon_blue else Color.White,
-        animationSpec = tween(durationMillis = 500),
+        targetValue = when {
+            isSelected -> neNoon_blue
+            isClicked -> neNoon_blue // 클릭 시 파란색으로
+            else -> Color.White // 기본 상태는 흰색
+        },
+        animationSpec = tween(durationMillis = 300),
         label = "buttonColor",
     )
 
     val textColor by animateColorAsState(
-        targetValue = if (isSelected) Color.White else neNoon_blue,
-        animationSpec = tween(durationMillis = 500),
+        targetValue = when {
+            isSelected -> Color.White
+            isClicked -> Color.White // 클릭 시 흰색 텍스트
+            else -> neNoon_blue // 기본 상태는 파란색 텍스트
+        },
+        animationSpec = tween(durationMillis = 300),
         label = "textColor",
     )
 
     Box(
-        modifier =
-            modifier
-                .clip(RoundedCornerShape(8.dp))
-                .border(
-                    BorderStroke(4.dp, neNoon_blue),
-                    RoundedCornerShape(8.dp),
-                )
-                .background(buttonColor, RoundedCornerShape(8.dp))
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = onClick,
-                )
-                .padding(horizontal = 20.dp, vertical = 16.dp),
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .border(
+                BorderStroke(4.dp, neNoon_blue),
+                RoundedCornerShape(8.dp),
+            )
+            .background(buttonColor, RoundedCornerShape(8.dp))
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = {
+                    isClicked = true // 애니메이션 시작
+                    onClick() // 즉시 다음 화면으로 이동
+                },
+            )
+            .padding(horizontal = 20.dp, vertical = 16.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -94,10 +107,9 @@ private fun SurveyOptionButtonComparisonPreview() {
             text = "선택됨",
             isSelected = true,
             onClick = {},
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(100.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp),
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -106,10 +118,9 @@ private fun SurveyOptionButtonComparisonPreview() {
             text = "선택 안됨",
             isSelected = false,
             onClick = {},
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(100.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp),
         )
     }
 }
