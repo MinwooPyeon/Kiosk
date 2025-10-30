@@ -31,7 +31,7 @@ frame_err_t frame_build(uint8_t type, const uint8_t* payload, uint16_t len, uint
 	if(len > FRAME_MAX_PAYLOAD) return FRAME_ERR_OOB;
 	if(len && !payload) 		return FRAME_ERR_ARG;
 
-	size_t need = FRAME_HDR_SIZE + len + FRAME_ERR_ORB;
+	size_t need = FRAME_HDR_SIZE + len + FRAME_TLR_SIZE;
 	if(out_cap < need) return FRAME_ERR_OOB;
 
 	out_buf[0] = FRAME_MAGIC_MSB;

@@ -13,6 +13,7 @@
 
 #include "usb_advert.h"
 #include "usart.h"
+#include "frame.h"
 
 #include "fatfs.h"
 #include <string.h>
@@ -72,10 +73,6 @@ usb_advert_err_t USB_Advert_Scan(void)
         return USB_ADVERT_ERR_NOT_MOUNTED;
     }
 
-#if _USE_LFN
-    fno.lfname = NULL;
-    fno.lfsize = 0;
-#endif
     res = f_opendir(&dir, "/");
     if (res != FR_OK) {
         STLINK_UART_Println(TAG "opendir failed");
@@ -211,7 +208,16 @@ usb_advert_err_t USB_Advert_StreamFile(const char* filename)
         if (br == 0)
             break;
 
-        UART6_SendBytes(buf, (uint16_t)br);
+        uint8_t frame_buf[FRAME_HDR_SIZE + USB_ADVERT_CHUNK_SIZE + FRAME_TLR_SIZE];
+        size_t	frame_len = 0;
+
+        frame_err_t fer = frame_build(FRAME_MEDIA_CHUNK, buf, sizeof(frame_buf), &frame_len);
+        if(fer != FRAME_OK){
+        	UART6_SendString(TAG "frame build fail\r\n");
+			f_close(&file);
+			return USB_ADVERT_ERR_IO;
+        }
+        UART6_SendBytes(frame_buf, (uint16_t)frame_buf);
         total += br;
     }
 
@@ -227,21 +233,21 @@ usb_advert_err_t USB_Advert_StreamFile(const char* filename)
 
 usb_advert_err_t USB_Advert_StreamAll(void)
 {
-    if (!s_scanned)
-        return USB_ADVERT_ERR_PARAM;
+	if (!s_scanned)
+		return USB_ADVERT_ERR_PARAM;
 
-    for (uint32_t i = 0; i < s_count; i++) {
-        usb_advert_err_t er = USB_Advert_StreamFile(s_files[i]);
-        if (er != USB_ADVERT_OK)
-            return er;
-    }
+	for (uint32_t i = 0; i < s_count; i++) {
+		usb_advert_err_t er = USB_Advert_StreamFile(s_files[i]);
+		if (er != USB_ADVERT_OK)
+			return er;
+	}
 
-    {
-        char msg[96];
-        snprintf(msg, sizeof(msg), TAG "all streamed (%lu files)\r\n", (unsigned long)s_count);
-        UART6_SendString(msg);
-    }
-    return USB_ADVERT_OK;
+	{
+		char msg[96];
+		snprintf(msg, sizeof(msg), TAG "all streamed (%lu files)\r\n", (unsigned long)s_count);
+		UART6_SendString(msg);
+	}
+	return USB_ADVERT_OK;
 }
 
 uint32_t USB_Advert_GetFileCount(void)
