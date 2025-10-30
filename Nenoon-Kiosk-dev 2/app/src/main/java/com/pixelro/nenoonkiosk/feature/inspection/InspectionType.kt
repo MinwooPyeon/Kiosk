@@ -15,5 +15,4 @@ enum class InspectionType {
     Concentration_Glasses,
     BloodPressure,
     GripStrength,
-    PulmonaryFunction,
 }

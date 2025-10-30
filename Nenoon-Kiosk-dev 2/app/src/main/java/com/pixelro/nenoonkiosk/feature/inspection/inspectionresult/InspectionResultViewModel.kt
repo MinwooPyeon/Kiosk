@@ -21,7 +21,6 @@ import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStreng
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -230,25 +229,6 @@ class InspectionResultViewModel
                             )
                         val response = testResultRepository.sendBloodPressureTestResult(token, request)
                         Log.d("TestResultViewModel", "BloodPressure result sent to server: $response")
-                    }
-                    InspectionType.PulmonaryFunction -> {
-                        testResult as PulmonaryFunctionTestResult
-                        SharedPreferencesManager.updatePulmonaryFunctionResult(
-                            pulmonaryPower = testResult.pulmonaryPower,
-                            pulmonaryCapacity = testResult.pulmonaryCapacity,
-                            pulmonaryAge = testResult.pulmonaryAge,
-                        )
-                        Log.d("TestResultViewModel", "PulmonaryFunction result saved internally.")
-
-                        val request =
-                            SendPulmonaryFunctionTestResultRequest(
-                                surveyId = surveyId,
-                                pulmonaryPower = testResult.pulmonaryPower,
-                                pulmonaryCapacity = testResult.pulmonaryCapacity,
-                                pulmonaryAge = testResult.pulmonaryAge,
-                            )
-                        val response = testResultRepository.sendPulmonaryFunctionTestResult(token, request)
-                        Log.d("TestResultViewModel", "PulmonaryFunction result sent to server: $response")
                     }
                     InspectionType.Presbyopia_Glasses -> {
                         // TODO: Implement internal save and server send for Presbyopia_Glasses
