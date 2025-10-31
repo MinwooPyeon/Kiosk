@@ -44,13 +44,16 @@ import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridT
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.result.AmslerGridTestResultRoute
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.result.PresbyopiaInspectionResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.ChildrenVisualAcuityTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.LongVisualAcuityTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortDistanceVisualAcuityTestResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
-import com.pixelro.nenoonkiosk.feature.undeveloped.testresultcontent.ChildrenVisualAcuityTestResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.children.ChildrenVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.longdistance.LongVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortDistanceVisualAcuityInspectionResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.undeveloped.testresultcontent.ChildrenVisualAcuityInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.undeveloped.testresultcontent.LongDistanceVisualAcuityTestResultContent
 import kotlinx.coroutines.delay
 
@@ -117,20 +120,20 @@ fun InspectionResultRoute(
                     PresbyopiaInspectionResultContent(testResult =  testResult as PresbyopiaInspectionResult)
                 }
                 InspectionType.ShortDistanceVisualAcuity -> {
-                    ShortDistanceVisualAcuityTestResultContent(
-                        testResult = testResult as ShortVisualAcuityTestResult,
+                    ShortDistanceVisualAcuityInspectionResultContent(
+                        inspectionResult = testResult as ShortVisualAcuityInspectionResult,
                         navController = navController,
                     )
                 }
                 InspectionType.LongDistanceVisualAcuity -> {
                     LongDistanceVisualAcuityTestResultContent(
-                        testResult = testResult as LongVisualAcuityTestResult,
+                        testResult = testResult as LongVisualAcuityInspectionResult,
                         navController = navController,
                     )
                 }
                 InspectionType.ChildrenVisualAcuity -> {
-                    ChildrenVisualAcuityTestResultContent(
-                        testResult = testResult as ChildrenVisualAcuityTestResult,
+                    ChildrenVisualAcuityInspectionResultContent(
+                        testResult = testResult as ChildrenVisualAcuityInspectionResult,
                         navController = navController,
                     )
                 }
@@ -140,9 +143,8 @@ fun InspectionResultRoute(
                     )
                 }
                 InspectionType.MChart -> {
-                    MChartTestResultContent(
-                        testResult = testResult as MChartTestResult,
-                        navController = navController,
+                    MChartInspectionResultContent(
+                        testResult = testResult as MChartInspectionResult,
                     )
                 }
                 InspectionType.Dementia -> {

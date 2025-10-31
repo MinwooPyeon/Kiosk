@@ -14,9 +14,9 @@ import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPres
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortVisualAcuityInspectionResult
 
 fun aiComment(
     testType: InspectionType,
@@ -29,7 +29,7 @@ fun aiComment(
     return when (testType) {
         InspectionType.ShortDistanceVisualAcuity -> {
             try {
-                val parsedResult = testResult as ShortVisualAcuityTestResult
+                val parsedResult = testResult as ShortVisualAcuityInspectionResult
 
                 if (parsedResult.leftEye >= 5 && parsedResult.rightEye >= 5) {
                     buildAnnotatedString {
@@ -142,7 +142,7 @@ fun aiComment(
 
         InspectionType.MChart -> {
             try {
-                val parsedResult = testResult as MChartTestResult
+                val parsedResult = testResult as MChartInspectionResult
 
                 if (parsedResult.leftEyeVertical == 0 &&
                     parsedResult.rightEyeVertical == 0 &&

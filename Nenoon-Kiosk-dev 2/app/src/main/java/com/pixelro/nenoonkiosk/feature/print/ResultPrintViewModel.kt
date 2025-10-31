@@ -437,8 +437,8 @@ class ResultPrintViewModel
                     drawResultRow(
                         canvas,
                         StringProvider.getString(R.string.pdf_visual_acuity_title),
-                        if (latestResult.shortVisualAcuityTestResult != null) {
-                            "${StringProvider.getString(R.string.pdf_left_eye)}: ${latestResult.shortVisualAcuityTestResult.leftEye}\n${StringProvider.getString(R.string.pdf_right_eye)}: ${latestResult.shortVisualAcuityTestResult.rightEye}"
+                        if (latestResult.shortVisualAcuityInspectionResult != null) {
+                            "${StringProvider.getString(R.string.pdf_left_eye)}: ${latestResult.shortVisualAcuityInspectionResult.leftEye}\n${StringProvider.getString(R.string.pdf_right_eye)}: ${latestResult.shortVisualAcuityInspectionResult.rightEye}"
                         } else {
                             StringProvider.getString(R.string.pdf_test_not_conducted)
                         },
@@ -661,7 +661,7 @@ class ResultPrintViewModel
                 canvas.drawText(formattedDate, xOffset, currentY, textPaint)
                 xOffset += dateWidth + columnGap
 
-                val vaText = result.shortVisualAcuityTestResult?.let { "L: ${it.leftEye} /  R: ${it.rightEye}" } ?: "--"
+                val vaText = result.shortVisualAcuityInspectionResult?.let { "L: ${it.leftEye} /  R: ${it.rightEye}" } ?: "--"
                 canvas.drawText(vaText, xOffset, currentY, textPaint)
                 xOffset += vaWidth + columnGap
 
@@ -706,7 +706,7 @@ class ResultPrintViewModel
                 xOffset += amslerWidth + columnGap
 
                 val mChartText =
-                    result.mChartTestResult?.let {
+                    result.mChartInspectionResult?.let {
                         "L:${it.leftEyeVertical}, ${it.leftEyeHorizontal} / R:${it.rightEyeVertical}, ${it.rightEyeHorizontal}"
                     } ?: "--"
                 canvas.drawText(mChartText, xOffset, currentY, textPaint)

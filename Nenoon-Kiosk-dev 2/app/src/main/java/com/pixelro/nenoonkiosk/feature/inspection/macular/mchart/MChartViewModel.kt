@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.ExoPlayer
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,8 +58,8 @@ class MChartViewModel
             _isMChartContentVisible.update { visible }
         }
 
-        fun getMChartTestResult(): MChartTestResult {
-            return MChartTestResult(
+        fun getMChartTestResult(): MChartInspectionResult {
+            return MChartInspectionResult(
                 _leftVerticalValue,
                 _leftHorizontalValue,
                 _rightVerticalValue,
