@@ -43,7 +43,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.aiComm
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartTestResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.result.PresbyopiaInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.children.ChildrenVisualAcuityInspectionResult
@@ -141,7 +141,7 @@ fun InspectionResultRoute(
                     )
                 }
                 InspectionType.MChart -> {
-                    MChartTestResultContent(
+                    MChartInspectionResultContent(
                         testResult = testResult as MChartInspectionResult,
                     )
                 }

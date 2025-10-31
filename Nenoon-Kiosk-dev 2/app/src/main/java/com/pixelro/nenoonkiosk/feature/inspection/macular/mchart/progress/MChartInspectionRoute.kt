@@ -32,6 +32,9 @@ fun MChartInspectionRoute(
     LaunchedEffect(Unit) { mChartViewModel.init() }
     DisposableEffect(Unit) { onDispose { mChartViewModel.exoPlayer.release() } }
 
+    // ------------------------------
+    // 👁️ 거리측정 / MChart 노출 상태
+    // ------------------------------
     val measuringDistanceVisibleState = remember { MutableTransitionState(true) }
     measuringDistanceVisibleState.targetState =
         mChartViewModel.isMeasuringDistanceContentVisible.collectAsState().value
@@ -40,7 +43,10 @@ fun MChartInspectionRoute(
     mChartVisibleState.targetState =
         mChartViewModel.isMChartContentVisible.collectAsState().value
 
-    val uiState = MChartUiState(
+    // ------------------------------
+    // 👁️ UI 상태 수집
+    // ------------------------------
+    val uiState = MChartInspectionUiState(
         isLeftEye = mChartViewModel.isLeftEye.collectAsState().value,
         isVertical = mChartViewModel.isVertical.collectAsState().value,
         currentLevel = mChartViewModel.currentLevel.collectAsState().value,
@@ -49,6 +55,25 @@ fun MChartInspectionRoute(
         isTesting = mChartViewModel.isTesting.collectAsState().value
     )
 
+    // ------------------------------
+    // 🎤 TTS 초기화 및 정리
+    // ------------------------------
+    LaunchedEffect(Unit) {
+        TTS.setOnDoneListener { mChartViewModel.updateIsTTSSpeaking(false) }
+        TTS.speechTTS(
+            StringProvider.getString(R.string.tts_straight_or_bent),
+            TextToSpeech.QUEUE_ADD
+        )
+        TTS.speechTTS(
+            StringProvider.getString(R.string.tts_start),
+            TextToSpeech.QUEUE_ADD
+        )
+    }
+    DisposableEffect(Unit) { onDispose { TTS.clearOnDoneListener() } }
+
+    // ------------------------------
+    // 🧠 실제 화면 구성
+    // ------------------------------
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,6 +91,7 @@ fun MChartInspectionRoute(
             isLeftEye = uiState.isLeftEye,
         )
 
+        // M-Chart 검사 화면
         AnimatedVisibility(
             visibleState = mChartVisibleState,
             enter = AnimationProvider.enterTransition,
@@ -132,6 +158,3 @@ fun MChartInspectionRoute(
         }
     }
 }
-
-
-

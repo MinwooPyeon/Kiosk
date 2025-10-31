@@ -2,7 +2,7 @@ package com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.progress
 
 import com.pixelro.nenoonkiosk.R
 
-data class MChartUiState(
+data class MChartInspectionUiState(
     val isLeftEye: Boolean = true,
     val isVertical: Boolean = true,
     val currentLevel: Int = 0,

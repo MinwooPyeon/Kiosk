@@ -1,26 +1,15 @@
 package com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.progress
 
-import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -29,7 +18,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -40,40 +28,24 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
-import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetection
-import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.tooling.preview.Preview
+import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
 fun MChartInspectionContent(
-    uiState: MChartUiState,
-    exoPlayer: ExoPlayer? = null,
+    uiState: MChartInspectionUiState,
+    exoPlayer: ExoPlayer?,
     onStraightClick: () -> Unit,
     onBentClick: () -> Unit,
     onTTSDone: () -> Unit,
 ) {
-    val context = LocalContext.current
+    val inPreview = LocalInspectionMode.current
     val coroutineScope = rememberCoroutineScope()
-    val inPreview = LocalInspectionMode.current // Preview 감지
-
-    // Preview 모드에서는 TTS 실행 금지
-    if (!inPreview) {
-        LaunchedEffect(Unit) {
-            TTS.setOnDoneListener { onTTSDone() }
-            TTS.speechTTS(context.getString(R.string.tts_straight_or_bent), TextToSpeech.QUEUE_ADD)
-            TTS.speechTTS(context.getString(R.string.tts_start), TextToSpeech.QUEUE_ADD)
-        }
-        DisposableEffect(Unit) { onDispose { TTS.clearOnDoneListener() } }
-    }
-
-    // Preview 모드에서는 FaceDetection 비활성화
-    if (!inPreview) {
-        FaceDetection()
-    }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -117,7 +89,7 @@ fun MChartInspectionContent(
             if (showVideo) {
                 AndroidView(
                     modifier = Modifier.fillMaxSize(),
-                    factory = {
+                    factory = { context ->
                         PlayerView(context).apply {
                             useController = false
                             resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
@@ -136,7 +108,7 @@ fun MChartInspectionContent(
                                 }
                             }
                         }
-                    },
+                    }
                 )
             } else {
                 Image(
@@ -175,7 +147,7 @@ fun MChartInspectionContent(
             Text(
                 text = buildAnnotatedString {
                     append(stringResource(R.string.presbyopia_video_guide_1))
-                    withStyle(SpanStyle(color = Color(0xff1d71e1), fontWeight = FontWeight.Bold)) {
+                    withStyle(SpanStyle(color = neNoon_blue, fontWeight = FontWeight.Bold)) {
                         append(" " + stringResource(R.string.presbyopia_video_guide_2))
                     }
                     append(stringResource(R.string.presbyopia_video_guide_3))
@@ -189,7 +161,6 @@ fun MChartInspectionContent(
     }
 }
 
-
 @Preview(
     showBackground = true,
     backgroundColor = 0xFF000000,
@@ -200,8 +171,7 @@ fun MChartInspectionContent(
 )
 @Composable
 fun MChartContentPreview() {
-
-    val dummyState = MChartUiState(
+    val dummyState = MChartInspectionUiState(
         isLeftEye = true,
         isVertical = true,
         currentLevel = 5,
@@ -220,4 +190,3 @@ fun MChartContentPreview() {
         )
     }
 }
-

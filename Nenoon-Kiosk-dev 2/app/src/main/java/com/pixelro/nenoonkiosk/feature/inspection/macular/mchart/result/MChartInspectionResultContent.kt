@@ -22,7 +22,7 @@ import com.pixelro.nenoonkiosk.ui.theme.Yellow
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 @Composable
-fun MChartTestResultContent(
+fun MChartInspectionResultContent(
     testResult: MChartInspectionResult,
 ) {
     Column(
@@ -75,7 +75,7 @@ fun MChartTestResultContent(
 @Preview(apiLevel = 34, widthDp = 800, heightDp = 1280, showBackground = true)
 @Composable
 fun MChartTestResultContentPreview() {
-    MChartTestResultContent(
+    MChartInspectionResultContent(
         testResult = MChartInspectionResult(
             leftEyeVertical = 35,
             leftEyeHorizontal = 20,
