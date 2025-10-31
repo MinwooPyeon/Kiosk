@@ -48,10 +48,11 @@ import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.InspectionRes
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionRoute
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.ChildrenVisualAcuityInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.LongVisualAcuityInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortDistanceVisualAcuityInspectionContent
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.VisualAcuityInspectionRoute
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.children.ChildrenVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.longdistance.LongVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortDistanceVisualAcuityInspectionResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortVisualAcuityInspectionResult
 import com.pixelro.nenoonkiosk.feature.intro.IntroScreen
 import com.pixelro.nenoonkiosk.feature.permission.PermissionRequestRoute
 import com.pixelro.nenoonkiosk.feature.undeveloped.iotdevice.BP170B.BP170BConnectionScreen
@@ -588,7 +589,8 @@ fun nenoonApp(
                             }
 
                             InspectionType.ShortDistanceVisualAcuity -> {
-                                ShortDistanceVisualAcuityInspectionContent(
+                                VisualAcuityInspectionRoute(
+                                    inspectionType = InspectionType.ShortDistanceVisualAcuity,
                                     toResultScreen = {
                                         viewModel.shortVisualAcuityInspectionResult =
                                             ShortVisualAcuityInspectionResult(it.leftEye, it.rightEye)
@@ -598,7 +600,8 @@ fun nenoonApp(
                             }
 
                             InspectionType.LongDistanceVisualAcuity -> {
-                                LongDistanceVisualAcuityTestContent(
+                                VisualAcuityInspectionRoute(
+                                    inspectionType = InspectionType.LongDistanceVisualAcuity,
                                     toResultScreen = {
                                         viewModel.longVisualAcuityInspectionResult =
                                             LongVisualAcuityInspectionResult(it.leftEye, it.rightEye)

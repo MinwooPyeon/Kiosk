@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance
+package com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.longdistance
 
 data class LongVisualAcuityInspectionResult(
     val leftEye: Int = 0,
