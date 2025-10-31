@@ -18,3 +18,9 @@ static license_entry_t s_lic[LIC_MAX_ENTRIES];
 void lic_mgr_init(void){
 	memset(s_lic, 0, sizeof(s_lic));
 }
+
+bool lic_mgr_manager_login(const char* id, const char* pw){
+	if(!id || !pw) return false;
+	if(strcmp(id, s_mgr_id)==0 && strcmp(pw, s_mgr_pw) == 0) return true;
+	return false;
+}
