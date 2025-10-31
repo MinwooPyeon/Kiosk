@@ -22,6 +22,13 @@
 #define FRAME_MEDIA_PULL		0x21
 #define FRAME_MEDIA_CHUNK		0x22
 #define FRAME_HB_STAT			0x30
+#define FRAME_LIC_MGR_LOGIN         0x40  /* Manager Login */
+#define FRAME_LIC_ISSUE             0x41  /* License Issuance */
+#define FRAME_LIC_REVOKE            0x42  /* License Revoke */
+#define FRAME_LIC_VALIDATE          0x43  /* License Validate */
+#define FRAME_LIC_GET_CHALLENGE     0x44  /* Get Challenge Byte */
+#define FRAME_LIC_GET_JWT           0x45  /* Get JWT Token */
+#define FRAME_LIC_RESP              0x4F  /* result + json/err */
 
 #define FRAME_MAX_PAYLOAD		512
 #define FRAME_HDR_SIZE			6u
