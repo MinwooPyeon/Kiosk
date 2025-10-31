@@ -706,7 +706,7 @@ class ResultPrintViewModel
                 xOffset += amslerWidth + columnGap
 
                 val mChartText =
-                    result.mChartTestResult?.let {
+                    result.mChartInspectionResult?.let {
                         "L:${it.leftEyeVertical}, ${it.leftEyeHorizontal} / R:${it.rightEyeVertical}, ${it.rightEyeHorizontal}"
                     } ?: "--"
                 canvas.drawText(mChartText, xOffset, currentY, textPaint)
