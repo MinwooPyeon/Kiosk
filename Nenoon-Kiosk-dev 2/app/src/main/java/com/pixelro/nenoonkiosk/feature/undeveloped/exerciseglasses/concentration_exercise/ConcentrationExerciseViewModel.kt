@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.concentration_exercise
+package com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.concentration_exercise
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

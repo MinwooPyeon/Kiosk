@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.inspection.exerciseglasses.presbyopia_exercise
+package com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.presbyopia_exercise
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

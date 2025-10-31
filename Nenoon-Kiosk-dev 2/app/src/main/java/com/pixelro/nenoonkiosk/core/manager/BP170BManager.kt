@@ -12,7 +12,7 @@ import android.bluetooth.BluetoothProfile
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -56,8 +56,8 @@ object BP170BManager {
     val dataReceived: StateFlow<String?> = _dataReceived
 
     // New StateFlow for parsed blood pressure results
-    private val _bloodPressureResult = MutableStateFlow<BloodPressureTestResult?>(null)
-    val bloodPressureResult: StateFlow<BloodPressureTestResult?> = _bloodPressureResult
+    private val _bloodPressureResult = MutableStateFlow<BloodPressureInspectionResult?>(null)
+    val bloodPressureResult: StateFlow<BloodPressureInspectionResult?> = _bloodPressureResult
 
     // New StateFlow to signal test completion via 0xBA command
     private val _testCompletionTrigger = MutableStateFlow(false)
@@ -287,7 +287,7 @@ object BP170BManager {
                     
                     // Simple validation
                     if (systolic in 30..300 && diastolic in 30..300 && pulse in 30..240) {
-                        _bloodPressureResult.value = BloodPressureTestResult(systolic, diastolic, pulse)
+                        _bloodPressureResult.value = BloodPressureInspectionResult(systolic, diastolic, pulse)
                         Log.d(TAG, "Parsed short data as BP result: SBP=$systolic, DBP=$diastolic, Pulse=$pulse")
                         return "Short Data BP Result: SBP=$systolic, DBP=$diastolic, Pulse=$pulse"
                     } else {
@@ -406,7 +406,7 @@ object BP170BManager {
                             val pulseRate = if (pulseRateLE in 30..240) pulseRateLE else pulseRateBE
 
                             if (systolic in 30..300 && diastolic in 30..300 && pulseRate in 30..240) {
-                                _bloodPressureResult.value = BloodPressureTestResult(systolic, diastolic, pulseRate)
+                                _bloodPressureResult.value = BloodPressureInspectionResult(systolic, diastolic, pulseRate)
                                 Log.d(
                                     TAG,
                                     "Parsed BP Result from 0xB4: SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate, ResultCode=$measurementResultCode",
@@ -438,7 +438,7 @@ object BP170BManager {
                             val pulseRate = pulseRateRaw - 10
 
                             if (systolic in 30..300 && diastolic in 30..300 && pulseRate in 30..240) {
-                                _bloodPressureResult.value = BloodPressureTestResult(systolic, diastolic, pulseRate)
+                                _bloodPressureResult.value = BloodPressureInspectionResult(systolic, diastolic, pulseRate)
                                 Log.d(
                                     TAG,
                                     "Parsed BP Result from 0xBA: SBP=$systolic (raw $systolicRaw), DBP=$diastolic (raw $diastolicRaw), Pulse=$pulseRate (raw $pulseRateRaw)",
@@ -491,7 +491,7 @@ object BP170BManager {
                         val pulse = pulseRaw - 10
                         
                         if (systolic in 30..300 && diastolic in 30..300 && pulse in 30..240) {
-                            _bloodPressureResult.value = BloodPressureTestResult(systolic, diastolic, pulse)
+                            _bloodPressureResult.value = BloodPressureInspectionResult(systolic, diastolic, pulse)
                             Log.d(TAG, "Parsed 0xBA BP Result: SBP=$systolic (raw $systolicRaw), DBP=$diastolic (raw $diastolicRaw), Pulse=$pulse (raw $pulseRaw)")
                             
                             managerScope.launch {

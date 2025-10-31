@@ -13,15 +13,18 @@ import com.inbody.bpbio.IB_SDKConst
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.manager.BP170BManager
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BInProgressScreen
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BStartScreen
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.BPBIO320InProgressScreen
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.BPBIO320StartScreen
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BViewModel
-import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BViewModel
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.inprogress.BP170BInProgressRoute
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.start.BP170BStartRoute
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.inprogress.BPBIO320InProgressRoute
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.start.BPBIO320StartRoute
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.error.BloodPressureErrorRoute
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.instructions.BloodPressureInstructionsRoute
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
+import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
 
-enum class BloodPressureTestScreen {
+enum class BloodPressureInspectionNavRoute {
     Start,
     Instructions,
     InProgress,
@@ -29,8 +32,8 @@ enum class BloodPressureTestScreen {
 }
 
 @Composable
-fun BloodPressureTestContent(
-    toResultScreen: (BloodPressureTestResult) -> Unit,
+fun BloodPressureInspectionEntryPoint(
+    toResultScreen: (BloodPressureInspectionResult) -> Unit,
     navController: NavHostController,
     isSignedIn: Boolean,
     bpbiO320ViewModel: BPBIO320ViewModel,
@@ -52,50 +55,50 @@ fun BloodPressureTestContent(
                     bP170BConnectionState == BP170BManager.BluetoothConnectionState.DISCONNECTED
             )
         ) {
-            localNavController.popBackStack(BloodPressureTestScreen.Start.name, false)
+            localNavController.popBackStack(BloodPressureInspectionNavRoute.Start.name, false)
         }
     }
 
-    NavHost(navController = localNavController, startDestination = BloodPressureTestScreen.Start.name) {
-        composable(BloodPressureTestScreen.Start.name) {
+    NavHost(navController = localNavController, startDestination = BloodPressureInspectionNavRoute.Start.name) {
+        composable(BloodPressureInspectionNavRoute.Start.name) {
             when (bloodPressureMonitorType) {
                 SharedPreferencesManager.BloodPressureMonitorType.BPBIO320 ->
-                    BPBIO320StartScreen(
+                    BPBIO320StartRoute(
                         navController = localNavController,
                         viewModel = bpbiO320ViewModel,
                         onBack = { navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false) },
                     )
                 SharedPreferencesManager.BloodPressureMonitorType.BP170B ->
-                    BP170BStartScreen(
+                    BP170BStartRoute(
                         navController = localNavController,
                         viewModel = bP170BViewModel,
                         onBack = { navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false) },
                     )
             }
         }
-        composable(BloodPressureTestScreen.Instructions.name) {
-            BloodPressureInstructionsScreen(
+        composable(BloodPressureInspectionNavRoute.Instructions.name) {
+            BloodPressureInstructionsRoute(
                 navController = localNavController,
             )
         }
-        composable(BloodPressureTestScreen.InProgress.name) {
+        composable(BloodPressureInspectionNavRoute.InProgress.name) {
             when (bloodPressureMonitorType) {
                 SharedPreferencesManager.BloodPressureMonitorType.BPBIO320 ->
-                    BPBIO320InProgressScreen(
+                    BPBIO320InProgressRoute(
                         navController = localNavController,
                         viewModel = bpbiO320ViewModel,
                         toResultScreen = toResultScreen,
                     )
                 SharedPreferencesManager.BloodPressureMonitorType.BP170B ->
-                    BP170BInProgressScreen(
+                    BP170BInProgressRoute(
                         navController = localNavController,
                         viewModel = bP170BViewModel,
                         toResultScreen = toResultScreen,
                     )
             }
         }
-        composable(BloodPressureTestScreen.Error.name) {
-            BloodPressureErrorScreen(
+        composable(BloodPressureInspectionNavRoute.Error.name) {
+            BloodPressureErrorRoute(
                 onReturn = {
                     navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false)
                 },

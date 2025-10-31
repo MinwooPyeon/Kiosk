@@ -14,7 +14,7 @@ import com.harang.data.model.dto.request.SendShortVisualAcuityTestResultRequest
 import com.harang.data.repository.TestResultRepository
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
@@ -211,7 +211,7 @@ class InspectionResultViewModel
                         Log.d("TestResultViewModel", "GripStrength result sent to server: $response")
                     }
                     InspectionType.BloodPressure -> {
-                        testResult as BloodPressureTestResult
+                        testResult as BloodPressureInspectionResult
                         SharedPreferencesManager.updateBloodPressureResult(
                             systolic = testResult.systolic.toFloat(),
                             diastolic = testResult.diastolic.toFloat(),

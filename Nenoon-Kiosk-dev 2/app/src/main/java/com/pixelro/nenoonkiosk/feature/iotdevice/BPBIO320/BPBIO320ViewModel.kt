@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pixelro.nenoonkiosk.core.manager.BPBIO320Manager
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -18,7 +18,7 @@ class BPBIO320ViewModel
 
         val connectionState: StateFlow<Int> = manager.connectionState
         val deviceName: StateFlow<String> = manager.deviceName
-        val bloodPressureResult: StateFlow<BloodPressureTestResult?> = manager.bloodPressureResult
+        val bloodPressureResult: StateFlow<BloodPressureInspectionResult?> = manager.bloodPressureResult
         val errorMessage: StateFlow<String?> = manager.errorMessage
         val testInProgress: StateFlow<Boolean> = manager.testInProgress
         val isLastResultComplete: StateFlow<Boolean> = manager.isLastResultComplete

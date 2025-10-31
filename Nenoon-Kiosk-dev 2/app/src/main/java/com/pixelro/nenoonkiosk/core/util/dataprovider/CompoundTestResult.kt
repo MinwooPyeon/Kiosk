@@ -1,7 +1,7 @@
 package com.pixelro.nenoonkiosk.core.util.dataprovider
 
 import com.harang.data.model.dto.CompoundTestResultAPI
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
@@ -16,7 +16,7 @@ data class CompoundTestResult(
     val presbyopiaInspectionResult: PresbyopiaInspectionResult?,
     val amslerGridTestResult: AmslerGridTestResult?,
     val mChartTestResult: MChartTestResult?,
-    val bloodPressureTestResult: BloodPressureTestResult?,
+    val bloodPressureTestResult: BloodPressureInspectionResult?,
     val gripStrengthTestResult: GripStrengthInspectionResultContract?,
     val dementiaTestResult: DementiaInspectionResult?,
     val createAt: String?, // Added createAt property
@@ -87,7 +87,7 @@ data class CompoundTestResult(
                     null
                 } else {
                     try {
-                        BloodPressureTestResult(sys.toInt(), dias.toInt(), pulse.toInt())
+                        BloodPressureInspectionResult(sys.toInt(), dias.toInt(), pulse.toInt())
                     } catch (e: NumberFormatException) {
                         null
                     }
