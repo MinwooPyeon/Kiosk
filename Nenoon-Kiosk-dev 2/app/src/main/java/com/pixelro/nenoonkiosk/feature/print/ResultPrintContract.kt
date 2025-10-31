@@ -25,7 +25,7 @@ fun mapToSummaries(
         ResultSummary(strings.visualAcuity, latest.shortVisualAcuityInspectionResult != null),
         ResultSummary(strings.presbyopia, latest.presbyopiaInspectionResult != null),
         ResultSummary(strings.amsler, latest.amslerGridTestResult != null),
-        ResultSummary(strings.mChart, latest.mChartTestResult != null),
+        ResultSummary(strings.mChart, latest.mChartInspectionResult != null),
         ResultSummary(strings.bloodPressure, latest.bloodPressureTestResult != null),
         ResultSummary(strings.gripStrength, latest.gripStrengthTestResult != null),
         ResultSummary(strings.dementia, latest.dementiaTestResult != null),

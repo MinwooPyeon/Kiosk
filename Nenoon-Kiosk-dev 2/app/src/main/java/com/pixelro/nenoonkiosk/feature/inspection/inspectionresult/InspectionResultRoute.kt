@@ -41,9 +41,9 @@ import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStreng
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.InspectionResultUtil.textAsBitmap
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.aiComment
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.result.AmslerGridTestResultRoute
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.result.PresbyopiaInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.children.ChildrenVisualAcuityInspectionResult
@@ -135,15 +135,13 @@ fun InspectionResultRoute(
                     )
                 }
                 InspectionType.AmslerGrid -> {
-                    AmslerGridTestResultContent(
+                    AmslerGridTestResultRoute(
                         testResult = testResult as AmslerGridTestResult,
-                        navController = navController,
                     )
                 }
                 InspectionType.MChart -> {
-                    MChartTestResultContent(
-                        testResult = testResult as MChartTestResult,
-                        navController = navController,
+                    MChartInspectionResultContent(
+                        testResult = testResult as MChartInspectionResult,
                     )
                 }
                 InspectionType.Dementia -> {
