@@ -42,9 +42,6 @@ import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.Inspec
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.aiComment
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.result.AmslerGridTestResultRoute
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
