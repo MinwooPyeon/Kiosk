@@ -7,7 +7,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortVisualAcuityInspectionResult
 
@@ -15,7 +15,7 @@ data class CompoundTestResult(
     val shortVisualAcuityInspectionResult: ShortVisualAcuityInspectionResult?,
     val presbyopiaInspectionResult: PresbyopiaInspectionResult?,
     val amslerGridTestResult: AmslerGridTestResult?,
-    val mChartTestResult: MChartTestResult?,
+    val mChartInspectionResult: MChartInspectionResult?,
     val bloodPressureTestResult: BloodPressureInspectionResult?,
     val gripStrengthTestResult: GripStrengthInspectionResultContract?,
     val dementiaTestResult: DementiaInspectionResult?,
@@ -62,7 +62,7 @@ data class CompoundTestResult(
                     )
                 }
             },
-        mChartTestResult =
+        mChartInspectionResult =
             apiResult.eyeMCharts?.run {
                 val leftVer = leftEyeVer
                 val rightVer = rightEyeVer
@@ -72,7 +72,7 @@ data class CompoundTestResult(
                     null
                 } else {
                     try {
-                        MChartTestResult(leftVer.toInt(), rightVer.toInt(), leftHor.toInt(), rightHor.toInt())
+                        MChartInspectionResult(leftVer.toInt(), rightVer.toInt(), leftHor.toInt(), rightHor.toInt())
                     } catch (e: NumberFormatException) {
                         null
                     }

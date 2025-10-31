@@ -18,7 +18,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPres
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortVisualAcuityInspectionResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -127,7 +127,7 @@ class InspectionResultViewModel
                         Log.d("TestResultViewModel", "AmslerGrid result sent to server: $response")
                     }
                     InspectionType.MChart -> {
-                        testResult as MChartTestResult
+                        testResult as MChartInspectionResult
                         // Internal Save
                         SharedPreferencesManager.updateMChartResult(
                             leftEyeVertical = testResult.leftEyeVertical.toFloat(),

@@ -42,8 +42,8 @@ import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.Inspec
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.aiComment
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartTestResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.result.PresbyopiaInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.children.ChildrenVisualAcuityInspectionResult
@@ -142,8 +142,7 @@ fun InspectionResultRoute(
                 }
                 InspectionType.MChart -> {
                     MChartTestResultContent(
-                        testResult = testResult as MChartTestResult,
-                        navController = navController,
+                        testResult = testResult as MChartInspectionResult,
                     )
                 }
                 InspectionType.Dementia -> {

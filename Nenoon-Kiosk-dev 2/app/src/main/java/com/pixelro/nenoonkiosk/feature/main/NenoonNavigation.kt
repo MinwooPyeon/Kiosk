@@ -46,7 +46,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.dementia.process.DementiaInspe
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthInspectionEntryPoint
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.InspectionResultRoute
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestContent
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestContent
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.progress.MChartInspectionRoute
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionRoute
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.VisualAcuityInspectionRoute
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.children.ChildrenVisualAcuityInspectionResult
@@ -630,9 +630,9 @@ fun nenoonApp(
                             }
 
                             InspectionType.MChart -> {
-                                MChartTestContent(
+                                MChartInspectionRoute(
                                     toResultScreen = {
-                                        viewModel.mChartTestResult = it
+                                        viewModel.mChartInspectionResult = it
                                         navigateToResult.value()
                                     }
                                 )
@@ -733,7 +733,7 @@ fun nenoonApp(
                         InspectionType.LongDistanceVisualAcuity -> viewModel.longVisualAcuityInspectionResult
                         InspectionType.ChildrenVisualAcuity -> viewModel.childrenVisualAcuityTestResult
                         InspectionType.AmslerGrid -> viewModel.amslerGridTestResult
-                        InspectionType.MChart -> viewModel.mChartTestResult
+                        InspectionType.MChart -> viewModel.mChartInspectionResult
                         InspectionType.Dementia -> viewModel.dementiaTestResult
                         InspectionType.Presbyopia_Glasses -> viewModel.presbyopiaExerciseResult
                         InspectionType.Concentration_Glasses -> viewModel.concentrationExerciseResult

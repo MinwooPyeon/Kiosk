@@ -37,7 +37,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionRes
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.children.ChildrenVisualAcuityInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.longdistance.LongVisualAcuityInspectionResult
@@ -463,7 +463,7 @@ class NenoonViewModel
         var longVisualAcuityInspectionResult = LongVisualAcuityInspectionResult()
         var childrenVisualAcuityTestResult = ChildrenVisualAcuityInspectionResult()
         var amslerGridTestResult = AmslerGridTestResult()
-        var mChartTestResult = MChartTestResult()
+        var mChartInspectionResult = MChartInspectionResult()
         var dementiaTestResult = DementiaInspectionResult(scores = List(14) { DementiaViewModel.DementiaAnswer.None })
         var presbyopiaExerciseResult = PresbyopiaExerciseResult()
         var concentrationExerciseResult = ConcentrationExerciseResult()
