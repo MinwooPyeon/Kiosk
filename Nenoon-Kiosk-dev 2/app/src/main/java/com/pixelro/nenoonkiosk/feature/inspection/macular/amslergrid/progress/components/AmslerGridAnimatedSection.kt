@@ -35,7 +35,8 @@ fun AmslerGridAnimatedSection(
     visibleState: MutableTransitionState<Boolean>,
     state: AmslerGridUiState,
     onEvent: (AmslerGridEvent) -> Unit,
-    guideVideo: @Composable (() -> Unit)?
+    guideVideo: @Composable (() -> Unit)?,
+    isFaceCenter: Boolean
 ) {
 
     val isPreview = LocalInspectionMode.current
@@ -60,7 +61,7 @@ fun AmslerGridAnimatedSection(
                 text = state.headerAnnotated,
                 fontSize = when {
                     !state.isBlinkingDone -> 40.sp
-                    state.isFaceCenter -> 32.sp
+                    isFaceCenter -> 32.sp
                     else -> 40.sp
                 },
                 color = Color(0xffffffff),
@@ -128,7 +129,7 @@ fun AmslerGridAnimatedSection(
             ) {
                 if (state.isTestStarted) {
                     PrimaryCompleteButton(onClick = { onEvent(AmslerGridEvent.CompletePressed) })
-                } else if (state.isFaceCenter && state.isLeftEye) {
+                } else if (isFaceCenter && state.isLeftEye) {
                     TopCenterGuide()
                 }
             }

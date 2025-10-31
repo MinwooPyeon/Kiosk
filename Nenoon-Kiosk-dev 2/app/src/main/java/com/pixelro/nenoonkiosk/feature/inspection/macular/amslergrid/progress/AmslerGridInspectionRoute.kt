@@ -143,7 +143,6 @@ fun AmslerGridInspectionRoute(
         showAmslerGrid = amslerGridVisible.currentState || amslerGridVisible.targetState,
         isBlinkingDone = isBlinkingDone,
         isDotShowing = isDotShowing,
-        isFaceCenter = isFaceCenter,
         isSelectTtsDone = isSelectTTSDone,
         isTestStarted = isTestStarted,
         isLeftEye = isLeft,
@@ -162,6 +161,7 @@ fun AmslerGridInspectionRoute(
         },
         amslerGridVisible = amslerGridVisible,
         state = uiState,
+        isFaceCenter = isFaceCenter,
         onEvent = { ev ->
             when (ev) {
                 AmslerGridEvent.ProceedFromDistance -> {

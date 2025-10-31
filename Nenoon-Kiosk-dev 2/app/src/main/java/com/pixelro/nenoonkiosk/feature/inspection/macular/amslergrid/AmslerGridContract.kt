@@ -9,7 +9,6 @@ data class AmslerGridUiState(
 
     val isBlinkingDone: Boolean,
     val isDotShowing: Boolean,
-    val isFaceCenter: Boolean,
     val isSelectTtsDone: Boolean,
     val isTestStarted: Boolean,
     val isLeftEye: Boolean,

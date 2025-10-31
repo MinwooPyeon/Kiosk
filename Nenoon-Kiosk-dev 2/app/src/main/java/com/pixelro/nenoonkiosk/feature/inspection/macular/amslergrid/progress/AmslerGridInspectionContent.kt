@@ -25,6 +25,7 @@ fun AmslerGridInspectionContent(
     onEvent: (AmslerGridEvent) -> Unit,
     modifier: Modifier = Modifier,
     guideVideo: (@Composable () -> Unit)? = null,
+    isFaceCenter: Boolean,
 ) {
     Column(
         modifier = modifier
@@ -38,7 +39,7 @@ fun AmslerGridInspectionContent(
         ) {
             MeasuringDistanceAnimatedSection(measuringDistanceVisible)
 
-            AmslerGridAnimatedSection(amslerGridVisible,state,onEvent,guideVideo)
+            AmslerGridAnimatedSection(amslerGridVisible,state,onEvent,guideVideo,isFaceCenter)
         }
     }
 }
@@ -46,7 +47,6 @@ fun AmslerGridInspectionContent(
 private fun previewState(
     isBlinkingDone: Boolean = false,
     isDotShowing: Boolean = true,
-    isFaceCenter: Boolean = false,
     isTestStarted: Boolean = false,
     isLeftEye: Boolean = true,
     rotX: Float = 0f,
@@ -57,7 +57,6 @@ private fun previewState(
 ) = AmslerGridUiState(
     isBlinkingDone = isBlinkingDone,
     isDotShowing = isDotShowing,
-    isFaceCenter = isFaceCenter,
     isTestStarted = isTestStarted,
     isLeftEye = isLeftEye,
     rotX = rotX,
@@ -93,9 +92,9 @@ private fun Preview_Amsler_MeasuringDistance_Only() {
         amslerGridVisible = grid,
         state = previewState(
             isBlinkingDone = false,
-            isFaceCenter = false,
             header = "거리 측정 안내 화면 (프리뷰)"
         ),
+        isFaceCenter = false,
         onEvent = {},
         guideVideo = { PreviewGuideVideoStub() },
     )
@@ -113,11 +112,12 @@ private fun Preview_Amsler_Grid_Blinking_NotCentered() {
         amslerGridVisible = grid,
         state = previewState(
             isBlinkingDone = false,
-            isFaceCenter = false,
+
             rotX = 5f,
             rotY = -7f,
             header = "깜빡임 단계입니다. 화면 중앙의 점을 보세요."
         ),
+        isFaceCenter = false,
         onEvent = {},
         guideVideo = { PreviewGuideVideoStub() },
     )
@@ -135,11 +135,11 @@ private fun Preview_Amsler_Grid_Centered_LeftEye_Guide() {
         amslerGridVisible = grid,
         state = previewState(
             isBlinkingDone = true,
-            isFaceCenter = true,
             isLeftEye = true,
             shouldPlayGuideVideo = true,
             header = "화면 중앙의 점을 바라본 상태입니다. 가이드가 재생됩니다."
         ),
+        isFaceCenter = true,
         onEvent = {},
         guideVideo = { PreviewGuideVideoStub() },
     )
@@ -164,7 +164,6 @@ private fun Preview_Amsler_Testing_Overlay_Selected() {
         amslerGridVisible = grid,
         state = previewState(
             isBlinkingDone = true,
-            isFaceCenter = true,
             isTestStarted = true,
             isLeftEye = false,
             rotX = 0f,
@@ -172,7 +171,7 @@ private fun Preview_Amsler_Testing_Overlay_Selected() {
             selectedAreas = areas,
             header = "보이는 왜곡 구역을 터치해 선택하세요."
         ),
+        isFaceCenter = true,
         onEvent = {},
-        guideVideo = null,
     )
 }
