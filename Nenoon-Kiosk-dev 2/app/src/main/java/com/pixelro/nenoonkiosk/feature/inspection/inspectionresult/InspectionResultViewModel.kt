@@ -20,7 +20,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStreng
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortVisualAcuityInspectionResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -76,7 +76,7 @@ class InspectionResultViewModel
                         Log.d("TestResultViewModel", "Presbyopia result sent to server: $response")
                     }
                     InspectionType.ShortDistanceVisualAcuity -> {
-                        testResult as ShortVisualAcuityTestResult
+                        testResult as ShortVisualAcuityInspectionResult
                         // Internal Save
                         SharedPreferencesManager.updateVisualAcuityResult(
                             leftEye = testResult.leftEye,
