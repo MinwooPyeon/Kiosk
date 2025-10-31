@@ -22,7 +22,7 @@ fun mapToSummaries(
 ): List<ResultSummary> {
     if (latest == null) return emptyList()
     return listOf(
-        ResultSummary(strings.visualAcuity, latest.shortVisualAcuityTestResult != null),
+        ResultSummary(strings.visualAcuity, latest.shortVisualAcuityInspectionResult != null),
         ResultSummary(strings.presbyopia, latest.presbyopiaInspectionResult != null),
         ResultSummary(strings.amsler, latest.amslerGridTestResult != null),
         ResultSummary(strings.mChart, latest.mChartTestResult != null),

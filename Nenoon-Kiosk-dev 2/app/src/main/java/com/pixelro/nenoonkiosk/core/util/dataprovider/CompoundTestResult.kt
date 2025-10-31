@@ -1,7 +1,7 @@
 package com.pixelro.nenoonkiosk.core.util.dataprovider
 
 import com.harang.data.model.dto.CompoundTestResultAPI
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
@@ -9,21 +9,21 @@ import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridT
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortVisualAcuityInspectionResult
 
 data class CompoundTestResult(
-    val shortVisualAcuityTestResult: ShortVisualAcuityTestResult?,
+    val shortVisualAcuityInspectionResult: ShortVisualAcuityInspectionResult?,
     val presbyopiaInspectionResult: PresbyopiaInspectionResult?,
     val amslerGridTestResult: AmslerGridTestResult?,
     val mChartTestResult: MChartTestResult?,
-    val bloodPressureTestResult: BloodPressureTestResult?,
+    val bloodPressureTestResult: BloodPressureInspectionResult?,
     val gripStrengthTestResult: GripStrengthInspectionResultContract?,
     val dementiaTestResult: DementiaInspectionResult?,
     val createAt: String?, // Added createAt property
 ) {
     // This constructor now takes CompoundTestResultAPI as a parameter
     constructor(apiResult: CompoundTestResultAPI) : this(
-        shortVisualAcuityTestResult =
+        shortVisualAcuityInspectionResult =
             apiResult.eyeSight?.run {
                 val left = leftSight
                 val right = rightSight
@@ -31,7 +31,7 @@ data class CompoundTestResult(
                     null
                 } else {
                     try {
-                        ShortVisualAcuityTestResult(left.toInt(), right.toInt())
+                        ShortVisualAcuityInspectionResult(left.toInt(), right.toInt())
                     } catch (e: NumberFormatException) {
                         null
                     }
@@ -87,7 +87,7 @@ data class CompoundTestResult(
                     null
                 } else {
                     try {
-                        BloodPressureTestResult(sys.toInt(), dias.toInt(), pulse.toInt())
+                        BloodPressureInspectionResult(sys.toInt(), dias.toInt(), pulse.toInt())
                     } catch (e: NumberFormatException) {
                         null
                     }

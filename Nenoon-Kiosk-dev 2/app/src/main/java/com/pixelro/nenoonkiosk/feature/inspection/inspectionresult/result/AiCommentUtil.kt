@@ -10,13 +10,13 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.ColorProvider
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortVisualAcuityInspectionResult
 
 fun aiComment(
     testType: InspectionType,
@@ -29,7 +29,7 @@ fun aiComment(
     return when (testType) {
         InspectionType.ShortDistanceVisualAcuity -> {
             try {
-                val parsedResult = testResult as ShortVisualAcuityTestResult
+                val parsedResult = testResult as ShortVisualAcuityInspectionResult
 
                 if (parsedResult.leftEye >= 5 && parsedResult.rightEye >= 5) {
                     buildAnnotatedString {
@@ -186,7 +186,7 @@ fun aiComment(
 
         InspectionType.BloodPressure -> {
             try {
-                val parsedResult = testResult as BloodPressureTestResult
+                val parsedResult = testResult as BloodPressureInspectionResult
 
                 if (parsedResult.systolic < 120 && parsedResult.diastolic < 80) {
                     buildAnnotatedString {

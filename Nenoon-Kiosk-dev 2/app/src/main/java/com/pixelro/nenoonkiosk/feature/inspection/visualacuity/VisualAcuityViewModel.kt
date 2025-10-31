@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.VisualAcuityInspectionResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -170,8 +171,8 @@ class VisualAcuityViewModel
             if (!isEnd) updateRandomList()
         }
 
-        fun getVisualAcuityTestResult(): VisualAcuityTestResult {
-            return VisualAcuityTestResult(
+        fun getVisualAcuityInspectionResult(): VisualAcuityInspectionResult {
+            return VisualAcuityInspectionResult(
                 leftEyeSightValue,
                 rightEyeSightValue,
             )
