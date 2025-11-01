@@ -70,3 +70,15 @@ bool lic_mgr_revoke(const char* license_key){
 	}
 	return false;
 }
+
+bool lic_mgr_validate(const char* license_key){
+	if(!licesne_key) return false;
+
+	for(int i =0;i<LIC_MAX_ENTRIES;i++){
+		if(strcmp(s_lic[i].license_key, license_key) == 0){
+			if(s_lic[i].revoked) return false;
+			return true;
+		}
+	}
+	return false;
+}
