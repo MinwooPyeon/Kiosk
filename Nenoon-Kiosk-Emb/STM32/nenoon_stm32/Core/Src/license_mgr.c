@@ -58,3 +58,15 @@ bool lic_mgr_issue(const char* app_id, const char* issued_to, uint32_t max_activ
 	out_license_key[out_sz - 1] = 0;
 	return true;
 }
+
+bool lic_mgr_revoke(const char* license_key){
+	if(!license_key) return false;
+
+	for(int i =0 ;i<LIC_MAX_ENTRIES;i++){
+		if(strcmp(s_lic[i].license_key, license_key) == 0){
+			s_lic[i].revoked = true;
+			return true;
+		}
+	}
+	return false;
+}
