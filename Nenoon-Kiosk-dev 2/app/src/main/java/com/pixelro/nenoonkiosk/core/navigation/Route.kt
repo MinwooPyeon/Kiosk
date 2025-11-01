@@ -14,19 +14,10 @@ sealed interface Route : NavKey {
     data object Permission : Route
 
     @Serializable
-    data object Entries : Route
-
-    @Serializable
     data object Intro : Route
 
     @Serializable
     data object Survey : Route
-
-    @Serializable
-    data object SoftwareInfo : Route
-
-    @Serializable
-    data object TermsOfService : Route
 
     @Serializable
     data object ResultPrint : Route
@@ -64,27 +55,34 @@ sealed interface SignInRoute : Route {
     data object IdPassword : SignInRoute
 }
 
-sealed interface TestRoute : Route {
+sealed interface InspectionRoute : Route {
+    // 시력 카테고리
     @Serializable
-    data object TestList : TestRoute
+    data object CategoryList : InspectionRoute
 
+    // 혈압, 악력
     @Serializable
-    data object ExerciseList : TestRoute
+    data object ExternalDeviceInspectionList : InspectionRoute
 
+    // 사시
     @Serializable
-    data object CategoryList : TestRoute
+    data object StrabismusInspectionList : InspectionRoute
 
+    // 치매
     @Serializable
-    data object ExternalDeviceTestList : TestRoute
+    data object DementiaInspection : InspectionRoute
 
+    // 시력검사 루트
     @Serializable
-    data object StrabismusTestList : TestRoute
+    data object EyeInspectionList : InspectionRoute
 
+    // 애는 머임?
     @Serializable
-    data object TestContent : TestRoute
+    data object InspectionContent : InspectionRoute
 
+    // 검사 결과
     @Serializable
-    data object TestResult : TestRoute
+    data object InspectionResult : InspectionRoute
 }
 
 sealed interface DeviceConnectRoute : Route {

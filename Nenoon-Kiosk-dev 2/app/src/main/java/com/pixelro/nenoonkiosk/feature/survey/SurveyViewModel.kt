@@ -10,7 +10,7 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.constants.DebugConstants
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
-import com.pixelro.nenoonkiosk.core.navigation.TestRoute
+import com.pixelro.nenoonkiosk.core.navigation.InspectionRoute
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.survey.model.SurveyAge
 import com.pixelro.nenoonkiosk.feature.survey.model.SurveyDiabetes
@@ -208,7 +208,7 @@ class SurveyViewModel @Inject constructor(
     }
 
     fun navigateToCategoryList(pid: Long) = intent {
-        navigator.navigate(TestRoute.CategoryList)
+        navigator.navigate(InspectionRoute.CategoryList)
     }
 
     private fun updateQuestionType(type: QuestionType) = intent {

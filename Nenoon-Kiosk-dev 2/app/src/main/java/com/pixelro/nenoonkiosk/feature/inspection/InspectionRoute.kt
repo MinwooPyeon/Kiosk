@@ -15,11 +15,7 @@ import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
 @SuppressLint("NewApi")
 @Composable
 fun InspectionScreenRoute(
-    viewModel: NenoonViewModel,
-    navController: NavHostController,
-    content: @Composable () -> Unit,
 ) {
-    val selectedTestType by viewModel.selectedTestType.collectAsState()
     val systemUiController = rememberSystemUiController()
 
     // 뒤로가기 동작

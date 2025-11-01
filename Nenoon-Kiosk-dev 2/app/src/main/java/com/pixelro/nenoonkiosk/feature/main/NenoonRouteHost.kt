@@ -18,7 +18,7 @@ import com.pixelro.nenoonkiosk.core.navigation.AdminRoute
 import com.pixelro.nenoonkiosk.core.navigation.Route
 import com.pixelro.nenoonkiosk.core.navigation.SignInRoute
 import com.pixelro.nenoonkiosk.core.navigation.TermsOfServiceRoute
-import com.pixelro.nenoonkiosk.core.navigation.TestRoute
+import com.pixelro.nenoonkiosk.core.navigation.InspectionRoute
 import com.pixelro.nenoonkiosk.feature.auth.accountmanagement.AccountManagementRoute
 import com.pixelro.nenoonkiosk.feature.auth.faceenrollment.FaceEnrollmentRoute
 import com.pixelro.nenoonkiosk.feature.auth.faceidlogin.FaceIdLoginRoute
@@ -95,7 +95,7 @@ fun NenoonRouteHost(
         is TermsOfServiceRoute.FaceId -> FaceIdTermsOfServiceRoute()
         is TermsOfServiceRoute.Base -> TermsOfServiceRoute()
 
-        is TestRoute.CategoryList -> CategoryListRoute(
+        is InspectionRoute.CategoryList -> CategoryListRoute(
             pid = DebugConstants.PLACEHOLDER_PID,
             isSignInSkipped = isSignedIn,
         )

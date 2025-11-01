@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.pixelro.nenoonkiosk.core.navigation.AdminRoute
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.navigation.Route
-import com.pixelro.nenoonkiosk.core.navigation.TestRoute
+import com.pixelro.nenoonkiosk.core.navigation.InspectionRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.Container
@@ -38,38 +38,37 @@ class CategoryListViewModel @Inject constructor(
         }
     }
 
+    // 눈검사
     fun navigateToEyeTest() = intent {
-        navigator.navigate(TestRoute.TestContent)
+        navigator.navigate(InspectionRoute.InspectionContent)
     }
 
+    // 외부 연결(혈압, 악력
     fun navigateToExternalDeviceTestList() = intent {
-        navigator.navigate(TestRoute.ExternalDeviceTestList)
+        navigator.navigate(InspectionRoute.ExternalDeviceInspectionList)
     }
 
+    // 사시
     fun navigateToStrabismusTestList() = intent {
-        navigator.navigate(TestRoute.StrabismusTestList)
+        navigator.navigate(InspectionRoute.StrabismusInspectionList)
     }
 
+    // 치매
     fun navigateToDementiaTest() = intent {
-        navigator.navigate(TestRoute.TestContent)
+        navigator.navigate(InspectionRoute.InspectionContent)
     }
 
+    // 출력?
     fun navigateToPrint() = intent {
         navigator.navigate(Route.ResultPrint)
     }
 
+    // 계정 관리
     fun navigateToAccountManagement() = intent {
         navigator.navigate(AdminRoute.AccountManagement)
     }
 
-    fun navigateToContact() = intent {
-        navigator.navigate(Route.Contact)
-    }
-
-    fun navigateToIntro() = intent {
-        navigator.navigate(Route.Intro)
-    }
-
+    // 셋팅화면
     fun navigateToSettings() = intent {
         navigator.navigate(Route.Settings)
     }
