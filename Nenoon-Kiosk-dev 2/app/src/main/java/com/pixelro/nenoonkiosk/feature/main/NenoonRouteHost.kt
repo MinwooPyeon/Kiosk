@@ -30,6 +30,8 @@ import com.pixelro.nenoonkiosk.feature.auth.signup.SignUpRoute
 import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListRoute
 import com.pixelro.nenoonkiosk.feature.inspection.EyeInspectionListRoute
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionRoute
+import com.pixelro.nenoonkiosk.feature.inspection.externaldevicelist.ExternalDeviceInspectionListRoute
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthRoute
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionRoute
 import com.pixelro.nenoonkiosk.feature.intro.IntroRoute
 import com.pixelro.nenoonkiosk.feature.permission.PermissionRoute
@@ -102,6 +104,16 @@ fun NenoonRouteHost(
             pid = DebugConstants.PLACEHOLDER_PID,
             isSignInSkipped = isSignedIn,
         )
+
+        is InspectionRoute.ExternalDeviceInspectionList -> ExternalDeviceInspectionListRoute(
+            isBloodPressureDone = false,
+            isGripStrengthDone = false,
+            isSenior = false
+        )
+        is InspectionRoute.GripStrength -> GripStrengthRoute(
+            isSignedIn = isSignedIn
+        )
+        is InspectionRoute.BloodPressure -> {}
 
         is InspectionRoute.EyeInspectionList -> EyeInspectionListRoute()
         is InspectionRoute.DementiaInspection -> DementiaInspectionRoute()
