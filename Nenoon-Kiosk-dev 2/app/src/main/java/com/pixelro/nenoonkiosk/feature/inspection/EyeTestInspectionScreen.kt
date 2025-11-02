@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.inspection.eyeinspection
+package com.pixelro.nenoonkiosk.feature.inspection
 
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -36,7 +36,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
@@ -158,7 +157,7 @@ private fun TopBar(
     titleText: String,
     onBackToIntro: () -> Unit,
     onOpenSettings: () -> Unit,
-    titleBackFontSize: TextUnit
+    titleBackFontSize: androidx.compose.ui.unit.TextUnit
 ) {
     Box(
         modifier = Modifier

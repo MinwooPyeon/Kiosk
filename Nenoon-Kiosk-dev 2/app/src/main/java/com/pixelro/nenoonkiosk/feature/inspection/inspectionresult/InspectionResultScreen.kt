@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.components.InspectionDivider
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.components.DarkBottomTripleButtons
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.components.LightBottomArea

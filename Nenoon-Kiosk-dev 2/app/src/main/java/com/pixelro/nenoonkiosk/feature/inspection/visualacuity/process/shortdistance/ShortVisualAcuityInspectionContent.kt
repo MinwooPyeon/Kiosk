@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceContent
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.VisualAcuityInspectionCommonContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.VisualAcuityInspectionUiState
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.VisualAcuityInspectionResult

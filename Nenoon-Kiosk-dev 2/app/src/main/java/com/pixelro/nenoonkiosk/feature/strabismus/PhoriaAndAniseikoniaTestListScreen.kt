@@ -58,6 +58,7 @@ import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import kotlinx.coroutines.delay
 
 @RequiresApi(Build.VERSION_CODES.S)

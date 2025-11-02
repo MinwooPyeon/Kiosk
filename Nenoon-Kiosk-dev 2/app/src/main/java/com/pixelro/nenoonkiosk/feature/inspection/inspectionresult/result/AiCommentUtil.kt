@@ -9,6 +9,7 @@ import androidx.compose.ui.text.withStyle
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.ColorProvider
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
