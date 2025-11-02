@@ -10,7 +10,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.manager.InGripManager
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripViewModel
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel

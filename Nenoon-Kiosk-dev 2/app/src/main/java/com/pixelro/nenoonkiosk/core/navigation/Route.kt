@@ -56,7 +56,7 @@ sealed interface SignInRoute : Route {
 }
 
 sealed interface InspectionRoute : Route {
-    // 시력 카테고리
+    // 전체 카테고리
     @Serializable
     data object CategoryList : InspectionRoute
 
@@ -75,10 +75,6 @@ sealed interface InspectionRoute : Route {
     // 시력검사 루트
     @Serializable
     data object EyeInspectionList : InspectionRoute
-
-    // 애는 머임?
-    @Serializable
-    data object InspectionContent : InspectionRoute
 
     // 검사 결과
     @Serializable

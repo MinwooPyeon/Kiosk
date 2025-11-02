@@ -40,10 +40,10 @@ class CategoryListViewModel @Inject constructor(
 
     // 눈검사
     fun navigateToEyeTest() = intent {
-        navigator.navigate(InspectionRoute.InspectionContent)
+        navigator.navigate(InspectionRoute.EyeInspectionList)
     }
 
-    // 외부 연결(혈압, 악력
+    // 외부 연결(혈압, 악력)
     fun navigateToExternalDeviceTestList() = intent {
         navigator.navigate(InspectionRoute.ExternalDeviceInspectionList)
     }
@@ -55,7 +55,7 @@ class CategoryListViewModel @Inject constructor(
 
     // 치매
     fun navigateToDementiaTest() = intent {
-        navigator.navigate(InspectionRoute.InspectionContent)
+        navigator.navigate(InspectionRoute.DementiaInspection)
     }
 
     // 출력?

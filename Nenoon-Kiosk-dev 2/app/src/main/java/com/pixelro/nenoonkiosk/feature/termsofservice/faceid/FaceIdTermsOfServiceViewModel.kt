@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.AndroidViewModel
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.termsofservice.base.TermsTableData

@@ -7,7 +7,6 @@ import com.google.gson.reflect.TypeToken
 import com.harang.data.model.dto.GetCompoundTestResult
 import com.harang.data.model.dto.User
 import com.pixelro.nenoonkiosk.app.NenoonKioskApplication
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import java.lang.reflect.Type
 
 object SharedPreferencesManager {

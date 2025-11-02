@@ -5,7 +5,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.feature.inspection.strabismus.FilterInstructionScreen
 import com.pixelro.nenoonkiosk.feature.inspection.strabismus.GlassInstructionScreen
 import com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.adjustment.AniseikoniaAdjustmentScreen
