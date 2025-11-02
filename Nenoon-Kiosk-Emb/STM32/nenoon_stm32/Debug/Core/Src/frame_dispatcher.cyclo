@@ -1,0 +1,7 @@
+../Core/Src/frame_dispatcher.c:16:6:lic_dispatch_mgr_login	4
+../Core/Src/frame_dispatcher.c:37:6:lic_dispatch_issue	5
+../Core/Src/frame_dispatcher.c:66:6:lic_dispatch_revoke	1
+../Core/Src/frame_dispatcher.c:79:6:lic_dispatch_validate	1
+../Core/Src/frame_dispatcher.c:92:6:lic_dispatch_get_challenge	2
+../Core/Src/frame_dispatcher.c:113:6:lic_dispatch_get_jwt	2
+../Core/Src/frame_dispatcher.c:134:6:proto_dispatch_handle	9

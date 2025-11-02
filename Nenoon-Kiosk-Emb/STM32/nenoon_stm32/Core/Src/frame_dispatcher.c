@@ -149,7 +149,7 @@ void proto_dispatch_handle(const uint8_t* frame, size_t len){
 			lic_dispatch_issue(payload, pl_len, out_payload, &out_len);
 			break;
 		case FRAME_LIC_REVOKE:
-			lic_dispatch_reboke(payload, pl_len, out_payload, &out_len);
+			lic_dispatch_revoke(payload, pl_len, out_payload, &out_len);
 			break;
 		case FRAME_LIC_VALIDATE:
 			lic_dispatch_validate(payload, pl_len, out_payload, &out_len);

@@ -27,7 +27,7 @@
 #define USB_ADVERT_CHUNK_SIZE   1024
 
 
-extern FATFS USBH_fatfs;
+extern FATFS USBHFatFS;
 extern char  USBHPath[4];
 
 static char     s_files[USB_ADVERT_MAX_FILES][USB_ADVERT_MAX_NAME];
@@ -67,7 +67,7 @@ usb_advert_err_t USB_Advert_Scan(void)
 
     STLINK_UART_Println(TAG "scan start");
 
-    res = f_mount(&USBH_fatfs, (TCHAR const*)USBHPath, 0);
+    res = f_mount(&USBHFatFS, (TCHAR const*)USBHPath, 0);
     if (res != FR_OK) {
         STLINK_UART_Println(TAG "mount failed");
         return USB_ADVERT_ERR_NOT_MOUNTED;
@@ -211,7 +211,7 @@ usb_advert_err_t USB_Advert_StreamFile(const char* filename)
         uint8_t frame_buf[FRAME_HDR_SIZE + USB_ADVERT_CHUNK_SIZE + FRAME_TLR_SIZE];
         size_t	frame_len = 0;
 
-        frame_err_t fer = frame_build(FRAME_MEDIA_CHUNK, buf, sizeof(frame_buf), &frame_len);
+        frame_err_t fer = frame_build(FRAME_MEDIA_CHUNK, buf, (uint16_t)br, frame_buf, sizeof(frame_buf), &frame_len);
         if(fer != FRAME_OK){
         	UART6_SendString(TAG "frame build fail\r\n");
 			f_close(&file);

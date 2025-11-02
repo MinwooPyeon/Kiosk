@@ -1,0 +1,9 @@
+../Core/Src/frame_parser.c:11:24:be16_rd	1
+../Core/Src/frame_parser.c:15:13:fp_reset	1
+../Core/Src/frame_parser.c:22:13:fp_feed_sync1	2
+../Core/Src/frame_parser.c:31:13:fp_feed_sync2	3
+../Core/Src/frame_parser.c:49:13:fp_feed_hdr	4
+../Core/Src/frame_parser.c:70:13:fp_feed_payload	2
+../Core/Src/frame_parser.c:78:13:fp_feed_crc	4
+../Core/Src/frame_parser.c:98:6:frame_parser_init	1
+../Core/Src/frame_parser.c:104:6:frame_parser_feed	7

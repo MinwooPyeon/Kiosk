@@ -1,0 +1,8 @@
+../Core/Src/license_mgr.c:18:6:lic_mgr_init	1
+../Core/Src/license_mgr.c:22:6:lic_mgr_manager_login	5
+../Core/Src/license_mgr.c:28:13:make_license_key	1
+../Core/Src/license_mgr.c:32:6:lic_mgr_issue	6
+../Core/Src/license_mgr.c:62:6:lic_mgr_revoke	4
+../Core/Src/license_mgr.c:74:6:lic_mgr_validate	5
+../Core/Src/license_mgr.c:86:6:lic_mgr_get_challenge	9
+../Core/Src/license_mgr.c:110:6:lic_mgr_get_jwt	5
