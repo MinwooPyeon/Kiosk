@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.inspection
+package com.pixelro.nenoonkiosk.feature.inspection.eyeinspection
 
 import android.content.Context
 import android.os.Build
@@ -22,7 +22,7 @@ import kotlinx.coroutines.delay
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
-fun EyeTestInspectionRoute(
+fun EyeInspectionListRoute(
     checkIsTestDone: (InspectionType) -> Boolean,
     toTestScreen: (InspectionType) -> Unit,
     toIntroScreen: () -> Unit,

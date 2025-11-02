@@ -44,7 +44,6 @@ import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.ui.GlassesExerciseSelectionButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import kotlinx.coroutines.delay
 
 // 미개발

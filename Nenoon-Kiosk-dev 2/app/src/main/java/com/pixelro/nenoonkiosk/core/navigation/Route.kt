@@ -26,9 +26,6 @@ sealed interface Route : NavKey {
     data object Settings : Route
 
     @Serializable
-    data object Contact : Route
-
-    @Serializable
     data object BTDeviceManagement : Route
 }
 

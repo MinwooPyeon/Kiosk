@@ -12,7 +12,6 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetectionViewModel
-import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuityViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.shortdistance.ShortVisualAcuityInspectionContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.VisualAcuityInspectionResult
