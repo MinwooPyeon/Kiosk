@@ -211,7 +211,7 @@ usb_advert_err_t USB_Advert_StreamFile(const char* filename)
         uint8_t frame_buf[FRAME_HDR_SIZE + USB_ADVERT_CHUNK_SIZE + FRAME_TLR_SIZE];
         size_t	frame_len = 0;
 
-        frame_err_t fer = frame_build(FRAME_MEDIA_CHUNK, buf, sizeof(frame_buf), &frame_len);
+        frame_err_t fer = frame_build(FRAME_MEDIA_CHUNK, buf, (uint16_t)br, frame_buf, sizeof(frame_buf), &frame_len);
         if(fer != FRAME_OK){
         	UART6_SendString(TAG "frame build fail\r\n");
 			f_close(&file);
