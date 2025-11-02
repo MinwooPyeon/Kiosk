@@ -2,8 +2,10 @@ package com.pixelro.nenoonkiosk.core.util.dataprovider
 
 import com.harang.data.model.dto.CompoundTestResultAPI
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaAnswer
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
@@ -122,11 +124,11 @@ data class CompoundTestResult(
     )
 }
 
-private fun String.toDementiaAnswer(): DementiaViewModel.DementiaAnswer {
+private fun String.toDementiaAnswer(): DementiaAnswer {
     return when (this) {
-        "Yes" -> DementiaViewModel.DementiaAnswer.Yes
-        "No" -> DementiaViewModel.DementiaAnswer.No
-        else -> DementiaViewModel.DementiaAnswer.None
+        "Yes" -> DementiaAnswer.Yes
+        "No" -> DementiaAnswer.No
+        else -> DementiaAnswer.None
     }
 }
 

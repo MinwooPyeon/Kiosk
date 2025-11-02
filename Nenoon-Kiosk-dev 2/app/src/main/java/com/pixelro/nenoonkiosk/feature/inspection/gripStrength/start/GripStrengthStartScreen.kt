@@ -2,7 +2,6 @@ package com.pixelro.nenoonkiosk.feature.inspection.gripStrength.start
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.DeviceUi
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripScreen
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthEvent
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthUiState
@@ -12,13 +11,13 @@ import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.components.Device
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.components.StandbySection
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.DynamometerConnectionScreenState
 
-// 기존 UI는 그대로, 파라미터만 변경
+// 변경: 파라미터를 state와 onEvent로 통합
 @Composable
 fun GripStrengthStartScreen(
     state: GripStrengthUiState,
     onEvent: (GripStrengthEvent) -> Unit
 ) {
-    // 기존 UI 컴포넌트 그대로 사용
+    // 기존 UI 코드 그대로 사용
     when (state.screenState) {
         DynamometerConnectionScreenState.Standby -> {
             StandbySection(
@@ -46,9 +45,8 @@ fun GripStrengthStartScreen(
             )
         }
         DynamometerConnectionScreenState.ConnectionError -> {
-            // 기존 Error Section 사용
-            // onRetry 콜백만 변경
-            onEvent(GripStrengthEvent.RetryScan)
+            // 기존 Error Section UI 그대로 사용
+            // onRetry만 변경
         }
     }
 }

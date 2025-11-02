@@ -10,7 +10,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.manager.InGripManager
-import com.pixelro.nenoonkiosk.core.navigation.InspectionRoute
 import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
@@ -131,7 +130,7 @@ class GripStrengthViewModel @Inject constructor(
                         state.copy(
                             availableDevices = devices.map { device ->
                                 DeviceUi(
-                                    name = device.name ?: "Unknown Device",
+                                    name = device.name ?: StringProvider.getString(R.string.dynamometer_unknown_device_name),
                                     address = device.address
                                 )
                             }
@@ -242,7 +241,7 @@ class GripStrengthViewModel @Inject constructor(
             }
             GripStrengthEvent.Back -> {
                 TTS.tts.stop()
-                navigator.navigate(InspectionRoute.ExternalDeviceInspectionList)
+                // TODO: Back navigation 처리
             }
 
             // Instructions 화면
@@ -298,7 +297,7 @@ class GripStrengthViewModel @Inject constructor(
                 startInstructions()
             }
             GripStrengthEvent.Return -> {
-                navigator.navigate(InspectionRoute.ExternalDeviceInspectionList)
+                // TODO: Return navigation 처리
             }
             GripStrengthEvent.Logout -> {
                 // TODO: Logout 처리
@@ -434,7 +433,6 @@ class GripStrengthViewModel @Inject constructor(
             leftGrip = state.leftGripValue
         )
         // TODO: 결과 전달 방법 구현 필요
-        navigator.navigate(InspectionRoute.InspectionResult)
     }
 
     override fun onCleared() {

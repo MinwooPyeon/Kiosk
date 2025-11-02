@@ -18,6 +18,14 @@ import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.TtsWarning
 import kotlinx.coroutines.flow.MutableStateFlow
 
+data class GripInstructionsUiState(
+    val ttsSpeaking: Boolean = false
+)
+
+sealed class GripInstructionsEvent {
+    object StartPressed : GripInstructionsEvent()
+}
+
 @Composable
 fun GripStrengthInstructionsScreen(
     state: GripInstructionsUiState,
@@ -50,14 +58,12 @@ fun GripStrengthInstructionsScreen(
             suffix = stringResource(R.string.grip_instructions_step3_suffix),
         )
 
-
         Spacer(modifier = Modifier.weight(2f))
         PrimaryButton(
             onClick = { onEvent(GripInstructionsEvent.StartPressed) },
             text = stringResource(R.string.grip_instructions_start_button),
         )
     }
-
 
     TtsWarning(ttsWarningActive)
 }
@@ -67,17 +73,6 @@ fun GripStrengthInstructionsScreen(
 private fun Preview_Instructions_Idle() {
     GripStrengthInstructionsScreen(
         state = GripInstructionsUiState(ttsSpeaking = false),
-        ttsWarningActive = MutableStateFlow(false),
-        onEvent = {},
-    )
-}
-
-
-@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "Instructions – Speaking")
-@Composable
-private fun Preview_Instructions_Speaking() {
-    GripStrengthInstructionsScreen(
-        state = GripInstructionsUiState(ttsSpeaking = true),
         ttsWarningActive = MutableStateFlow(false),
         onEvent = {},
     )

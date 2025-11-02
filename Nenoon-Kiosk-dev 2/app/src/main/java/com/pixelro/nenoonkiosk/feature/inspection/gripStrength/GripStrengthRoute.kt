@@ -2,9 +2,15 @@ package com.pixelro.nenoonkiosk.feature.inspection.gripStrength
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.error.GripErrorEvent
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.error.GripErrorUiState
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.error.GripStrengthErrorScreen
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.inprogress.GripInProgressEvent
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.inprogress.GripInProgressUiState
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.inprogress.GripStrengthInProgressScreen
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.instructions.GripInstructionsEvent
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.instructions.GripInstructionsUiState
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.instructions.GripStrengthInstructionsScreen
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.start.GripStrengthStartScreen
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,11 +41,7 @@ fun GripStrengthRoute(
                 onEvent = { event ->
                     when (event) {
                         GripInstructionsEvent.StartPressed -> {
-                            if (state.ttsSpeaking) {
-                                // TTS 경고 표시 로직 (기존 유지)
-                            } else {
-                                viewModel.handleEvent(GripStrengthEvent.ProceedToTest)
-                            }
+                            viewModel.handleEvent(GripStrengthEvent.ProceedToTest)
                         }
                     }
                 }

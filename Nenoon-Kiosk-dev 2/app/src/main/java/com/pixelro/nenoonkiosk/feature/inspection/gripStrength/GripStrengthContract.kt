@@ -7,23 +7,23 @@ data class GripStrengthUiState(
     // 현재 화면
     val currentScreen: GripScreen = GripScreen.START,
 
-    // Start 화면 상태
+    // Start 화면 상태 (기존 유지)
     val screenState: DynamometerConnectionScreenState = DynamometerConnectionScreenState.Standby,
     val batteryPercent: Int? = null,
     val isBatteryFetching: Boolean = false,
     val isConnecting: Boolean = false,
     val availableDevices: List<DeviceUi> = emptyList(),
 
-    // Instructions 화면 상태
+    // Instructions 화면 상태 (기존 유지)
     val ttsSpeaking: Boolean = false,
 
-    // InProgress 화면 상태
+    // InProgress 화면 상태 (기존 유지)
     val testState: GripStrengthInspectionState = GripStrengthInspectionState.RightHandReady,
     val rightGripValue: Double = 0.0,
     val leftGripValue: Double = 0.0,
     val countdown: Int = 10,
 
-    // Error 화면 상태
+    // Error 화면 상태 (기존 유지)
     val isSignedIn: Boolean = true
 )
 
@@ -34,12 +34,6 @@ enum class GripScreen {
     IN_PROGRESS,
     ERROR
 }
-
-// Device UI (기존 유지)
-data class DeviceUi(
-    val name: String,
-    val address: String
-)
 
 // 통합 Event
 sealed class GripStrengthEvent {
@@ -62,7 +56,7 @@ sealed class GripStrengthEvent {
     object Logout : GripStrengthEvent()
 }
 
-// 기존 유지
+// 기존 enum 그대로 유지
 enum class GripStrengthInspectionState {
     RightHandReady,
     RightHand,
@@ -71,3 +65,9 @@ enum class GripStrengthInspectionState {
     LeftHand,
     LeftHandCompleted
 }
+
+// 기존 DeviceUi 그대로 유지
+data class DeviceUi(
+    val name: String,
+    val address: String
+)
