@@ -10,7 +10,10 @@ import com.pixelro.nenoonkiosk.core.ui.AccentedText
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 
 @Composable
-fun StandbySection(onStart: () -> Unit) {
+fun StandbySection(
+    onStart: () -> Unit,
+    onBack: () -> Unit
+) {
     AccentedText(
         prefix = stringResource(R.string.dynamometer_standby_instruction1),
         accent = stringResource(R.string.dynamometer_standby_instruction2),

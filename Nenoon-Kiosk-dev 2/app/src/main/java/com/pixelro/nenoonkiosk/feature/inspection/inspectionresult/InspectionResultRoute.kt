@@ -32,23 +32,24 @@ import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.result.DementiaInspectionResultRoute
-import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.concentration_exercise.ConcentrationExerciseResult
-import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.concentration_exercise.ConcentrationExerciseResultContent
-import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResult
-import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResultContent
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.instructions.GripStrengthInspectionResultScreen
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.InspectionResultUtil.textAsBitmap
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.aiComment
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.result.AmslerGridTestResultRoute
+import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.result.AmslerGridInspectionResultRoute
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResultRoute
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.result.PresbyopiaInspectionResultContent
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.result.PresbyopiaInspectionResultRoute
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.children.ChildrenVisualAcuityInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.longdistance.LongVisualAcuityInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortDistanceVisualAcuityInspectionResultScreen
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.concentration_exercise.ConcentrationExerciseResult
+import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.concentration_exercise.ConcentrationExerciseResultContent
+import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResult
+import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResultContent
 import com.pixelro.nenoonkiosk.feature.undeveloped.testresultcontent.ChildrenVisualAcuityInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.undeveloped.testresultcontent.LongDistanceVisualAcuityTestResultContent
 import kotlinx.coroutines.delay
@@ -113,7 +114,7 @@ fun InspectionResultRoute(
         {
             when (testType) {
                 InspectionType.Presbyopia -> {
-                    PresbyopiaInspectionResultContent(testResult =  testResult as PresbyopiaInspectionResult)
+                    PresbyopiaInspectionResultRoute(testResult =  testResult as PresbyopiaInspectionResult)
                 }
                 InspectionType.ShortDistanceVisualAcuity -> {
                     ShortDistanceVisualAcuityInspectionResultScreen(
@@ -134,12 +135,12 @@ fun InspectionResultRoute(
                     )
                 }
                 InspectionType.AmslerGrid -> {
-                    AmslerGridTestResultRoute(
+                    AmslerGridInspectionResultRoute(
                         testResult = testResult as AmslerGridTestResult,
                     )
                 }
                 InspectionType.MChart -> {
-                    MChartInspectionResultContent(
+                    MChartInspectionResultRoute(
                         testResult = testResult as MChartInspectionResult,
                     )
                 }
@@ -161,7 +162,7 @@ fun InspectionResultRoute(
                     )
                 }
                 InspectionType.GripStrength -> {
-                    GripStrengthInspectionResultContent(
+                    GripStrengthInspectionResultScreen(
                         testResult = testResult as GripStrengthInspectionResultContract,
                     )
                 }

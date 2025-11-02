@@ -1,24 +1,34 @@
 package com.pixelro.nenoonkiosk.feature.inspection.gripStrength.inprogress
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.core.ui.AccentStyle
+import com.pixelro.nenoonkiosk.core.ui.AccentedText
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
+import com.pixelro.nenoonkiosk.core.ui.StyledText
+import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthInspectionState
+import kotlin.math.round
 
-// Contract 유지 (기존 그대로)
 data class GripInProgressUiState(
     val testState: GripStrengthInspectionState = GripStrengthInspectionState.RightHandReady,
     val rightGripValue: Double = 0.0,
@@ -30,167 +40,99 @@ sealed class GripInProgressEvent {
     object StartPressed : GripInProgressEvent()
 }
 
-// 변경: 파라미터만 변경, UI는 그대로
+@SuppressLint("CoroutineCreationDuringComposition", "MissingPermission")
 @Composable
 fun GripStrengthInProgressScreen(
     state: GripInProgressUiState,
-    onEvent: (GripInProgressEvent) -> Unit
+    onEvent: (GripInProgressEvent) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    // 기존 UI 코드 전부 그대로 사용
-    Box(
-        modifier = Modifier
+    val animatedRight by animateFloatAsState(
+        targetValue = state.rightGripValue.toFloat(),
+        animationSpec = tween(1000),
+        label = "animRight",
+    )
+
+    val animatedLeft by animateFloatAsState(
+        targetValue = state.leftGripValue.toFloat(),
+        animationSpec = tween(1000),
+        label = "animLeft",
+    )
+
+    Column(
+        modifier = modifier
+            .padding(40.dp)
             .fillMaxSize()
-            .background(colorResource(id = R.color.background))
+            .background(Color.White),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(40.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = stringResource(R.string.grip_strength_test_title),
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = colorResource(id = R.color.text_primary)
+        Spacer(modifier = Modifier.weight(1f))
+
+        when (state.testState) {
+            GripStrengthInspectionState.LeftHandReady -> AccentedText(
+                prefix = stringResource(R.string.grip_strength_left_hand_ready_text1),
+                accent = stringResource(R.string.grip_strength_left_hand_ready_text2),
+                suffix = stringResource(R.string.grip_strength_left_hand_ready_text3),
             )
+            GripStrengthInspectionState.RightHandReady -> AccentedText(
+                prefix = stringResource(R.string.grip_strength_right_hand_ready_text1),
+                accent = stringResource(R.string.grip_strength_right_hand_ready_text2),
+                suffix = stringResource(R.string.grip_strength_right_hand_ready_text3),
+            )
+            GripStrengthInspectionState.RightHandCompleted -> StyledText(stringResource(R.string.grip_strength_right_hand_completed_text))
+            GripStrengthInspectionState.LeftHandCompleted -> StyledText(stringResource(R.string.grip_strength_left_hand_completed_text))
+            GripStrengthInspectionState.RightHand -> StyledText(stringResource(R.string.grip_strength_right_hand_instruction_tts))
+            GripStrengthInspectionState.LeftHand -> StyledText(stringResource(R.string.grip_strength_left_hand_instruction_tts))
+            else -> Unit
+        }
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(40.dp)
-            ) {
-                // 현재 손 표시
-                Text(
-                    text = when {
-                        state.testState == GripStrengthInspectionState.RightHandReady ||
-                                state.testState == GripStrengthInspectionState.RightHand ||
-                                state.testState == GripStrengthInspectionState.RightHandCompleted ->
-                            stringResource(R.string.right_hand)
-                        else ->
-                            stringResource(R.string.left_hand)
-                    },
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(id = R.color.primary)
-                )
+        Spacer(modifier = Modifier.height(64.dp))
 
-                // 상태별 UI
-                when (state.testState) {
-                    GripStrengthInspectionState.RightHandReady,
-                    GripStrengthInspectionState.LeftHandReady -> {
-                        Text(
-                            text = stringResource(R.string.press_start_to_begin),
-                            fontSize = 24.sp,
-                            textAlign = TextAlign.Center,
-                            color = colorResource(id = R.color.text_secondary)
-                        )
-                    }
-                    GripStrengthInspectionState.RightHand,
-                    GripStrengthInspectionState.LeftHand -> {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(20.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.measuring),
-                                fontSize = 24.sp,
-                                color = colorResource(id = R.color.text_secondary)
-                            )
-                            Text(
-                                text = "${state.countdown}",
-                                fontSize = 48.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.accent)
-                            )
-                            LinearProgressIndicator(
-                                progress = (10 - state.countdown) / 10f,
-                                modifier = Modifier
-                                    .width(300.dp)
-                                    .height(8.dp)
-                            )
-                        }
-                    }
-                    GripStrengthInspectionState.RightHandCompleted,
-                    GripStrengthInspectionState.LeftHandCompleted -> {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(20.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.processing_result),
-                                fontSize = 24.sp,
-                                color = colorResource(id = R.color.text_secondary)
-                            )
-                            Text(
-                                text = when (state.testState) {
-                                    GripStrengthInspectionState.RightHandCompleted ->
-                                        "${state.rightGripValue}kg"
-                                    else ->
-                                        "${state.leftGripValue}kg"
-                                },
-                                fontSize = 36.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.success)
-                            )
-                        }
-                    }
-                }
-
-                // 결과 요약
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = stringResource(R.string.right_hand),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = colorResource(id = R.color.text_primary)
-                        )
-                        Text(
-                            text = if (state.rightGripValue > 0) "${state.rightGripValue}kg" else "-",
-                            fontSize = 24.sp,
-                            color = colorResource(id = R.color.text_secondary)
-                        )
-                    }
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = stringResource(R.string.left_hand),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = colorResource(id = R.color.text_primary)
-                        )
-                        Text(
-                            text = if (state.leftGripValue > 0) "${state.leftGripValue}kg" else "-",
-                            fontSize = 24.sp,
-                            color = colorResource(id = R.color.text_secondary)
-                        )
-                    }
-                }
-            }
-
-            if (state.testState == GripStrengthInspectionState.RightHandReady ||
-                state.testState == GripStrengthInspectionState.LeftHandReady) {
+        when (state.testState) {
+            GripStrengthInspectionState.RightHandReady,
+            GripStrengthInspectionState.LeftHandReady -> {
+                StyledText(text = stringResource(R.string.grip_strength_press_button_and_squeeze_text))
+                Spacer(modifier = Modifier.weight(1f))
                 PrimaryButton(
-                    text = stringResource(R.string.button_start),
-                    onClick = { onEvent(GripInProgressEvent.StartPressed) }
+                    text = stringResource(R.string.grip_strength_start_button),
+                    onClick = { onEvent(GripInProgressEvent.StartPressed) },
                 )
-            } else {
-                Spacer(modifier = Modifier.height(56.dp))
+            }
+            GripStrengthInspectionState.RightHand,
+            GripStrengthInspectionState.LeftHand -> {
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    StyledText(text = "${state.countdown}", style = TextStyle.BigNumber)
+                }
+                Spacer(modifier = Modifier.weight(1f))
+            }
+            GripStrengthInspectionState.RightHandCompleted -> {
+                AccentedText(
+                    prefix = stringResource(R.string.grip_strength_right_hand_value),
+                    accent = " ${round(animatedRight * 10.0f) / 10.0f}kg",
+                    suffix = "",
+                    accentStyle = AccentStyle.Blue,
+                )
+                Spacer(modifier = Modifier.weight(1f))
+            }
+            GripStrengthInspectionState.LeftHandCompleted -> {
+                AccentedText(
+                    prefix = stringResource(R.string.grip_strength_left_hand_value),
+                    accent = " ${round(animatedLeft * 10.0f) / 10.0f}kg",
+                    suffix = "",
+                    accentStyle = AccentStyle.Blue,
+                )
+                Spacer(modifier = Modifier.weight(1f))
             }
         }
     }
 }
 
-@Preview(showBackground = true, widthDp = 800, heightDp = 1280)
+@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "Right – Ready")
 @Composable
-private fun Preview_GripStrengthInProgress() {
+private fun Preview_RightReady() {
     GripStrengthInProgressScreen(
-        state = GripInProgressUiState(
-            testState = GripStrengthInspectionState.RightHandReady
-        ),
-        onEvent = {}
+        state = GripInProgressUiState(testState = GripStrengthInspectionState.RightHandReady),
+        onEvent = {},
     )
 }

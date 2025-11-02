@@ -48,6 +48,7 @@ import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
@@ -64,7 +65,7 @@ enum class DynamometerConnectionScreenState {
 @Composable
 fun InGripManagmentScreen(
     navController: NavHostController,
-    viewModel: InGripViewModel = hiltViewModel(),
+    viewModel: GripStrengthViewModel = hiltViewModel(),
 ) {
     var dynamometerConnectionScreenState by remember {
         mutableStateOf(

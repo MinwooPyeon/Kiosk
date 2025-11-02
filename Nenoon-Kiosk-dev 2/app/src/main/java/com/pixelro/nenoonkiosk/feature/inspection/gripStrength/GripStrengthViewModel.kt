@@ -3,6 +3,7 @@ package com.pixelro.nenoonkiosk.feature.inspection.gripStrength
 import android.Manifest
 import android.app.Application
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.CountDownTimer
 import android.speech.tts.TextToSpeech
 import androidx.core.content.ContextCompat
@@ -173,7 +174,7 @@ class GripStrengthViewModel @Inject constructor(
 
     private fun startBluetoothScan() {
         val context = getApplication<Application>()
-        val hasPermission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+        val hasPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.BLUETOOTH_SCAN

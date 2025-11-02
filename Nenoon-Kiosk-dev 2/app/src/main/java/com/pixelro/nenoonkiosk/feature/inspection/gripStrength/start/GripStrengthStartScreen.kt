@@ -11,32 +11,32 @@ import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.components.Device
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.components.StandbySection
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.DynamometerConnectionScreenState
 
-// 변경: 파라미터를 state와 onEvent로 통합
 @Composable
 fun GripStrengthStartScreen(
     state: GripStrengthUiState,
     onEvent: (GripStrengthEvent) -> Unit
 ) {
-    // 기존 UI 코드 그대로 사용
     when (state.screenState) {
         DynamometerConnectionScreenState.Standby -> {
             StandbySection(
-                onStartScan = { onEvent(GripStrengthEvent.StartScan) },
+                onStart = { onEvent(GripStrengthEvent.StartScan) },
                 onBack = { onEvent(GripStrengthEvent.Back) }
             )
         }
+
         DynamometerConnectionScreenState.DeviceSelection -> {
             DeviceSelectionSection(
-                availableDevices = state.availableDevices,
-                onDeviceSelected = { device ->
-                    onEvent(GripStrengthEvent.SelectDevice(device))
-                },
-                isConnecting = state.isConnecting
+                devices = state.availableDevices,
+                isConnecting = state.isConnecting,
+                onSelect = { device -> onEvent(GripStrengthEvent.SelectDevice(device)) },
+                onRetry = { onEvent(GripStrengthEvent.Retry) }
             )
         }
+
         DynamometerConnectionScreenState.Connecting -> {
             ConnectingSection()
         }
+
         DynamometerConnectionScreenState.AwaitingStart -> {
             AwaitingStartSection(
                 batteryPercent = state.batteryPercent,
@@ -44,12 +44,13 @@ fun GripStrengthStartScreen(
                 onStartTest = { onEvent(GripStrengthEvent.StartTest) }
             )
         }
+
         DynamometerConnectionScreenState.ConnectionError -> {
-            // 기존 Error Section UI 그대로 사용
-            // onRetry만 변경
+            TODO()
         }
     }
 }
+
 
 @Preview(showBackground = true, widthDp = 800, heightDp = 1280)
 @Composable
