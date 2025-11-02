@@ -12,10 +12,10 @@ static inline uint16_t be16_rd(const uint8_t* p){
 	return (uint16_t)((p[0] << 8) | p[1]);
 }
 
-void frame_parser_init(frame_parser_t* p, frame_rx_cb_t cb)
-{
-    p->on_frame = cb;
-    fp_reset(p);
+static void fp_reset(frame_parser_t* p){
+	p->state	= FP_SYNC1;
+	p->pos		= 0;
+	p->expect_payload = 0;
 }
 
 /* SYNC1: MAGIC MSB 기다림 */

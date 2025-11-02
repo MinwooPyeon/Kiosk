@@ -23,12 +23,12 @@
 #include "eth.h"
 #include "fatfs.h"
 #include "usart.h"
+#include "uart_link.h"
 #include "usb_host.h"
 #include "usb_advert.h"
 #include "license_mgr.h"
 #include "gpio.h"
 
-#include "uart_link.c"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 

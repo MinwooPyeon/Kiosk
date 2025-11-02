@@ -19,7 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "usart.h"
-
+#include <string.h>
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
@@ -403,7 +403,7 @@ HAL_StatusTypeDef UART2_SendString(const char* s){
 HAL_StatusTypeDef UART2_SendBytes(const uint8_t* buf, uint16_t len){
 	return HAL_UART_Transmit(&huart2, buf, len, 100);
 }
-HAL_StatusTypeDef UART2_RecvBytes(const uint8_t* buf, uint16_t len, uint32_t to_ms){
+HAL_StatusTypeDef UART2_RecvBytes(uint8_t* buf, uint16_t len, uint32_t to_ms){
 	return HAL_UART_Receive(&huart2, buf, len, to_ms);
 }
 /*UART3 - ST-LINK*/
@@ -415,7 +415,7 @@ HAL_StatusTypeDef STLINK_UART_Print(const char* s){
 }
 HAL_StatusTypeDef STLINK_UART_Println(const char* s){
 	HAL_UART_Transmit(&huart3, (uint8_t*)s, (uint16_t)strlen(s), 100);
-	const char* crlf[] = "\r\n";
+	const char crlf[] = "\r\n";
 	return HAL_UART_Transmit(&huart3, (uint8_t*)crlf, (uint16_t)strlen(crlf), 100);
 }
 uint8_t STLINK_UART_GetChar(uint32_t timeout_ms){
@@ -433,7 +433,7 @@ HAL_StatusTypeDef UART6_SendString(const char* s){
 HAL_StatusTypeDef UART6_SendBytes(const uint8_t* buf, uint16_t len){
 	return HAL_UART_Transmit(&huart6, buf, len, 100);
 }
-HAL_StatusTypeDef UART6_RecvBytes(const uint8_t* buf, uint16_t len, uint32_t to_ms){
+HAL_StatusTypeDef UART6_RecvBytes(uint8_t* buf, uint16_t len, uint32_t to_ms){
 	return HAL_UART_Receive(&huart6, buf, len, to_ms);
 }
 /* USER CODE END 1 */

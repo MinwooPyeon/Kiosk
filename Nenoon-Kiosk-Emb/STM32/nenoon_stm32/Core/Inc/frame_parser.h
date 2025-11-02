@@ -23,14 +23,14 @@ typedef enum{
 }frame_parser_state_t;
 
 typedef struct{
-	frame_parser_t 	state;
-	uint8_t			buf[FRAME_MAX_WIRE];
-	size_t			pos;
-	uint16_t		expect_payload;
-	frame_rx_cb_t 	on_frame;
+	frame_parser_state_t 	state;
+	uint8_t					buf[FRAME_MAX_WIRE];
+	size_t					pos;
+	uint16_t				expect_payload;
+	frame_rx_cb_t 			on_frame;
 }frame_parser_t;
 
 void frame_parser_init(frame_parser_t* p, frame_rx_cb_t cb);
-void frame_parser_feed(frame_parser_t* p, const unit8_t* data, size_t len);
+void frame_parser_feed(frame_parser_t* p, const uint8_t* data, size_t len);
 
 #endif /* INC_FRAME_PARSER_H_ */

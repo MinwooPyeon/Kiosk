@@ -27,7 +27,7 @@
 #define USB_ADVERT_CHUNK_SIZE   1024
 
 
-extern FATFS USBH_fatfs;
+extern FATFS USBHFatFS;
 extern char  USBHPath[4];
 
 static char     s_files[USB_ADVERT_MAX_FILES][USB_ADVERT_MAX_NAME];
@@ -67,7 +67,7 @@ usb_advert_err_t USB_Advert_Scan(void)
 
     STLINK_UART_Println(TAG "scan start");
 
-    res = f_mount(&USBH_fatfs, (TCHAR const*)USBHPath, 0);
+    res = f_mount(&USBHFatFS, (TCHAR const*)USBHPath, 0);
     if (res != FR_OK) {
         STLINK_UART_Println(TAG "mount failed");
         return USB_ADVERT_ERR_NOT_MOUNTED;
