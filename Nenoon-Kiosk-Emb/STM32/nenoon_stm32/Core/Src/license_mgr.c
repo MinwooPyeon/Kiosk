@@ -82,3 +82,40 @@ bool lic_mgr_validate(const char* license_key){
 	}
 	return false;
 }
+
+bool lic_mgr_get_challenge(const char* license_key, const char* app_id, const char* appSigSha256, const char* ssaid, const char* pubkeyPem, uint8_t* out_chal, uint16_t* out_len){
+	(void)appSigSha256;
+	(void)pubkeyPem;
+
+	if(!license_key || !ssaid || !out_chal || !out_len) return false;
+	if(!lic_mgr_validate(license_key)) return false;
+
+	uint8_t tmp[16] = {0};
+	size_t lk = strlen(license_key);
+	size_t sk = strlen(ssaid);
+
+	for(size_t i=0;i<16;i++){
+		uint8_t a = (i<lk) ? license_key[i] : 0xA5;
+		uint8_t b = (i<sk) ? ssaid[i] : 0x5A;
+		tmp[i] = (uint8_t)(a ^ b ^ (uint8_t)i);
+	}
+
+	memcpy(out_chal, tmp , 16);
+	*out_len = 16;
+	return true;
+}
+
+
+//TODO : Change for Real JWT Token
+bool lic_mgr_get_jwt(const char* license_key, const char* appSigSha256, const char* ssaid, const char* pubkeyPem, const char* signatureB64, char* out_jwt, size_t out_jwt_sz)
+{
+    (void)appSigSha256;
+    (void)pubkeyPem;
+    (void)signatureB64;
+
+    if(!license_key || !ssaid || !out_jwt) return false;
+    if(!lic_mgr_validate(license_key)) return false;
+
+    snprintf(out_jwt, out_jwt_sz, "OK:%s:%s", license_key, ssaid);
+    return true;
+}
