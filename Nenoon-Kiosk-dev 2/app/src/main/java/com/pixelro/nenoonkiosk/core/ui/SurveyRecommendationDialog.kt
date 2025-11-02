@@ -38,10 +38,10 @@ import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 
 /**
- * Dialog 내용
+ * 검사 재진행 확인 다이얼로그
  *
- * @param onDismissRequest Dialog 닫기 콜백
- * @param onConfirmTest 검사 재시도 콜백 (파라미터 없이 단순 실행)
+ * @param onDismissRequest 다이얼로그 닫기 콜백
+ * @param onConfirmTest 검사 재진행 콜백
  * @param onBackToIntro 설문 화면으로 돌아가기 콜백
  */
 @Composable

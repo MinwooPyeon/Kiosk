@@ -83,6 +83,12 @@ sealed interface InspectionRoute : Route {
 
     @Serializable
     data object InspectionResult : InspectionRoute
+
+    @Serializable
+    data object BloodPressure: InspectionRoute
+
+    @Serializable
+    data object GripStrength: InspectionRoute
 }
 
 sealed interface DeviceConnectRoute : Route {
