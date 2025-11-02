@@ -18,10 +18,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define UART_PORT		UART_NUM_1
-#define UART_BAUD		115200
-#define UART_TX_PIN	17
-#define UART_RX_PIN	16
+#define LINK_UART_PORT		UART_NUM_1
+#define LINK_UART_BAUD		115200
+#define LINK_UART_TX_PIN	17
+#define LINK_UART_RX_PIN	16
 
 static const char* TAG = "uart_link";
 
@@ -32,13 +32,13 @@ static media_index_t s_idx;
 static QueueHandle_t s_rxq;
 static frame_parser_t s_fp;
 
-static void uart_rx_task(void* arg){
+static void link_rx_task(void* arg){
 	uint8_t buf[256];
 	frame_t f;
 	size_t	consumed = 0;
 	
 	while(1){
-		int n = uart_read_bytes(UART_PORT, buf, sizeof(buf), pdMS_TO_TICKS(50));
+		int n = uart_read_bytes(LINK_UART_PORT, buf, sizeof(buf), pdMS_TO_TICKS(50));
 		if( n <= 0) continue;
 		
 		size_t off = 0;
@@ -69,7 +69,7 @@ static esp_err_t link_rpc(uint8_t type, const uint8_t* payload, uint16_t plen, f
 		return ESP_FAIL;
 	}
 	
-	int wr = uart_write_bytes(UART_PORT, fbuf, flen);
+	int wr = uart_write_bytes(LINK_UART_PORT, fbuf, flen);
 	if(wr < 0){
 		ESP_LOGE(TAG, "uart write fail");
 		return ESP_FAIL;
@@ -91,21 +91,102 @@ static esp_err_t link_rpc(uint8_t type, const uint8_t* payload, uint16_t plen, f
 	return ESP_OK;
 }
 
-esp_err_t uart_link_init(void){
-	const uart_config_t cfg = {
-		.baud_rate = UART_BAUD,
+esp_err_t uart_link_init(void)
+{
+    /* UART 드라이버 설치 */
+    const uart_config_t cfg = {
+        .baud_rate = LINK_UART_BAUD,
         .data_bits = UART_DATA_8_BITS,
         .parity    = UART_PARITY_DISABLE,
         .stop_bits = UART_STOP_BITS_1,
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
-	};
-	
-	ESP_ERROR_CHECK(uart_driver_install(UART_PORT, 2048, 0, 0, NULL, 0));
-	ESP_ERROR_CHECK(uart_param_config(UART_PORT, &cfg));
-    ESP_ERROR_CHECK(uart_set_pin(UART_PORT, UART_TX_PIN, UART_RX_PIN,UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
-	
-	s_rxq = xQueueCreate(5, sizeof(void*));
-	xTaskCreate(uart_rx_task, "uart_rx", 4096, NULL, 5, NULL);
-	
-	return ESP_OK;
+        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE
+    };
+    ESP_ERROR_CHECK(uart_driver_install(LINK_UART_PORT, 2048, 0, 0, NULL, 0));
+    ESP_ERROR_CHECK(uart_param_config(LINK_UART_PORT, &cfg));
+    ESP_ERROR_CHECK(uart_set_pin(LINK_UART_PORT,
+                                 LINK_UART_TX_PIN,
+                                 LINK_UART_RX_PIN,
+                                 UART_PIN_NO_CHANGE,
+                                 UART_PIN_NO_CHANGE));
+
+    frame_parser_init(&s_fp);
+    s_rxq = xQueueCreate(4, sizeof(frame_t*));
+    xTaskCreate(link_rx_task, "link_rx", 4096, NULL, 5, NULL);
+    ESP_LOGI(TAG, "uart_link ready");
+    return ESP_OK;
+}
+
+/* ===== STM32 라이선스 프레임에 1:1로 대응하는 함수들 ===== */
+
+esp_err_t uart_link_lic_mgr_login(const char *id, const char *pw, bool *ok)
+{
+    char buf[96];
+    int n = snprintf(buf, sizeof(buf), "%s:%s", id, pw);
+    frame_t resp;
+    esp_err_t er = link_rpc(FRAME_LIC_MGR_LOGIN,
+                            (const uint8_t*)buf, (uint16_t)n,
+                            &resp,
+                            pdMS_TO_TICKS(1000));
+    if (er != ESP_OK) return er;
+    *ok = (resp.len >= 1 && resp.payload[0] == 1);
+    return ESP_OK;
+}
+
+esp_err_t uart_link_lic_issue(const char *app, const char *to, char *out_lic, size_t out_sz)
+{
+    char buf[128];
+    int n = snprintf(buf, sizeof(buf), "%s:%s", app, to);
+    frame_t resp;
+    esp_err_t er = link_rpc(FRAME_LIC_ISSUE,
+                            (const uint8_t*)buf, (uint16_t)n,
+                            &resp,
+                            pdMS_TO_TICKS(1000));
+    if (er != ESP_OK) return er;
+    if (resp.len < 1 || resp.payload[0] == 0) return ESP_FAIL;
+    size_t lic_len = resp.len - 1;
+    if (lic_len + 1 > out_sz) lic_len = out_sz - 1;
+    memcpy(out_lic, &resp.payload[1], lic_len);
+    out_lic[lic_len] = 0;
+    return ESP_OK;
+}
+
+esp_err_t uart_link_lic_validate(const char *lic, bool *ok)
+{
+    frame_t resp;
+    esp_err_t er = link_rpc(FRAME_LIC_VALIDATE,
+                            (const uint8_t*)lic, (uint16_t)strlen(lic),
+                            &resp,
+                            pdMS_TO_TICKS(1000));
+    if (er != ESP_OK) return er;
+    *ok = (resp.len >= 1 && resp.payload[0] == 1);
+    return ESP_OK;
+}
+
+esp_err_t uart_link_lic_get_jwt(const char *lic, char *out_jwt, size_t out_sz)
+{
+    frame_t resp;
+    esp_err_t er = link_rpc(FRAME_LIC_GET_JWT,
+                            (const uint8_t*)lic, (uint16_t)strlen(lic),
+                            &resp,
+                            pdMS_TO_TICKS(1000));
+    if (er != ESP_OK) return er;
+    if (resp.len < 1 || resp.payload[0] == 0) return ESP_FAIL;
+    size_t jn = resp.len - 1;
+    if (jn + 1 > out_sz) jn = out_sz - 1;
+    memcpy(out_jwt, &resp.payload[1], jn);
+    out_jwt[jn] = 0;
+    return ESP_OK;
+}
+
+/* 기존 인터페이스 맞춰주기 */
+bool uart_link_usb_attached(void) { return true; }           // 일단 고정
+esp_err_t uart_link_get_index(media_index_t *out) { return ESP_ERR_NOT_SUPPORTED; }
+esp_err_t uart_link_read_chunk(const char *id, uint64_t off, uint32_t len,
+                               uint8_t *out, uint32_t *out_len, uint32_t *out_crc)
+{ return ESP_ERR_NOT_SUPPORTED; }
+
+esp_err_t uart_link_auth_req(const char* ssaid, auth_ssaid_resp_t* out)
+{
+    // 지금 STM32에는 ssaid용 프레임이 없으니까 일단 NOT SUPPORTED
+    return ESP_ERR_NOT_SUPPORTED;
 }
