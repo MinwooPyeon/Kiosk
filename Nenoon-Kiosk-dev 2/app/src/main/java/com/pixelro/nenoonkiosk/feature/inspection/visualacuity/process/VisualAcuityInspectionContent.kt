@@ -155,11 +155,14 @@ fun VisualAcuityInspectionContent(
     
     AutoStartSTT(
         onResult = { result ->
-            handleVoiceAnswer(result, randomList, progress, onAnswerSelected) { 
-                newProgress -> progress = newProgress
-            } { 
-                toResultScreen(getInspectionResult())
-            }
+            handleVoiceAnswer(
+                result = result,
+                randomList = randomList,
+                currentProgress = progress,
+                onAnswerSelected = onAnswerSelected,
+                updateProgress = { newProgress -> progress = newProgress },
+                onComplete = { toResultScreen(getInspectionResult()) }
+            )
         },
         enabled = true,
         onError = { error ->
