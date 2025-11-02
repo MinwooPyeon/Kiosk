@@ -10,8 +10,8 @@
 #include <string.h>
 #include <stdio.h>
 
-static const char*s s_mgr_id ="admin";
-static const char*s s_mgr_pwd = "admin123";
+static const char* s_mgr_id ="admin";
+static const char* s_mgr_pwd = "admin123";
 
 static license_entry_t s_lic[LIC_MAX_ENTRIES];
 
@@ -21,7 +21,7 @@ void lic_mgr_init(void){
 
 bool lic_mgr_manager_login(const char* id, const char* pw){
 	if(!id || !pw) return false;
-	if(strcmp(id, s_mgr_id)==0 && strcmp(pw, s_mgr_pw) == 0) return true;
+	if(strcmp(id, s_mgr_id)==0 && strcmp(pw, s_mgr_pwd) == 0) return true;
 	return false;
 }
 
@@ -72,7 +72,7 @@ bool lic_mgr_revoke(const char* license_key){
 }
 
 bool lic_mgr_validate(const char* license_key){
-	if(!licesne_key) return false;
+	if(!license_key) return false;
 
 	for(int i =0;i<LIC_MAX_ENTRIES;i++){
 		if(strcmp(s_lic[i].license_key, license_key) == 0){

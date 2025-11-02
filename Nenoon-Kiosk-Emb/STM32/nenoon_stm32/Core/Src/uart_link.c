@@ -19,7 +19,7 @@ static frame_parser_t		s_fp;
 static void on_frame_rx(const uint8_t* frame, size_t len){
 	proto_dispatch_handle(frame, len);
 }
-void uart_link_stm32_init(void){
+void uart_link_init(void){
 	frame_parser_init(&s_fp, on_frame_rx);
 
 	HAL_UARTEx_ReceiveToIdle_DMA(&huart6, s_uart_rx_buf, sizeof(s_uart_rx_buf));

@@ -24,8 +24,11 @@
 #include "fatfs.h"
 #include "usart.h"
 #include "usb_host.h"
+#include "usb_advert.h"
+#include "license_mgr.h"
 #include "gpio.h"
 
+#include "uart_link.c"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -100,7 +103,10 @@ int main(void)
   MX_USART6_UART_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
-
+  uart_link_init();
+  lic_mgr_init();
+  USB_Advert_Init();
+  STLINK_UART_Println("STM32 Ready");
   /* USER CODE END 2 */
 
   /* Init scheduler */
