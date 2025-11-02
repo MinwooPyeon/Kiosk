@@ -32,12 +32,3 @@ sealed class PresbyopiaInspectionUiState {
     data object NoPresbyopia : PresbyopiaInspectionUiState()
 }
 
-fun PresbyopiaViewModel.TestState.toUiState(): PresbyopiaInspectionUiState {
-    return when (this) {
-        PresbyopiaViewModel.TestState.Started -> PresbyopiaInspectionUiState.Started
-        PresbyopiaViewModel.TestState.AdjustingDistance -> PresbyopiaInspectionUiState.AdjustingDistance
-        PresbyopiaViewModel.TestState.TextBlinking -> PresbyopiaInspectionUiState.TextBlinking
-        PresbyopiaViewModel.TestState.ComingCloser -> PresbyopiaInspectionUiState.ComingCloser
-        PresbyopiaViewModel.TestState.NoPresbyopia -> PresbyopiaInspectionUiState.NoPresbyopia
-    }
-}

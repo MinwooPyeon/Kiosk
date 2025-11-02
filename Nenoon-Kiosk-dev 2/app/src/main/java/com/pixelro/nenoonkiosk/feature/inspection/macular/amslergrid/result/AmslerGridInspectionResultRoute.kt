@@ -4,14 +4,11 @@ import androidx.compose.runtime.Composable
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 
 @Composable
-fun AmslerGridTestResultRoute(
-    testResult: AmslerGridTestResult,
+fun AmslerGridInspectionResultRoute(
+    testResult: AmslerGridTestResult
 ) {
-    val leftSelectedArea = testResult.leftEyeDisorderType
-    val rightSelectedArea = testResult.rightEyeDisorderType
-
-    AmslerGridInspectionResultContent(
-        leftSelectedArea,
-        rightSelectedArea
+    AmslerGridInspectionResultScreen(
+        leftSelectedArea = testResult.leftEyeDisorderType,
+        rightSelectedArea = testResult.rightEyeDisorderType
     )
 }

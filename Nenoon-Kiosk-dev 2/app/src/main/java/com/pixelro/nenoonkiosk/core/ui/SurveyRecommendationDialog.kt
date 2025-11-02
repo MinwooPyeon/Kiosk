@@ -34,224 +34,182 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 
 /**
  * Dialog 내용
+ *
+ * @param onDismissRequest Dialog 닫기 콜백
+ * @param onConfirmTest 검사 재시도 콜백 (파라미터 없이 단순 실행)
+ * @param onBackToIntro 설문 화면으로 돌아가기 콜백
  */
 @Composable
 fun SurveyRecommendationDialog(
     onDismissRequest: () -> Unit,
-    toTestScreen: (InspectionType) -> Unit,
-    toIntroScreen: () -> Unit,
-    selectedTest: InspectionType,
+    onConfirmTest: () -> Unit,
+    onBackToIntro: () -> Unit
 ) {
     val context = LocalContext.current
-    val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
+    val sharedPreferences = remember {
+        context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE)
+    }
     val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
+
     Dialog(
         onDismissRequest = onDismissRequest,
-        properties = DialogProperties(),
+        properties = DialogProperties()
     ) {
         Column(
-            modifier =
-                Modifier
-                    .width(800.dp)
-                    .height(1000.dp)
-                    .background(
-                        color = Color(0xffffffff),
-                    ),
+            modifier = Modifier
+                .width(800.dp)
+                .height(1000.dp)
+                .background(color = Color(0xffffffff))
         ) {
             Text(
-                modifier =
-                    Modifier
-                        .padding(20.dp),
-                text =
-                    buildAnnotatedString {
-                        withStyle(
-                            style =
-                                SpanStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 42.sp,
-                                ),
-                        ) {
-                            append(
-                                StringProvider.getString(
-                                    R.string.test_list_dialog_warning1,
-                                ),
-                            )
-                        }
-                        append(
-                            StringProvider.getString(
-                                R.string.test_list_dialog_warning2,
-                            ),
+                modifier = Modifier.padding(20.dp),
+                text = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 42.sp
                         )
-                        withStyle(
-                            style =
-                                SpanStyle(
-                                    color = Color(0xff1d71e1),
-                                ),
-                        ) {
-                            append(
-                                " \'" +
-                                    StringProvider.getString(
-                                        R.string.navigation_tosurvey_button,
-                                    ) + "\' ",
-                            )
-                        }
-                        append(
-                            StringProvider.getString(
-                                R.string.test_list_dialog_warning3,
-                            ),
-                        )
-                        withStyle(
-                            style =
-                                SpanStyle(
-                                    color = Color(0xff1d71e1),
-                                ),
-                        ) {
-                            append(
-                                " \'" +
-                                    StringProvider.getString(
-                                        R.string.test_list_dialog_re_button,
-                                    ) + "\' ",
-                            )
-                        }
-                        append(
-                            StringProvider.getString(
-                                R.string.test_list_dialog_warning4,
-                            ),
-                        )
-                    },
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Medium,
-            )
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxSize(),
-                contentAlignment = Alignment.BottomCenter,
-            ) {
-                Column(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(180.dp),
-                ) {
-                    Row(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .height(100.dp),
-                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(
-                            modifier =
-                                Modifier
-                                    .padding(start = 20.dp, top = 20.dp, bottom = 20.dp)
-                                    .weight(1f)
-                                    .fillMaxHeight()
-                                    .clip(
-                                        RoundedCornerShape(8.dp),
-                                    )
-                                    .border(
-                                        border =
-                                            BorderStroke(
-                                                width = 1.dp,
-                                                color = Color(0xff999999),
-                                            ),
-                                        shape = RoundedCornerShape(8.dp),
-                                    )
-                                    .background(
-                                        color = Color(0x00000000),
-                                        RoundedCornerShape(8.dp),
-                                    )
-                                    .clickable {
-                                        onDismissRequest()
-                                        toIntroScreen()
-                                    }
-                                    .padding(top = 4.dp),
-                            text =
-                                StringProvider.getString(
-                                    R.string.navigation_tosurvey_button,
-                                ),
-                            textAlign = TextAlign.Center,
-                            fontSize = if (savedLanguage == "ru") 20.sp else 32.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Spacer(
-                            modifier =
-                                Modifier
-                                    .width(20.dp),
-                        )
-                        Text(
-                            modifier =
-                                Modifier
-                                    .padding(top = 20.dp, end = 20.dp, bottom = 20.dp)
-                                    .weight(1f)
-                                    .fillMaxHeight()
-                                    .clip(
-                                        RoundedCornerShape(8.dp),
-                                    )
-                                    .border(
-                                        border =
-                                            BorderStroke(
-                                                width = 1.dp,
-                                                color = Color(0xff999999),
-                                            ),
-                                        shape = RoundedCornerShape(8.dp),
-                                    )
-                                    .background(
-                                        color = Color(0x00000000),
-                                        RoundedCornerShape(8.dp),
-                                    )
-                                    .clickable {
-                                        onDismissRequest()
-                                        toTestScreen(selectedTest)
-                                    }
-                                    .padding(top = 4.dp),
-                            text =
-                                StringProvider.getString(
-                                    R.string.test_list_dialog_re_button,
-                                ),
-                            textAlign = TextAlign.Center,
-                            fontSize = if (savedLanguage == "ru") 20.sp else 32.sp,
-                            fontWeight = FontWeight.Bold,
+                        append(
+                            StringProvider.getString(R.string.test_list_dialog_warning1)
                         )
                     }
-                    Text(
-                        modifier =
-                            Modifier
-                                .padding(start = 20.dp, end = 20.dp, bottom = 20.dp)
-                                .fillMaxWidth()
+                    append(
+                        StringProvider.getString(R.string.test_list_dialog_warning2)
+                    )
+                    withStyle(
+                        style = SpanStyle(color = Color(0xff1d71e1))
+                    ) {
+                        append(
+                            " \'" +
+                                    StringProvider.getString(R.string.navigation_tosurvey_button) +
+                                    "\' "
+                        )
+                    }
+                    append(
+                        StringProvider.getString(R.string.test_list_dialog_warning3)
+                    )
+                    withStyle(
+                        style = SpanStyle(color = Color(0xff1d71e1))
+                    ) {
+                        append(
+                            " \'" +
+                                    StringProvider.getString(R.string.test_list_dialog_re_button) +
+                                    "\' "
+                        )
+                    }
+                    append(
+                        StringProvider.getString(R.string.test_list_dialog_warning4)
+                    )
+                },
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Medium
+            )
+
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .padding(start = 20.dp, top = 20.dp, bottom = 20.dp)
+                                .weight(1f)
                                 .fillMaxHeight()
-                                .clip(
-                                    RoundedCornerShape(8.dp),
-                                )
+                                .clip(RoundedCornerShape(8.dp))
                                 .border(
-                                    border =
-                                        BorderStroke(
-                                            width = 1.dp,
-                                            color = Color(0xff999999),
-                                        ),
-                                    shape = RoundedCornerShape(8.dp),
+                                    border = BorderStroke(
+                                        width = 1.dp,
+                                        color = Color(0xff999999)
+                                    ),
+                                    shape = RoundedCornerShape(8.dp)
                                 )
                                 .background(
                                     color = Color(0x00000000),
-                                    RoundedCornerShape(8.dp),
+                                    RoundedCornerShape(8.dp)
                                 )
                                 .clickable {
                                     onDismissRequest()
+                                    onBackToIntro()
                                 }
                                 .padding(top = 4.dp),
-                        text =
-                            StringProvider.getString(
-                                R.string.test_list_dialog_cancel_button,
-                            ),
+                            text = StringProvider.getString(R.string.navigation_tosurvey_button),
+                            textAlign = TextAlign.Center,
+                            fontSize = if (savedLanguage == "ru") 20.sp else 32.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(modifier = Modifier.width(20.dp))
+
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 20.dp, end = 20.dp, bottom = 20.dp)
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .clip(RoundedCornerShape(8.dp))
+                                .border(
+                                    border = BorderStroke(
+                                        width = 1.dp,
+                                        color = Color(0xff999999)
+                                    ),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .background(
+                                    color = Color(0x00000000),
+                                    RoundedCornerShape(8.dp)
+                                )
+                                .clickable {
+                                    onDismissRequest()
+                                    onConfirmTest()
+                                }
+                                .padding(top = 4.dp),
+                            text = StringProvider.getString(R.string.test_list_dialog_re_button),
+                            textAlign = TextAlign.Center,
+                            fontSize = if (savedLanguage == "ru") 20.sp else 32.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 20.dp, end = 20.dp, bottom = 20.dp)
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(8.dp))
+                            .border(
+                                border = BorderStroke(
+                                    width = 1.dp,
+                                    color = Color(0xff999999)
+                                ),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .background(
+                                color = Color(0x00000000),
+                                RoundedCornerShape(8.dp)
+                            )
+                            .clickable {
+                                onDismissRequest()
+                            }
+                            .padding(top = 4.dp),
+                        text = StringProvider.getString(R.string.test_list_dialog_cancel_button),
                         textAlign = TextAlign.Center,
                         fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }

@@ -13,34 +13,16 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.pixelro.nenoonkiosk.core.ui.StyledAnnotatedText
 import com.pixelro.nenoonkiosk.core.ui.TextSegment
 import com.pixelro.nenoonkiosk.feature.inspection.components.VideoPlayerView
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.process.PresbyopiaInspectionUiState
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.TestState
 import com.pixelro.nenoonkiosk.ui.theme.Black
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 import com.pixelro.nenoonkiosk.ui.theme.selectLargeTextStyle
 import com.pixelro.nenoonkiosk.ui.theme.titleTextStyle
 
-/**
- * 검사 중앙 박스의 내용물을 표시하는 컴포넌트
- *
- * @param context Android Context
- * @param uiState 현재 UI 상태
- * @param tryCount 시도 횟수
- * @param isTTSSpeaking TTS 음성 재생 중 여부
- * @param isComingCloserTTSDone ComingCloser 상태의 TTS 완료 여부
- * @param exoPlayer ExoPlayer 인스턴스
- * @param testStartText 시작 텍스트
- * @param videoGuide1 비디오 가이드 텍스트 (Part 1)
- * @param videoGuide2 비디오 가이드 텍스트 (Part 2)
- * @param videoGuide3 비디오 가이드 텍스트 (Part 3)
- * @param under25cmDesc 25cm 미만 설명 텍스트
- * @param description2_2 두 번째 설명 텍스트 (Part 2)
- * @param description2_3 두 번째 설명 텍스트 (Part 3)
- * @param modifier Modifier
- */
 @Composable
 fun InspectionContentBox(
     context: Context,
-    uiState: PresbyopiaInspectionUiState,
+    testState: TestState,
     tryCount: Int,
     isTTSSpeaking: Boolean,
     isComingCloserTTSDone: Boolean,
@@ -52,26 +34,24 @@ fun InspectionContentBox(
     under25cmDesc: String,
     description2_2: String,
     description2_3: String,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
-    when (uiState to isTTSSpeaking) {
-        PresbyopiaInspectionUiState.Started to true,
-        PresbyopiaInspectionUiState.Started to false,
-        -> {
+    when (testState to isTTSSpeaking) {
+        TestState.Started to true,
+        TestState.Started to false -> {
             Text(
                 text = testStartText,
                 style = selectLargeTextStyle.copy(fontSize = 60.sp),
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
         }
-        PresbyopiaInspectionUiState.AdjustingDistance to true,
-        PresbyopiaInspectionUiState.AdjustingDistance to false,
-        -> {
+        TestState.AdjustingDistance to true,
+        TestState.AdjustingDistance to false -> {
             when (tryCount) {
                 0 -> {
                     VideoPlayerView(
                         context = context,
-                        exoPlayer = exoPlayer,
+                        exoPlayer = exoPlayer
                     )
                 }
                 else -> {
@@ -79,8 +59,7 @@ fun InspectionContentBox(
                 }
             }
         }
-
-        PresbyopiaInspectionUiState.ComingCloser to true -> {
+        TestState.ComingCloser to true -> {
             when (tryCount) {
                 0 -> {
                     if (isComingCloserTTSDone) {
@@ -88,7 +67,7 @@ fun InspectionContentBox(
                     } else {
                         VideoPlayerView(
                             context = context,
-                            exoPlayer = exoPlayer,
+                            exoPlayer = exoPlayer
                         )
                     }
                 }
@@ -97,65 +76,62 @@ fun InspectionContentBox(
                 }
             }
         }
-
         else -> {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Center
             ) {
-                when (uiState) {
-                    PresbyopiaInspectionUiState.NoPresbyopia -> {
+                when (testState) {
+                    TestState.NoPresbyopia -> {
                         StyledAnnotatedText(
                             segments = listOf(
                                 TextSegment.fromStyle(
                                     text = under25cmDesc,
                                     color = Black,
                                     fontSize = 44.sp,
-                                    baseStyle = titleTextStyle,
+                                    baseStyle = titleTextStyle
                                 ),
                                 TextSegment.fromStyle(
                                     text = " $description2_2",
                                     color = neNoon_blue,
                                     fontSize = 44.sp,
-                                    baseStyle = titleTextStyle,
+                                    baseStyle = titleTextStyle
                                 ),
                                 TextSegment.fromStyle(
                                     text = " $description2_3",
                                     color = Black,
                                     fontSize = 44.sp,
-                                    baseStyle = titleTextStyle,
-                                ),
+                                    baseStyle = titleTextStyle
+                                )
                             ),
-                            textAlign = TextAlign.Center,
+                            textAlign = TextAlign.Center
                         )
                     }
-
-                    PresbyopiaInspectionUiState.TextBlinking -> {
+                    TestState.TextBlinking -> {
                         StyledAnnotatedText(
                             segments = listOf(
                                 TextSegment.fromStyle(
                                     text = videoGuide1,
                                     color = Black,
                                     fontSize = 60.sp,
-                                    baseStyle = selectLargeTextStyle,
+                                    baseStyle = selectLargeTextStyle
                                 ),
                                 TextSegment.fromStyle(
                                     text = " $videoGuide2",
                                     color = neNoon_blue,
                                     fontSize = 60.sp,
-                                    baseStyle = selectLargeTextStyle,
+                                    baseStyle = selectLargeTextStyle
                                 ),
                                 TextSegment.fromStyle(
                                     text = videoGuide3,
                                     color = Black,
                                     fontSize = 60.sp,
-                                    baseStyle = selectLargeTextStyle,
-                                ),
+                                    baseStyle = selectLargeTextStyle
+                                )
                             ),
-                            textAlign = TextAlign.Center,
+                            textAlign = TextAlign.Center
                         )
                     }
-
                     else -> {
                         PresbyopiaTestImage(tryCount = tryCount)
                     }

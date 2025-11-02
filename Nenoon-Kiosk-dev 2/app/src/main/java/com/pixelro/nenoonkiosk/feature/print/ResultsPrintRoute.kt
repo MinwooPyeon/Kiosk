@@ -15,6 +15,7 @@ import androidx.navigation.NavController
 import com.harang.data.model.dto.User
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.constants.DebugConstants
+import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.dataprovider.CompoundTestResult
 import com.pixelro.nenoonkiosk.feature.print.model.rememberStrings
 import kotlinx.coroutines.Dispatchers

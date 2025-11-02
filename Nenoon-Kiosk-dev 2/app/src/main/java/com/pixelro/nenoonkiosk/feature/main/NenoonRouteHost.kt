@@ -28,6 +28,9 @@ import com.pixelro.nenoonkiosk.feature.auth.login.LoginRoute
 import com.pixelro.nenoonkiosk.feature.auth.qrlogin.QrLoginRoute
 import com.pixelro.nenoonkiosk.feature.auth.signup.SignUpRoute
 import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListRoute
+import com.pixelro.nenoonkiosk.feature.inspection.EyeInspectionListRoute
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionRoute
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionRoute
 import com.pixelro.nenoonkiosk.feature.intro.IntroRoute
 import com.pixelro.nenoonkiosk.feature.permission.PermissionRoute
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverRoute
@@ -99,6 +102,16 @@ fun NenoonRouteHost(
             pid = DebugConstants.PLACEHOLDER_PID,
             isSignInSkipped = isSignedIn,
         )
+
+        is InspectionRoute.EyeInspectionList -> EyeInspectionListRoute()
+        is InspectionRoute.DementiaInspection -> DementiaInspectionRoute()
+        is InspectionRoute.StrabismusInspectionList -> {}
+        is InspectionRoute.AmslerGrid -> {}
+        is InspectionRoute.MChart -> {}
+        is InspectionRoute.Presbyopia -> PresbyopiaInspectionRoute()
+        is InspectionRoute.ShortVisualAcuity -> {}
+
+        is InspectionRoute.InspectionResult -> {}
 
         is AdminRoute.AccountManagement -> AccountManagementRoute(
             userId = userId,

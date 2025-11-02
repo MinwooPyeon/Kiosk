@@ -2,7 +2,6 @@ package com.pixelro.nenoonkiosk.feature.inspection.dementia.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -11,12 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
-
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaAnswer
 
 @Composable
 fun AnswerRow(
-    selected: DementiaViewModel.DementiaAnswer?,
+    selected: DementiaAnswer?,
     onClickYes: () -> Unit,
     onClickNo: () -> Unit
 ) {
@@ -29,15 +27,15 @@ fun AnswerRow(
     ) {
         AnswerCard(
             text = StringProvider.getStringComposable(R.string.yes),
-            selected = selected == DementiaViewModel.DementiaAnswer.Yes,
+            selected = selected == DementiaAnswer.Yes,
             onClick = onClickYes,
-            biasPaddingStart = 0.dp // 왼쪽(YES)은 0
+            biasPaddingStart = 0.dp
         )
         AnswerCard(
             text = StringProvider.getStringComposable(R.string.no),
-            selected = selected == DementiaViewModel.DementiaAnswer.No,
+            selected = selected == DementiaAnswer.No,
             onClick = onClickNo,
-            biasPaddingStart = 20.dp // 오른쪽(NO)은 좌우 시각적 균형
+            biasPaddingStart = 20.dp
         )
     }
 }

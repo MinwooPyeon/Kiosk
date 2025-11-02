@@ -1,100 +1,89 @@
 package com.pixelro.nenoonkiosk.feature.inspection.gripStrength.error
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.Icon
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.ui.IconTextButton
-import com.pixelro.nenoonkiosk.core.ui.StyledText
-import com.pixelro.nenoonkiosk.core.ui.TextStyle
+import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 
 @Composable
 fun GripStrengthErrorScreen(
-    state: GripErrorUiState,
-    onEvent: (GripErrorEvent) -> Unit,
-    modifier: Modifier = Modifier,
+    isSignedIn: Boolean,
+    onRetry: () -> Unit,
+    onReturn: () -> Unit,
+    onLogout: () -> Unit
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(vertical = 60.dp, horizontal = 40.dp),
+            .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Spacer(modifier = Modifier.weight(1f))
-
-        Icon(
-            painter = painterResource(R.drawable.warning),
-            tint = colorResource(R.color.error),
-            contentDescription = null,
-            modifier = Modifier.size(400.dp),
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        StyledText(
-            text = stringResource(R.string.ingrip_error_title),
-            style = TextStyle.Error,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
+        Text(
+            text = stringResource(R.string.test_failed),
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Red
         )
 
-        Spacer(modifier = Modifier.weight(1f))
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            IconTextButton(
-                onClick = { onEvent(GripErrorEvent.Retry) },
-                iconId = R.drawable.icon_retry,
-                text = stringResource(R.string.ingrip_retest),
+            Text(
+                text = stringResource(R.string.grip_strength_error_message),
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center
             )
-            IconTextButton(
-                onClick = { onEvent(GripErrorEvent.Return) },
-                iconId = R.drawable.icon_back2,
-                text = stringResource(R.string.result_button2_back),
+            Text(
+                text = stringResource(R.string.grip_strength_error_reason),
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                color = Color.Gray
             )
-            if (state.isSignedIn) {
-                IconTextButton(
-                    onClick = { onEvent(GripErrorEvent.Logout) },
-                    iconId = R.drawable.icon_logout,
-                    text = stringResource(R.string.settings_signout),
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            PrimaryButton(
+                text = stringResource(R.string.retry),
+                onClick = onRetry
+            )
+            PrimaryButton(
+                text = stringResource(R.string.return_to_menu),
+                onClick = onReturn
+            )
+            if (isSignedIn) {
+                PrimaryButton(
+                    text = stringResource(R.string.logout),
+                    onClick = onLogout
                 )
             }
         }
     }
 }
 
-@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "Error – SignedIn")
+@Preview(showBackground = true, widthDp = 800, heightDp = 1280)
 @Composable
-private fun Preview_GripError_SignedIn() {
+private fun Preview_GripStrengthError() {
     GripStrengthErrorScreen(
-        state = GripErrorUiState(isSignedIn = true),
-        onEvent = {},
-    )
-}
-
-@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "Error – Guest")
-@Composable
-private fun Preview_GripError_Guest() {
-    GripStrengthErrorScreen(
-        state = GripErrorUiState(isSignedIn = false),
-        onEvent = {},
+        isSignedIn = true,
+        onRetry = {},
+        onReturn = {},
+        onLogout = {}
     )
 }

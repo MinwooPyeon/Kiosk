@@ -7,199 +7,156 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.ExoPlayer
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.core.navigation.InspectionRoute
+import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
-class AmslerGridViewModel
-    @Inject
-    constructor(
-        application: Application,
-    ) : AndroidViewModel(application) {
-        private val _isMeasuringDistanceContentVisible = MutableStateFlow(true)
-        val isMeasuringDistanceContentVisible: StateFlow<Boolean> = _isMeasuringDistanceContentVisible
-        private val _isAmslerGridContentVisible = MutableStateFlow(false)
-        val isAmslerGridContentVisible: StateFlow<Boolean> = _isAmslerGridContentVisible
-        private val _isLeftEye = MutableStateFlow(true)
-        val isLeftEye: StateFlow<Boolean> = _isLeftEye
-        private val _currentSelectedPosition = MutableStateFlow(Offset(0f, 0f))
-        val currentSelectedPosition: StateFlow<Offset> = _currentSelectedPosition
-        private val _currentSelectedArea =
-            MutableStateFlow(
-                listOf(
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                ),
+class AmslerGridViewModel @Inject constructor(
+    private val navigator: Navigator,
+    application: Application
+) : AndroidViewModel(application), ContainerHost<AmslerGridUiState, Nothing> {
+
+    override val container = container<AmslerGridUiState, Nothing>(
+        AmslerGridUiState()
+    )
+
+    val exoPlayer: ExoPlayer = ExoPlayer.Builder(getApplication()).build().apply {
+        volume = 0f
+    }
+
+    fun init() = intent {
+        reduce {
+            AmslerGridUiState(
+                isMeasuringDistanceVisible = true,
+                isAmslerGridVisible = false,
+                isLeftEye = true,
+                currentSelectedArea = List(9) { MacularDisorderType.Normal },
+                isBlinkingDone = false,
+                isDotShowing = true,
+                isFaceCenter = false,
+                isTestStarted = false
             )
-        val currentSelectedArea: StateFlow<List<MacularDisorderType>> = _currentSelectedArea
-        private val _leftSelectedArea = MutableStateFlow(listOf<MacularDisorderType>())
-        val leftSelectedArea: StateFlow<List<MacularDisorderType>> = _leftSelectedArea
-        private val _rightSelectedArea = MutableStateFlow(listOf<MacularDisorderType>())
-        val rightSelectedArea: StateFlow<List<MacularDisorderType>> = _rightSelectedArea
-        private val _isBlinkingDone = MutableStateFlow(false)
-        val isBlinkingDone: StateFlow<Boolean> = _isBlinkingDone
-        private val _isDotShowing = MutableStateFlow(true)
-        val isDotShowing: StateFlow<Boolean> = _isDotShowing
-        private val _isFaceCenter = MutableStateFlow(false)
-        val isFaceCenter: StateFlow<Boolean> = _isFaceCenter
-        val exoPlayer: ExoPlayer = ExoPlayer.Builder(getApplication()).build()
-        private val _isTestStarted = MutableStateFlow(false)
-        val isTestStarted: StateFlow<Boolean> = _isTestStarted
-
-        fun updateIsTestStarted(isStarted: Boolean) {
-            _isTestStarted.update { isStarted }
         }
+    }
 
-        /**
-         * TTS 전용 변수
-         */
-        private val _isLookAtTheDotTTSDone = MutableStateFlow(true)
-        val isLookAtTheDotTTSDone: StateFlow<Boolean> = _isLookAtTheDotTTSDone
-        private val _isSelectTTSDone = MutableStateFlow(true)
-        val isSelectTTSDone: StateFlow<Boolean> = _isSelectTTSDone
+    fun updateIsTestStarted(isStarted: Boolean) = intent {
+        reduce { state.copy(isTestStarted = isStarted) }
+    }
 
-        fun updateIsLookAtTheDotTTSDone(isDone: Boolean) {
-            _isLookAtTheDotTTSDone.update { isDone }
-        }
+    fun updateIsLookAtTheDotTTSDone(isDone: Boolean) = intent {
+        reduce { state.copy(isLookAtTheDotTTSDone = isDone) }
+    }
 
-        fun updateIsSelectTTSDone(isDone: Boolean) {
-            _isSelectTTSDone.update { isDone }
-        }
+    fun updateIsSelectTTSDone(isDone: Boolean) = intent {
+        reduce { state.copy(isSelectTTSDone = isDone) }
+    }
 
-        fun updateIsBlinkingDone(isDone: Boolean) {
-            _isBlinkingDone.update { isDone }
-        }
+    fun updateIsBlinkingDone(isDone: Boolean) = intent {
+        reduce { state.copy(isBlinkingDone = isDone) }
+    }
 
-        fun updateIsDotShowing(isShowing: Boolean) {
-            _isDotShowing.update { isShowing }
-        }
+    fun updateIsDotShowing(isShowing: Boolean) = intent {
+        reduce { state.copy(isDotShowing = isShowing) }
+    }
 
-        fun updateIsFaceCenter(isCenter: Boolean) {
-            _isFaceCenter.update { isCenter }
-        }
+    fun updateIsFaceCenter(isCenter: Boolean) = intent {
+        reduce { state.copy(isFaceCenter = isCenter) }
+    }
 
-        fun updateIsMeasuringDistanceContentVisible(visible: Boolean) {
-            _isMeasuringDistanceContentVisible.update { visible }
-        }
+    fun updateIsMeasuringDistanceVisible(visible: Boolean) = intent {
+        reduce { state.copy(isMeasuringDistanceVisible = visible) }
+    }
 
-        fun updateIsAmslerGridContentVisible(visible: Boolean) {
-            _isAmslerGridContentVisible.update { visible }
-        }
+    fun updateIsAmslerGridVisible(visible: Boolean) = intent {
+        reduce { state.copy(isAmslerGridVisible = visible) }
+    }
 
-        fun updateIsLeftEye(isLeft: Boolean) {
-            _isLeftEye.update { isLeft }
-        }
+    fun updateIsLeftEye(isLeft: Boolean) = intent {
+        reduce { state.copy(isLeftEye = isLeft) }
+    }
 
-        /**
-         * 왼쪽 눈 검사 마무리
-         */
-        fun updateLeftSelectedArea() {
-            TTS.speechTTS(StringProvider.getString(R.string.tts_right_eye), TextToSpeech.QUEUE_ADD)
-            viewModelScope.launch {
-                delay(450)
-                _isTestStarted.update { false }
-                _isBlinkingDone.update { false }
-                _isDotShowing.update { true }
-                _isFaceCenter.update { false }
-            }
-            _leftSelectedArea.update { currentSelectedArea.value }
-            _currentSelectedArea.update {
-                val tmpList = it.toMutableList()
-                for (i in 0..8) {
-                    tmpList[i] = MacularDisorderType.Normal
-                }
-                tmpList.toList()
-            }
-        }
-
-        fun updateRightSelectedArea() {
-            _rightSelectedArea.update { currentSelectedArea.value }
-        }
-
-        fun getAmslerGridTestResult(): AmslerGridTestResult {
-            return AmslerGridTestResult(_leftSelectedArea.value, _rightSelectedArea.value)
-        }
-
-        fun updateCurrentSelectedPosition(position: Offset) {
-            _currentSelectedPosition.update { position }
-            for (i in 0..8) {
-                if (position.x in ((i % 3) * 300f)..((i % 3) * 300f + 299f) && position.y in ((i / 3) * 300f)..((i / 3) * 300f + 299f)) {
-                    if (_currentSelectedArea.value[i] != MacularDisorderType.Normal) {
-                        _currentSelectedArea.update {
-                            val tmpList = it.toMutableList()
-                            tmpList[i] = MacularDisorderType.Normal
-                            tmpList.toList()
-                        }
-                    } else {
-                        updateCurrentSelectedArea()
-                    }
-                    return
-                }
-            }
-        }
-
-        private fun updateCurrentSelectedArea() {
-            val position = _currentSelectedPosition.value
-            _currentSelectedArea.update {
-                val tmpList = it.toMutableList()
-                for (i in 0..8) {
-                    if (position.x in ((i % 3) * 300f)..((i % 3) * 300f + 299f) && position.y in ((i / 3) * 300f)..((i / 3) * 300f + 299f)) {
-                        tmpList[i] = MacularDisorderType.Distorted
-                    }
-                }
-                tmpList.toList()
-            }
-        }
-
-        fun startBlinking() {
-            var count = 24
-            viewModelScope.launch {
-                while (count > 0) {
-                    _isDotShowing.update { !it }
-                    delay(250)
-                    count--
-                }
-                _isBlinkingDone.update { true }
-            }
-        }
-
-        fun init() {
-            _isBlinkingDone.update { false }
-            _isDotShowing.update { true }
-            _isFaceCenter.update { false }
-            _isMeasuringDistanceContentVisible.update { true }
-            _isAmslerGridContentVisible.update { false }
-            _isLeftEye.update { true }
-            _currentSelectedArea.update {
-                listOf(
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
-                    MacularDisorderType.Normal,
+    fun updateLeftSelectedArea() = intent {
+        TTS.speechTTS(StringProvider.getString(R.string.tts_right_eye), TextToSpeech.QUEUE_ADD)
+        viewModelScope.launch {
+            delay(450)
+            reduce {
+                state.copy(
+                    isTestStarted = false,
+                    isBlinkingDone = false,
+                    isDotShowing = true,
+                    isFaceCenter = false,
+                    leftSelectedArea = state.currentSelectedArea,
+                    currentSelectedArea = List(9) { MacularDisorderType.Normal }
                 )
             }
         }
+    }
 
-        init {
-            exoPlayer.volume = 0f
+    fun updateRightSelectedArea() = intent {
+        reduce { state.copy(rightSelectedArea = state.currentSelectedArea) }
+    }
+
+    fun getAmslerGridTestResult(): AmslerGridTestResult {
+        val currentState = container.stateFlow.value
+        return AmslerGridTestResult(currentState.leftSelectedArea, currentState.rightSelectedArea)
+    }
+
+    fun updateCurrentSelectedPosition(position: Offset) = intent {
+        reduce { state.copy(currentSelectedPosition = position) }
+        for (i in 0..8) {
+            if (position.x in ((i % 3) * 300f)..((i % 3) * 300f + 299f) &&
+                position.y in ((i / 3) * 300f)..((i / 3) * 300f + 299f)
+            ) {
+                if (state.currentSelectedArea[i] != MacularDisorderType.Normal) {
+                    reduce {
+                        val tmpList = state.currentSelectedArea.toMutableList()
+                        tmpList[i] = MacularDisorderType.Normal
+                        state.copy(currentSelectedArea = tmpList.toList())
+                    }
+                } else {
+                    updateCurrentSelectedArea(i)
+                }
+                return@intent
+            }
         }
     }
+
+    private fun updateCurrentSelectedArea(index: Int) = intent {
+        reduce {
+            val tmpList = state.currentSelectedArea.toMutableList()
+            tmpList[index] = MacularDisorderType.Distorted
+            state.copy(currentSelectedArea = tmpList.toList())
+        }
+    }
+
+    fun startBlinking() = intent {
+        viewModelScope.launch {
+            var count = 24
+            while (count > 0) {
+                reduce { state.copy(isDotShowing = !state.isDotShowing) }
+                delay(250)
+                count--
+            }
+            reduce { state.copy(isBlinkingDone = true) }
+        }
+    }
+
+    fun navigateToResult() = intent {
+        val result = getAmslerGridTestResult()
+        // TODO: 결과 전달 방법 구현 필요
+        navigator.navigate(InspectionRoute.InspectionResult)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        exoPlayer.release()
+    }
+}

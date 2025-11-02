@@ -18,6 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.inbody.bpbio.IB_SDKConst
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.*
 
 enum class BloodPressureConnectionScreenState {

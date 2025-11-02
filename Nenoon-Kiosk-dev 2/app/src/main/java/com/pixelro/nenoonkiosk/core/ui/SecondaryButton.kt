@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.ui.theme.LightBlue
 import com.pixelro.nenoonkiosk.ui.theme.LightGray
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme

@@ -37,6 +37,7 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.app.NenoonKioskApplication
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
+import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import java.util.Locale

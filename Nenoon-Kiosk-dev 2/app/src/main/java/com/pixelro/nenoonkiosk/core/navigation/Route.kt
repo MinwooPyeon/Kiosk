@@ -26,9 +26,6 @@ sealed interface Route : NavKey {
     data object Settings : Route
 
     @Serializable
-    data object Contact : Route
-
-    @Serializable
     data object BTDeviceManagement : Route
 }
 
@@ -56,27 +53,34 @@ sealed interface SignInRoute : Route {
 }
 
 sealed interface InspectionRoute : Route {
-    // 전체 카테고리
     @Serializable
     data object CategoryList : InspectionRoute
 
-    // 혈압, 악력
     @Serializable
     data object ExternalDeviceInspectionList : InspectionRoute
 
-    // 사시
     @Serializable
     data object StrabismusInspectionList : InspectionRoute
 
-    // 치매
     @Serializable
     data object DementiaInspection : InspectionRoute
 
-    // 시력검사 루트
     @Serializable
     data object EyeInspectionList : InspectionRoute
 
-    // 검사 결과
+    // 개별 시력 검사 Route 추가
+    @Serializable
+    data object Presbyopia : InspectionRoute
+
+    @Serializable
+    data object ShortVisualAcuity : InspectionRoute
+
+    @Serializable
+    data object AmslerGrid : InspectionRoute
+
+    @Serializable
+    data object MChart : InspectionRoute
+
     @Serializable
     data object InspectionResult : InspectionRoute
 }
@@ -104,7 +108,6 @@ sealed interface AdminRoute : Route {
 }
 
 sealed interface TermsOfServiceRoute : Route {
-
     @Serializable
     data object FaceUpdate : TermsOfServiceRoute
 
