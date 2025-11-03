@@ -14,3 +14,10 @@ val LightGray = Color(0xFFD9D9D9)
 val LightGray2 = Color(0xFFF7F9F9)
 val Red = Color(0xFFFF1111)
 val LightBlue = Color(0xFFE0EFFF)
+
+// 새로 추가된 색상
+val DividerGray = Color(0xFFEBEBEB)
+val SkyBlue = Color(0xFFE3F2FD)
+val NavyBlue = Color(0xFF1E88E5)
+val Gray999 = Color(0xFF999999)
+val DarkRed = Color(0xFFFF0000)

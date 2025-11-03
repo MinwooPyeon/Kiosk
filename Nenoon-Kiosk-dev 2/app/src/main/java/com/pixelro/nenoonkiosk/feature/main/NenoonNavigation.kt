@@ -33,7 +33,7 @@ import com.pixelro.nenoonkiosk.feature.auth.FaceUpdateScreen
 import com.pixelro.nenoonkiosk.feature.auth.SignInScreen
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListScreen
-import com.pixelro.nenoonkiosk.feature.inspection.ExternalDeviceTestListScreen
+import com.pixelro.nenoonkiosk.feature.inspection.ExternalDeviceInspectionListScreen
 import com.pixelro.nenoonkiosk.feature.inspection.EyeTestInspectionRoute
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionScreenRoute
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
@@ -442,7 +442,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            ExternalDeviceTestListScreen(
+            ExternalDeviceInspectionListScreen(
                 checkIsTestDone = viewModel::checkIsTestDone,
                 toTestScreen = {
                     viewModel.updateSelectedTestType(it)
