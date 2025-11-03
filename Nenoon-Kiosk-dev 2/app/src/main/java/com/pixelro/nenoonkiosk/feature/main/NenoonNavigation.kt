@@ -59,6 +59,7 @@ import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverRoute
 import com.pixelro.nenoonkiosk.feature.splash.SplashScreen
 import com.pixelro.nenoonkiosk.feature.strabismus.AppNavigation
 import com.pixelro.nenoonkiosk.feature.strabismus.PhoriaAndAniseikoniaTestListScreen
+import com.pixelro.nenoonkiosk.feature.survey.SurveyRoute
 import com.pixelro.nenoonkiosk.feature.survey.SurveyScreen
 import com.pixelro.nenoonkiosk.feature.termsofservice.base.TermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.termsofservice.faceid.FaceIdTermsOfServiceRoute
@@ -337,7 +338,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            SurveyScreen(
+            SurveyRoute(
                 isLoggedIn = viewModel.isSignedIn.collectAsState().value,
                 toCategoryListScreen = {
                     navController.navigate(NavConstants.ROUTE_CATEGORY_LIST)

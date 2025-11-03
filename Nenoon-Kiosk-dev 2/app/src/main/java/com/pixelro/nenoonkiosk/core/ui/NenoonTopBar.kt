@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.ui.theme.titleTextStyle
 
@@ -41,7 +42,7 @@ enum class TopBarOrientation {
 @Composable
 fun NenoonTopBar(
     title: String,
-    orientation: TopBarOrientation = TopBarOrientation.Vertical,
+    orientation: TopBarOrientation = if (isLandscape()) TopBarOrientation.Horizontal else TopBarOrientation.Vertical,
     showBackButton: Boolean = true,
     onBackClicked: () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},

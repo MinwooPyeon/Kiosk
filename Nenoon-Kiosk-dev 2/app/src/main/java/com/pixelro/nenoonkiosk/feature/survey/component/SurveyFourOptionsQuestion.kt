@@ -38,7 +38,7 @@ fun SurveyFourOptionsQuestion(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        SurveyQuestionText(text = questionText)
+        //SurveyQuestionText(text = questionText)
 
         Spacer(modifier = Modifier.height(20.dp))
 

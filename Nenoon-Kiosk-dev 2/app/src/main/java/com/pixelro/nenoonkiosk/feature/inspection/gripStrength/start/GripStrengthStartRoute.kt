@@ -41,7 +41,12 @@ fun GripStrengthStartRoute(
     val dynamometerData = InGripManager.dataReceived.collectAsState()
 
     val context = LocalContext.current
-    InGripManager.init(context)
+    
+    LaunchedEffect(Unit) {
+        if (!InGripManager.isInitialized.value) {
+            InGripManager.init(context)
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.resetTest()
