@@ -72,7 +72,7 @@ import kotlinx.coroutines.delay
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
-fun ExternalDeviceTestListScreen(
+fun ExternalDeviceInspectionListScreen(
     checkIsTestDone: (InspectionType) -> Boolean,
     toTestScreen: (InspectionType) -> Unit,
     toIntroScreen: () -> Unit,
