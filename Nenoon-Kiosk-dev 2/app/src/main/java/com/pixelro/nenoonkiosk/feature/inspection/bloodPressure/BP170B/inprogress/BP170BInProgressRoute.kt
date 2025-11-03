@@ -150,8 +150,8 @@ private fun isResultValid(result: BloodPressureInspectionResult): Boolean {
     val diastolic = result.diastolic
     val pulseRate = result.pulseRate
 
-    val isBpValid = systolic in 30..300 && diastolic in 30..300
-    val isPulseValid = pulseRate in 30..240
+    val isBpValid = systolic in 0..300 && diastolic in 0..300
+    val isPulseValid = pulseRate in 0..250
 
     Log.d("BP170BValidation", "Systolic: $systolic, Diastolic: $diastolic, Pulse: $pulseRate")
     Log.d("BP170BValidation", "isBpValid: $isBpValid, isPulseValid: $isPulseValid")

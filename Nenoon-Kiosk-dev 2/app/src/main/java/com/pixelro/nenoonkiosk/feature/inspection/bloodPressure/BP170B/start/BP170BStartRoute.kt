@@ -33,91 +33,72 @@ fun BP170BStartRoute(
 ) {
     var screenState by remember { mutableStateOf(BP170BConnectionScreenState.DeviceCheck) }
     var connecting by remember { mutableStateOf(false) }
+    var previousState by remember { mutableStateOf<BP170BConnectionScreenState?>(null) }
+    var selectedDevice by remember { mutableStateOf<android.bluetooth.BluetoothDevice?>(null) }
 
     val connectionState by viewModel.connectionState.collectAsState()
     val availableDevices by viewModel.availableDevices.collectAsState()
 
-    // 초기 진입: 스캔 시작 + 5초 후 상태 전환 + 스캔 타임아웃 처리
     LaunchedEffect(Unit) {
         screenState = BP170BConnectionScreenState.DeviceCheck
         viewModel.startScan()
+        connecting = true
+    }
 
-        // 5초 후 초기 안내 완료 → 연결 여부에 따라 상태 분기
-        launch {
-            delay(5_000)
-            if (screenState == BP170BConnectionScreenState.TurnOffDevice) {
-                screenState = BP170BConnectionScreenState.Standby
+    LaunchedEffect(availableDevices, screenState) {
+        if (screenState == BP170BConnectionScreenState.DeviceCheck && availableDevices.isNotEmpty()) {
+            previousState = screenState
+            screenState = BP170BConnectionScreenState.DeviceSelection
+        }
+    }
+
+    LaunchedEffect(screenState) {
+        if (screenState == BP170BConnectionScreenState.DeviceSelection) {
+            if (!connecting && previousState == BP170BConnectionScreenState.Standby) {
+                viewModel.startScan()
+                connecting = true
             }
-            screenState =
-                if (connectionState == BP170BManager.BluetoothConnectionState.CONNECTED) {
-                    BP170BConnectionScreenState.TurnOffDevice
-                } else {
-                    BP170BConnectionScreenState.Standby
-                }
         }
-
-        // 스캔 종료 타임아웃: SCAN_DURATION 경과 시 뒤로
-        launch {
-            delay(BP170BManager.SCAN_DURATION.toLong())
-            viewModel.disconnect()
-            onBack()
+    }
+    
+    // 이전 상태 업데이트 (DeviceSelection 제외)
+    LaunchedEffect(screenState) {
+        if (screenState != BP170BConnectionScreenState.DeviceSelection) {
+            previousState = screenState
         }
     }
 
-    // 연결 상태에 따른 네비/상태 관리
-    LaunchedEffect(connectionState) {
-        if (connectionState == BP170BManager.BluetoothConnectionState.CONNECTED) {
-            if (
-                screenState != BP170BConnectionScreenState.TurnOffDevice &&
-                screenState != BP170BConnectionScreenState.DeviceCheck
-            ) {
-                navController.navigate(BloodPressureInspectionNavRoute.InProgress.name)
-            } else {
-                screenState = BP170BConnectionScreenState.TurnOffDevice
-            }
-        } else if (
-            connectionState == BP170BManager.BluetoothConnectionState.DISCONNECTED &&
-            screenState == BP170BConnectionScreenState.TurnOffDevice
-        ) {
-            screenState = BP170BConnectionScreenState.Standby
-            viewModel.startScan()
-        }
-    }
-
-    // 디바이스 자동 선택/연결
-    LaunchedEffect(availableDevices, connectionState) {
-        if (availableDevices.isNotEmpty() &&
-            connectionState == BP170BManager.BluetoothConnectionState.DISCONNECTED
-        ) {
-            viewModel.connectToDevice(availableDevices.first())
-        }
-    }
-
-    // 연결 상태 상세 흐름 (TTS 포함)
     LaunchedEffect(Unit) {
         viewModel.connectionState.collectLatest { state ->
             connecting = state is BP170BManager.BluetoothConnectionState.CONNECTING
             when (state) {
                 is BP170BManager.BluetoothConnectionState.CONNECTED -> {
+                    connecting = false
                     if (screenState == BP170BConnectionScreenState.Connecting ||
-                        screenState == BP170BConnectionScreenState.Standby
+                        screenState == BP170BConnectionScreenState.DeviceSelection
                     ) {
-                        screenState = BP170BConnectionScreenState.AwaitingStart
+                        screenState = BP170BConnectionScreenState.Standby
                         TTS.stopTTS()
                         TTS.speechTTS(
                             StringProvider.getString(R.string.tts_bp170b_connected_message),
                             TextToSpeech.QUEUE_ADD,
                         )
+                    } else if (screenState == BP170BConnectionScreenState.TurnOffDevice ||
+                               screenState == BP170BConnectionScreenState.DeviceCheck
+                    ) {
+                        screenState = BP170BConnectionScreenState.TurnOffDevice
+                    } else {
+                        navController.navigate(BloodPressureInspectionNavRoute.InProgress.name)
                     }
                 }
                 is BP170BManager.BluetoothConnectionState.DISCONNECTED -> {
-                    if (screenState != BP170BConnectionScreenState.Standby &&
-                        screenState != BP170BConnectionScreenState.ConnectionError &&
-                        screenState != BP170BConnectionScreenState.DeviceCheck
-                    ) {
+                    if (screenState == BP170BConnectionScreenState.TurnOffDevice) {
                         screenState = BP170BConnectionScreenState.Standby
-                        viewModel.startScan()
                     }
+                }
+                is BP170BManager.BluetoothConnectionState.CONNECTING -> {
+                    screenState = BP170BConnectionScreenState.Connecting
+                    connecting = true
                 }
                 is BP170BManager.BluetoothConnectionState.ERROR -> {
                     screenState = BP170BConnectionScreenState.ConnectionError
@@ -142,6 +123,8 @@ fun BP170BStartRoute(
                 TTS.speechTTS(StringProvider.getString(R.string.tts_bp170b_turn_off_device_initialization), TextToSpeech.QUEUE_ADD)
             BP170BConnectionScreenState.Standby ->
                 TTS.speechTTS(StringProvider.getString(R.string.tts_bp170b_standby_instructions), TextToSpeech.QUEUE_ADD)
+            BP170BConnectionScreenState.DeviceSelection ->
+                TTS.speechTTS(StringProvider.getString(R.string.blood_pressure_monitor_searching_device), TextToSpeech.QUEUE_ADD)
             else -> Unit
         }
     }
@@ -149,6 +132,7 @@ fun BP170BStartRoute(
     val uiState = BP170BStartUiState(
         screenState = screenState,
         isConnecting = connecting,
+        availableDevices = availableDevices,
     )
 
     BP170BStartScreen(
@@ -156,8 +140,24 @@ fun BP170BStartRoute(
         onEvent = { ev ->
             when (ev) {
                 BP170BStartEvent.RetryScan -> {
-                    screenState = BP170BConnectionScreenState.Standby
-                    viewModel.startScan()
+                    if (connectionState == BP170BManager.BluetoothConnectionState.CONNECTED) {
+                        navController.navigate(BloodPressureInspectionNavRoute.InProgress.name)
+                    } else {
+                        selectedDevice?.let { device ->
+                            previousState = screenState
+                            screenState = BP170BConnectionScreenState.Connecting
+                            viewModel.connectToDevice(device)
+                        } ?: run {
+                            previousState = screenState
+                            screenState = BP170BConnectionScreenState.DeviceSelection
+                        }
+                    }
+                }
+                is BP170BStartEvent.DeviceSelected -> {
+                    selectedDevice = ev.device
+                    previousState = screenState
+                    screenState = BP170BConnectionScreenState.Connecting
+                    viewModel.connectToDevice(ev.device)
                 }
                 BP170BStartEvent.Back -> {
                     TTS.tts.stop()

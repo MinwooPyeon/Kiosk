@@ -91,20 +91,54 @@ object BP170BManager {
         isScanning = true
         val deviceListener =
             object : BluetoothAdapter.LeScanCallback {
+                @SuppressLint("MissingPermission")
                 override fun onLeScan(
                     device: BluetoothDevice,
                     rssi: Int,
                     scanRecord: ByteArray?,
                 ) {
+                    // 이미 연결 시도 중인 디바이스는 제외
+                    if (BP170BManager.device?.address == device.address) {
+                        return
+                    }
+                    
                     if (device.name?.startsWith("BP170B") == true && !_availableDevices.value.contains(device)) {
-                        Log.d(TAG, "Found BP device: ${device.name} - ${device.address}")
-                        managerScope.launch {
-                            _availableDevices.value += device
+                        // 이미 연결 중인 디바이스인지 확인
+                        val connectionState = bluetoothManager?.getConnectionState(device, BluetoothProfile.GATT)
+                        val isAlreadyConnected = connectionState == BluetoothProfile.STATE_CONNECTED || 
+                                                 connectionState == BluetoothProfile.STATE_CONNECTING
+                        
+                        if (!isAlreadyConnected) {
+                            Log.d(TAG, "Found BP device: ${device.name} - ${device.address}")
+                            _availableDevices.value = _availableDevices.value + device
+                        } else {
+                            Log.d(TAG, "Skipping already connected device: ${device.name} - ${device.address} (state: $connectionState)")
                         }
                     }
                 }
             }
         bluetoothAdapter?.startLeScan(deviceListener)
+        
+        // 스캔 중 주기적으로 연결된 디바이스를 필터링
+        managerScope.launch {
+            while (isScanning) {
+                delay(200)
+                if (isScanning) {
+                    _availableDevices.value = _availableDevices.value.filter { scanDevice ->
+                        if (BP170BManager.device?.address == scanDevice.address) {
+                            return@filter false
+                        }
+                        val state = bluetoothManager?.getConnectionState(scanDevice, BluetoothProfile.GATT) ?: BluetoothProfile.STATE_DISCONNECTED
+                        val isConnected = state == BluetoothProfile.STATE_CONNECTED || state == BluetoothProfile.STATE_CONNECTING
+                        if (isConnected) {
+                            Log.d(TAG, "Filtering out connected device during scan: ${scanDevice.name} - ${scanDevice.address} (state: $state)")
+                        }
+                        !isConnected
+                    }
+                }
+            }
+        }
+        
         managerScope.launch {
             delay(SCAN_DURATION.toLong())
             stopScan(deviceListener)
@@ -130,17 +164,9 @@ object BP170BManager {
             return
         }
         
-        if (bluetoothAdapter?.isEnabled != true) {
-            Log.e(TAG, "Bluetooth is not enabled")
-            managerScope.launch {
-                _connectionState.value = BluetoothConnectionState.ERROR("Bluetooth is not enabled")
-            }
-            return
-        }
-
-        managerScope.launch {
-            _connectionState.value = BluetoothConnectionState.CONNECTING
-        }
+        // 연결 시도 시 즉시 상태 변경 및 디바이스 리스트에서 제거
+        _connectionState.value = BluetoothConnectionState.CONNECTING
+        _availableDevices.value = _availableDevices.value.filter { it.address != device.address }
         BP170BManager.device = device
         bluetoothGatt = device.connectGatt(appContext, false, gattCallback)
     }
@@ -160,6 +186,10 @@ object BP170BManager {
                             if (status == BluetoothGatt.GATT_SUCCESS) {
                                 Log.d(TAG, "Connected to GATT server successfully.")
                                 _connectionState.value = BluetoothConnectionState.CONNECTED
+                                // 연결된 디바이스를 리스트에서 제거
+                                device?.let { connectedDevice ->
+                                    _availableDevices.value = _availableDevices.value.filter { it.address != connectedDevice.address }
+                                }
                                 gatt?.discoverServices()
                             } else {
                                 Log.e(TAG, "Connection failed with status: $status")
@@ -170,7 +200,7 @@ object BP170BManager {
                         }
 
                         BluetoothProfile.STATE_DISCONNECTED -> {
-                            Log.d(TAG, "Disconnected from GATT server.")
+                            Log.d(TAG, "Disconnected from GATT server. Status: $status")
                             _connectionState.value = BluetoothConnectionState.DISCONNECTED
                             closeGatt()
                             device = null
@@ -182,8 +212,14 @@ object BP170BManager {
 
                         else -> {
                             Log.w(TAG, "Connection state changed with status $status")
-                            _connectionState.value =
-                                BluetoothConnectionState.ERROR("GATT connection error with status $status")
+                            _connectionState.value = BluetoothConnectionState.ERROR("GATT connection error with status $status")
+                            // 연결 실패 시 리스트에 다시 추가
+                            device?.let { failedDevice ->
+                                if (!_availableDevices.value.any { it.address == failedDevice.address }) {
+                                    _availableDevices.value = _availableDevices.value + failedDevice
+                                    Log.d(TAG, "Re-added failed device to available list: ${failedDevice.address}")
+                                }
+                            }
                             closeGatt()
                             device = null
                             pollingJob?.cancel() // Stop polling on error
@@ -285,8 +321,7 @@ object BP170BManager {
                     val pulse = receivedBytes[2].toUByte().toInt()
                     val checksum = receivedBytes[3].toUByte().toInt()
                     
-                    // Simple validation
-                    if (systolic in 30..300 && diastolic in 30..300 && pulse in 30..240) {
+                    if (systolic in 0..300 && diastolic in 0..300 && pulse in 0..250) {
                         _bloodPressureResult.value = BloodPressureInspectionResult(systolic, diastolic, pulse)
                         Log.d(TAG, "Parsed short data as BP result: SBP=$systolic, DBP=$diastolic, Pulse=$pulse")
                         return "Short Data BP Result: SBP=$systolic, DBP=$diastolic, Pulse=$pulse"
