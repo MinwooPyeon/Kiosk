@@ -23,6 +23,8 @@
 #define LINK_UART_TX_PIN	17
 #define LINK_UART_RX_PIN	16
 
+#define USB_ADVERT_MAX_FILES 10
+
 static const char* TAG = "uart_link";
 
 static uart_event_cb_t s_cb;
@@ -60,7 +62,7 @@ static void link_rx_task(void* arg){
 	}
 }
 
-static esp_err_t link_rpc(uint8_t type, const uint8_t* payload, uint16_t plen, frame_t* out, TickType_t to){
+static esp_err_t link_req_resp(uint8_t type, const uint8_t* payload, uint16_t plen, frame_t* out, TickType_t to){
 	uint8_t fbuf[FRAME_MAX_WIRE];
 	size_t flen = 0;
 	frame_err_t fer = frame_build(type, payload, plen, fbuf, sizeof(fbuf), &flen);
@@ -78,7 +80,7 @@ static esp_err_t link_rpc(uint8_t type, const uint8_t* payload, uint16_t plen, f
 	frame_t* rx = NULL;
 	if(xQueueReceive(s_rxq, &rx, to) != pdTRUE){
 		ESP_LOGE(TAG, "rpc timeout");
-		return ESP_FAIL;
+		return ESP_ERR_TIMEOUT;
 	}
 	
 	if(rx->type != FRAME_LIC_RESP){
@@ -123,7 +125,7 @@ esp_err_t uart_link_lic_mgr_login(const char *id, const char *pw, bool *ok)
     char buf[96];
     int n = snprintf(buf, sizeof(buf), "%s:%s", id, pw);
     frame_t resp;
-    esp_err_t er = link_rpc(FRAME_LIC_MGR_LOGIN,
+    esp_err_t er = link_req_resp(FRAME_LIC_MGR_LOGIN,
                             (const uint8_t*)buf, (uint16_t)n,
                             &resp,
                             pdMS_TO_TICKS(1000));
@@ -137,7 +139,7 @@ esp_err_t uart_link_lic_issue(const char *app, const char *to, char *out_lic, si
     char buf[128];
     int n = snprintf(buf, sizeof(buf), "%s:%s", app, to);
     frame_t resp;
-    esp_err_t er = link_rpc(FRAME_LIC_ISSUE,
+    esp_err_t er = link_req_resp(FRAME_LIC_ISSUE,
                             (const uint8_t*)buf, (uint16_t)n,
                             &resp,
                             pdMS_TO_TICKS(1000));
@@ -153,7 +155,7 @@ esp_err_t uart_link_lic_issue(const char *app, const char *to, char *out_lic, si
 esp_err_t uart_link_lic_validate(const char *lic, bool *ok)
 {
     frame_t resp;
-    esp_err_t er = link_rpc(FRAME_LIC_VALIDATE,
+    esp_err_t er = link_req_resp(FRAME_LIC_VALIDATE,
                             (const uint8_t*)lic, (uint16_t)strlen(lic),
                             &resp,
                             pdMS_TO_TICKS(1000));
@@ -165,7 +167,7 @@ esp_err_t uart_link_lic_validate(const char *lic, bool *ok)
 esp_err_t uart_link_lic_get_jwt(const char *lic, char *out_jwt, size_t out_sz)
 {
     frame_t resp;
-    esp_err_t er = link_rpc(FRAME_LIC_GET_JWT,
+    esp_err_t er = link_req_resp(FRAME_LIC_GET_JWT,
                             (const uint8_t*)lic, (uint16_t)strlen(lic),
                             &resp,
                             pdMS_TO_TICKS(1000));
@@ -179,11 +181,37 @@ esp_err_t uart_link_lic_get_jwt(const char *lic, char *out_jwt, size_t out_sz)
 }
 
 /* 기존 인터페이스 맞춰주기 */
-bool uart_link_usb_attached(void) { return true; }           // 일단 고정
-esp_err_t uart_link_get_index(media_index_t *out) { return ESP_ERR_NOT_SUPPORTED; }
-esp_err_t uart_link_read_chunk(const char *id, uint64_t off, uint32_t len,
-                               uint8_t *out, uint32_t *out_len, uint32_t *out_crc)
-{ return ESP_ERR_NOT_SUPPORTED; }
+bool uart_link_usb_attached(void) { return true; }
+           // 일단 고정
+esp_err_t uart_link_get_index(media_index_t *out) { 
+	if(!out) return ESP_ERR_INVALID_ARG;
+	
+	frame_t *resp = NULL;
+	esp_err_t er = link_req_resp(FRAME_MEDIA_INDEX_REQ, NULL, 0, &resp, pdMS_TO_TICKS(1000));
+	if(er != ESP_OK) return er;
+	if(resp->type != FRAME_MEDIA_INDEX_RESP){
+		free(resp);
+		return ESP_FAIL;
+	}
+	
+	const char* js = (const char*)resp->payload;
+	static media_item_t items[USB_ADVERT_MAX_FILES];
+	uint32_t count = 0;
+	
+	
+	
+	out->gen = 1;
+	out->count = count;
+	out->items = malloc(sizeof(media_item_t)*count);
+	memcpy(out->items, items, sizeof(media_item_t)*count);
+	
+	free(resp);
+	return ESP_OK;
+}
+
+esp_err_t uart_link_read_chunk(const char *id, uint64_t off, uint32_t len, uint8_t *out, uint32_t *out_len, uint32_t *out_crc){
+	return ESP_ERR_NOT_SUPPORTED; 
+}
 
 esp_err_t uart_link_auth_req(const char* ssaid, auth_ssaid_resp_t* out)
 {

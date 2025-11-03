@@ -24,12 +24,10 @@
 #define FRAME_MAGIC_LSB     0x5Au
 #define FRAME_VER           0x01u
 
-#define FRAME_AUTH_CHALLENGE	0x10
-#define FRAME_AUTH_RESPONSE		0x11
-#define FRAME_MEDIA_INDEX		0x20
-#define FRAME_MEDIA_PULL		0x21
-#define FRAME_MEDIA_CHUNK		0x22
-#define FRAME_HB_STAT			0x30
+#define FRAME_MEDIA_INDEX_REQ		0x30
+#define FRAME_MEDIA_INDEX_RESP		0x31
+#define FRAME_MEDIA_PULL_REQ		0x32
+#define FRAME_MEDIA_CHUNK			0x33
 #define FRAME_LIC_MGR_LOGIN         0x40  /* Manager Login */
 #define FRAME_LIC_ISSUE             0x41  /* License Issuance */
 #define FRAME_LIC_REVOKE            0x42  /* License Revoke */
