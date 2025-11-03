@@ -68,6 +68,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
+import com.pixelro.nenoonkiosk.core.util.AutoStartSTT
+import com.pixelro.nenoonkiosk.core.util.STT
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.components.CantSeeButton
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.components.DirectionSelectionButton
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.components.VisualAcuityChartBox
@@ -150,6 +152,23 @@ fun VisualAcuityInspectionContent(
         targetValue = progress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
     )
+    
+    AutoStartSTT(
+        onResult = { result ->
+            handleVoiceAnswer(
+                result = result,
+                randomList = randomList,
+                currentProgress = progress,
+                onAnswerSelected = onAnswerSelected,
+                updateProgress = { newProgress -> progress = newProgress },
+                onComplete = { toResultScreen(getInspectionResult()) }
+            )
+        },
+        enabled = true,
+        onError = { error ->
+        }
+    )
+    
     Column(
         modifier =
             Modifier
@@ -276,4 +295,93 @@ private fun PreviewVisualAcuityInspectionContent_Level10_WithWarning() {
         getInspectionResult = { VisualAcuityInspectionResult(leftEye = 10, rightEye = 10) },
         toResultScreen = {}
     )
+}
+
+// 음성 답변 처리
+private fun handleVoiceAnswer(
+    result: String,
+    randomList: List<Int>,
+    currentProgress: Float,
+    onAnswerSelected: (Int, (Float) -> Unit, () -> Unit) -> Unit,
+    updateProgress: (Float) -> Unit,
+    onComplete: () -> Unit
+) {
+    val voiceText = result.lowercase().trim()
+    val compactText = voiceText.replace("\\s+".toRegex(), "")
+    
+    // 숫자 인식
+    val numberMap = mapOf(
+        "이" to 2, "둘" to 2,
+        "삼" to 3, "셋" to 3,
+        "사" to 4, "넷" to 4,
+        "오" to 5, "다섯" to 5,
+        "육" to 6, "여섯" to 6,
+        "칠" to 7, "일곱" to 7
+    )
+    
+    var selectedIdx: Int? = null
+    
+    val normalized = voiceText.replace("\\s+".toRegex(), " ")
+    val digitsInOrder = mutableListOf<Int>()
+    for (ch in normalized) {
+        val v = when (ch) {
+            '2' -> 2
+            '3' -> 3
+            '4' -> 4
+            '5' -> 5
+            '6' -> 6
+            '7' -> 7
+            else -> null
+        }
+        if (v != null) digitsInOrder.add(v)
+    }
+    val matchValue = digitsInOrder.firstOrNull { randomList.contains(it) }
+    if (matchValue != null) {
+        val idx = randomList.indexOf(matchValue)
+        if (idx != -1) {
+            selectedIdx = idx
+        }
+    }
+    
+    if (selectedIdx == null) {
+        val tokens = voiceText.split("\\s+".toRegex()).filter { it.isNotBlank() }
+        tokens.firstOrNull { tok -> numberMap.containsKey(tok) }?.let { tok ->
+            val numberValue = numberMap[tok]!!
+            val idx = randomList.indexOf(numberValue)
+            if (idx != -1) {
+                selectedIdx = idx
+            }
+        }
+    }
+
+    if (selectedIdx == null) {
+        val engMap = mapOf(
+            "two" to 2, "three" to 3, "four" to 4, "five" to 5, "six" to 6, "seven" to 7
+        )
+        val tokens = voiceText.split("\\s+".toRegex()).filter { it.isNotBlank() }
+        tokens.firstOrNull { tok -> engMap.containsKey(tok) }?.let { tok ->
+            val v = engMap[tok]!!
+            val idx = randomList.indexOf(v)
+            if (idx != -1) {
+                selectedIdx = idx
+            }
+        }
+    }
+
+    val dontKnowPhrases = listOf(
+        "모르겠다", "모르겠어요", "모르겠습니다", "모름",
+        "모르겠", "몰라", "몰라요",
+        "안보여요", "안 보여요", "안보입니다", "안 보입니다", "안보임", "안 보임", "안보인다", "안 보인다"
+    )
+
+    val isUnknown = dontKnowPhrases.any { voiceText.contains(it) } ||
+            listOf("모르겠", "모름", "몰라", "안보여", "안보임", "안보인다", "안보입니다").any { compactText.contains(it) }
+
+    if (isUnknown) {
+        selectedIdx = 3
+    }
+    
+    if (selectedIdx != null && selectedIdx in 0..3) {
+        onAnswerSelected(selectedIdx, updateProgress, onComplete)
+    }
 }
