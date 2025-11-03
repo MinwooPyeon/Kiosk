@@ -365,7 +365,7 @@ private fun LandscapeExternalDeviceLayout(
                     Modifier
                         .weight(0.55f)
                         .fillMaxHeight()
-                        .padding(start = 20.dp, end = 8.dp, bottom = 8.dp),
+                        .padding(top = 12.dp, start = 20.dp, end = 8.dp, bottom = 8.dp),
                 verticalArrangement = spacedBy(12.dp)
             ) {
                 // 혈압 검사
