@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.media3.exoplayer.ExoPlayer
+import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.ui.theme.Black
 
 /**
@@ -51,10 +52,11 @@ fun ScreenSaverScreen(
                     color = Black,
                 ),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
     ) {
-
-        Spacer(modifier = Modifier.weight(1f))
+        if (!isLandscape()) {
+            Spacer(modifier = Modifier.weight(1f))
+        }
 
         // 안내 텍스트
         ScreenSaverGuideText(
@@ -63,9 +65,14 @@ fun ScreenSaverScreen(
         )
 
         // 비디오 플레이어
-        ScreenSaverVideo(exoPlayer = exoPlayer)
+        ScreenSaverVideo(
+            exoPlayer = exoPlayer,
+            modifier = if (isLandscape()) Modifier.weight(1f) else Modifier.weight(2f)
+        )
 
-        Spacer(modifier = Modifier.weight(1f))
+        if (!isLandscape()) {
+            Spacer(modifier = Modifier.weight(1f))
+        }
     }
 }
 

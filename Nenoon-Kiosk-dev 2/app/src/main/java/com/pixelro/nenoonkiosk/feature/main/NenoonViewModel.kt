@@ -476,4 +476,10 @@ class NenoonViewModel
             exoPlayer.repeatMode = Player.REPEAT_MODE_ONE
             exoPlayer.volume = 0f
         }
+
+        override fun onCleared() {
+            super.onCleared()
+            // ViewModel이 완전히 제거될 때 ExoPlayer 정리
+            exoPlayer.release()
+        }
     }

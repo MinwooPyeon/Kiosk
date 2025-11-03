@@ -1,6 +1,7 @@
 package com.pixelro.nenoonkiosk.feature.screensaver
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -35,11 +36,11 @@ fun ScreenSaverRoute(
 
     DisposableEffect(true) {
         systemUiController.systemBarsDarkContentEnabled = false
-        exoPlayer.play()
         onDispose {
             systemUiController.systemBarsDarkContentEnabled = true
             exoPlayer.pause()
             exoPlayer.clearVideoSurface()
+            exoPlayer.clearMediaItems()
         }
     }
 
