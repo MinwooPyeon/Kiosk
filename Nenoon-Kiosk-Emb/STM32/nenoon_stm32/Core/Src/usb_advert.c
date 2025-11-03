@@ -100,6 +100,10 @@ usb_advert_err_t USB_Advert_Scan(void)
         {
             strncpy(s_files[s_count], fno.fname, USB_ADVERT_MAX_NAME - 1);
             s_files[s_count][USB_ADVERT_MAX_NAME - 1] = '\0';
+            strncpy(s_metas[s_count].name, fno.fname, sizeof(s_metas[s_count].name)-1);
+            s_metas[s_count].size = fno.fsize;
+            strcpy(s_metas[s_count].mime, (strstr(fno.fname, ".png")||strstr(fno.fname,".PNG")) ? "image/png" : "image/jpeg");
+            memset(s_metas[s_count].sha16, 0, sizeof(s_metas[s_count].sha16));
             s_count++;
 
             if (s_count >= USB_ADVERT_MAX_FILES)
@@ -217,7 +221,7 @@ usb_advert_err_t USB_Advert_StreamFile(const char* filename)
 			f_close(&file);
 			return USB_ADVERT_ERR_IO;
         }
-        UART6_SendBytes(frame_buf, (uint16_t)frame_buf);
+        UART6_SendBytes(frame_buf, (uint16_t)frame_len);
         total += br;
     }
 
@@ -261,3 +265,10 @@ const char* USB_Advert_GetName(uint32_t index)
         return s_files[index];
     return NULL;
 }
+
+bool USB_Advert_GetMeta(uint32_t idx, usb_advert_meta_t* out){
+    if(idx >= s_count || !out) return false;
+    *out = s_metas[idx];
+    return true;
+}
+
