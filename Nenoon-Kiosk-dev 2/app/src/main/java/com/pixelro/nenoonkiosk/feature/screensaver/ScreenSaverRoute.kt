@@ -39,6 +39,8 @@ fun ScreenSaverRoute(
         onDispose {
             systemUiController.systemBarsDarkContentEnabled = true
             exoPlayer.pause()
+            exoPlayer.clearVideoSurface()
+            exoPlayer.clearMediaItems()
         }
     }
 
