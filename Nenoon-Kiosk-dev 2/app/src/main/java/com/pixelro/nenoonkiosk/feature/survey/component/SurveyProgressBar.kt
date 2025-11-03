@@ -30,9 +30,8 @@ fun SurveyProgressBar(
 ) {
     Box(
         Modifier
-            .padding(horizontal = 20.dp, vertical = 20.dp)
-            .fillMaxWidth()
-            .height(120.dp),
+            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .fillMaxWidth(),
         contentAlignment = Alignment.Center,
     ) {
         Box(
