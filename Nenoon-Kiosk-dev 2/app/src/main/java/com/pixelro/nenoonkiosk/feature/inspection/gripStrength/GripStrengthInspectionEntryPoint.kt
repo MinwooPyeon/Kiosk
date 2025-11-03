@@ -38,14 +38,15 @@ fun GripStrengthInspectionEntryPoint(
 ) {
     val localNavController = rememberNavController()
     val context = LocalContext.current
-    val isDynamometerInitialized by InGripManager.isInitialized.collectAsState()
+    
+    LaunchedEffect(Unit) {
+        if (!InGripManager.isInitialized.value) {
+            InGripManager.init(context)
+        }
+    }
 
     LaunchedEffect(Unit) {
         InGripManager.connectionState.collectLatest { state ->
-            if (!isDynamometerInitialized) {
-                InGripManager.init(context)
-            }
-
             when (state) {
                 is InGripManager.BluetoothConnectionState.DISCONNECTED -> {
                     localNavController.popBackStack(GripStrengthInspectionNavRoute.Start.name, false)

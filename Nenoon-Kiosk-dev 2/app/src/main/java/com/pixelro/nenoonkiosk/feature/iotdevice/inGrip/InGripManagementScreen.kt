@@ -82,7 +82,12 @@ fun InGripManagmentScreen(
     val connectionState = InGripManager.connectionState.collectAsState()
 
     val context = LocalContext.current
-    InGripManager.init(context)
+    
+    LaunchedEffect(Unit) {
+        if (!InGripManager.isInitialized.value) {
+            InGripManager.init(context)
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.resetTest()
@@ -304,7 +309,7 @@ fun InGripManagmentScreen(
 
             PrimaryButton(
                 onClick = {
-                    TTS.tts.stop()
+                    TTS.stopTTS()
                     navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
                 },
                 text = StringProvider.getString(R.string.back),
