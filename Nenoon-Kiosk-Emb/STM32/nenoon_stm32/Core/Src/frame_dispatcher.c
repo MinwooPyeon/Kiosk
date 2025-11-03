@@ -146,7 +146,7 @@ static void media_dispatch_index(const uint8_t* payload, uint16_t pl_len)
         USB_Advert_Scan();
     }
 
-    uint32_t cnt = USB_Advert_GetCount();
+    uint32_t cnt = USB_Advert_GetFileCount();
 
     // JSON 빌드
     char js[512];

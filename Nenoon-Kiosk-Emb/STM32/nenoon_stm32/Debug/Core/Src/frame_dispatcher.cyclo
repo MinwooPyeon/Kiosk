@@ -4,4 +4,6 @@
 ../Core/Src/frame_dispatcher.c:79:6:lic_dispatch_validate	1
 ../Core/Src/frame_dispatcher.c:92:6:lic_dispatch_get_challenge	2
 ../Core/Src/frame_dispatcher.c:113:6:lic_dispatch_get_jwt	2
-../Core/Src/frame_dispatcher.c:134:6:proto_dispatch_handle	9
+../Core/Src/frame_dispatcher.c:140:13:media_dispatch_index	10
+../Core/Src/frame_dispatcher.c:181:13:media_dispatch_pull	9
+../Core/Src/frame_dispatcher.c:251:6:proto_dispatch_handle	11

@@ -31,6 +31,7 @@ extern FATFS USBHFatFS;
 extern char  USBHPath[4];
 
 static char     s_files[USB_ADVERT_MAX_FILES][USB_ADVERT_MAX_NAME];
+static usb_advert_meta_t s_metas[USB_ADVERT_MAX_FILES];
 static uint32_t s_count   = 0;
 static bool     s_scanned = false;
 
