@@ -7,6 +7,7 @@
 
 // main/src/http_srv.c  (STM32 프레임에 맞춘 버전)
 #include "http_srv.h"
+#include "esp_err.h"
 #include "session_mgr.h"
 #include "uart_link.h"
 #include "metrics.h"
@@ -21,6 +22,7 @@
 static const char* TAG = "http_srv";
 static httpd_handle_t s_srv;
 static ratelimit_t* s_rl_lic;
+static ratelimit_t* s_rl_chunk;
 
 static const char* reason_phrase(int code){
     switch(code){
@@ -61,7 +63,8 @@ static bool auth_ok(httpd_req_t* r){
 /* POST /v1/lic/login  { "id":"admin", "pw":"admin123" } */
 static esp_err_t h_lic_login(httpd_req_t* r){
     char body[128]; int n = httpd_req_recv(r, body, sizeof(body)-1);
-    if(n < 0) n = 0; body[n] = 0;
+    if(n < 0) n = 0;
+    body[n] = 0;
 
     char *id = strstr(body, "\"id\"");
     char *pw = strstr(body, "\"pw\"");
@@ -85,7 +88,8 @@ static esp_err_t h_lic_login(httpd_req_t* r){
 static esp_err_t h_lic_issue(httpd_req_t* r){
     if(!auth_ok(r)) return send_error(r, 401, "unauthorized");
     char body[160]; int n = httpd_req_recv(r, body, sizeof(body)-1);
-    if(n<0) n=0; body[n]=0;
+    if(n<0) n=0;
+    body[n]=0;
 
     char app[32]={0}, to[64]={0};
     sscanf(strstr(body,"\"app\""), "\"app\":\"%31[^\"]\"", app);
@@ -105,7 +109,8 @@ static esp_err_t h_lic_issue(httpd_req_t* r){
 /* POST /v1/lic/validate { "license":"LIC_..." } */
 static esp_err_t h_lic_validate(httpd_req_t* r){
     char body[128]; int n = httpd_req_recv(r, body, sizeof(body)-1);
-    if(n<0) n=0; body[n]=0;
+    if(n<0) n=0; 
+    body[n]=0;
 
     char lic[96]={0};
     sscanf(strstr(body,"\"license\""), "\"license\":\"%95[^\"]\"", lic);
@@ -123,7 +128,8 @@ static esp_err_t h_lic_validate(httpd_req_t* r){
 /* POST /v1/lic/jwt { "license":"LIC_..." } */
 static esp_err_t h_lic_jwt(httpd_req_t* r){
     char body[128]; int n = httpd_req_recv(r, body, sizeof(body)-1);
-    if(n<0) n=0; body[n]=0;
+    if(n<0) n=0;
+    body[n]=0;
 
     char lic[96]={0};
     sscanf(strstr(body,"\"license\""), "\"license\":\"%95[^\"]\"", lic);
@@ -138,11 +144,95 @@ static esp_err_t h_lic_jwt(httpd_req_t* r){
     return httpd_resp_sendstr(r, json);
 }
 
+/* GET  /vi/media */
+static esp_err_t h_media_index(httpd_req_t* r){
+	if(!uart_link_usb_attached()) return send_error(r, 404, "not usb attached");
+	
+	media_index_t idx;
+	esp_err_t er = uart_link_get_index(&idx);
+	if(er != ESP_OK) return send_error(r, 502, "media index bridge error");
+	
+	httpd_resp_set_type(r, "application/json");
+	httpd_resp_sendstr(r, "{\"gen\":1,\"files\":[]}");
+	
+	return ESP_OK;
+}
+
+// /v1/media/{id}/chunk?off=&len=
+static esp_err_t h_media_chunk(httpd_req_t* r){
+    // 1) 인증 + 레이트리밋
+    if(!auth_ok(r))
+        return send_error(r, 401, reason_phrase(401));
+    if(ratelimit_take_nowait(s_rl_chunk, 1) != ESP_OK)
+        return send_error(r, 429, reason_phrase(429));
+
+    // 2) URI에서 id 뽑기
+    //    r->uri 예: "/v1/media/ad_01.mp4/chunk"
+    const char* uri = r->uri;
+    const char* p   = uri + strlen("/v1/media");      // 여기서부터가 id 시작
+    const char* q   = strstr(p, "/chunk");            // id 끝나는 위치
+    if(!q)
+        return httpd_resp_send_err(r, HTTPD_404_NOT_FOUND, "bad id");
+
+    char id[128];
+    size_t idn = (size_t)(q - p);
+    if(idn >= sizeof(id))
+        return httpd_resp_send_err(r, HTTPD_414_URI_TOO_LONG, "id too long");
+    memcpy(id, p, idn);
+    id[idn] = 0;
+
+    // 3) 쿼리에서 off, len 뽑기
+    //    예: /v1/media/ad_01.mp4/chunk?off=0&len=65536
+    char qbuf[64];
+    httpd_req_get_url_query_str(r, qbuf, sizeof(qbuf));   // 없으면 qbuf는 빈 문자열
+    char tmp[16];
+    uint64_t off = 0;
+    uint32_t len = 65536;    // 기본값
+
+    if(httpd_query_key_value(qbuf, "off", tmp, sizeof(tmp)) == ESP_OK) {
+        off = strtoull(tmp, NULL, 10);
+    }
+    if(httpd_query_key_value(qbuf, "len", tmp, sizeof(tmp)) == ESP_OK) {
+        len = (uint32_t)strtoul(tmp, NULL, 10);
+    }
+    // 안전 가드
+    if(len == 0 || len > 256*1024)
+        len = 64*1024;
+
+    // 4) 버퍼 만들고 UART로 실제로 가져오기
+    uint8_t* buf = malloc(len);
+    if(!buf)
+        return httpd_resp_send_err(r, HTTPD_500_INTERNAL_SERVER_ERROR, "oom");
+
+    uint32_t got = 0;
+    uint32_t crc = 0;
+    esp_err_t er = uart_link_read_chunk(id, off, len, buf, &got, &crc);
+    if(er != ESP_OK){
+        free(buf);
+        metrics_inc_err();
+        return httpd_resp_send_err(r, HTTPD_500_INTERNAL_SERVER_ERROR, "read fail");
+    }
+
+    // 5) 응답 내려주기
+    char h[16];
+    snprintf(h, sizeof(h), "%08" PRIx32, crc);
+    httpd_resp_set_type(r, "application/octet-stream");
+    httpd_resp_set_hdr(r, "X-CRC32", h);
+
+    esp_err_t ret = httpd_resp_send(r, (const char*)buf, got);
+    metrics_add_bytes(0, got);
+    free(buf);
+    return ret;
+}
+
+
+
 /* ====== 기존 세션 열기: 앱이 JWT 또는 라이선스를 먼저 가져오고 싶을 수 있음 ====== */
 /* POST /v1/session/open { "ssaid":"..." }  → 이건 지금 로컬 토큰만 발급 */
 static esp_err_t h_session_open(httpd_req_t* r){
     char body[256]; int n=httpd_req_recv(r, body, sizeof(body)-1);
-    if(n<0) n=0; body[n]=0;
+    if(n<0) n=0; 
+    body[n]=0;
 
     char ssaid[64]={0};
     if (sscanf(strstr(body,"\"ssaid\""), "\"ssaid\":\"%63[^\"]\"", ssaid) != 1)
@@ -167,12 +257,13 @@ esp_err_t http_srv_start(void){
     cfg.lru_purge_enable = true;
     ESP_ERROR_CHECK(httpd_start(&s_srv, &cfg));
 
-    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/session/open", .method=HTTP_POST, .handler=h_session_open });
-    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/login",    .method=HTTP_POST, .handler=h_lic_login    });
-    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/issue",    .method=HTTP_POST, .handler=h_lic_issue    });
-    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/validate", .method=HTTP_POST, .handler=h_lic_validate });
-    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/jwt",      .method=HTTP_POST, .handler=h_lic_jwt      });
-
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/session/open", .method=HTTP_POST, 	.handler=h_session_open	});
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/login",    .method=HTTP_POST, 	.handler=h_lic_login    });
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/issue",    .method=HTTP_POST, 	.handler=h_lic_issue    });
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/validate", .method=HTTP_POST, 	.handler=h_lic_validate });
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/jwt",      .method=HTTP_POST, 	.handler=h_lic_jwt      });
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/media",      	.method=HTTP_GET, 	.handler=h_media_index	});
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/media/chunk",  .method=HTTP_GET, 	.handler=h_media_chunk	});
     ESP_LOGI(TAG, "HTTP server started");
     return ESP_OK;
 }

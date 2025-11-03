@@ -14,9 +14,11 @@
 #include "freertos/projdefs.h"
 #include "freertos/queue.h"
 #include "freertos/task.h"
+#include "mbedtls/pk.h"
 
 #include <string.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 #define LINK_UART_PORT		UART_NUM_1
 #define LINK_UART_BAUD		115200
@@ -33,6 +35,25 @@ static media_index_t s_idx;
 
 static QueueHandle_t s_rxq;
 static frame_parser_t s_fp;
+
+// Json Helper
+static const char* find_key(const char* js, const char* key){
+	return strstr(js, key);
+}
+
+static const char* skip_ws(const char* p){
+	while(*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t') p++;
+	return p;
+}
+
+static uint64_t parse_uint(const char* p){
+	uint64_t v = 0;
+	while(*p >= '0' && *p <= '9'){
+		v = v*10 + (uint64_t)(*p - '0');
+		p++;
+	}
+	return v;
+}
 
 static void link_rx_task(void* arg){
 	uint8_t buf[256];
@@ -83,9 +104,6 @@ static esp_err_t link_req_resp(uint8_t type, const uint8_t* payload, uint16_t pl
 		return ESP_ERR_TIMEOUT;
 	}
 	
-	if(rx->type != FRAME_LIC_RESP){
-		ESP_LOGW(TAG, "unexpected resp type=0x%02X", rx->type);
-	}
 	if(out)
 		*out = *rx;
 		
@@ -181,36 +199,181 @@ esp_err_t uart_link_lic_get_jwt(const char *lic, char *out_jwt, size_t out_sz)
 }
 
 /* 기존 인터페이스 맞춰주기 */
-bool uart_link_usb_attached(void) { return true; }
            // 일단 고정
 esp_err_t uart_link_get_index(media_index_t *out) { 
 	if(!out) return ESP_ERR_INVALID_ARG;
 	
 	frame_t *resp = NULL;
-	esp_err_t er = link_req_resp(FRAME_MEDIA_INDEX_REQ, NULL, 0, &resp, pdMS_TO_TICKS(1000));
+	esp_err_t er = link_req_resp(FRAME_MEDIA_INDEX_REQ, NULL, 0, resp, pdMS_TO_TICKS(1000));
 	if(er != ESP_OK) return er;
 	if(resp->type != FRAME_MEDIA_INDEX_RESP){
+		ESP_LOGW(TAG, "media index: unexpected type=0x%02X", resp->type);
 		free(resp);
 		return ESP_FAIL;
 	}
 	
 	const char* js = (const char*)resp->payload;
+	size_t js_len = resp->len;
+	
+	char key_files[]  ="\files\":";
+	const char* pf = find_key(js, key_files);
+	if(!pf){
+		out->gen = 1;
+		out->count = 0;
+		out->items = NULL;
+		return ESP_OK;
+	}
+	pf += strlen(key_files);
+	pf = skip_ws(pf);
+	if(*pf != '['){
+		ESP_LOGW(TAG, "media index: files is not array");
+		out->gen = 1;
+		out->count = 0;
+		out->items = NULL;
+		return ESP_OK;
+	}
+	pf++;
+	
 	static media_item_t items[USB_ADVERT_MAX_FILES];
 	uint32_t count = 0;
 	
-	
-	
-	out->gen = 1;
-	out->count = count;
-	out->items = malloc(sizeof(media_item_t)*count);
-	memcpy(out->items, items, sizeof(media_item_t)*count);
-	
-	free(resp);
-	return ESP_OK;
+	while(*pf && *pf != ']' && count < USB_ADVERT_MAX_FILES){
+		pf = skip_ws(pf);
+		if(*pf != '{'){
+			if(*pf != ']')break;
+			pf++;
+			continue;
+		}
+		pf++;
+	    memset(&items[count], 0, sizeof(items[count]));
+
+        while (*pf && *pf != '}') {
+            pf = skip_ws(pf);
+            if (strncmp(pf, "\"id\"", 4) == 0) {
+                pf = strstr(pf, ":");
+                pf = skip_ws(++pf);
+                if (*pf == '\"') {
+                    pf++;
+                    char *dst = items[count].id;
+                    while (*pf && *pf != '\"' && (dst - items[count].id) < (int)sizeof(items[count].id)-1) {
+                        *dst++ = *pf++;
+                    }
+                    *dst = 0;
+                    if (*pf == '\"') pf++;
+                }
+            } else if (strncmp(pf, "\"name\"", 6) == 0) {
+                pf = strstr(pf, ":");
+                pf = skip_ws(++pf);
+                if (*pf == '\"') {
+                    pf++;
+                    char *dst = items[count].name;
+                    while (*pf && *pf != '\"' && (dst - items[count].name) < (int)sizeof(items[count].name)-1) {
+                        *dst++ = *pf++;
+                    }
+                    *dst = 0;
+                    if (*pf == '\"') pf++;
+                }
+            } else if (strncmp(pf, "\"size\"", 6) == 0) {
+                pf = strstr(pf, ":");
+                pf = skip_ws(++pf);
+                items[count].size = parse_uint(pf);
+                // 숫자 끝까지 전진
+                while (*pf >= '0' && *pf <= '9') pf++;
+            } else {
+                // 모르는 필드는 다음 ,나 } 까지 스킵
+                while (*pf && *pf != ',' && *pf != '}') pf++;
+            }
+
+            pf = skip_ws(pf);
+            if (*pf == ',') {
+                pf++;
+                continue;
+            }
+        }
+
+        // '}' 위치
+        if (*pf == '}') pf++;
+        items[count].index = count; // 네가 쓰는 구조에 맞게
+
+        count++;
+
+        // 다음 아이템으로
+        pf = strstr(pf, ",");
+        if (!pf) break;
+        pf++;
+    }
+
+    // gen 뽑기 (없으면 1)
+    uint32_t gen = 1;
+    const char* pg = strstr(js, "\"gen\"");
+    if (pg) {
+        pg = strstr(pg, ":");
+        if (pg) {
+            pg++;
+            gen = (uint32_t)parse_uint(pg);
+        }
+    }
+
+    /* 4) out에 옮기기 */
+    out->gen   = gen;
+    out->count = count;
+
+    if (count == 0) {
+        out->items = NULL;
+    } else {
+        out->items = malloc(sizeof(media_item_t) * count);
+        if (!out->items) {
+            ESP_LOGE(TAG, "media index: oom");
+            out->count = 0;
+            return ESP_ERR_NO_MEM;
+        }
+        memcpy(out->items, items, sizeof(media_item_t) * count);
+    }
+
+    return ESP_OK;
 }
 
 esp_err_t uart_link_read_chunk(const char *id, uint64_t off, uint32_t len, uint8_t *out, uint32_t *out_len, uint32_t *out_crc){
-	return ESP_ERR_NOT_SUPPORTED; 
+	if(!id || !out || !out_len || !out_crc) return ESP_ERR_INVALID_ARG;
+	
+	uint8_t pl[1 + 64 + 8 + 4];
+	size_t p = 0;
+	size_t idlen = strlen(id);
+	memcpy(&pl[p], id, idlen + 1);
+	p += idlen + 1;
+	
+	pl[p++] = (uint8_t)(off << 56);
+	pl[p++] = (uint8_t)(off << 48);
+	pl[p++] = (uint8_t)(off << 40);
+	pl[p++] = (uint8_t)(off << 32);
+	pl[p++] = (uint8_t)(off << 24);
+	pl[p++] = (uint8_t)(off << 16);
+	pl[p++] = (uint8_t)(off << 8);
+	pl[p++] = (uint8_t)(off);
+	pl[p++] = (uint8_t)(len << 24);
+	pl[p++] = (uint8_t)(len << 16);
+	pl[p++] = (uint8_t)(len << 8);
+	pl[p++] = (uint8_t)(len);
+	
+	uint8_t fbuf[FRAME_MAX_WIRE];
+	size_t flen = 0;
+	if(frame_build(FRAME_MEDIA_PULL_REQ, pl, (uint16_t)p, fbuf, sizeof(fbuf), &flen)!= FRAME_OK) return ESP_FAIL;
+	uart_write_bytes(LINK_UART_PORT, (const char*)fbuf, flen);
+	
+	frame_t* rx = NULL;
+	if(xQueueReceive(s_rxq, &rx, pdMS_TO_TICKS(1000))!= pdTRUE) return ESP_ERR_TIMEOUT;
+	if(rx->type != FRAME_MEDIA_CHUNK){
+		free(rx);
+		return ESP_FAIL;
+	}
+	
+	if(rx->len > len) rx->len = len;
+	memcpy(out, rx->payload, rx->len);
+	*out_len = rx->len;
+	*out_crc = 0;
+	
+	free(rx);
+	return ESP_OK;
 }
 
 esp_err_t uart_link_auth_req(const char* ssaid, auth_ssaid_resp_t* out)
@@ -218,3 +381,5 @@ esp_err_t uart_link_auth_req(const char* ssaid, auth_ssaid_resp_t* out)
     // 지금 STM32에는 ssaid용 프레임이 없으니까 일단 NOT SUPPORTED
     return ESP_ERR_NOT_SUPPORTED;
 }
+
+bool uart_link_usb_attached(void) { return true; }

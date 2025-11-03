@@ -15,6 +15,7 @@
 #include <stdbool.h>
 
 typedef struct{
+	uint32_t		index;
 	char			id[48];
 	char			name[128];
 	uint64_t		size;
