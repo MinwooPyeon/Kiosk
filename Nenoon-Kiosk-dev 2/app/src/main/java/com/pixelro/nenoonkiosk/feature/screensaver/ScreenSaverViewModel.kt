@@ -34,7 +34,7 @@ class ScreenSaverViewModel
                     exoPlayer.setMediaItem(MediaItem.fromUri(RawResourceDataSource.buildRawResourceUri(R.raw.ad_sub)))
                 }
                 exoPlayer.prepare()
-                exoPlayer.playWhenReady
+                exoPlayer.playWhenReady = true
             }
         }
     }
