@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -386,38 +387,42 @@ private fun TopBar(
             .fillMaxWidth()
             .height(40.dp)
     ) {
+        // 왼쪽: 뒤로가기 버튼
         Row(
             modifier = Modifier
                 .fillMaxHeight()
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
-                ) { onBackToIntro() },
+                ) { onBackToIntro() }
+                .background(
+                    color = Color(0xFFE3F2FD),
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                modifier = Modifier
-                    .padding(top = 4.dp)
-                    .width(28.dp),
-                painter = painterResource(id = R.drawable.icon_back_black),
-                contentDescription = ""
-            )
             Text(
                 text = StringProvider.getStringComposable(R.string.navigation_tosurvey_button),
                 fontSize = titleBackFontSize,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                color = Color(0xFF1E88E5)
             )
         }
+
+        // 중앙: 제목
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = titleText,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Medium
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
             )
         }
+
+        // 오른쪽: 설정 버튼
         SettingsButton(onOpenSettings)
     }
 }

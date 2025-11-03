@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -365,8 +366,8 @@ private fun LandscapeExternalDeviceLayout(
                     Modifier
                         .weight(0.55f)
                         .fillMaxHeight()
-                        .padding(top = 12.dp, start = 20.dp, end = 8.dp, bottom = 8.dp),
-                verticalArrangement = spacedBy(12.dp)
+                        .padding(top = 12.dp, start = 20.dp, end = 8.dp, bottom = 12.dp),
+                verticalArrangement = spacedBy(24.dp)
             ) {
                 // 혈압 검사
                 InspectionSelectionButton(
@@ -448,6 +449,7 @@ private fun TopBarExternal(
                 .fillMaxWidth()
                 .height(40.dp),
     ) {
+        // 왼쪽: 뒤로가기 버튼
         Row(
             modifier =
                 Modifier
@@ -457,17 +459,14 @@ private fun TopBarExternal(
                         interactionSource = remember { MutableInteractionSource() },
                     ) {
                         toIntroScreen()
-                    },
+                    }
+                    .background(
+                        color = Color(0xFFE3F2FD),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Image(
-                modifier =
-                    Modifier
-                        .padding(top = 4.dp)
-                        .width(28.dp),
-                painter = painterResource(id = R.drawable.icon_back_black),
-                contentDescription = "",
-            )
             Text(
                 text =
                     StringProvider.getString(
@@ -475,8 +474,11 @@ private fun TopBarExternal(
                     ),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Medium,
+                color = Color(0xFF1E88E5)
             )
         }
+
+        // 중앙: 제목
         Box(
             modifier =
                 Modifier
@@ -488,10 +490,12 @@ private fun TopBarExternal(
                     StringProvider.getString(
                         R.string.test_list_tittle,
                     ),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Medium,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
             )
         }
+
+        // 오른쪽: 설정 버튼
         SettingsButton(toSettingsScreen)
     }
 }
