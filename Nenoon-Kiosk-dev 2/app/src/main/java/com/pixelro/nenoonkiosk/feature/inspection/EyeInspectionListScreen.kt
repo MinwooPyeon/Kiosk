@@ -7,9 +7,6 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,27 +22,24 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.ui.Advertisement
 import com.pixelro.nenoonkiosk.core.ui.InspectionSelectionButton
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
+import com.pixelro.nenoonkiosk.core.ui.TopBarOrientation
 import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.WarningBar
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 
@@ -69,8 +63,10 @@ fun EyeTestInspectionScreen(
     toTestScreen: (InspectionType) -> Unit,
 ) {
     val warningTextSize = if (savedLanguage == "ru") 10.sp else 16.sp
-    val titleBackFontSize = if (savedLanguage == "es") 12.sp else 24.sp
-    val isLandscapeMode = isLandscape()
+    val isLandscapeMode = kotlin.run {
+        val config = androidx.compose.ui.platform.LocalConfiguration.current
+        config.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+    }
 
     val transition = rememberInfiniteTransition(label = "descShift")
     val shiftVal by transition.animateFloat(
@@ -96,16 +92,12 @@ fun EyeTestInspectionScreen(
         LandscapeLayout(
             savedLanguage = savedLanguage,
             isSenior = isSenior,
-            titleText = StringProvider.getStringComposable(R.string.test_list_tittle),
-            onBackToIntro = onBackToIntro,
-            onOpenSettings = onOpenSettings,
-            titleBackFontSize = titleBackFontSize,
-            isDescriptionShowing = isDescriptionShowing,
-            shiftVal = shiftVal,
             isShortVisualAcuityDone = isShortVisualAcuityDone,
             isPresbyopiaDone = isPresbyopiaDone,
             isAmslerGridDone = isAmslerGridDone,
             isMChartDone = isMChartDone,
+            onBackToIntro = onBackToIntro,
+            onOpenSettings = onOpenSettings,
             onOpenTest = onOpenTest,
             warningTextSize = warningTextSize,
             pagerState = pagerState
@@ -114,16 +106,14 @@ fun EyeTestInspectionScreen(
         PortraitLayout(
             savedLanguage = savedLanguage,
             isSenior = isSenior,
-            titleText = StringProvider.getStringComposable(R.string.test_list_tittle),
-            onBackToIntro = onBackToIntro,
-            onOpenSettings = onOpenSettings,
-            titleBackFontSize = titleBackFontSize,
             isDescriptionShowing = isDescriptionShowing,
             shiftVal = shiftVal,
             isShortVisualAcuityDone = isShortVisualAcuityDone,
             isPresbyopiaDone = isPresbyopiaDone,
             isAmslerGridDone = isAmslerGridDone,
             isMChartDone = isMChartDone,
+            onBackToIntro = onBackToIntro,
+            onOpenSettings = onOpenSettings,
             onOpenTest = onOpenTest,
             warningTextSize = warningTextSize,
             pagerState = pagerState
@@ -136,16 +126,14 @@ fun EyeTestInspectionScreen(
 private fun PortraitLayout(
     savedLanguage: String?,
     isSenior: Boolean,
-    titleText: String,
-    onBackToIntro: () -> Unit,
-    onOpenSettings: () -> Unit,
-    titleBackFontSize: androidx.compose.ui.unit.TextUnit,
     isDescriptionShowing: Boolean,
     shiftVal: Float,
     isShortVisualAcuityDone: Boolean,
     isPresbyopiaDone: Boolean,
     isAmslerGridDone: Boolean,
     isMChartDone: Boolean,
+    onBackToIntro: () -> Unit,
+    onOpenSettings: () -> Unit,
     onOpenTest: (InspectionType) -> Unit,
     warningTextSize: androidx.compose.ui.unit.TextUnit,
     pagerState: PagerState,
@@ -155,12 +143,14 @@ private fun PortraitLayout(
             .fillMaxSize()
             .background(color = Color(0xFFFFFFFF))
     ) {
-        TopBar(
-            savedLanguage = savedLanguage,
-            titleText = titleText,
-            onBackToIntro = onBackToIntro,
-            onOpenSettings = onOpenSettings,
-            titleBackFontSize = titleBackFontSize
+        NenoonTopBar(
+            title = StringProvider.getString(R.string.test_list_tittle),
+            orientation = TopBarOrientation.Vertical,
+            showBackButton = true,
+            onBackClicked = onBackToIntro,
+            actions = { SettingsButton(toSettingsScreen = onOpenSettings) },
+            containerColor = Color.White,
+            contentColor = Color.Black
         )
 
         Spacer(
@@ -190,7 +180,7 @@ private fun PortraitLayout(
             if (isDescriptionShowing) {
                 Text(
                     modifier = Modifier.offset(y = shiftVal.dp).align(Alignment.Center),
-                    text = StringProvider.getStringComposable(R.string.test_list_description),
+                    text = StringProvider.getString(R.string.test_list_description),
                     style = bodyTextStyle,
                     textAlign = TextAlign.Center
                 )
@@ -215,16 +205,12 @@ private fun PortraitLayout(
 private fun LandscapeLayout(
     savedLanguage: String?,
     isSenior: Boolean,
-    titleText: String,
-    onBackToIntro: () -> Unit,
-    onOpenSettings: () -> Unit,
-    titleBackFontSize: androidx.compose.ui.unit.TextUnit,
-    isDescriptionShowing: Boolean,
-    shiftVal: Float,
     isShortVisualAcuityDone: Boolean,
     isPresbyopiaDone: Boolean,
     isAmslerGridDone: Boolean,
     isMChartDone: Boolean,
+    onBackToIntro: () -> Unit,
+    onOpenSettings: () -> Unit,
     onOpenTest: (InspectionType) -> Unit,
     warningTextSize: androidx.compose.ui.unit.TextUnit,
     pagerState: PagerState,
@@ -234,12 +220,14 @@ private fun LandscapeLayout(
             .fillMaxSize()
             .background(color = Color(0xFFFFFFFF))
     ) {
-        TopBar(
-            savedLanguage = savedLanguage,
-            titleText = titleText,
-            onBackToIntro = onBackToIntro,
-            onOpenSettings = onOpenSettings,
-            titleBackFontSize = titleBackFontSize
+        NenoonTopBar(
+            title = StringProvider.getString(R.string.test_list_tittle),
+            orientation = TopBarOrientation.Horizontal,
+            showBackButton = true,
+            onBackClicked = onBackToIntro,
+            actions = { SettingsButton(toSettingsScreen = onOpenSettings) },
+            containerColor = Color.White,
+            contentColor = Color.Black
         )
 
         Spacer(
@@ -304,15 +292,15 @@ private fun LandscapeLayout(
                     .weight(0.55f)
                     .fillMaxHeight()
                     .padding(top = 12.dp, start = 20.dp, end = 8.dp, bottom = 8.dp),
-                verticalArrangement = spacedBy(12.dp)
+                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)
             ) {
                 // 단거리 시력
                 InspectionSelectionButton(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
-                    title1 = StringProvider.getStringComposable(R.string.test_predescription_short_visual_acuity_title1),
-                    title2 = StringProvider.getStringComposable(R.string.test_predescription_short_visual_acuity_title2),
+                    title1 = StringProvider.getString(R.string.test_predescription_short_visual_acuity_title1),
+                    title2 = StringProvider.getString(R.string.test_predescription_short_visual_acuity_title2),
                     alignment = Alignment.CenterStart,
                     isDone = isShortVisualAcuityDone,
                     isSenior = isSenior,
@@ -325,8 +313,8 @@ private fun LandscapeLayout(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
-                    title1 = StringProvider.getStringComposable(R.string.test_predescription_presbyopia_title1),
-                    title2 = StringProvider.getStringComposable(R.string.test_predescription_presbyopia_title2),
+                    title1 = StringProvider.getString(R.string.test_predescription_presbyopia_title1),
+                    title2 = StringProvider.getString(R.string.test_predescription_presbyopia_title2),
                     alignment = Alignment.CenterStart,
                     isDone = isPresbyopiaDone,
                     isSenior = isSenior,
@@ -339,8 +327,8 @@ private fun LandscapeLayout(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
-                    title1 = StringProvider.getStringComposable(R.string.test_predescription_amsler_title1),
-                    title2 = StringProvider.getStringComposable(R.string.test_predescription_amsler_title2),
+                    title1 = StringProvider.getString(R.string.test_predescription_amsler_title1),
+                    title2 = StringProvider.getString(R.string.test_predescription_amsler_title2),
                     alignment = Alignment.CenterStart,
                     isDone = isAmslerGridDone,
                     isSenior = isSenior,
@@ -353,8 +341,8 @@ private fun LandscapeLayout(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
-                    title1 = StringProvider.getStringComposable(R.string.test_predescription_mchart_title1),
-                    title2 = StringProvider.getStringComposable(R.string.test_predescription_mchart_title2),
+                    title1 = StringProvider.getString(R.string.test_predescription_mchart_title1),
+                    title2 = StringProvider.getString(R.string.test_predescription_mchart_title2),
                     alignment = Alignment.CenterStart,
                     isDone = isMChartDone,
                     isSenior = isSenior,
@@ -363,65 +351,6 @@ private fun LandscapeLayout(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun TopBar(
-    savedLanguage: String?,
-    titleText: String,
-    onBackToIntro: () -> Unit,
-    onOpenSettings: () -> Unit,
-    titleBackFontSize: androidx.compose.ui.unit.TextUnit
-) {
-    Box(
-        modifier = Modifier
-            .padding(
-                start = 40.dp,
-                top = (GlobalValue.statusBarPadding + 20).dp,
-                end = 40.dp,
-                bottom = 20.dp
-            )
-            .fillMaxWidth()
-            .height(40.dp)
-    ) {
-        // 왼쪽: 뒤로가기 버튼
-        Row(
-            modifier = Modifier
-                .fillMaxHeight()
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) { onBackToIntro() }
-                .background(
-                    color = Color(0xFFE3F2FD),
-                    shape = RoundedCornerShape(8.dp)
-                )
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = StringProvider.getStringComposable(R.string.navigation_tosurvey_button),
-                fontSize = titleBackFontSize,
-                fontWeight = FontWeight.Medium,
-                color = Color(0xFF1E88E5)
-            )
-        }
-
-        // 중앙: 제목
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = titleText,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        // 오른쪽: 설정 버튼
-        SettingsButton(onOpenSettings)
     }
 }
 
@@ -439,8 +368,8 @@ private fun TestListSection(
 
         InspectionSelectionButton(
             modifier = itemModifier,
-            title1 = StringProvider.getStringComposable(R.string.test_predescription_short_visual_acuity_title1),
-            title2 = StringProvider.getStringComposable(R.string.test_predescription_short_visual_acuity_title2),
+            title1 = StringProvider.getString(R.string.test_predescription_short_visual_acuity_title1),
+            title2 = StringProvider.getString(R.string.test_predescription_short_visual_acuity_title2),
             alignment = Alignment.CenterStart,
             isDone = isShortVisualAcuityDone,
             isSenior = isSenior,
@@ -452,8 +381,8 @@ private fun TestListSection(
 
         InspectionSelectionButton(
             modifier = itemModifier,
-            title1 = StringProvider.getStringComposable(R.string.test_predescription_presbyopia_title1),
-            title2 = StringProvider.getStringComposable(R.string.test_predescription_presbyopia_title2),
+            title1 = StringProvider.getString(R.string.test_predescription_presbyopia_title1),
+            title2 = StringProvider.getString(R.string.test_predescription_presbyopia_title2),
             alignment = Alignment.CenterStart,
             isDone = isPresbyopiaDone,
             isSenior = isSenior,
@@ -465,8 +394,8 @@ private fun TestListSection(
 
         InspectionSelectionButton(
             modifier = itemModifier,
-            title1 = StringProvider.getStringComposable(R.string.test_predescription_amsler_title1),
-            title2 = StringProvider.getStringComposable(R.string.test_predescription_amsler_title2),
+            title1 = StringProvider.getString(R.string.test_predescription_amsler_title1),
+            title2 = StringProvider.getString(R.string.test_predescription_amsler_title2),
             alignment = Alignment.CenterStart,
             isDone = isAmslerGridDone,
             isSenior = isSenior,
@@ -478,8 +407,8 @@ private fun TestListSection(
 
         InspectionSelectionButton(
             modifier = itemModifier,
-            title1 = StringProvider.getStringComposable(R.string.test_predescription_mchart_title1),
-            title2 = StringProvider.getStringComposable(R.string.test_predescription_mchart_title2),
+            title1 = StringProvider.getString(R.string.test_predescription_mchart_title1),
+            title2 = StringProvider.getString(R.string.test_predescription_mchart_title2),
             alignment = Alignment.CenterStart,
             isDone = isMChartDone,
             isSenior = isSenior,

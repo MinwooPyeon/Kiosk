@@ -15,10 +15,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -61,8 +58,10 @@ import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.Advertisement
 import com.pixelro.nenoonkiosk.core.ui.InspectionSelectionButton
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
+import com.pixelro.nenoonkiosk.core.ui.TopBarOrientation
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
@@ -202,10 +201,14 @@ private fun PortraitExternalDeviceLayout(
                 .fillMaxSize()
                 .background(color = Color(0xffffffff)),
     ) {
-        TopBarExternal(
-            savedLanguage = savedLanguage,
-            toIntroScreen = toIntroScreen,
-            toSettingsScreen = toSettingsScreen,
+        NenoonTopBar(
+            title = StringProvider.getString(R.string.test_list_tittle),
+            orientation = TopBarOrientation.Vertical,
+            showBackButton = true,
+            onBackClicked = toIntroScreen,
+            actions = { SettingsButton(toSettingsScreen = toSettingsScreen) },
+            containerColor = Color.White,
+            contentColor = Color.Black
         )
 
         Spacer(
@@ -293,10 +296,14 @@ private fun LandscapeExternalDeviceLayout(
                 .fillMaxSize()
                 .background(color = Color(0xffffffff)),
     ) {
-        TopBarExternal(
-            savedLanguage = savedLanguage,
-            toIntroScreen = toIntroScreen,
-            toSettingsScreen = toSettingsScreen,
+        NenoonTopBar(
+            title = StringProvider.getString(R.string.test_list_tittle),
+            orientation = TopBarOrientation.Horizontal,
+            showBackButton = true,
+            onBackClicked = toIntroScreen,
+            actions = { SettingsButton(toSettingsScreen = toSettingsScreen) },
+            containerColor = Color.White,
+            contentColor = Color.Black
         )
 
         Spacer(
@@ -367,7 +374,7 @@ private fun LandscapeExternalDeviceLayout(
                         .weight(0.55f)
                         .fillMaxHeight()
                         .padding(top = 12.dp, start = 20.dp, end = 8.dp, bottom = 12.dp),
-                verticalArrangement = spacedBy(24.dp)
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 // 혈압 검사
                 InspectionSelectionButton(
@@ -428,75 +435,6 @@ private fun LandscapeExternalDeviceLayout(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun TopBarExternal(
-    savedLanguage: String?,
-    toIntroScreen: () -> Unit,
-    toSettingsScreen: () -> Unit,
-) {
-    Box(
-        modifier =
-            Modifier
-                .padding(
-                    start = 40.dp,
-                    top = (GlobalValue.statusBarPadding + 20).dp,
-                    end = 40.dp,
-                    bottom = 20.dp,
-                )
-                .fillMaxWidth()
-                .height(40.dp),
-    ) {
-        // 왼쪽: 뒤로가기 버튼
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxHeight()
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
-                    ) {
-                        toIntroScreen()
-                    }
-                    .background(
-                        color = Color(0xFFE3F2FD),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text =
-                    StringProvider.getString(
-                        R.string.navigation_tosurvey_button,
-                    ),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color(0xFF1E88E5)
-            )
-        }
-
-        // 중앙: 제목
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text =
-                    StringProvider.getString(
-                        R.string.test_list_tittle,
-                    ),
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-            )
-        }
-
-        // 오른쪽: 설정 버튼
-        SettingsButton(toSettingsScreen)
     }
 }
 
