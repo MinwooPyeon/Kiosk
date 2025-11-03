@@ -1,17 +1,28 @@
 package com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.start
 
+import android.bluetooth.BluetoothDevice
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.R
@@ -24,6 +35,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BCon
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BStartEvent
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BStartUiState
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BP170BStartScreen(
     state: BP170BStartUiState,
@@ -44,8 +56,111 @@ fun BP170BStartScreen(
             verticalArrangement = Arrangement.Bottom,
         ) {
             when (state.screenState) {
-                BP170BConnectionScreenState.Standby,
-                BP170BConnectionScreenState.Connecting,
+                BP170BConnectionScreenState.Standby -> {
+                    InstructionItem(
+                        titleText = stringResource(R.string.bp170b_step_1_title),
+                        prefix = stringResource(R.string.bp170b_step_1_prefix),
+                        accent = stringResource(R.string.bp170b_step_1_accent),
+                        suffix = stringResource(R.string.bp170b_step_1_suffix),
+                    )
+                    Spacer(modifier = Modifier.height(40.dp))
+                    InstructionItem(
+                        titleText = stringResource(R.string.bp170b_step_2_title),
+                        prefix = stringResource(R.string.bp170b_step_2_prefix),
+                        accent = stringResource(R.string.bp170b_step_2_accent),
+                        suffix = stringResource(R.string.bp170b_step_2_suffix),
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    PrimaryButton(
+                        onClick = { onEvent(BP170BStartEvent.RetryScan) },
+                        text = stringResource(R.string.blood_pressure_monitor_start_connection),
+                        modifier = Modifier.padding(top = 180.dp, bottom = 20.dp),
+                    )
+                }
+
+                BP170BConnectionScreenState.DeviceSelection -> {
+                    if (state.availableDevices.isNotEmpty()) {
+                        StyledText(
+                            text = stringResource(R.string.blood_pressure_monitor_select_device),
+                            style = TextStyle.Message,
+                            modifier = Modifier.padding(top = 60.dp),
+                        )
+                        LazyColumn(
+                            verticalArrangement = Arrangement.Top,
+                            horizontalAlignment = Alignment.Start,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 20.dp),
+                        ) {
+                            items(state.availableDevices) { device ->
+                                ListItem(
+                                    text = {
+                                        StyledText(
+                                            text = device.name ?: stringResource(R.string.dynamometer_unknown_device_name),
+                                            textAlign = TextAlign.Start,
+                                        )
+                                    },
+                                    secondaryText = {
+                                        StyledText(
+                                            text = device.address,
+                                            style = TextStyle.Hint,
+                                            textAlign = TextAlign.Start,
+                                        )
+                                    },
+                                    modifier = Modifier
+                                        .border(
+                                            width = 1.dp,
+                                            color = colorResource(R.color.gray2),
+                                            shape = RoundedCornerShape(8.dp),
+                                        )
+                                        .clickable {
+                                            onEvent(BP170BStartEvent.DeviceSelected(device))
+                                        },
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                    } else {
+                        if (state.isConnecting) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                            ) {
+                                ProgressIndicator()
+                                StyledText(
+                                    text = stringResource(R.string.blood_pressure_monitor_searching_device),
+                                    modifier = Modifier.padding(bottom = 180.dp),
+                                )
+                            }
+                        } else {
+                            StyledText(
+                                text = stringResource(R.string.blood_pressure_monitor_connection_error),
+                                style = TextStyle.Error,
+                            )
+                            PrimaryButton(
+                                onClick = { onEvent(BP170BStartEvent.RetryScan) },
+                                text = stringResource(R.string.blood_pressure_monitor_retry_connection),
+                                modifier = Modifier.padding(top = 180.dp, bottom = 20.dp),
+                            )
+                        }
+                    }
+                }
+
+                BP170BConnectionScreenState.Connecting -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        ProgressIndicator()
+                        StyledText(
+                            text = stringResource(R.string.blood_pressure_monitor_connecting),
+                            modifier = Modifier.padding(bottom = 180.dp),
+                        )
+                    }
+                }
+
                 BP170BConnectionScreenState.AwaitingStart -> {
                     InstructionItem(
                         titleText = stringResource(R.string.bp170b_step_1_title),
