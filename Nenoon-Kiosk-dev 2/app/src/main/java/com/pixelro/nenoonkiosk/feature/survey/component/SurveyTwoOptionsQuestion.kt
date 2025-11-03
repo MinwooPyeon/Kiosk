@@ -38,7 +38,7 @@ fun SurveyTwoOptionsQuestion(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        SurveyQuestionText(text = questionText)
+        //SurveyQuestionText(text = questionText)
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -54,7 +54,7 @@ fun SurveyTwoOptionsQuestion(
                 modifier =
                     Modifier
                         .weight(1f)
-                        .fillMaxHeight(0.7f),
+                        .height(300.dp),
             )
 
             SurveyOptionButton(
@@ -64,7 +64,7 @@ fun SurveyTwoOptionsQuestion(
                 modifier =
                     Modifier
                         .weight(1f)
-                        .fillMaxHeight(0.7f),
+                        .height(300.dp),
             )
         }
     }
