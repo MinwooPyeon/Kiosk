@@ -1,6 +1,7 @@
 package com.pixelro.nenoonkiosk.core.ui
 
 import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,8 +10,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -76,6 +80,8 @@ fun InspectionSelectionButton(
         remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
     val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
 
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+
     val boxTimeTextSize = if (savedLanguage in listOf("ru", "en")) 16.sp else 20.sp
     val approximateTextSize = if (savedLanguage in listOf("ru", "en")) 24.sp else 30.sp
     val textSize = getDynamicFontSize(isSenior, large, savedLanguage, time).sp
@@ -83,7 +89,7 @@ fun InspectionSelectionButton(
     Card(
         elevation = CardDefaults.cardElevation(0.dp),
         modifier = modifier
-            .padding(horizontal = 40.dp)
+            .padding(horizontal = if (isLandscape) 0.dp else 40.dp)
             .fillMaxWidth()
             .border(
                 border = BorderStroke(1.dp, LightGray),
@@ -91,73 +97,155 @@ fun InspectionSelectionButton(
             ),
         colors = CardDefaults.cardColors(containerColor = White),
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 40.dp)
-                .clickable(enabled = enabled) { onClickMethod() },
-            contentAlignment = alignment,
-        ) {
-            Text(
-                text = buildString {
-                    append(title1)
-                    append(title2)
-                },
-                fontFamily = defaultFont,
-                fontSize = textSize,
-                fontWeight = FontWeight.Bold,
-                color = if (enabled) Color.Black else LightGray,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.align(
-                    if (icon != null) Alignment.CenterEnd else Alignment.CenterStart
-                )
-            )
-
-            icon?.let {
-                Image(
-                    modifier = Modifier
-                        .size(80.dp)
-                        .align(Alignment.CenterStart),
-                    painter = painterResource(id = it),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop
-                )
-            }
-
-            if (time != 0) {
-                Image(
-                    modifier = Modifier
-                        .padding(end = 40.dp)
-                        .rotate(180f)
-                        .align(Alignment.CenterEnd),
-                    painter = painterResource(id = R.drawable.icon_back_black),
-                    contentDescription = null
-                )
-
+        if (isLandscape) {
+            // 가로 모드: 왼쪽 텍스트, 오른쪽 시간 정보
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp, vertical = 8.dp)
+                    .clickable(enabled = enabled) { onClickMethod() },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // 왼쪽: 제목
                 Column(
                     modifier = Modifier
-                        .padding(end = 120.dp)
+                        .weight(1f)
                         .fillMaxSize(),
-                    horizontalAlignment = Alignment.End,
+                    horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        modifier = Modifier.width(150.dp),
-                        text = stringResource(R.string.box_time_required),
+                        text = title1,
                         fontFamily = defaultFont,
-                        fontSize = boxTimeTextSize * (if (large) LARGE_SCALE else 1f),
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Medium,
-                    )
-                    Text(
-                        modifier = Modifier.width(150.dp),
-                        text = stringResource(R.string.box_approximate) +
-                                " $time " + stringResource(R.string.box_minute),
-                        fontFamily = defaultFont,
-                        fontSize = approximateTextSize * (if (large) LARGE_SCALE else 1f),
-                        textAlign = TextAlign.Center,
+                        fontSize = textSize * 0.75f,
                         fontWeight = FontWeight.Bold,
+                        color = if (enabled) Color.Black else LightGray,
+                        textAlign = TextAlign.Start
                     )
+                    if (title2.isNotEmpty()) {
+                        Text(
+                            text = title2,
+                            fontFamily = defaultFont,
+                            fontSize = textSize * 0.65f,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.Black,
+                            textAlign = TextAlign.Start
+                        )
+                    }
+                }
+
+                // 오른쪽: 시간 정보
+                if (time != 0) {
+                    Row(
+                        modifier = Modifier
+                            .weight(0.8f)
+                            .fillMaxSize(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = stringResource(R.string.box_time_required),
+                                fontFamily = defaultFont,
+                                fontSize = boxTimeTextSize * 0.75f,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Medium,
+                            )
+                            Text(
+                                text = stringResource(R.string.box_approximate) +
+                                        " $time " + stringResource(R.string.box_minute),
+                                fontFamily = defaultFont,
+                                fontSize = approximateTextSize * 0.75f,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+
+                        Image(
+                            modifier = Modifier
+                                .padding(start = 12.dp)
+                                .rotate(180f)
+                                .size(24.dp),
+                            painter = painterResource(id = R.drawable.icon_back_black),
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
+        } else {
+            // 세로 모드: 원본 스타일 유지
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 40.dp)
+                    .clickable(enabled = enabled) { onClickMethod() },
+                contentAlignment = alignment,
+            ) {
+                Text(
+                    text = buildString {
+                        append(title1)
+                        append(title2)
+                    },
+                    fontFamily = defaultFont,
+                    fontSize = textSize,
+                    fontWeight = FontWeight.Bold,
+                    color = if (enabled) Color.Black else LightGray,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.align(
+                        if (icon != null) Alignment.CenterEnd else Alignment.CenterStart
+                    )
+                )
+
+                icon?.let {
+                    Image(
+                        modifier = Modifier
+                            .size(80.dp)
+                            .align(Alignment.CenterStart),
+                        painter = painterResource(id = it),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
+                if (time != 0) {
+                    Image(
+                        modifier = Modifier
+                            .padding(end = 40.dp)
+                            .rotate(180f)
+                            .align(Alignment.CenterEnd),
+                        painter = painterResource(id = R.drawable.icon_back_black),
+                        contentDescription = null
+                    )
+
+                    Column(
+                        modifier = Modifier
+                            .padding(end = 120.dp)
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            modifier = Modifier.width(150.dp),
+                            text = stringResource(R.string.box_time_required),
+                            fontFamily = defaultFont,
+                            fontSize = boxTimeTextSize * (if (large) LARGE_SCALE else 1f),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Medium,
+                        )
+                        Text(
+                            modifier = Modifier.width(150.dp),
+                            text = stringResource(R.string.box_approximate) +
+                                    " $time " + stringResource(R.string.box_minute),
+                            fontFamily = defaultFont,
+                            fontSize = approximateTextSize * (if (large) LARGE_SCALE else 1f),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
                 }
             }
         }
@@ -171,7 +259,7 @@ fun InspectionSelectionButtonPreview_IconOnly() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(neNoon_blue) // 전체 배경 파란색
+                .background(neNoon_blue)
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -181,13 +269,73 @@ fun InspectionSelectionButtonPreview_IconOnly() {
                     .padding(horizontal = 16.dp),
                 large = false,
                 alignment = Alignment.CenterStart,
-                title1 = stringResource(R.string.eye_test), // 예시 텍스트
-                title2 = "", // 🔹 title2 없음
+                title1 = stringResource(R.string.eye_test),
+                title2 = "",
                 onClickMethod = {},
                 isDone = false,
                 isSenior = false,
                 time = 0,
-                icon = R.drawable.eye_test_icon, // 🔹 아이콘 표시
+                icon = R.drawable.eye_test_icon,
+                enabled = true
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Inspection Button - Title1 & Title2 / 세로모드", widthDp = 850, heightDp = 140)
+@Composable
+fun InspectionSelectionButtonPreview_Portrait() {
+    NenoonKioskTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(neNoon_blue)
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            InspectionSelectionButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                large = false,
+                alignment = Alignment.CenterStart,
+                title1 = "근거리 시력",
+                title2 = "약 2분",
+                onClickMethod = {},
+                isDone = false,
+                isSenior = false,
+                time = 2,
+                icon = null,
+                enabled = true
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Inspection Button - Title1 & Title2 / 가로모드", widthDp = 280, heightDp = 90)
+@Composable
+fun InspectionSelectionButtonPreview_Landscape() {
+    NenoonKioskTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(neNoon_blue)
+                .padding(4.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            InspectionSelectionButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(90.dp),
+                large = false,
+                alignment = Alignment.CenterStart,
+                title1 = "근거리 시력",
+                title2 = "약 2분",
+                onClickMethod = {},
+                isDone = false,
+                isSenior = false,
+                time = 2,
+                icon = null,
                 enabled = true
             )
         }

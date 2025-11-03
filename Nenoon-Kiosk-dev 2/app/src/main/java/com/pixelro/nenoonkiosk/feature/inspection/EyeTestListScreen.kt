@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -45,6 +46,7 @@ import com.pixelro.nenoonkiosk.core.ui.InspectionSelectionButton
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.WarningBar
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 
@@ -69,6 +71,7 @@ fun EyeTestInspectionScreen(
 ) {
     val warningTextSize = if (savedLanguage == "ru") 10.sp else 16.sp
     val titleBackFontSize = if (savedLanguage == "es") 12.sp else 24.sp
+    val isLandscapeMode = isLandscape()
 
     val transition = rememberInfiniteTransition(label = "descShift")
     val shiftVal by transition.animateFloat(
@@ -90,6 +93,66 @@ fun EyeTestInspectionScreen(
         )
     }
 
+    if (isLandscapeMode) {
+        // 가로 모드 레이아웃
+        LandscapeLayout(
+            savedLanguage = savedLanguage,
+            isSenior = isSenior,
+            titleText = StringProvider.getStringComposable(R.string.test_list_tittle),
+            onBackToIntro = onBackToIntro,
+            onOpenSettings = onOpenSettings,
+            titleBackFontSize = titleBackFontSize,
+            isDescriptionShowing = isDescriptionShowing,
+            shiftVal = shiftVal,
+            isShortVisualAcuityDone = isShortVisualAcuityDone,
+            isPresbyopiaDone = isPresbyopiaDone,
+            isAmslerGridDone = isAmslerGridDone,
+            isMChartDone = isMChartDone,
+            onOpenTest = onOpenTest,
+            warningTextSize = warningTextSize,
+            pagerState = pagerState
+        )
+    } else {
+        // 세로 모드 레이아웃 (기존)
+        PortraitLayout(
+            savedLanguage = savedLanguage,
+            isSenior = isSenior,
+            titleText = StringProvider.getStringComposable(R.string.test_list_tittle),
+            onBackToIntro = onBackToIntro,
+            onOpenSettings = onOpenSettings,
+            titleBackFontSize = titleBackFontSize,
+            isDescriptionShowing = isDescriptionShowing,
+            shiftVal = shiftVal,
+            isShortVisualAcuityDone = isShortVisualAcuityDone,
+            isPresbyopiaDone = isPresbyopiaDone,
+            isAmslerGridDone = isAmslerGridDone,
+            isMChartDone = isMChartDone,
+            onOpenTest = onOpenTest,
+            warningTextSize = warningTextSize,
+            pagerState = pagerState
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun PortraitLayout(
+    savedLanguage: String?,
+    isSenior: Boolean,
+    titleText: String,
+    onBackToIntro: () -> Unit,
+    onOpenSettings: () -> Unit,
+    titleBackFontSize: androidx.compose.ui.unit.TextUnit,
+    isDescriptionShowing: Boolean,
+    shiftVal: Float,
+    isShortVisualAcuityDone: Boolean,
+    isPresbyopiaDone: Boolean,
+    isAmslerGridDone: Boolean,
+    isMChartDone: Boolean,
+    onOpenTest: (InspectionType) -> Unit,
+    warningTextSize: androidx.compose.ui.unit.TextUnit,
+    pagerState: PagerState,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -97,7 +160,7 @@ fun EyeTestInspectionScreen(
     ) {
         TopBar(
             savedLanguage = savedLanguage,
-            titleText = StringProvider.getStringComposable(R.string.test_list_tittle),
+            titleText = titleText,
             onBackToIntro = onBackToIntro,
             onOpenSettings = onOpenSettings,
             titleBackFontSize = titleBackFontSize
@@ -137,7 +200,6 @@ fun EyeTestInspectionScreen(
             }
         }
 
-        // 검사 목록
         TestListSection(
             isSenior = isSenior,
             isShortVisualAcuityDone = isShortVisualAcuityDone,
@@ -150,6 +212,219 @@ fun EyeTestInspectionScreen(
         WarningBar(warningTextSize = warningTextSize)
     }
 }
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun LandscapeLayout(
+    savedLanguage: String?,
+    isSenior: Boolean,
+    titleText: String,
+    onBackToIntro: () -> Unit,
+    onOpenSettings: () -> Unit,
+    titleBackFontSize: androidx.compose.ui.unit.TextUnit,
+    isDescriptionShowing: Boolean,
+    shiftVal: Float,
+    isShortVisualAcuityDone: Boolean,
+    isPresbyopiaDone: Boolean,
+    isAmslerGridDone: Boolean,
+    isMChartDone: Boolean,
+    onOpenTest: (InspectionType) -> Unit,
+    warningTextSize: androidx.compose.ui.unit.TextUnit,
+    pagerState: PagerState,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xFFFFFFFF))
+    ) {
+        // TopBar
+        Box(
+            modifier = Modifier
+                .padding(
+                    start = 30.dp,
+                    top = GlobalValue.statusBarPadding.dp + 12.dp,
+                    end = 30.dp,
+                    bottom = 12.dp
+                )
+                .fillMaxWidth()
+                .height(40.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) { onBackToIntro() },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .width(24.dp),
+                    painter = painterResource(id = R.drawable.icon_back_black),
+                    contentDescription = ""
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = StringProvider.getStringComposable(R.string.navigation_tosurvey_button),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = titleText,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            SettingsButton(onOpenSettings)
+        }
+
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(color = Color(0xFFEBEBEB))
+        )
+
+        // 가로 모드 본체
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 30.dp, end = 30.dp, bottom = 16.dp)
+        ) {
+            // 왼쪽: 광고 또는 설명
+            Box(
+                modifier = Modifier
+                    .weight(0.45f)
+                    .fillMaxHeight()
+                    .padding(top = 16.dp, end = 20.dp),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                if (!isSenior) {
+                    HorizontalPager(
+                        contentPadding = PaddingValues(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                        pageSpacing = 20.dp,
+                        state = pagerState,
+                        modifier = Modifier.fillMaxSize()
+                    ) { page ->
+                        Advertisement(page)
+                    }
+                } else {
+                    // 실버 세대용 설명 표시
+                    if (isDescriptionShowing) {
+                        Text(
+                            modifier = Modifier
+                                .offset(y = shiftVal.dp)
+                                .align(Alignment.Center)
+                                .padding(horizontal = 16.dp),
+                            text = StringProvider.getStringComposable(R.string.test_list_description),
+                            style = bodyTextStyle,
+                            textAlign = TextAlign.Center,
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+            }
+
+            // 구분선
+            Spacer(
+                modifier = Modifier
+                    .width(1.dp)
+                    .fillMaxHeight()
+                    .background(color = Color(0xFFEBEBEB))
+            )
+
+            // 오른쪽: 검사 목록
+            Column(
+                modifier = Modifier
+                    .weight(0.55f)
+                    .fillMaxHeight()
+                    .padding(top = 16.dp, start = 20.dp, end = 8.dp, bottom = 8.dp)
+            ) {
+                // 단거리 시력
+                InspectionSelectionButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    title1 = StringProvider.getStringComposable(R.string.test_predescription_short_visual_acuity_title1),
+                    title2 = StringProvider.getStringComposable(R.string.test_predescription_short_visual_acuity_title2),
+                    alignment = Alignment.CenterStart,
+                    isDone = isShortVisualAcuityDone,
+                    isSenior = isSenior,
+                    time = 2,
+                    onClickMethod = { onOpenTest(InspectionType.ShortDistanceVisualAcuity) }
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                // 노안(안구 나이)
+                InspectionSelectionButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    title1 = StringProvider.getStringComposable(R.string.test_predescription_presbyopia_title1),
+                    title2 = StringProvider.getStringComposable(R.string.test_predescription_presbyopia_title2),
+                    alignment = Alignment.CenterStart,
+                    isDone = isPresbyopiaDone,
+                    isSenior = isSenior,
+                    time = 3,
+                    onClickMethod = { onOpenTest(InspectionType.Presbyopia) }
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                // 암슬러
+                InspectionSelectionButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    title1 = StringProvider.getStringComposable(R.string.test_predescription_amsler_title1),
+                    title2 = StringProvider.getStringComposable(R.string.test_predescription_amsler_title2),
+                    alignment = Alignment.CenterStart,
+                    isDone = isAmslerGridDone,
+                    isSenior = isSenior,
+                    time = 2,
+                    onClickMethod = { onOpenTest(InspectionType.AmslerGrid) }
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                // M-Chart
+                InspectionSelectionButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    title1 = StringProvider.getStringComposable(R.string.test_predescription_mchart_title1),
+                    title2 = StringProvider.getStringComposable(R.string.test_predescription_mchart_title2),
+                    alignment = Alignment.CenterStart,
+                    isDone = isMChartDone,
+                    isSenior = isSenior,
+                    time = 2,
+                    onClickMethod = { onOpenTest(InspectionType.MChart) }
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                // 경고 메시지
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.6f),
+                    contentAlignment = Alignment.BottomStart
+                ) {
+                    WarningBar(warningTextSize = warningTextSize)
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 private fun TopBar(
@@ -218,7 +493,6 @@ private fun TestListSection(
     Column {
         val itemModifier = Modifier.weight(1f)
 
-        // 단거리 시력
         InspectionSelectionButton(
             modifier = itemModifier,
             title1 = StringProvider.getStringComposable(R.string.test_predescription_short_visual_acuity_title1),
@@ -232,7 +506,6 @@ private fun TestListSection(
 
         Spacer(Modifier.height(20.dp))
 
-        // 노안(안구 나이)
         InspectionSelectionButton(
             modifier = itemModifier,
             title1 = StringProvider.getStringComposable(R.string.test_predescription_presbyopia_title1),
@@ -246,7 +519,6 @@ private fun TestListSection(
 
         Spacer(Modifier.height(20.dp))
 
-        // 암슬러
         InspectionSelectionButton(
             modifier = itemModifier,
             title1 = StringProvider.getStringComposable(R.string.test_predescription_amsler_title1),
@@ -260,7 +532,6 @@ private fun TestListSection(
 
         Spacer(Modifier.height(20.dp))
 
-        // M-Chart
         InspectionSelectionButton(
             modifier = itemModifier,
             title1 = StringProvider.getStringComposable(R.string.test_predescription_mchart_title1),
@@ -276,10 +547,11 @@ private fun TestListSection(
     }
 }
 
+// Preview
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "EyeTestList - Senior False", apiLevel = 34)
+@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "EyeTestList - Senior False - Portrait", apiLevel = 34)
 @Composable
-private fun Preview_EyeTestList_SeniorFalse() {
+private fun Preview_EyeTestList_SeniorFalse_Portrait() {
     val fakePager = rememberPagerState(
         initialPage = Int.MAX_VALUE / 2,
         pageCount = { Int.MAX_VALUE }
@@ -304,9 +576,9 @@ private fun Preview_EyeTestList_SeniorFalse() {
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "EyeTestList - Senior True (No Ads)", apiLevel = 34)
+@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "EyeTestList - Senior True - Portrait (No Ads)", apiLevel = 34)
 @Composable
-private fun Preview_EyeTestList_SeniorTrue() {
+private fun Preview_EyeTestList_SeniorTrue_Portrait() {
     val fakePager = rememberPagerState(
         initialPage = Int.MAX_VALUE / 2,
         pageCount = { Int.MAX_VALUE }
@@ -315,6 +587,60 @@ private fun Preview_EyeTestList_SeniorTrue() {
         savedLanguage = "es",
         isSenior = true,
         isDialogShowing = true,
+        selectedTest = InspectionType.MChart,
+        isPresbyopiaDone = true,
+        isShortVisualAcuityDone = true,
+        isAmslerGridDone = false,
+        isMChartDone = false,
+        isDescriptionShowing = true,
+        pagerState = fakePager,
+        onBackToIntro = {},
+        onOpenSettings = {},
+        onOpenTest = {},
+        onDismissDialog = {},
+        toTestScreen = {}
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Preview(showBackground = true, widthDp = 1422, heightDp = 888, name = "EyeTestList - Senior False - Landscape", apiLevel = 34)
+@Composable
+private fun Preview_EyeTestList_SeniorFalse_Landscape() {
+    val fakePager = rememberPagerState(
+        initialPage = Int.MAX_VALUE / 2,
+        pageCount = { Int.MAX_VALUE }
+    )
+    EyeTestInspectionScreen(
+        savedLanguage = "ko",
+        isSenior = false,
+        isDialogShowing = false,
+        selectedTest = InspectionType.None,
+        isPresbyopiaDone = false,
+        isShortVisualAcuityDone = true,
+        isAmslerGridDone = false,
+        isMChartDone = true,
+        isDescriptionShowing = true,
+        pagerState = fakePager,
+        onBackToIntro = {},
+        onOpenSettings = {},
+        onOpenTest = {},
+        onDismissDialog = {},
+        toTestScreen = {}
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Preview(showBackground = true, widthDp = 1422, heightDp = 888, name = "EyeTestList - Senior True - Landscape (No Ads)", apiLevel = 34)
+@Composable
+private fun Preview_EyeTestList_SeniorTrue_Landscape() {
+    val fakePager = rememberPagerState(
+        initialPage = Int.MAX_VALUE / 2,
+        pageCount = { Int.MAX_VALUE }
+    )
+    EyeTestInspectionScreen(
+        savedLanguage = "ko",
+        isSenior = true,
+        isDialogShowing = false,
         selectedTest = InspectionType.MChart,
         isPresbyopiaDone = true,
         isShortVisualAcuityDone = true,
