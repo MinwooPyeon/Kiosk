@@ -73,20 +73,51 @@ object InGripManager {
         isScanning = true
         val deviceListener =
             object : BluetoothAdapter.LeScanCallback {
+                @SuppressLint("MissingPermission")
                 override fun onLeScan(
                     device: BluetoothDevice,
                     rssi: Int,
                     scanRecord: ByteArray?,
                 ) {
+                    if (InGripManager.device?.address == device.address) {
+                        return
+                    }
+                    
                     if (device.name?.startsWith("InBodyHGS") == true && !_availableDevices.value.contains(device)) {
-                        Log.d(TAG, "Found InBodyHGS device: ${device.name} - ${device.address}")
-                        managerScope.launch {
-                            _availableDevices.value += device
+                        val connectionState = bluetoothManager?.getConnectionState(device, BluetoothProfile.GATT)
+                        val isAlreadyConnected = connectionState == BluetoothProfile.STATE_CONNECTED || 
+                                                 connectionState == BluetoothProfile.STATE_CONNECTING
+                        
+                        if (!isAlreadyConnected) {
+                            Log.d(TAG, "Found InBodyHGS device: ${device.name} - ${device.address}")
+                            _availableDevices.value = _availableDevices.value + device
+                        } else {
+                            Log.d(TAG, "Skipping already connected device: ${device.name} - ${device.address} (state: $connectionState)")
                         }
                     }
                 }
             }
         bluetoothAdapter?.startLeScan(deviceListener)
+        
+        managerScope.launch {
+            while (isScanning) {
+                delay(200)
+                if (isScanning) {
+                    _availableDevices.value = _availableDevices.value.filter { scanDevice ->
+                        if (InGripManager.device?.address == scanDevice.address) {
+                            return@filter false
+                        }
+                        val state = bluetoothManager?.getConnectionState(scanDevice, BluetoothProfile.GATT) ?: BluetoothProfile.STATE_DISCONNECTED
+                        val isConnected = state == BluetoothProfile.STATE_CONNECTED || state == BluetoothProfile.STATE_CONNECTING
+                        if (isConnected) {
+                            Log.d(TAG, "Filtering out connected device during scan: ${scanDevice.name} - ${scanDevice.address} (state: $state)")
+                        }
+                        !isConnected
+                    }
+                }
+            }
+        }
+        
         managerScope.launch {
             delay(SCAN_DURATION)
             stopScan(deviceListener)
@@ -105,16 +136,14 @@ object InGripManager {
     fun connect(device: BluetoothDevice) {
         Log.d(TAG, "Attempting to connect to device: ${device.name} - ${device.address}")
         if (bluetoothAdapter == null) {
-            Log.e(TAG, "Bluetooth Adapter not found")
             managerScope.launch {
                 _connectionState.value = BluetoothConnectionState.ERROR("Bluetooth not supported")
             }
             return
         }
 
-        managerScope.launch {
-            _connectionState.value = BluetoothConnectionState.CONNECTING
-        }
+        _connectionState.value = BluetoothConnectionState.CONNECTING
+        _availableDevices.value = _availableDevices.value.filter { it.address != device.address }
         InGripManager.device = device
         bluetoothGatt = device.connectGatt(appContext, false, gattCallback)
     }
@@ -128,16 +157,28 @@ object InGripManager {
                 newState: Int,
             ) {
                 super.onConnectionStateChange(gatt, status, newState)
+                Log.d(TAG, "onConnectionStateChange: newState=$newState, status=$status")
                 managerScope.launch {
                     when (newState) {
                         BluetoothProfile.STATE_CONNECTED -> {
-                            Log.d(TAG, "Connected to GATT server.")
-                            _connectionState.value = BluetoothConnectionState.CONNECTED
-                            gatt?.discoverServices()
+                            if (status == BluetoothGatt.GATT_SUCCESS) {
+                                Log.d(TAG, "Connected to GATT server successfully.")
+                                _connectionState.value = BluetoothConnectionState.CONNECTED
+                                // 연결 디바이스 리스트 삭제
+                                device?.let { connectedDevice ->
+                                    _availableDevices.value = _availableDevices.value.filter { it.address != connectedDevice.address }
+                                }
+                                gatt?.discoverServices()
+                            } else {
+                                Log.e(TAG, "Connection failed with status: $status")
+                                _connectionState.value = BluetoothConnectionState.ERROR("Connection failed with status: $status")
+                                closeGatt()
+                                device = null
+                            }
                         }
 
                         BluetoothProfile.STATE_DISCONNECTED -> {
-                            Log.d(TAG, "Disconnected from GATT server.")
+                            Log.d(TAG, "Disconnected from GATT server. Status: $status")
                             _connectionState.value = BluetoothConnectionState.DISCONNECTED
                             closeGatt()
                             device = null
@@ -147,6 +188,13 @@ object InGripManager {
                             Log.w(TAG, "Connection state changed with status $status")
                             _connectionState.value =
                                 BluetoothConnectionState.ERROR("GATT connection error with status $status")
+                            // 연결 실패 시 리스트에 다시 추가 
+                            device?.let { failedDevice ->
+                                if (!_availableDevices.value.any { it.address == failedDevice.address }) {
+                                    _availableDevices.value = _availableDevices.value + failedDevice
+                                    Log.d(TAG, "Re-added failed device to available list: ${failedDevice.address}")
+                                }
+                            }
                             closeGatt()
                             device = null
                         }
