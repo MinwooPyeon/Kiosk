@@ -41,6 +41,9 @@ import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
 import com.pixelro.nenoonkiosk.core.ui.TopBarOrientation
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.WarningBar
+import com.pixelro.nenoonkiosk.ui.theme.LightGray
+import com.pixelro.nenoonkiosk.ui.theme.Red
+import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -141,7 +144,7 @@ private fun PortraitLayout(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFFFFFFFF))
+            .background(color = White)
     ) {
         NenoonTopBar(
             title = StringProvider.getString(R.string.test_list_tittle),
@@ -149,7 +152,7 @@ private fun PortraitLayout(
             showBackButton = true,
             onBackClicked = onBackToIntro,
             actions = { SettingsButton(toSettingsScreen = onOpenSettings) },
-            containerColor = Color.White,
+            containerColor = White,
             contentColor = Color.Black
         )
 
@@ -157,7 +160,7 @@ private fun PortraitLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(color = Color(0xFFEBEBEB))
+                .background(color = LightGray)
         )
 
         if (!isSenior) {
@@ -218,7 +221,7 @@ private fun LandscapeLayout(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFFFFFFFF))
+            .background(color = White)
     ) {
         NenoonTopBar(
             title = StringProvider.getString(R.string.test_list_tittle),
@@ -226,7 +229,7 @@ private fun LandscapeLayout(
             showBackButton = true,
             onBackClicked = onBackToIntro,
             actions = { SettingsButton(toSettingsScreen = onOpenSettings) },
-            containerColor = Color.White,
+            containerColor = White,
             contentColor = Color.Black
         )
 
@@ -234,7 +237,7 @@ private fun LandscapeLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(color = Color(0xFFEBEBEB))
+                .background(color = LightGray)
         )
 
         Row(
@@ -283,7 +286,7 @@ private fun LandscapeLayout(
                 modifier = Modifier
                     .width(1.dp)
                     .fillMaxHeight()
-                    .background(color = Color(0xFFEBEBEB))
+                    .background(color = LightGray)
             )
 
             // 오른쪽: 검사 목록 (버튼 간격)

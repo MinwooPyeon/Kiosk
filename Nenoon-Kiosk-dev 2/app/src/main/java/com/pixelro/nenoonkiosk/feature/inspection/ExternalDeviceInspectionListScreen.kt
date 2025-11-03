@@ -65,6 +65,12 @@ import com.pixelro.nenoonkiosk.core.ui.TopBarOrientation
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
+import com.pixelro.nenoonkiosk.ui.theme.DarkRed
+import com.pixelro.nenoonkiosk.ui.theme.DividerGray
+import com.pixelro.nenoonkiosk.ui.theme.Gray999
+import com.pixelro.nenoonkiosk.ui.theme.NavyBlue
+import com.pixelro.nenoonkiosk.ui.theme.SkyBlue
+import com.pixelro.nenoonkiosk.ui.theme.White
 import kotlinx.coroutines.delay
 
 // 원하는 검사 항목 선택하는 뷰
@@ -199,7 +205,7 @@ private fun PortraitExternalDeviceLayout(
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(color = Color(0xffffffff)),
+                .background(color = White),
     ) {
         NenoonTopBar(
             title = StringProvider.getString(R.string.test_list_tittle),
@@ -207,7 +213,7 @@ private fun PortraitExternalDeviceLayout(
             showBackButton = true,
             onBackClicked = toIntroScreen,
             actions = { SettingsButton(toSettingsScreen = toSettingsScreen) },
-            containerColor = Color.White,
+            containerColor = White,
             contentColor = Color.Black
         )
 
@@ -216,7 +222,7 @@ private fun PortraitExternalDeviceLayout(
                 Modifier
                     .fillMaxWidth()
                     .height(1.dp)
-                    .background(color = Color(0xffebebeb)),
+                    .background(color = DividerGray),
         )
 
         if (!isSeniorValue) {
@@ -294,7 +300,7 @@ private fun LandscapeExternalDeviceLayout(
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(color = Color(0xffffffff)),
+                .background(color = White),
     ) {
         NenoonTopBar(
             title = StringProvider.getString(R.string.test_list_tittle),
@@ -302,7 +308,7 @@ private fun LandscapeExternalDeviceLayout(
             showBackButton = true,
             onBackClicked = toIntroScreen,
             actions = { SettingsButton(toSettingsScreen = toSettingsScreen) },
-            containerColor = Color.White,
+            containerColor = White,
             contentColor = Color.Black
         )
 
@@ -311,7 +317,7 @@ private fun LandscapeExternalDeviceLayout(
                 Modifier
                     .fillMaxWidth()
                     .height(1.dp)
-                    .background(color = Color(0xffebebeb)),
+                    .background(color = DividerGray),
         )
 
         Row(
@@ -364,7 +370,7 @@ private fun LandscapeExternalDeviceLayout(
                     Modifier
                         .width(1.dp)
                         .fillMaxHeight()
-                        .background(color = Color(0xffebebeb)),
+                        .background(color = DividerGray),
             )
 
             // 오른쪽: 검사 목록 (버튼 2개 아래까지 꽉)
@@ -537,7 +543,7 @@ private fun ExternalDeviceWarningBar(warningTextSize: androidx.compose.ui.unit.T
                     withStyle(
                         style =
                             SpanStyle(
-                                color = Color(0xff999999),
+                                color = Gray999,
                                 fontSize = warningTextSize,
                             ),
                     ) {
@@ -550,7 +556,7 @@ private fun ExternalDeviceWarningBar(warningTextSize: androidx.compose.ui.unit.T
                     withStyle(
                         style =
                             SpanStyle(
-                                color = Color(0xffff0000),
+                                color = DarkRed,
                                 fontSize = warningTextSize,
                                 fontWeight = FontWeight.Bold,
                             ),
@@ -564,7 +570,7 @@ private fun ExternalDeviceWarningBar(warningTextSize: androidx.compose.ui.unit.T
                     withStyle(
                         style =
                             SpanStyle(
-                                color = Color(0xff999999),
+                                color = Gray999,
                                 fontSize = warningTextSize,
                             ),
                     ) {
