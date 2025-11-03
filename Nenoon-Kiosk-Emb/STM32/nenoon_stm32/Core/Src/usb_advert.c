@@ -272,3 +272,7 @@ bool USB_Advert_GetMeta(uint32_t idx, usb_advert_meta_t* out){
     return true;
 }
 
+bool USB_Advert_IsScanned(void){
+	return s_scanned;
+}
+

@@ -44,6 +44,7 @@ usb_advert_err_t USB_Advert_StreamAll(void);
 
 uint32_t USB_Advert_GetFileCount(void);
 bool USB_Advert_getMeta(uint32_t idx, usb_advert_meta_t* out);
+bool USB_Advert_IsScanned(void);
 const char* USB_Advert_GetName(uint32_t index);
 const char* usb_advert_errstr(usb_advert_err_t err);
 #ifdef __cplusplus
