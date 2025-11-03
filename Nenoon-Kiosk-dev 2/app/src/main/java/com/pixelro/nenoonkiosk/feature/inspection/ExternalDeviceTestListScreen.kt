@@ -284,10 +284,7 @@ fun ExternalDeviceTestListScreen(
                         StringProvider.getString(
                             R.string.test_predescription_blood_pressure_title1,
                         ),
-                    title2 =
-                        StringProvider.getString(
-                            R.string.test_predescription_blood_pressure_title2,
-                        ),
+                    title2 = "",
                     onClickMethod = {
                         selectedTest = InspectionType.BloodPressure
                         if (checkIsTestDone(InspectionType.BloodPressure)) {
@@ -318,9 +315,7 @@ fun ExternalDeviceTestListScreen(
                             R.string.test_predescription_grip_strength_title1,
                         ),
                     title2 =
-                        StringProvider.getString(
-                            R.string.test_predescription_grip_strength_title2,
-                        ),
+                        "",
                     onClickMethod = {
                         selectedTest = InspectionType.GripStrength
                         if (checkIsTestDone(InspectionType.GripStrength)) {

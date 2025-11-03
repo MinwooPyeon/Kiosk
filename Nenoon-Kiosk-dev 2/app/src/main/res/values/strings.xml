@@ -458,7 +458,7 @@
     <string name="signin_vm_face_registration_success">얼굴이 성공적으로 등록되었습니다!</string>
     <string name="signin_vm_face_registration_extraction_failed">얼굴 정보 추출에 실패하여 등록할 수 없습니다.</string>
 
-    <string name="face_id_sign_in_title">얼굴 인식 로그인</string>
+    <string name="face_id_sign_in_title">화면을&#160;</string>
 
     <string name="pulmonary_function_test">폐나이 측정</string>
     <string name="pulmonary_function_test_result">폐나이 측정 결과</string>
@@ -560,12 +560,12 @@
     <string name="grip_strength_left_hand_completed_tts">왼손 악력 검사가 끝났습니다. 결과를 불러옵니다.</string>
 
 
-    <string name="grip_strength_right_hand_ready_text1"></string>
+    <string name="grip_strength_right_hand_ready_text1">당신의&#160;로 악력계를 잡으세요</string>
     <string name="grip_strength_right_hand_ready_text2">오른손</string>
     <string name="grip_strength_right_hand_ready_text3">으로 악력계를 잡고 준비해 주세요.</string>
     <string name="grip_strength_right_hand_completed_text">오른손 측정 완료.</string>
     <string name="grip_strength_right_hand_rest_text">다음은 왼손 악력 측정입니다.</string>
-    <string name="grip_strength_left_hand_ready_text1"></string>
+    <string name="grip_strength_left_hand_ready_text1">당신의&#160;로 악력계를 잡으세요</string>
     <string name="grip_strength_left_hand_ready_text2">왼손</string>
     <string name="grip_strength_left_hand_ready_text3">으로 악력계를 잡고 준비해 주세요.</string>
     <string name="grip_strength_left_hand_completed_text">왼손 악력 검사가 끝났습니다.</string>
@@ -583,9 +583,7 @@
     <string name="lung_age_test">폐나이 측정</string>
     <string name="blood_pressure_and_grip_strength">혈압, 악력</string>
     <string name="test_predescription_blood_pressure_title1">혈압 검사</string>
-    <string name="test_predescription_blood_pressure_title2"></string>
     <string name="test_predescription_grip_strength_title1">악력 검사</string>
-    <string name="test_predescription_grip_strength_title2"></string>
     <string name="dynamometer_disconnected_tts">악력계 연결이 끊어졌습니다.</string>
     <string name="dynamometer_connected_tts">악력계가 연결되었습니다. 악력 검사 시작 버튼을 눌러주세요.</string>
     <string name="cancel">취소</string>
