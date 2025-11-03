@@ -19,10 +19,22 @@
 #ifndef MAIN_INCLUDE_FRAME_H_
 #define MAIN_INCLUDE_FRAME_H_
 
-#define FRAME_MAX_PAYLOAD   1024u
+#define FRAME_MAX_PAYLOAD   5124u
 #define FRAME_MAGIC_MSB     0xA5u
 #define FRAME_MAGIC_LSB     0x5Au
 #define FRAME_VER           0x01u
+
+#define FRAME_MEDIA_INDEX_REQ		0x30
+#define FRAME_MEDIA_INDEX_RESP		0x31
+#define FRAME_MEDIA_PULL_REQ		0x32
+#define FRAME_MEDIA_CHUNK			0x33
+#define FRAME_LIC_MGR_LOGIN         0x40  /* Manager Login */
+#define FRAME_LIC_ISSUE             0x41  /* License Issuance */
+#define FRAME_LIC_REVOKE            0x42  /* License Revoke */
+#define FRAME_LIC_VALIDATE          0x43  /* License Validate */
+#define FRAME_LIC_GET_CHALLENGE     0x44  /* Get Challenge Byte */
+#define FRAME_LIC_GET_JWT           0x45  /* Get JWT Token */
+#define FRAME_LIC_RESP              0x4F  /* result + json/err */
 
 #define FRAME_HDR_SIZE      6u
 #define FRAME_TLR_SIZE      2u
@@ -67,4 +79,7 @@ typedef enum {
 void                    frame_parser_init(frame_parser_t* p);
 frame_parse_status_t    frame_parser_feed(frame_parser_t* p, const uint8_t* data, size_t n, frame_t* out, size_t* consumed);
 uint16_t                frame_crc16_ccitt(const uint8_t* data, size_t len);
+frame_err_t frame_build(uint8_t type,
+                        const uint8_t* payload, uint16_t len,
+                        uint8_t* out_buf, size_t out_cap, size_t* out_len);
 #endif /* MAIN_INCLUDE_FRAME_H_ */
