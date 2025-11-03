@@ -1,6 +1,7 @@
 package com.pixelro.nenoonkiosk.feature.inspection
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import android.speech.tts.TextToSpeech
 import androidx.annotation.RequiresApi
@@ -16,6 +17,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -41,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -48,6 +52,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
@@ -79,6 +84,7 @@ fun ExternalDeviceTestListScreen(
     val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
     val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
     val warningTextSize = if (savedLanguage == "ru") 10.sp else 16.sp
+    val isLandscapeMode = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     val pagerState =
         rememberPagerState(
@@ -122,9 +128,6 @@ fun ExternalDeviceTestListScreen(
     )
     val isSeniorValue by viewModel.isSenior.collectAsState()
 
-    /**
-     * dialog 버튼 작용
-     */
     if (isDialogShowing) {
         SurveyRecommendationDialog(
             onDismissRequest = {
@@ -135,106 +138,93 @@ fun ExternalDeviceTestListScreen(
             selectedTest = selectedTest,
         )
     }
+
+    if (isLandscapeMode) {
+        LandscapeExternalDeviceLayout(
+            savedLanguage = savedLanguage,
+            isSeniorValue = isSeniorValue,
+            toIntroScreen = toIntroScreen,
+            toSettingsScreen = toSettingsScreen,
+            pagerState = pagerState,
+            checkIsTestDone = checkIsTestDone,
+            toTestScreen = toTestScreen,
+            isBloodPressureDone = isBloodPressureDone,
+            isGripStrengthDone = isGripStrengthDone,
+            selectedTest = selectedTest,
+            onSelectedTestChange = { selectedTest = it },
+            onDialogShow = { isDialogShowing = true },
+            warningTextSize = warningTextSize
+        )
+    } else {
+        PortraitExternalDeviceLayout(
+            savedLanguage = savedLanguage,
+            isSeniorValue = isSeniorValue,
+            toIntroScreen = toIntroScreen,
+            toSettingsScreen = toSettingsScreen,
+            pagerState = pagerState,
+            isDescriptionShowing = isDescriptionShowing,
+            shiftVal = shiftVal,
+            checkIsTestDone = checkIsTestDone,
+            toTestScreen = toTestScreen,
+            isBloodPressureDone = isBloodPressureDone,
+            isGripStrengthDone = isGripStrengthDone,
+            selectedTest = selectedTest,
+            onSelectedTestChange = { selectedTest = it },
+            onDialogShow = { isDialogShowing = true },
+            warningTextSize = warningTextSize
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun PortraitExternalDeviceLayout(
+    savedLanguage: String?,
+    isSeniorValue: Boolean,
+    toIntroScreen: () -> Unit,
+    toSettingsScreen: () -> Unit,
+    pagerState: androidx.compose.foundation.pager.PagerState,
+    isDescriptionShowing: androidx.compose.runtime.MutableState<Boolean>,
+    shiftVal: Float,
+    checkIsTestDone: (InspectionType) -> Boolean,
+    toTestScreen: (InspectionType) -> Unit,
+    isBloodPressureDone: Boolean,
+    isGripStrengthDone: Boolean,
+    selectedTest: InspectionType,
+    onSelectedTestChange: (InspectionType) -> Unit,
+    onDialogShow: () -> Unit,
+    warningTextSize: androidx.compose.ui.unit.TextUnit,
+) {
     Column(
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(
-                    color = Color(0xffffffff),
-                ),
+                .background(color = Color(0xffffffff)),
     ) {
-        /**
-         * 상단 바
-         */
-        Box(
-            modifier =
-                Modifier
-                    .padding(
-                        start = 40.dp,
-                        top = (GlobalValue.statusBarPadding + 20).dp,
-                        end = 40.dp,
-                        bottom = 20.dp,
-                    )
-                    .fillMaxWidth()
-                    .height(40.dp),
-        ) {
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxHeight()
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() },
-                        ) {
-                            toIntroScreen()
-                        },
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Image(
-                    modifier =
-                        Modifier
-                            .padding(top = 4.dp)
-                            .width(28.dp),
-                    painter = painterResource(id = R.drawable.icon_back_black),
-                    contentDescription = "",
-                )
-                Text(
-                    text =
-                        StringProvider.getString(
-                            R.string.navigation_tosurvey_button,
-                        ),
-                    fontSize =
-                        if (savedLanguage == "es") {
-                            12.sp
-                        } else {
-                            24.sp
-                        },
-                    fontWeight = FontWeight.Medium,
-                )
-            }
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text =
-                        StringProvider.getString(
-                            R.string.test_list_tittle,
-                        ),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Medium,
-                )
-            }
-            SettingsButton(toSettingsScreen)
-        }
+        TopBarExternal(
+            savedLanguage = savedLanguage,
+            toIntroScreen = toIntroScreen,
+            toSettingsScreen = toSettingsScreen,
+        )
+
         Spacer(
             modifier =
                 Modifier
                     .fillMaxWidth()
                     .height(1.dp)
-                    .background(
-                        color = Color(0xffebebeb),
-                    ),
+                    .background(color = Color(0xffebebeb)),
         )
 
-        /**
-         * 광고 표시 여부
-         */
-        when (isSeniorValue) {
-            true -> {
-            }
-            false -> {
-                HorizontalPager(
-                    contentPadding = PaddingValues(start = 40.dp, top = 20.dp, end = 40.dp, bottom = 20.dp),
-                    pageSpacing = 40.dp,
-                    state = pagerState,
-                ) {
-                    Advertisement(it)
-                }
+        if (!isSeniorValue) {
+            HorizontalPager(
+                contentPadding = PaddingValues(start = 40.dp, top = 20.dp, end = 40.dp, bottom = 20.dp),
+                pageSpacing = 40.dp,
+                state = pagerState,
+            ) {
+                Advertisement(it)
             }
         }
+
         Box(
             modifier =
                 Modifier
@@ -264,22 +254,126 @@ fun ExternalDeviceTestListScreen(
             }
         }
 
-        Box {
-            /**
-             * 검사 목록 내용
-             */
+        ExternalDeviceTestListSection(
+            checkIsTestDone = checkIsTestDone,
+            toTestScreen = toTestScreen,
+            isBloodPressureDone = isBloodPressureDone,
+            isGripStrengthDone = isGripStrengthDone,
+            isSeniorValue = isSeniorValue,
+            selectedTest = selectedTest,
+            onSelectedTestChange = onSelectedTestChange,
+            onDialogShow = onDialogShow,
+        )
+
+        ExternalDeviceWarningBar(warningTextSize = warningTextSize)
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun LandscapeExternalDeviceLayout(
+    savedLanguage: String?,
+    isSeniorValue: Boolean,
+    toIntroScreen: () -> Unit,
+    toSettingsScreen: () -> Unit,
+    pagerState: androidx.compose.foundation.pager.PagerState,
+    checkIsTestDone: (InspectionType) -> Boolean,
+    toTestScreen: (InspectionType) -> Unit,
+    isBloodPressureDone: Boolean,
+    isGripStrengthDone: Boolean,
+    selectedTest: InspectionType,
+    onSelectedTestChange: (InspectionType) -> Unit,
+    onDialogShow: () -> Unit,
+    warningTextSize: androidx.compose.ui.unit.TextUnit,
+) {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(color = Color(0xffffffff)),
+    ) {
+        TopBarExternal(
+            savedLanguage = savedLanguage,
+            toIntroScreen = toIntroScreen,
+            toSettingsScreen = toSettingsScreen,
+        )
+
+        Spacer(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(color = Color(0xffebebeb)),
+        )
+
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(start = 30.dp, end = 30.dp, bottom = 16.dp),
+        ) {
+            // 왼쪽: 광고 + 경고
             Column(
-                modifier = Modifier,
-            ) {
-                val modifier =
+                modifier =
                     Modifier
-                        .weight(1f)
-                /**
-                 * 검사 항목 박스 내용
-                 * 혈압 검사
-                 */
+                        .weight(0.45f)
+                        .fillMaxHeight()
+                        .padding(end = 20.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                // 광고 (위에 꽉)
+                Box(
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                    contentAlignment = Alignment.TopCenter,
+                ) {
+                    if (!isSeniorValue) {
+                        HorizontalPager(
+                            contentPadding = PaddingValues(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                            pageSpacing = 20.dp,
+                            state = pagerState,
+                            modifier = Modifier.fillMaxSize(),
+                        ) { page ->
+                            Advertisement(page)
+                        }
+                    }
+                }
+
+                // 경고 (아래에 배치)
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.BottomStart
+                ) {
+                    ExternalDeviceWarningBar(warningTextSize = warningTextSize)
+                }
+            }
+
+            // 구분선
+            Spacer(
+                modifier =
+                    Modifier
+                        .width(1.dp)
+                        .fillMaxHeight()
+                        .background(color = Color(0xffebebeb)),
+            )
+
+            // 오른쪽: 검사 목록 (버튼 2개 아래까지 꽉)
+            Column(
+                modifier =
+                    Modifier
+                        .weight(0.55f)
+                        .fillMaxHeight()
+                        .padding(start = 20.dp, end = 8.dp, bottom = 8.dp),
+                verticalArrangement = spacedBy(12.dp)
+            ) {
+                // 혈압 검사
                 InspectionSelectionButton(
-                    modifier = modifier,
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
                     title1 =
                         StringProvider.getString(
                             R.string.test_predescription_blood_pressure_title1,
@@ -289,9 +383,9 @@ fun ExternalDeviceTestListScreen(
                             R.string.test_predescription_blood_pressure_title2,
                         ),
                     onClickMethod = {
-                        selectedTest = InspectionType.BloodPressure
+                        onSelectedTestChange(InspectionType.BloodPressure)
                         if (checkIsTestDone(InspectionType.BloodPressure)) {
-                            isDialogShowing = true
+                            onDialogShow()
                         } else {
                             toTestScreen(InspectionType.BloodPressure)
                         }
@@ -300,19 +394,15 @@ fun ExternalDeviceTestListScreen(
                     isDone = isBloodPressureDone,
                     isSenior = isSeniorValue,
                     time = 2,
-                    large = true,
+                    large = false,
                 )
-                Spacer(
+
+                // 악력 검사
+                InspectionSelectionButton(
                     modifier =
                         Modifier
-                            .height(20.dp),
-                )
-                /**
-                 * 검사 항목 박스 내용
-                 * 악력 검사
-                 */
-                InspectionSelectionButton(
-                    modifier = modifier,
+                            .weight(1f)
+                            .fillMaxWidth(),
                     title1 =
                         StringProvider.getString(
                             R.string.test_predescription_grip_strength_title1,
@@ -322,9 +412,9 @@ fun ExternalDeviceTestListScreen(
                             R.string.test_predescription_grip_strength_title2,
                         ),
                     onClickMethod = {
-                        selectedTest = InspectionType.GripStrength
+                        onSelectedTestChange(InspectionType.GripStrength)
                         if (checkIsTestDone(InspectionType.GripStrength)) {
-                            isDialogShowing = true
+                            onDialogShow()
                         } else {
                             toTestScreen(InspectionType.GripStrength)
                         }
@@ -333,96 +423,341 @@ fun ExternalDeviceTestListScreen(
                     isDone = isGripStrengthDone,
                     isSenior = isSeniorValue,
                     time = 2,
-                    large = true,
+                    large = false,
                 )
-
-                Spacer(
-                    modifier =
-                        Modifier
-                            .height(20.dp),
-                )
-
-                /**
-                 * 하단 경고문
-                 *
-                 *
-                 */
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(),
-                    contentAlignment = Alignment.BottomCenter,
-                ) {
-                    Row(
-                        modifier =
-                            Modifier
-                                .padding(
-                                    start = 40.dp,
-                                    bottom = (GlobalValue.navigationBarPadding + 40).dp,
-                                )
-                                .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Image(
-                            modifier =
-                                Modifier
-                                    .padding(end = 20.dp)
-                                    .width(44.dp),
-                            painter = painterResource(id = R.drawable.icon_warning),
-                            contentDescription = "",
-                        )
-                        Text(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(end = 40.dp),
-                            text =
-                                buildAnnotatedString {
-                                    withStyle(
-                                        style =
-                                            SpanStyle(
-                                                color = Color(0xff999999),
-                                                fontSize = warningTextSize,
-                                            ),
-                                    ) {
-                                        append(
-                                            StringProvider.getString(
-                                                R.string.test_list_screen_warning1,
-                                            ),
-                                        )
-                                    }
-                                    withStyle(
-                                        style =
-                                            SpanStyle(
-                                                color = Color(0xffff0000),
-                                                fontSize = warningTextSize,
-                                                fontWeight = FontWeight.Bold,
-                                            ),
-                                    ) {
-                                        append(
-                                            StringProvider.getString(
-                                                R.string.test_list_screen_warning2,
-                                            ),
-                                        )
-                                    }
-                                    withStyle(
-                                        style =
-                                            SpanStyle(
-                                                color = Color(0xff999999),
-                                                fontSize = warningTextSize,
-                                            ),
-                                    ) {
-                                        append(
-                                            StringProvider.getString(
-                                                R.string.test_list_screen_warning3,
-                                            ),
-                                        )
-                                    }
-                                },
-                        )
-                    }
-                }
             }
         }
+    }
+}
+
+@Composable
+private fun TopBarExternal(
+    savedLanguage: String?,
+    toIntroScreen: () -> Unit,
+    toSettingsScreen: () -> Unit,
+) {
+    Box(
+        modifier =
+            Modifier
+                .padding(
+                    start = 40.dp,
+                    top = (GlobalValue.statusBarPadding + 20).dp,
+                    end = 40.dp,
+                    bottom = 20.dp,
+                )
+                .fillMaxWidth()
+                .height(40.dp),
+    ) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxHeight()
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                    ) {
+                        toIntroScreen()
+                    },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                modifier =
+                    Modifier
+                        .padding(top = 4.dp)
+                        .width(28.dp),
+                painter = painterResource(id = R.drawable.icon_back_black),
+                contentDescription = "",
+            )
+            Text(
+                text =
+                    StringProvider.getString(
+                        R.string.navigation_tosurvey_button,
+                    ),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Medium,
+            )
+        }
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text =
+                    StringProvider.getString(
+                        R.string.test_list_tittle,
+                    ),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Medium,
+            )
+        }
+        SettingsButton(toSettingsScreen)
+    }
+}
+
+@Composable
+private fun ExternalDeviceTestListSection(
+    checkIsTestDone: (InspectionType) -> Boolean,
+    toTestScreen: (InspectionType) -> Unit,
+    isBloodPressureDone: Boolean,
+    isGripStrengthDone: Boolean,
+    isSeniorValue: Boolean,
+    selectedTest: InspectionType,
+    onSelectedTestChange: (InspectionType) -> Unit,
+    onDialogShow: () -> Unit,
+) {
+    Column {
+        val modifier = Modifier.weight(1f)
+
+        InspectionSelectionButton(
+            modifier = modifier,
+            title1 =
+                StringProvider.getString(
+                    R.string.test_predescription_blood_pressure_title1,
+                ),
+            title2 =
+                StringProvider.getString(
+                    R.string.test_predescription_blood_pressure_title2,
+                ),
+            onClickMethod = {
+                onSelectedTestChange(InspectionType.BloodPressure)
+                if (checkIsTestDone(InspectionType.BloodPressure)) {
+                    onDialogShow()
+                } else {
+                    toTestScreen(InspectionType.BloodPressure)
+                }
+            },
+            alignment = Alignment.CenterStart,
+            isDone = isBloodPressureDone,
+            isSenior = isSeniorValue,
+            time = 2,
+            large = true,
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+
+        InspectionSelectionButton(
+            modifier = modifier,
+            title1 =
+                StringProvider.getString(
+                    R.string.test_predescription_grip_strength_title1,
+                ),
+            title2 =
+                StringProvider.getString(
+                    R.string.test_predescription_grip_strength_title2,
+                ),
+            onClickMethod = {
+                onSelectedTestChange(InspectionType.GripStrength)
+                if (checkIsTestDone(InspectionType.GripStrength)) {
+                    onDialogShow()
+                } else {
+                    toTestScreen(InspectionType.GripStrength)
+                }
+            },
+            alignment = Alignment.CenterStart,
+            isDone = isGripStrengthDone,
+            isSenior = isSeniorValue,
+            time = 2,
+            large = true,
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+    }
+}
+
+@Composable
+private fun ExternalDeviceWarningBar(warningTextSize: androidx.compose.ui.unit.TextUnit) {
+    Row(
+        modifier =
+            Modifier
+                .padding(
+                    start = 40.dp,
+                    bottom = (GlobalValue.navigationBarPadding + 40).dp,
+                )
+                .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Image(
+            modifier =
+                Modifier
+                    .padding(end = 20.dp)
+                    .width(44.dp),
+            painter = painterResource(id = R.drawable.icon_warning),
+            contentDescription = "",
+        )
+        Text(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(end = 40.dp),
+            text =
+                buildAnnotatedString {
+                    withStyle(
+                        style =
+                            SpanStyle(
+                                color = Color(0xff999999),
+                                fontSize = warningTextSize,
+                            ),
+                    ) {
+                        append(
+                            StringProvider.getString(
+                                R.string.test_list_screen_warning1,
+                            ),
+                        )
+                    }
+                    withStyle(
+                        style =
+                            SpanStyle(
+                                color = Color(0xffff0000),
+                                fontSize = warningTextSize,
+                                fontWeight = FontWeight.Bold,
+                            ),
+                    ) {
+                        append(
+                            StringProvider.getString(
+                                R.string.test_list_screen_warning2,
+                            ),
+                        )
+                    }
+                    withStyle(
+                        style =
+                            SpanStyle(
+                                color = Color(0xff999999),
+                                fontSize = warningTextSize,
+                            ),
+                    ) {
+                        append(
+                            StringProvider.getString(
+                                R.string.test_list_screen_warning3,
+                            ),
+                        )
+                    }
+                },
+        )
+    }
+}
+
+// Preview
+@OptIn(ExperimentalFoundationApi::class)
+@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "ExternalDevice - Senior False - Portrait", apiLevel = 34)
+@Composable
+private fun Preview_ExternalDeviceTestList_SeniorFalse_Portrait() {
+    val fakePager = rememberPagerState(
+        initialPage = Int.MAX_VALUE / 2,
+        pageCount = { Int.MAX_VALUE }
+    )
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        PortraitExternalDeviceLayout(
+            savedLanguage = "ko",
+            isSeniorValue = false,
+            toIntroScreen = {},
+            toSettingsScreen = {},
+            pagerState = fakePager,
+            isDescriptionShowing = remember { mutableStateOf(true) },
+            shiftVal = 0f,
+            checkIsTestDone = { false },
+            toTestScreen = {},
+            isBloodPressureDone = false,
+            isGripStrengthDone = true,
+            selectedTest = InspectionType.None,
+            onSelectedTestChange = {},
+            onDialogShow = {},
+            warningTextSize = 16.sp
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "ExternalDevice - Senior True - Portrait (No Ads)", apiLevel = 34)
+@Composable
+private fun Preview_ExternalDeviceTestList_SeniorTrue_Portrait() {
+    val fakePager = rememberPagerState(
+        initialPage = Int.MAX_VALUE / 2,
+        pageCount = { Int.MAX_VALUE }
+    )
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        PortraitExternalDeviceLayout(
+            savedLanguage = "ko",
+            isSeniorValue = true,
+            toIntroScreen = {},
+            toSettingsScreen = {},
+            pagerState = fakePager,
+            isDescriptionShowing = remember { mutableStateOf(true) },
+            shiftVal = 0f,
+            checkIsTestDone = { false },
+            toTestScreen = {},
+            isBloodPressureDone = true,
+            isGripStrengthDone = false,
+            selectedTest = InspectionType.None,
+            onSelectedTestChange = {},
+            onDialogShow = {},
+            warningTextSize = 16.sp
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Preview(showBackground = true, widthDp = 1422, heightDp = 888, name = "ExternalDevice - Senior False - Landscape", apiLevel = 34)
+@Composable
+private fun Preview_ExternalDeviceTestList_SeniorFalse_Landscape() {
+    val fakePager = rememberPagerState(
+        initialPage = Int.MAX_VALUE / 2,
+        pageCount = { Int.MAX_VALUE }
+    )
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        LandscapeExternalDeviceLayout(
+            savedLanguage = "ko",
+            isSeniorValue = false,
+            toIntroScreen = {},
+            toSettingsScreen = {},
+            pagerState = fakePager,
+            checkIsTestDone = { false },
+            toTestScreen = {},
+            isBloodPressureDone = false,
+            isGripStrengthDone = true,
+            selectedTest = InspectionType.None,
+            onSelectedTestChange = {},
+            onDialogShow = {},
+            warningTextSize = 16.sp
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Preview(showBackground = true, widthDp = 1422, heightDp = 888, name = "ExternalDevice - Senior True - Landscape (No Ads)", apiLevel = 34)
+@Composable
+private fun Preview_ExternalDeviceTestList_SeniorTrue_Landscape() {
+    val fakePager = rememberPagerState(
+        initialPage = Int.MAX_VALUE / 2,
+        pageCount = { Int.MAX_VALUE }
+    )
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        LandscapeExternalDeviceLayout(
+            savedLanguage = "ko",
+            isSeniorValue = true,
+            toIntroScreen = {},
+            toSettingsScreen = {},
+            pagerState = fakePager,
+            checkIsTestDone = { false },
+            toTestScreen = {},
+            isBloodPressureDone = true,
+            isGripStrengthDone = false,
+            selectedTest = InspectionType.None,
+            onSelectedTestChange = {},
+            onDialogShow = {},
+            warningTextSize = 16.sp
+        )
     }
 }

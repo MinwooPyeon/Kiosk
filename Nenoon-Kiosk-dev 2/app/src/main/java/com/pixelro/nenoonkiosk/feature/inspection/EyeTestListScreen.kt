@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,7 +23,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -94,7 +94,6 @@ fun EyeTestInspectionScreen(
     }
 
     if (isLandscapeMode) {
-        // 가로 모드 레이아웃
         LandscapeLayout(
             savedLanguage = savedLanguage,
             isSenior = isSenior,
@@ -113,7 +112,6 @@ fun EyeTestInspectionScreen(
             pagerState = pagerState
         )
     } else {
-        // 세로 모드 레이아웃 (기존)
         PortraitLayout(
             savedLanguage = savedLanguage,
             isSenior = isSenior,
@@ -237,53 +235,13 @@ private fun LandscapeLayout(
             .fillMaxSize()
             .background(color = Color(0xFFFFFFFF))
     ) {
-        // TopBar
-        Box(
-            modifier = Modifier
-                .padding(
-                    start = 30.dp,
-                    top = GlobalValue.statusBarPadding.dp + 12.dp,
-                    end = 30.dp,
-                    bottom = 12.dp
-                )
-                .fillMaxWidth()
-                .height(40.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) { onBackToIntro() },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .width(24.dp),
-                    painter = painterResource(id = R.drawable.icon_back_black),
-                    contentDescription = ""
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = StringProvider.getStringComposable(R.string.navigation_tosurvey_button),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = titleText,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            SettingsButton(onOpenSettings)
-        }
+        TopBar(
+            savedLanguage = savedLanguage,
+            titleText = titleText,
+            onBackToIntro = onBackToIntro,
+            onOpenSettings = onOpenSettings,
+            titleBackFontSize = titleBackFontSize
+        )
 
         Spacer(
             modifier = Modifier
@@ -292,43 +250,44 @@ private fun LandscapeLayout(
                 .background(color = Color(0xFFEBEBEB))
         )
 
-        // 가로 모드 본체
         Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(start = 30.dp, end = 30.dp, bottom = 16.dp)
         ) {
-            // 왼쪽: 광고 또는 설명
-            Box(
+            // 왼쪽: 광고 + 경고
+            Column(
                 modifier = Modifier
                     .weight(0.45f)
                     .fillMaxHeight()
-                    .padding(top = 16.dp, end = 20.dp),
-                contentAlignment = Alignment.TopCenter
+                    .padding(end = 20.dp),
+                verticalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
             ) {
-                if (!isSenior) {
-                    HorizontalPager(
-                        contentPadding = PaddingValues(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-                        pageSpacing = 20.dp,
-                        state = pagerState,
-                        modifier = Modifier.fillMaxSize()
-                    ) { page ->
-                        Advertisement(page)
+                // 광고 (위에 꽉)
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    if (!isSenior) {
+                        HorizontalPager(
+                            contentPadding = PaddingValues(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                            pageSpacing = 20.dp,
+                            state = pagerState,
+                            modifier = Modifier.fillMaxSize()
+                        ) { page ->
+                            Advertisement(page)
+                        }
                     }
-                } else {
-                    // 실버 세대용 설명 표시
-                    if (isDescriptionShowing) {
-                        Text(
-                            modifier = Modifier
-                                .offset(y = shiftVal.dp)
-                                .align(Alignment.Center)
-                                .padding(horizontal = 16.dp),
-                            text = StringProvider.getStringComposable(R.string.test_list_description),
-                            style = bodyTextStyle,
-                            textAlign = TextAlign.Center,
-                            fontSize = 16.sp
-                        )
-                    }
+                }
+
+                // 경고 (아래)
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.BottomStart
+                ) {
+                    WarningBar(warningTextSize = warningTextSize)
                 }
             }
 
@@ -340,12 +299,13 @@ private fun LandscapeLayout(
                     .background(color = Color(0xFFEBEBEB))
             )
 
-            // 오른쪽: 검사 목록
+            // 오른쪽: 검사 목록 (버튼 간격)
             Column(
                 modifier = Modifier
                     .weight(0.55f)
                     .fillMaxHeight()
-                    .padding(top = 16.dp, start = 20.dp, end = 8.dp, bottom = 8.dp)
+                    .padding(start = 20.dp, end = 8.dp, bottom = 8.dp),
+                verticalArrangement = spacedBy(12.dp)
             ) {
                 // 단거리 시력
                 InspectionSelectionButton(
@@ -361,8 +321,6 @@ private fun LandscapeLayout(
                     onClickMethod = { onOpenTest(InspectionType.ShortDistanceVisualAcuity) }
                 )
 
-                Spacer(Modifier.height(8.dp))
-
                 // 노안(안구 나이)
                 InspectionSelectionButton(
                     modifier = Modifier
@@ -376,8 +334,6 @@ private fun LandscapeLayout(
                     time = 3,
                     onClickMethod = { onOpenTest(InspectionType.Presbyopia) }
                 )
-
-                Spacer(Modifier.height(8.dp))
 
                 // 암슬러
                 InspectionSelectionButton(
@@ -393,8 +349,6 @@ private fun LandscapeLayout(
                     onClickMethod = { onOpenTest(InspectionType.AmslerGrid) }
                 )
 
-                Spacer(Modifier.height(8.dp))
-
                 // M-Chart
                 InspectionSelectionButton(
                     modifier = Modifier
@@ -408,23 +362,10 @@ private fun LandscapeLayout(
                     time = 2,
                     onClickMethod = { onOpenTest(InspectionType.MChart) }
                 )
-
-                Spacer(Modifier.height(8.dp))
-
-                // 경고 메시지
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.6f),
-                    contentAlignment = Alignment.BottomStart
-                ) {
-                    WarningBar(warningTextSize = warningTextSize)
-                }
             }
         }
     }
 }
-
 
 @Composable
 private fun TopBar(

@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -77,7 +78,12 @@ fun InspectionSelectionButton(
 ) {
     val context = LocalContext.current
     val sharedPreferences =
-        remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
+        remember {
+            context.getSharedPreferences(
+                NavConstants.PREFERENCE_NAME,
+                Context.MODE_PRIVATE
+            )
+        }
     val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
 
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -87,13 +93,21 @@ fun InspectionSelectionButton(
     val textSize = getDynamicFontSize(isSenior, large, savedLanguage, time).sp
 
     Card(
-        elevation = CardDefaults.cardElevation(0.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (isDone) 4.dp else 0.dp
+        ),
         modifier = modifier
             .padding(horizontal = if (isLandscape) 0.dp else 40.dp)
             .fillMaxWidth()
             .border(
                 border = BorderStroke(1.dp, LightGray),
                 shape = RoundedCornerShape(8.dp),
+            )
+            .shadow(
+                elevation = if (isDone) 2.dp else 0.dp,
+                shape = RoundedCornerShape(8.dp),
+                ambientColor = Color.Black.copy(alpha = 0.2f),
+                spotColor = Color.Black.copy(alpha = 0.1f)
             ),
         colors = CardDefaults.cardColors(containerColor = White),
     ) {
@@ -252,37 +266,12 @@ fun InspectionSelectionButton(
     }
 }
 
-@Preview(showBackground = true, name = "Inspection Button - Icon only / title2 없음", widthDp = 850, heightDp = 140)
-@Composable
-fun InspectionSelectionButtonPreview_IconOnly() {
-    NenoonKioskTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(neNoon_blue)
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            InspectionSelectionButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                large = false,
-                alignment = Alignment.CenterStart,
-                title1 = stringResource(R.string.eye_test),
-                title2 = "",
-                onClickMethod = {},
-                isDone = false,
-                isSenior = false,
-                time = 0,
-                icon = R.drawable.eye_test_icon,
-                enabled = true
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true, name = "Inspection Button - Title1 & Title2 / 세로모드", widthDp = 850, heightDp = 140)
+@Preview(
+    showBackground = true,
+    name = "Inspection Button - Title1 & Title2 / 세로모드",
+    widthDp = 850,
+    heightDp = 140
+)
 @Composable
 fun InspectionSelectionButtonPreview_Portrait() {
     NenoonKioskTheme {
@@ -312,7 +301,12 @@ fun InspectionSelectionButtonPreview_Portrait() {
     }
 }
 
-@Preview(showBackground = true, name = "Inspection Button - Title1 & Title2 / 가로모드", widthDp = 280, heightDp = 90)
+@Preview(
+    showBackground = true,
+    name = "Inspection Button - Title1 & Title2 / 가로모드",
+    widthDp = 280,
+    heightDp = 90
+)
 @Composable
 fun InspectionSelectionButtonPreview_Landscape() {
     NenoonKioskTheme {
