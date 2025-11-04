@@ -101,12 +101,22 @@ fun BP170BStartRoute(
                     connecting = true
                 }
                 is BP170BManager.BluetoothConnectionState.ERROR -> {
-                    screenState = BP170BConnectionScreenState.ConnectionError
-                    TTS.stopTTS()
-                    TTS.speechTTS(
-                        StringProvider.getString(R.string.tts_bp170b_connection_failed),
-                        TextToSpeech.QUEUE_ADD,
-                    )
+                    connecting = false
+                    if (screenState == BP170BConnectionScreenState.Connecting) {
+                        screenState = BP170BConnectionScreenState.DeviceSelection
+                        TTS.stopTTS()
+                        TTS.speechTTS(
+                            StringProvider.getString(R.string.tts_bp170b_connection_failed),
+                            TextToSpeech.QUEUE_ADD,
+                        )
+                    } else {
+                        screenState = BP170BConnectionScreenState.ConnectionError
+                        TTS.stopTTS()
+                        TTS.speechTTS(
+                            StringProvider.getString(R.string.tts_bp170b_connection_failed),
+                            TextToSpeech.QUEUE_ADD,
+                        )
+                    }
                     Log.e("BP170BStartRoute", "Connection error: ${state.message}")
                 }
                 else -> Unit
