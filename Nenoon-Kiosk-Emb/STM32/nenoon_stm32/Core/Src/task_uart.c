@@ -29,7 +29,7 @@ static void on_frame_rx(const uint8_t* frame, size_t len){
 
 static void vTaskUartRx(void * arg){
 	(void)arg;
-
+	STLINK_UART_Println("[task uart] start");
 	frame_parser_init(&s_fp, on_frame_rx);
 
 	HAL_UARTEx_ReceiveToIdle_DMA(&huart6, s_uart6_rx_dma, sizeof(s_uart6_rx_dma));

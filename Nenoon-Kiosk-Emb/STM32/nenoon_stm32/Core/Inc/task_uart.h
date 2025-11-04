@@ -8,7 +8,7 @@
 #ifndef INC_TASK_UART_H_
 #define INC_TASK_UART_H_
 
-#define "cmsis_os.h"
+#include "cmsis_os2.h"
 
 void task_uart_start(uint32_t stack, osPriority_t prio);
 
