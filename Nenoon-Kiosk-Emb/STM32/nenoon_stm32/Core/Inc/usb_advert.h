@@ -28,6 +28,13 @@ typedef enum{
     USB_ADVERT_ERR_IO,              /* 그 외 I/O 에러 */
 } usb_advert_err_t;
 
+typedef struct {
+    char     name[64];
+    uint64_t size;
+    char     sha16[17];
+    char     mime[32];
+} usb_advert_meta_t;
+
 void USB_Advert_Init(void);
 usb_advert_err_t USB_Advert_Scan(void);
 usb_advert_err_t USB_Advert_ReadByName(const char* filename);
@@ -36,7 +43,8 @@ usb_advert_err_t USB_Advert_StreamFile(const char* filename);
 usb_advert_err_t USB_Advert_StreamAll(void);
 
 uint32_t USB_Advert_GetFileCount(void);
-
+bool USB_Advert_getMeta(uint32_t idx, usb_advert_meta_t* out);
+bool USB_Advert_IsScanned(void);
 const char* USB_Advert_GetName(uint32_t index);
 const char* usb_advert_errstr(usb_advert_err_t err);
 #ifdef __cplusplus
