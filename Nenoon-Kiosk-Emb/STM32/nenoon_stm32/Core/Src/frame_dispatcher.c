@@ -23,38 +23,16 @@ void proto_dispatch_handle(const uint8_t* frame, size_t len){
 	uint8_t out_payload[256];
 	size_t	out_len = 0;
 
-	switch(type){
-		case FRAME_MEDIA_INDEX_REQ:
-			media_dispatch_index(payload, pl_len);
-			return;
-		case FRAME_MEDIA_PULL_REQ:
-			media_dispatch_pull(payload, pl_len);
-			return;
-		case FRAME_LIC_MGR_LOGIN:
-			lic_dispatch_mgr_login(payload, pl_len, out_payload, &out_len);
-			break;
-		case FRAME_LIC_ISSUE:
-			lic_dispatch_issue(payload, pl_len, out_payload, &out_len);
-			break;
-		case FRAME_LIC_REVOKE:
-			lic_dispatch_revoke(payload, pl_len, out_payload, &out_len);
-			break;
-		case FRAME_LIC_VALIDATE:
-			lic_dispatch_validate(payload, pl_len, out_payload, &out_len);
-			break;
-		case FRAME_LIC_GET_CHALLENGE:
-			lic_dispatch_get_challenge(payload, pl_len, out_payload, &out_len);
-			break;
-		case FRAME_LIC_GET_JWT:
-			lic_dispatch_get_jwt(payload, pl_len, out_payload, &out_len);
-			break;
-		default:
-			return;
-	}
+	for(size_t i = 0 ;i<sizeof(ROUTES)/sizeof(ROUTES[0]);i++){
+		if(ROUTES[i].req_type == type){
+			ROUTES[i].fn(payload, pl_len, out_payload, &out_len);
 
-	uint8_t out_frame[FRAME_MAX_WIRE];
-	size_t	of_len = 0;
-	if(frame_build(FRAME_LIC_RESP, out_payload, out_len, out_frame, sizeof(out_frame), &of_len) == FRAME_OK){
-		UART6_SendBytes(out_frame, (uint16_t)of_len);
+			uint8_t out_frame[FRAME_MAX_WIRE];
+			size_t	of_len = 0;
+			if(frame_build(ROUTES[i].resp_type, out_payload, out_len, out_frame, sizeof(out_frame), &of_len) == FRAME_OK){
+			                UART6_SendBytes(out_frame, (uint16_t)of_len);
+			}
+			return;
+		}
 	}
 }
