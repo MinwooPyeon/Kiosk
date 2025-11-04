@@ -24,7 +24,7 @@ import com.pixelro.nenoonkiosk.core.navigation.Navigator
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.bitmapToFile
 import com.pixelro.nenoonkiosk.core.util.qr.QRCodeGenerator
-import com.pixelro.nenoonkiosk.feature.auth.FaceRecognizer
+import com.pixelro.nenoonkiosk.core.manager.detection.FaceRecognizer
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.InspectionResultUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

@@ -1,6 +1,8 @@
 package com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.result
 
 import android.speech.tts.TextToSpeech
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,20 +20,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.strabismus.StrabismusPrintHelper
+import com.pixelro.nenoonkiosk.core.manager.StrabismusPrintHelper
+import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
+import com.pixelro.nenoonkiosk.core.ui.SecondaryButton
+import com.pixelro.nenoonkiosk.feature.inspection.components.InspectionDivider
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.DualButtonBottomBar
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.ResultCard
+import com.pixelro.nenoonkiosk.feature.strabismus.common.component.WarningNotice
+import com.pixelro.nenoonkiosk.feature.strabismus.common.component.isLandscape
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 import com.pixelro.nenoonkiosk.ui.theme.buttonTextStyle
-import com.pixelro.nenoonkiosk.ui.theme.inputTextStyle
 import kotlin.math.abs
 
 /**
@@ -178,48 +182,12 @@ fun AniseikoniaResultScreen(
             }
         }
 
-    Scaffold(
-        containerColor = Color.White,
-        bottomBar = {
-            DualButtonBottomBar(
-                primaryButtonText = printButtonText,
-                onPrimaryButtonClick = {
-                    TTS.speechTTS(StringProvider.getString(R.string.printing_in_progress), TextToSpeech.QUEUE_FLUSH)
-                    val differenceValue = difference ?: 0f
-                    val formattedResult =
-                        when {
-                            differenceValue > 0 -> {
-                                StringProvider.getString(R.string.fudo_result_right_eye_larger_format, differenceValue)
-                            }
-                            differenceValue < 0 -> {
-                                StringProvider.getString(R.string.fudo_result_left_eye_larger_format, abs(differenceValue))
-                            }
-                            else -> {
-                                userHorizontalResult
-                            }
-                        }
 
-                    StrabismusPrintHelper.printAniseikoniaResult(
-                        context = context,
-                        retinalTitle = userLeftTitle,
-//                        retinalResult = formattedResult,
-                        opinionTitle = userRightTitle,
-                        opinionResult = userVerticalResult,
-                        retinalDescription = userHorizontalDescription,
-                        opinionDescription = userVerticalDescription,
-                    )
-                    onPrintClicked()
-                },
-                secondaryButtonText = backButtonText,
-                onSecondaryButtonClick = onBackToMainClicked
-            )
-        }
-    ) { paddingValues ->
+
         Column(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -228,19 +196,38 @@ fun AniseikoniaResultScreen(
                 text = screenTitle,
                 style = bodyTextStyle,
                 color = Color.Black,
-                modifier = Modifier.padding(top = 32.dp, bottom = 16.dp),
+                modifier = Modifier.padding(top = 32.dp, bottom = 32.dp),
             )
+            InspectionDivider()
+            if(!isLandscape()) {
+                if (normalCaseVisible) {
+                    Spacer(modifier = Modifier.height(36.dp))
+                    Text(
+                        text = normalExampleText,
+                        style = buttonTextStyle,
+                        color = Color.Black,
+                        modifier = Modifier.padding(bottom = 16.dp),
+                    )
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        ResultCard(
+                            modifier = Modifier.weight(1f),
+                            title = normalLeftTitle,
+                            result = normalLeftResult,
+                            description = normalLeftDescription,
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        ResultCard(
+                            modifier = Modifier.weight(1f),
+                            title = normalRightTitle,
+                            result = normalRightResult,
+                            description = normalRightDescription,
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
 
-            Text(
-                text = normalCaseInfo,
-                style = inputTextStyle,
-                color = Color.DarkGray,
-                modifier = Modifier.padding(bottom = 32.dp),
-            )
-
-            if (normalCaseVisible) {
                 Text(
-                    text = normalExampleText,
+                    text = myResultText,
                     style = buttonTextStyle,
                     color = Color.Black,
                     modifier = Modifier.padding(bottom = 16.dp),
@@ -248,54 +235,116 @@ fun AniseikoniaResultScreen(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     ResultCard(
                         modifier = Modifier.weight(1f),
-                        title = normalLeftTitle,
-                        result = normalLeftResult,
-                        description = normalLeftDescription,
+                        title = userLeftTitle,
+                        result = userHorizontalResult,
+                        description = userHorizontalDescription,
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     ResultCard(
                         modifier = Modifier.weight(1f),
-                        title = normalRightTitle,
-                        result = normalRightResult,
-                        description = normalRightDescription,
+                        title = userRightTitle,
+                        result = userVerticalResult,
+                        description = userVerticalDescription,
                     )
                 }
-                Spacer(modifier = Modifier.height(24.dp))
-            }
+                Spacer(modifier = Modifier.weight(1F))
+                DualButtonBottomBar(
+                    primaryButtonText = printButtonText,
+                    onPrimaryButtonClick = {
+                        TTS.speechTTS(StringProvider.getString(R.string.printing_in_progress), TextToSpeech.QUEUE_FLUSH)
+                        val differenceValue = difference ?: 0f
+                        val formattedResult =
+                            when {
+                                differenceValue > 0 -> {
+                                    StringProvider.getString(R.string.fudo_result_right_eye_larger_format, differenceValue)
+                                }
+                                differenceValue < 0 -> {
+                                    StringProvider.getString(R.string.fudo_result_left_eye_larger_format, abs(differenceValue))
+                                }
+                                else -> {
+                                    userHorizontalResult
+                                }
+                            }
 
-            Text(
-                text = myResultText,
-                style = buttonTextStyle,
-                color = Color.Black,
-                modifier = Modifier.padding(bottom = 16.dp),
-            )
-            Row(modifier = Modifier.fillMaxWidth()) {
-                ResultCard(
-                    modifier = Modifier.weight(1f),
-                    title = userLeftTitle,
-                    result = userHorizontalResult,
-                    description = userHorizontalDescription,
+                        StrabismusPrintHelper.printAniseikoniaResult(
+                            context = context,
+                            retinalTitle = userLeftTitle,
+//                        retinalResult = formattedResult,
+                            opinionTitle = userRightTitle,
+                            opinionResult = userVerticalResult,
+                            retinalDescription = userHorizontalDescription,
+                            opinionDescription = userVerticalDescription,
+                        )
+                        onPrintClicked()
+                    },
+                    secondaryButtonText = backButtonText,
+                    onSecondaryButtonClick = onBackToMainClicked
                 )
-                Spacer(modifier = Modifier.width(16.dp))
-                ResultCard(
-                    modifier = Modifier.weight(1f),
-                    title = userRightTitle,
-                    result = userVerticalResult,
-                    description = userVerticalDescription,
-                )
+                WarningNotice(14.sp)
+            }else {
+                Row(modifier = Modifier.fillMaxSize().weight(1F), verticalAlignment = Alignment.CenterVertically) {
+                    Column(modifier = Modifier.fillMaxSize().weight(2F), verticalArrangement = Arrangement.Center) {
+                        Text(
+                            text = myResultText,
+                            style = buttonTextStyle,
+                            color = Color.Black,
+                            modifier = Modifier.padding(bottom = 16.dp),
+                        )
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            ResultCard(
+                                modifier = Modifier.weight(1f),
+                                title = userLeftTitle,
+                                result = userHorizontalResult,
+                                description = userHorizontalDescription,
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            ResultCard(
+                                modifier = Modifier.weight(1f),
+                                title = userRightTitle,
+                                result = userVerticalResult,
+                                description = userVerticalDescription,
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(36.dp))
+                    Column(
+                        modifier =
+                            Modifier
+                                .weight(1.2F)
+                                .background(Color.White)
+                                .padding(16.dp),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        PrimaryButton(
+                            onClick = {
+                                TTS.speechTTS(
+                                    StringProvider.getString(R.string.printing_in_progress),
+                                    TextToSpeech.QUEUE_FLUSH
+                                )
+                                StrabismusPrintHelper.printPhoriaResult(
+                                    context = context,
+                                    hTitle = userLeftTitle,
+                                    hResult = userHorizontalResult,
+                                    hDesc = userHorizontalDescription,
+                                    vTitle = userRightTitle,
+                                    vResult = userVerticalResult,
+                                    vDesc = userVerticalDescription,
+                                )
+                                onPrintClicked()
+                            },
+                            text = printButtonText,
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        SecondaryButton(
+                            onClick = onBackToMainClicked,
+                            text = backButtonText,
+                        )
+                    }
+                }
+                WarningNotice(14.sp)
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = disclaimerText,
-                fontSize = 12.sp,
-                color = Color.DarkGray,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 16.dp),
-            )
         }
-    }
+
 }
 
 //가로 모드 내용 잘림-> 수정 필요
