@@ -1,7 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.inspection.gripStrength
 
-import android.bluetooth.BluetoothDevice
-import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.DynamometerConnectionScreenState
+import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripConnectionUiState
 
 enum class GripStrengthInspectionState {
     RightHandReady, RightHand, RightHandCompleted,
@@ -14,7 +13,7 @@ data class DeviceUi(
 )
 
 data class GripStrengthUiState(
-    val screenState: DynamometerConnectionScreenState = DynamometerConnectionScreenState.Standby,
+    val screenState: InGripConnectionUiState = InGripConnectionUiState.Standby,
     val batteryPercent: Int? = null,
     val isBatteryFetching: Boolean = false,
     val isConnecting: Boolean = false,

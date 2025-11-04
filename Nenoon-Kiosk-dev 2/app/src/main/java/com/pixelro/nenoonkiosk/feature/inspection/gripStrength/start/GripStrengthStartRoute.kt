@@ -19,7 +19,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.DeviceUi
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripAction
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthInspectionNavRoute
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthUiState
-import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.DynamometerConnectionScreenState
+import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripConnectionUiState
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
@@ -31,7 +31,7 @@ fun GripStrengthStartRoute(
     viewModel: InGripViewModel,
     onBack: () -> Unit,
 ) {
-    var screenState by remember { mutableStateOf(DynamometerConnectionScreenState.Standby) }
+    var screenState by remember { mutableStateOf(InGripConnectionUiState.Standby) }
     var batteryLevel by remember { mutableStateOf<Int?>(null) }
     var isBatteryFetching by remember { mutableStateOf(false) }
     var connecting by remember { mutableStateOf(false) }
@@ -57,19 +57,19 @@ fun GripStrengthStartRoute(
         )
         isBatteryFetching = false
         if (connectionState.value == InGripManager.BluetoothConnectionState.CONNECTED) {
-            screenState = DynamometerConnectionScreenState.AwaitingStart
+            screenState = InGripConnectionUiState.AwaitingStart
         }
     }
 
 
 // Auto-scan while in selection, fall back to error after timeout
     LaunchedEffect(screenState) {
-        if (screenState == DynamometerConnectionScreenState.DeviceSelection) {
+        if (screenState == InGripConnectionUiState.DeviceSelection) {
             InGripManager.startScan()
             connecting = true
             delay(10_000)
-            if (screenState == DynamometerConnectionScreenState.DeviceSelection) {
-                screenState = DynamometerConnectionScreenState.ConnectionError
+            if (screenState == InGripConnectionUiState.DeviceSelection) {
+                screenState = InGripConnectionUiState.ConnectionError
                 connecting = false
                 TTS.speechTTS(
                     StringProvider.getString(R.string.dynamometer_connection_error_tts),
@@ -93,9 +93,9 @@ fun GripStrengthStartRoute(
             when (state) {
                 is InGripManager.BluetoothConnectionState.CONNECTED -> {
                     connecting = false
-                    if (screenState == DynamometerConnectionScreenState.Connecting ||
-                        screenState == DynamometerConnectionScreenState.DeviceSelection) {
-                        screenState = DynamometerConnectionScreenState.AwaitingStart
+                    if (screenState == InGripConnectionUiState.Connecting ||
+                        screenState == InGripConnectionUiState.DeviceSelection) {
+                        screenState = InGripConnectionUiState.AwaitingStart
                         isBatteryFetching = true
                         TTS.speechTTS(StringProvider.getString(R.string.dynamometer_connected_tts), TextToSpeech.QUEUE_ADD)
                         delay(1000)
@@ -104,21 +104,21 @@ fun GripStrengthStartRoute(
                     }
                 }
                 is InGripManager.BluetoothConnectionState.DISCONNECTED -> {
-                    if (screenState != DynamometerConnectionScreenState.Standby) {
-                        screenState = DynamometerConnectionScreenState.DeviceSelection
+                    if (screenState != InGripConnectionUiState.Standby) {
+                        screenState = InGripConnectionUiState.DeviceSelection
                         TTS.speechTTS(StringProvider.getString(R.string.dynamometer_disconnected_tts), TextToSpeech.QUEUE_ADD)
                         InGripManager.startScan()
                     }
                 }
                 is InGripManager.BluetoothConnectionState.ERROR -> {
                     connecting = false
-                    if (screenState != DynamometerConnectionScreenState.Standby) {
-                        screenState = DynamometerConnectionScreenState.ConnectionError
+                    if (screenState != InGripConnectionUiState.Standby) {
+                        screenState = InGripConnectionUiState.ConnectionError
                         TTS.speechTTS(StringProvider.getString(R.string.dynamometer_connection_error_tts), TextToSpeech.QUEUE_ADD)
                     }
                 }
                 is InGripManager.BluetoothConnectionState.CONNECTING -> {
-                    screenState = DynamometerConnectionScreenState.Connecting
+                    screenState = InGripConnectionUiState.Connecting
                     connecting = true
                 }
                 else -> Unit
@@ -143,7 +143,7 @@ fun GripStrengthStartRoute(
         onEvent = { ev ->
             when (ev) {
                 GripAction.StartScan -> {
-                    screenState = DynamometerConnectionScreenState.DeviceSelection
+                    screenState = InGripConnectionUiState.DeviceSelection
                     InGripManager.startScan()
                 }
 
@@ -153,7 +153,7 @@ fun GripStrengthStartRoute(
                         availableBtDevices.value.firstOrNull { it.address == ev.device.address }
                     if (target != null) {
                         InGripManager.connect(target)
-                        screenState = DynamometerConnectionScreenState.Connecting
+                        screenState = InGripConnectionUiState.Connecting
                     }
                 }
 

@@ -523,6 +523,19 @@
     <string name="pdf_normal">Normal</string>
     <string name="pdf_abnormal">Anormal</string>
 
+    <string name="pdf_pulmonary_age_title">Edad pulmonar</string>
+    <string name="pdf_age_unit">años</string>
+    <string name="pdf_pf_range_normal">Igual o menor que la edad real</string>
+    <string name="pdf_pf_interp_normal">Buena función pulmonar</string>
+    <string name="pdf_pf_recomm_normal">Mantenga su estado actual, evite fumar y continúe con ejercicio aeróbico regular</string>
+    <string name="pdf_pf_range_mild">Edad real + 5–10 años</string>
+    <string name="pdf_pf_interp_mild">Posible leve disminución de la función pulmonar</string>
+    <string name="pdf_pf_recomm_mild">Se recomienda comenzar ejercicios respiratorios ligeros (respiración abdominal, soplar globos, etc.) y ejercicio aeróbico regular</string>
+    <string name="pdf_pf_range_moderate">Edad real + 11 años o más</string>
+    <string name="pdf_pf_interp_moderate">Disminución de la función pulmonar o posible riesgo de enfermedad pulmonar</string>
+    <string name="pdf_pf_recomm_moderate">Se recomienda consultar con un especialista, dejar de fumar inmediatamente si fuma, y realizar ejercicios enfocados en mejorar la capacidad pulmonar</string>
+    <string name="pdf_pf_tip">Nota: La prueba de espirometría proporciona un indicador simple de la función pulmonar, pero un diagnóstico preciso requiere una prueba de función pulmonar detallada en un centro médico.</string>
+
     <string name="pdf_macular_degeneration_title">Degeneración macular</string>
     <string name="pdf_md_range_normal">Sin distorsión/punto/escotoma (Normal)</string>
     <string name="pdf_md_interp_normal">Sin signos de anomalías retinianas</string>

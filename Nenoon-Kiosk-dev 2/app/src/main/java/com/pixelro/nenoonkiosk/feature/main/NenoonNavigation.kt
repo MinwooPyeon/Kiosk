@@ -52,7 +52,7 @@ import com.pixelro.nenoonkiosk.feature.intro.IntroScreen
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ManagementScreen
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
 import com.pixelro.nenoonkiosk.feature.iotdevice.BTDeviceManagementScreen
-import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripManagmentScreen
+import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripManagementRoute
 import com.pixelro.nenoonkiosk.feature.permission.PermissionRequestRoute
 import com.pixelro.nenoonkiosk.feature.print.ResultPrintRoute
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverRoute
@@ -842,7 +842,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            InGripManagmentScreen(
+            InGripManagementRoute(
                 navController = navController,
             )
         }

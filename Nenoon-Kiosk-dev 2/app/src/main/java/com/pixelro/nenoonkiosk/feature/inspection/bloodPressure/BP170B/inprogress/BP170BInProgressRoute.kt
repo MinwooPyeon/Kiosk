@@ -51,7 +51,6 @@ fun BP170BInProgressRoute(
             delay(120_000)
             if (isMeasurementInProgress && bloodPressureResult == null) {
                 Log.e("BP170BInProgress", "Measurement timeout - no result after 2 minutes")
-                errorMessage = "측정 시간이 초과되었습니다. 다시 시도해주세요."
                 navController.navigate(BloodPressureInspectionNavRoute.Error.name) {
                     popUpTo(BloodPressureInspectionNavRoute.Start.name) { inclusive = false }
                 }

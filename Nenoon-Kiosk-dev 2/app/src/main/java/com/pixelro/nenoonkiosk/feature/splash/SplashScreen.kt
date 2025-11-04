@@ -16,8 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,7 +26,8 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.ui.Logo
-import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.ui.theme.White
+import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 // 처음에 스플래시 화면
 @Composable
@@ -45,7 +46,7 @@ fun SplashScreen() {
             Modifier
                 .fillMaxSize()
                 .background(
-                    color = Color(0xff1d71e1),
+                    color = neNoon_blue,
                 ),
         contentAlignment = Alignment.Center,
     ) {
@@ -55,10 +56,10 @@ fun SplashScreen() {
         ) {
             Text(
                 text =
-                    StringProvider.getStringComposable(
+                    stringResource(
                         R.string.splash_description,
                     ),
-                color = Color(0xffffffff),
+                color = White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Normal,
             )
@@ -83,7 +84,7 @@ fun SplashScreen() {
                 Text(
                     text = "Ver\n${AppConstants.APP_VERSION}",
                     fontSize = 20.sp,
-                    color = Color.White,
+                    color = White,
                 )
             }
         }
@@ -106,8 +107,14 @@ fun SplashScreen() {
     }
 }
 
-@Preview(showBackground = true, widthDp = 888, heightDp = 1422, apiLevel = 34)
+@Preview(showBackground = true, widthDp = 800, heightDp = 1280, apiLevel = 34)
 @Composable
-fun SplashScreenPreview() {
+fun SplashScreenPreviewVertical() {
+    SplashScreen()
+}
+
+@Preview(showBackground = true, widthDp = 1280, heightDp = 800, apiLevel = 34)
+@Composable
+fun SplashScreenPreviewHorizontal() {
     SplashScreen()
 }

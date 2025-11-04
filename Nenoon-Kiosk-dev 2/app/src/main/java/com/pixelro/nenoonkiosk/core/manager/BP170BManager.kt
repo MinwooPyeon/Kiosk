@@ -103,7 +103,6 @@ object BP170BManager {
                     }
                     
                     if (device.name?.startsWith("BP170B") == true && !_availableDevices.value.contains(device)) {
-                        // 이미 연결 중인 디바이스인지 확인
                         val connectionState = bluetoothManager?.getConnectionState(device, BluetoothProfile.GATT)
                         val isAlreadyConnected = connectionState == BluetoothProfile.STATE_CONNECTED || 
                                                  connectionState == BluetoothProfile.STATE_CONNECTING
@@ -114,12 +113,20 @@ object BP170BManager {
                         } else {
                             Log.d(TAG, "Skipping already connected device: ${device.name} - ${device.address} (state: $connectionState)")
                         }
+                    } else if (device.name?.startsWith("BP170B") == true && _availableDevices.value.any { it.address == device.address }) {
+                        val connectionState = bluetoothManager?.getConnectionState(device, BluetoothProfile.GATT)
+                        val isNowConnected = connectionState == BluetoothProfile.STATE_CONNECTED || 
+                                            connectionState == BluetoothProfile.STATE_CONNECTING
+                        
+                        if (isNowConnected && BP170BManager.device?.address != device.address) {
+                            Log.d(TAG, "Removing device connected elsewhere: ${device.name} - ${device.address} (state: $connectionState)")
+                            _availableDevices.value = _availableDevices.value.filter { it.address != device.address }
+                        }
                     }
                 }
             }
         bluetoothAdapter?.startLeScan(deviceListener)
         
-        // 스캔 중 주기적으로 연결된 디바이스를 필터링
         managerScope.launch {
             while (isScanning) {
                 delay(200)
@@ -131,7 +138,7 @@ object BP170BManager {
                         val state = bluetoothManager?.getConnectionState(scanDevice, BluetoothProfile.GATT) ?: BluetoothProfile.STATE_DISCONNECTED
                         val isConnected = state == BluetoothProfile.STATE_CONNECTED || state == BluetoothProfile.STATE_CONNECTING
                         if (isConnected) {
-                            Log.d(TAG, "Filtering out connected device during scan: ${scanDevice.name} - ${scanDevice.address} (state: $state)")
+                            Log.d(TAG, "Filtering out device connected elsewhere: ${scanDevice.name} - ${scanDevice.address} (state: $state)")
                         }
                         !isConnected
                     }
@@ -142,6 +149,7 @@ object BP170BManager {
         managerScope.launch {
             delay(SCAN_DURATION.toLong())
             stopScan(deviceListener)
+            filterConnectedDevices()
         }
     }
 
@@ -154,12 +162,40 @@ object BP170BManager {
     }
 
     @SuppressLint("MissingPermission")
+    private fun filterConnectedDevices() {
+        _availableDevices.value = _availableDevices.value.filter { scanDevice ->
+            if (BP170BManager.device?.address == scanDevice.address) {
+                return@filter false
+            }
+            val state = bluetoothManager?.getConnectionState(scanDevice, BluetoothProfile.GATT) ?: BluetoothProfile.STATE_DISCONNECTED
+            val isConnected = state == BluetoothProfile.STATE_CONNECTED || state == BluetoothProfile.STATE_CONNECTING
+            if (isConnected) {
+                Log.d(TAG, "Removing device connected elsewhere (post-scan): ${scanDevice.name} - ${scanDevice.address} (state: $state)")
+            }
+            !isConnected
+        }
+    }
+
+    @SuppressLint("MissingPermission")
     fun connect(device: BluetoothDevice) {
         Log.d(TAG, "Attempting to connect to device: ${device.name} - ${device.address}")
         if (bluetoothAdapter == null) {
             Log.e(TAG, "Bluetooth Adapter not found")
             managerScope.launch {
                 _connectionState.value = BluetoothConnectionState.ERROR("Bluetooth not supported")
+            }
+            return
+        }
+        
+        val connectionState = bluetoothManager?.getConnectionState(device, BluetoothProfile.GATT)
+        val isConnectedElsewhere = connectionState == BluetoothProfile.STATE_CONNECTED || 
+                                   connectionState == BluetoothProfile.STATE_CONNECTING
+        
+        if (isConnectedElsewhere) {
+            Log.w(TAG, "Device is already connected elsewhere, cannot connect: ${device.name} - ${device.address} (state: $connectionState)")
+            _availableDevices.value = _availableDevices.value.filter { it.address != device.address }
+            managerScope.launch {
+                _connectionState.value = BluetoothConnectionState.ERROR("Device is already connected to another device")
             }
             return
         }
@@ -201,7 +237,18 @@ object BP170BManager {
 
                         BluetoothProfile.STATE_DISCONNECTED -> {
                             Log.d(TAG, "Disconnected from GATT server. Status: $status")
-                            _connectionState.value = BluetoothConnectionState.DISCONNECTED
+                            if (status != BluetoothGatt.GATT_SUCCESS) {
+                                Log.e(TAG, "Connection failed with status: $status")
+                                _connectionState.value = BluetoothConnectionState.ERROR("Connection failed with status: $status")
+                                device?.let { failedDevice ->
+                                    if (!_availableDevices.value.any { it.address == failedDevice.address }) {
+                                        _availableDevices.value = _availableDevices.value + failedDevice
+                                        Log.d(TAG, "Re-added failed device to available list: ${failedDevice.address}")
+                                    }
+                                }
+                            } else {
+                                _connectionState.value = BluetoothConnectionState.DISCONNECTED
+                            }
                             closeGatt()
                             device = null
                             pollingJob?.cancel() // Stop polling when disconnected

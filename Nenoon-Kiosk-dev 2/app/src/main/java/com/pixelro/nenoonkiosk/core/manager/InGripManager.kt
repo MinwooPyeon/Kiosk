@@ -484,6 +484,7 @@ object InGripManager {
         if (bluetoothGatt == null) return
         bluetoothGatt?.disconnect()
         closeGatt()
+        device = null
         _connectionState.value = BluetoothConnectionState.DISCONNECTED
     }
 
