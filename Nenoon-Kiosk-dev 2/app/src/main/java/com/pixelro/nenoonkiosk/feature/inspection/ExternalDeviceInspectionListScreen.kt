@@ -393,9 +393,7 @@ private fun LandscapeExternalDeviceLayout(
                             R.string.test_predescription_blood_pressure_title1,
                         ),
                     title2 =
-                        StringProvider.getString(
-                            R.string.test_predescription_blood_pressure_title2,
-                        ),
+                        "",
                     onClickMethod = {
                         onSelectedTestChange(InspectionType.BloodPressure)
                         if (checkIsTestDone(InspectionType.BloodPressure)) {
@@ -422,9 +420,7 @@ private fun LandscapeExternalDeviceLayout(
                             R.string.test_predescription_grip_strength_title1,
                         ),
                     title2 =
-                        StringProvider.getString(
-                            R.string.test_predescription_grip_strength_title2,
-                        ),
+                        "",
                     onClickMethod = {
                         onSelectedTestChange(InspectionType.GripStrength)
                         if (checkIsTestDone(InspectionType.GripStrength)) {
@@ -465,9 +461,7 @@ private fun ExternalDeviceTestListSection(
                     R.string.test_predescription_blood_pressure_title1,
                 ),
             title2 =
-                StringProvider.getString(
-                    R.string.test_predescription_blood_pressure_title2,
-                ),
+                "",
             onClickMethod = {
                 onSelectedTestChange(InspectionType.BloodPressure)
                 if (checkIsTestDone(InspectionType.BloodPressure)) {
@@ -491,9 +485,7 @@ private fun ExternalDeviceTestListSection(
                     R.string.test_predescription_grip_strength_title1,
                 ),
             title2 =
-                StringProvider.getString(
-                    R.string.test_predescription_grip_strength_title2,
-                ),
+                "",
             onClickMethod = {
                 onSelectedTestChange(InspectionType.GripStrength)
                 if (checkIsTestDone(InspectionType.GripStrength)) {
