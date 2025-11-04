@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.facedetection
+package com.pixelro.nenoonkiosk.core.manager.detection
 
 import android.annotation.SuppressLint
 import android.graphics.PointF
@@ -13,6 +13,7 @@ import com.google.mlkit.vision.face.FaceDetectorOptions
 import com.google.mlkit.vision.face.FaceLandmark
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.pixelro.nenoonkiosk.feature.facedetection.IrisResult
 import java.util.concurrent.Executor
 
 class MyFaceAnalyzer(
@@ -23,7 +24,7 @@ class MyFaceAnalyzer(
     private val onGazeDetectionResult: (IrisResult) -> Unit,
     private val executor: Executor,
 ) : ImageAnalysis.Analyzer {
-    
+
     companion object {
         // 얼굴 인식 범위 상수
         private const val EYE_LEFT_MIN_X = 260f
@@ -31,18 +32,18 @@ class MyFaceAnalyzer(
         private const val EYE_RIGHT_MAX_X = 804f
         private const val EYE_MIN_Y = 400f
         private const val EYE_DISTANCE_MIN = 100f
-        
+
         // 얼굴 미감지 카운트 임계값
         private const val NO_FACE_COUNT_THRESHOLD = 6
-        
+
         // NENOON 텍스트 인식 키워드
         private const val NENOON_TEXT = "NENOON"
         private const val NENOON_TEXT_ALT = "NE NOON"
-        
+
         // Face Detector 옵션
         private const val MIN_FACE_SIZE = 0.3f
     }
-    
+
     private var lastAnalysisTime = -1L
     private var noFaceCount = 0
 
@@ -85,7 +86,7 @@ class MyFaceAnalyzer(
                         }
                     }
                 }
-                
+
                 if (nenoonTextDetected) {
                     updateIsNenoonTextDetected(true)
                 }
@@ -98,7 +99,7 @@ class MyFaceAnalyzer(
         faceDetector.process(image)
             .addOnSuccessListener(executor) { faces ->
                 val centerFace = findCenterFace(faces)
-                
+
                 if (centerFace != null) {
                     handleFaceDetected(centerFace)
                 } else {
@@ -114,7 +115,7 @@ class MyFaceAnalyzer(
         return faces.firstOrNull { face ->
             val leftEye = face.getLandmark(FaceLandmark.LEFT_EYE)?.position
             val rightEye = face.getLandmark(FaceLandmark.RIGHT_EYE)?.position
-            
+
             if (leftEye != null && rightEye != null) {
                 isFaceInValidRange(leftEye, rightEye)
             } else {
