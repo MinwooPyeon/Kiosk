@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pixelro.nenoonkiosk.ui.theme.LightGray
 
 @Composable
 fun SettingItem(
@@ -39,7 +40,7 @@ fun SettingItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(Color(0xffdddddd))
+                .background(LightGray)
         )
     }
 }
