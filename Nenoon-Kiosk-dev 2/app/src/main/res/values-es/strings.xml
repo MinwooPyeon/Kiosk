@@ -203,7 +203,7 @@
     <string name="mchart_test_description_2">recta</string>
     <string name="mchart_test_description_3">\no&#160;</string>
     <string name="mchart_test_description_4">curva</string>
-    <string name="mchart_test_description_5">? Seleccione</string>
+    <string name="mchart_test_description_5">Seleccione</string>
     <string name="mchart_test_content_straight">Línea recta</string>
     <string name="mchart_test_content_bent">Línea curva</string>
 
