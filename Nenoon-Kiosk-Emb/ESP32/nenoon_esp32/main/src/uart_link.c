@@ -18,7 +18,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <inttypes.h>
+#include <ctype.h>
 
 #define LINK_UART_PORT		UART_NUM_1
 #define LINK_UART_BAUD		115200
@@ -36,23 +36,32 @@ static media_index_t s_idx;
 static QueueHandle_t s_rxq;
 static frame_parser_t s_fp;
 
-// Json Helper
-static const char* find_key(const char* js, const char* key){
-	return strstr(js, key);
+
+static const void* memmem_simple(const void* h, size_t hlen,
+                                 const void* n, size_t nlen)
+{
+    if (!h || !n || !nlen || nlen > hlen) return NULL;
+    const unsigned char* H = (const unsigned char*)h;
+    const unsigned char* N = (const unsigned char*)n;
+    size_t last = hlen - nlen;
+    for (size_t i = 0; i <= last; ++i) {
+        if (H[i] == N[0] && memcmp(&H[i], N, nlen) == 0) return &H[i];
+    }
+    return NULL;
 }
 
-static const char* skip_ws(const char* p){
-	while(*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t') p++;
-	return p;
+static const char* skip_ws_b(const char* p, const char* end){
+    while (p < end && (*p==' ' || *p=='\n' || *p=='\r' || *p=='\t')) p++;
+    return p;
 }
 
-static uint64_t parse_uint(const char* p){
-	uint64_t v = 0;
-	while(*p >= '0' && *p <= '9'){
-		v = v*10 + (uint64_t)(*p - '0');
-		p++;
-	}
-	return v;
+static uint64_t parse_uint_b(const char* p, const char* end){
+    uint64_t v = 0;
+    while (p < end && *p >= '0' && *p <= '9'){
+        v = v*10 + (uint64_t)(*p - '0');
+        p++;
+    }
+    return v;
 }
 
 static void link_rx_task(void* arg){
@@ -198,140 +207,163 @@ esp_err_t uart_link_lic_get_jwt(const char *lic, char *out_jwt, size_t out_sz)
     return ESP_OK;
 }
 
-/* 기존 인터페이스 맞춰주기 */
-           // 일단 고정
-esp_err_t uart_link_get_index(media_index_t *out) { 
-	if(!out) return ESP_ERR_INVALID_ARG;
-	
-	frame_t *resp = NULL;
-	esp_err_t er = link_req_resp(FRAME_MEDIA_INDEX_REQ, NULL, 0, resp, pdMS_TO_TICKS(1000));
-	if(er != ESP_OK) return er;
-	if(resp->type != FRAME_MEDIA_INDEX_RESP){
-		ESP_LOGW(TAG, "media index: unexpected type=0x%02X", resp->type);
-		free(resp);
-		return ESP_FAIL;
-	}
-	
-	const char* js = (const char*)resp->payload;
-	size_t js_len = resp->len;
-	
-	char key_files[]  ="\files\":";
-	const char* pf = find_key(js, key_files);
-	if(!pf){
-		out->gen = 1;
-		out->count = 0;
-		out->items = NULL;
-		return ESP_OK;
-	}
-	pf += strlen(key_files);
-	pf = skip_ws(pf);
-	if(*pf != '['){
-		ESP_LOGW(TAG, "media index: files is not array");
-		out->gen = 1;
-		out->count = 0;
-		out->items = NULL;
-		return ESP_OK;
-	}
-	pf++;
-	
-	static media_item_t items[USB_ADVERT_MAX_FILES];
-	uint32_t count = 0;
-	
-	while(*pf && *pf != ']' && count < USB_ADVERT_MAX_FILES){
-		pf = skip_ws(pf);
-		if(*pf != '{'){
-			if(*pf != ']')break;
-			pf++;
-			continue;
-		}
-		pf++;
-	    memset(&items[count], 0, sizeof(items[count]));
+// ------- 교체: uart_link_get_index 전체 -------
 
-        while (*pf && *pf != '}') {
-            pf = skip_ws(pf);
-            if (strncmp(pf, "\"id\"", 4) == 0) {
-                pf = strstr(pf, ":");
-                pf = skip_ws(++pf);
-                if (*pf == '\"') {
-                    pf++;
-                    char *dst = items[count].id;
-                    while (*pf && *pf != '\"' && (dst - items[count].id) < (int)sizeof(items[count].id)-1) {
-                        *dst++ = *pf++;
-                    }
-                    *dst = 0;
-                    if (*pf == '\"') pf++;
-                }
-            } else if (strncmp(pf, "\"name\"", 6) == 0) {
-                pf = strstr(pf, ":");
-                pf = skip_ws(++pf);
-                if (*pf == '\"') {
-                    pf++;
-                    char *dst = items[count].name;
-                    while (*pf && *pf != '\"' && (dst - items[count].name) < (int)sizeof(items[count].name)-1) {
-                        *dst++ = *pf++;
-                    }
-                    *dst = 0;
-                    if (*pf == '\"') pf++;
-                }
-            } else if (strncmp(pf, "\"size\"", 6) == 0) {
-                pf = strstr(pf, ":");
-                pf = skip_ws(++pf);
-                items[count].size = parse_uint(pf);
-                // 숫자 끝까지 전진
-                while (*pf >= '0' && *pf <= '9') pf++;
-            } else {
-                // 모르는 필드는 다음 ,나 } 까지 스킵
-                while (*pf && *pf != ',' && *pf != '}') pf++;
-            }
+esp_err_t uart_link_get_index(media_index_t *out)
+{
+    if (!out) return ESP_ERR_INVALID_ARG;
 
-            pf = skip_ws(pf);
-            if (*pf == ',') {
-                pf++;
-                continue;
-            }
-        }
+    frame_t resp;
+    esp_err_t er = link_req_resp(FRAME_MEDIA_INDEX_REQ, NULL, 0,
+                                 &resp, pdMS_TO_TICKS(1000));
+    if (er != ESP_OK) return er;
 
-        // '}' 위치
-        if (*pf == '}') pf++;
-        items[count].index = count; // 네가 쓰는 구조에 맞게
+    const char* js     = (const char*)resp.payload;
+    size_t      js_len = resp.len;
+    const char* js_end = js + js_len;
 
-        count++;
+    static media_item_t items[USB_ADVERT_MAX_FILES];
+    uint32_t count = 0;
 
-        // 다음 아이템으로
-        pf = strstr(pf, ",");
-        if (!pf) break;
-        pf++;
-    }
-
-    // gen 뽑기 (없으면 1)
-    uint32_t gen = 1;
-    const char* pg = strstr(js, "\"gen\"");
-    if (pg) {
-        pg = strstr(pg, ":");
-        if (pg) {
-            pg++;
-            gen = (uint32_t)parse_uint(pg);
-        }
-    }
-
-    /* 4) out에 옮기기 */
-    out->gen   = gen;
-    out->count = count;
-
-    if (count == 0) {
+    // 1) files 배열 위치 찾기  ( "files": [ ... ] )
+    const char key_files[] = "\"files\"";
+    const char* kf = (const char*)memmem_simple(js, js_len, key_files, sizeof(key_files)-1);
+    if (!kf){
+        // files가 없으면 빈 인덱스 + gen=1 로 처리
+        out->gen = 1;
+        out->count = 0;
         out->items = NULL;
     } else {
-        out->items = malloc(sizeof(media_item_t) * count);
-        if (!out->items) {
+        size_t remain = (size_t)(js_end - kf);
+        const char* colon = (const char*)memchr(kf, ':', remain);
+        if (!colon) {
+            ESP_LOGW(TAG, "media index: 'files' has no ':'");
+            out->gen = 1; out->count = 0; out->items = NULL;
+        } else {
+            const char* p = skip_ws_b(colon+1, js_end);
+            if (p >= js_end || *p != '['){
+                ESP_LOGW(TAG, "media index: files is not array");
+                out->gen = 1; out->count = 0; out->items = NULL;
+            } else {
+                p++; // after '['
+                while (p < js_end && count < USB_ADVERT_MAX_FILES){
+                    p = skip_ws_b(p, js_end);
+                    if (p >= js_end) break;
+                    if (*p == ']'){ p++; break; }
+                    if (*p != '{'){
+                        // 다음 요소 전까지 스킵
+                        const char* next_comma = (const char*)memchr(p, ',', (size_t)(js_end-p));
+                        const char* next_rb    = (const char*)memchr(p, ']', (size_t)(js_end-p));
+                        if (!next_comma && !next_rb) break;
+                        p = next_comma && (!next_rb || next_comma < next_rb) ? next_comma+1 : next_rb;
+                        continue;
+                    }
+                    p++; // inside object
+                    memset(&items[count], 0, sizeof(items[count]));
+                    while (p < js_end && *p != '}'){
+                        p = skip_ws_b(p, js_end);
+                        if (p >= js_end || *p == '}') break;
+
+                        // "id"
+                        if ((js_end - p) >= 4 && strncmp(p, "\"id\"", 4) == 0){
+                            const char* c = (const char*)memchr(p, ':', (size_t)(js_end - p));
+                            if (!c) break;
+                            c = skip_ws_b(c+1, js_end);
+                            if (c < js_end && *c=='\"'){
+                                c++;
+                                char* dst = items[count].id;
+                                while (c < js_end && *c!='\"' && (dst - items[count].id) < (ptrdiff_t)sizeof(items[count].id)-1){
+                                    *dst++ = *c++;
+                                }
+                                *dst = 0;
+                                if (c < js_end && *c=='\"') c++;
+                                p = c;
+                            } else {
+                                p = c;
+                            }
+                        }
+                        // "name"
+                        else if ((js_end - p) >= 6 && strncmp(p, "\"name\"", 6) == 0){
+                            const char* c = (const char*)memchr(p, ':', (size_t)(js_end - p));
+                            if (!c) break;
+                            c = skip_ws_b(c+1, js_end);
+                            if (c < js_end && *c=='\"'){
+                                c++;
+                                char* dst = items[count].name;
+                                while (c < js_end && *c!='\"' && (dst - items[count].name) < (ptrdiff_t)sizeof(items[count].name)-1){
+                                    *dst++ = *c++;
+                                }
+                                *dst = 0;
+                                if (c < js_end && *c=='\"') c++;
+                                p = c;
+                            } else {
+                                p = c;
+                            }
+                        }
+                        // "size"
+                        else if ((js_end - p) >= 6 && strncmp(p, "\"size\"", 6) == 0){
+                            const char* c = (const char*)memchr(p, ':', (size_t)(js_end - p));
+                            if (!c) break;
+                            c = skip_ws_b(c+1, js_end);
+                            items[count].size = (uint32_t)parse_uint_b(c, js_end);
+                            while (c < js_end && *c >= '0' && *c <= '9') c++; // 숫자 끝까지
+                            p = c;
+                        }
+                        else {
+                            // 모르는 키: 다음 ',' 또는 '}' 까지 스킵
+                            const char* next = p;
+                            while (next < js_end && *next != ',' && *next != '}') next++;
+                            p = next;
+                        }
+
+                        p = skip_ws_b(p, js_end);
+                        if (p < js_end && *p == ',') p++;
+                    }
+                    if (p < js_end && *p == '}') p++;
+                    items[count].index = count;
+                    count++;
+
+                    // 다음 요소로 (',' 또는 ']' 까지 스킵)
+                    p = skip_ws_b(p, js_end);
+                    if (p < js_end && *p == ','){ p++; continue; }
+                    if (p < js_end && *p == ']'){ p++; break; }
+                }
+                out->count = count;
+            }
+        }
+    }
+
+    // 2) gen 추출 (없으면 1)
+    uint32_t gen = 1;
+    const char key_gen[] = "\"gen\"";
+    const char* pg = (const char*)memmem_simple(js, js_len, key_gen, sizeof(key_gen)-1);
+    if (pg){
+        size_t remain = (size_t)(js_end - pg);
+        const char* colon = (const char*)memchr(pg, ':', remain);
+        if (colon){
+            const char* c = skip_ws_b(colon+1, js_end);
+            gen = (uint32_t)parse_uint_b(c, js_end);
+        }
+    }
+
+    out->gen = gen;
+
+    // 3) items 옮기기
+    if (out->count == 0){
+        out->items = NULL;
+    } else {
+        out->items = (media_item_t*)malloc(sizeof(media_item_t) * out->count);
+        if (!out->items){
             ESP_LOGE(TAG, "media index: oom");
             out->count = 0;
             return ESP_ERR_NO_MEM;
         }
-        memcpy(out->items, items, sizeof(media_item_t) * count);
+        memcpy(out->items, items, sizeof(media_item_t) * out->count);
     }
 
     return ESP_OK;
 }
+
 
 esp_err_t uart_link_read_chunk(const char *id, uint64_t off, uint32_t len, uint8_t *out, uint32_t *out_len, uint32_t *out_crc){
 	if(!id || !out || !out_len || !out_crc) return ESP_ERR_INVALID_ARG;
@@ -342,18 +374,22 @@ esp_err_t uart_link_read_chunk(const char *id, uint64_t off, uint32_t len, uint8
 	memcpy(&pl[p], id, idlen + 1);
 	p += idlen + 1;
 	
-	pl[p++] = (uint8_t)(off << 56);
-	pl[p++] = (uint8_t)(off << 48);
-	pl[p++] = (uint8_t)(off << 40);
-	pl[p++] = (uint8_t)(off << 32);
-	pl[p++] = (uint8_t)(off << 24);
-	pl[p++] = (uint8_t)(off << 16);
-	pl[p++] = (uint8_t)(off << 8);
+	// off
+	pl[p++] = (uint8_t)(off >> 56);
+	pl[p++] = (uint8_t)(off >> 48);
+	pl[p++] = (uint8_t)(off >> 40);
+	pl[p++] = (uint8_t)(off >> 32);
+	pl[p++] = (uint8_t)(off >> 24);
+	pl[p++] = (uint8_t)(off >> 16);
+	pl[p++] = (uint8_t)(off >> 8);
 	pl[p++] = (uint8_t)(off);
-	pl[p++] = (uint8_t)(len << 24);
-	pl[p++] = (uint8_t)(len << 16);
-	pl[p++] = (uint8_t)(len << 8);
+	
+	// len
+	pl[p++] = (uint8_t)(len >> 24);
+	pl[p++] = (uint8_t)(len >> 16);
+	pl[p++] = (uint8_t)(len >> 8);
 	pl[p++] = (uint8_t)(len);
+
 	
 	uint8_t fbuf[FRAME_MAX_WIRE];
 	size_t flen = 0;
