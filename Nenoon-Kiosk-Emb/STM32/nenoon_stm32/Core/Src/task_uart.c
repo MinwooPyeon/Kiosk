@@ -17,7 +17,7 @@
 #include "task.h"
 
 #define UART6_RX_SB_SIZE	512u
-#define UART6_RX_RIG		1u
+#define UART6_RX_TRIG		1u
 
 static StreamBufferHandle_t s_uart6_rx_sb;
 static uint8_t				s_uart6_rx_dma[256];
@@ -35,7 +35,7 @@ static void vTaskUartRx(void * arg){
 	HAL_UARTEx_ReceiveToIdle_DMA(&huart6, s_uart6_rx_dma, sizeof(s_uart6_rx_dma));
 	uint8_t chunk[64];
 	for(;;){
-		size_t n = xStreamBufferReceive(s_uart6_rx_Sb, chunk, sizeof(chunk),portMAX_DELAY);
+		size_t n = xStreamBufferReceive(s_uart6_rx_sb, chunk, sizeof(chunk),portMAX_DELAY);
 		if(n){
 			frame_parser_feed(&s_fp, chunk, n);
 		}

@@ -13,3 +13,5 @@
 
 
 void task_usb_start(uint32_t stack, osPriority_t prio);
+
+#endif
