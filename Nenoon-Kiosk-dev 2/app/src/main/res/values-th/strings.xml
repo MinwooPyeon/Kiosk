@@ -452,7 +452,7 @@
     <string name="signin_vm_login_success">เข้าสู่ระบบสำเร็จ!\nยินดีต้อนรับ, %1$s!</string>
     <string name="signin_vm_face_no_match">ไม่พบใบหน้าที่ตรงกัน กรุณาลองอีกครั้ง</string>
     <string name="signin_vm_face_registration_in_progress">กำลังลงทะเบียนข้อมูลใบหน้า...</string>
-    <string name="signin_vm_face_registration_error_id_exists">ข้อผิดพลาด: รหัสผู้ใช้ \'%1$s' ได้รับการลงทะเบียนแล้ว</string>
+    <string name="signin_vm_face_registration_error_id_exists">ข้อผิดพลาด: รหัสผู้ใช้ \'%1$s\' ได้รับการลงทะเบียนแล้ว</string>
     <string name="signin_vm_face_registration_success">ลงทะเบียนใบหน้าสำเร็จแล้ว!</string>
     <string name="signin_vm_face_registration_extraction_failed">ไม่สามารถลงทะเบียนได้เนื่องจากการดึงข้อมูลใบหน้าล้มเหลว</string>
 
