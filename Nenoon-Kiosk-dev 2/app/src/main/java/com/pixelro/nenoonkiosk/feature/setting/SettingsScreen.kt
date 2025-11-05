@@ -1,5 +1,6 @@
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -43,27 +44,35 @@ fun SettingsScreen(
     // 3. 언어 변경 API 호출 함수 정의 (UI 레이어의 핵심 로직)
     val applyNewLanguage: (String) -> Unit = { langCode ->
 
-        // 4. 언어 코드를 ViewModel에게 전달하여 데이터/서비스 로직을 처리하게 함
-        // 예: SharedPreferences에 저장, TTS 설정 등
+        Log.d("NenoonLocale", "Language selection event received for: $langCode")
+        // 이 섹션(applyNewLanguage 람다 내부)에는 @Composable 함수가 들어갈 수 없습니다.
+
+        // 1. ViewModel 로직 호출 (일반 Kotlin 함수)
         viewModel.updateLanguage(langCode)
 
-        // 5. 프레임워크 API 호출 (Activity가 AppCompatActivity를 상속했는지 확인)
+//        val context = LocalContext.current // ⚠️ LocalContext.current는 Composable 내에서만 접근 가능하지만,
+        // Activity Context를 얻는 데 사용되는 이 줄은
+        // 보통 Composable 본문 내에 위치하거나,
+        // 람다가 Composable 내에서 정의될 때만 안전하게 사용되어야 합니다.
+        // (다이얼로그 콜백 내에서는 이미 context가 외부에서 정의되어야 합니다.)
+
+        // 만약 LocalContext.current를 람다 내부에서 호출했다면, 이 자체로 오류가 날 수 있습니다.
+        // context를 SettingsScreen 최상단에서 정의하고 람다로 전달하거나,
+        // 람다 바디 내에서는 오직 아래와 같은 비-Composable 함수만 호출해야 합니다.
+
+        val activity = context as? AppCompatActivity
+
         if (activity != null) {
-            // 언어 코드를 LocaleListCompat 객체로 변환 [3, 4]
-            // 예: "en" -> LocaleListCompat.forLanguageTags("en")
             val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(langCode)
 
-            // API 호출: 시스템 설정을 업데이트하고 Activity를 재시작함 [3-6]
-            // 이 호출은 메인 스레드에서 해야 합니다. [3, 4]
+            // *************** 일반 Kotlin 함수만 포함 ***************
+            Log.d("NenoonLocale", "Attempting to set locale to: $langCode")
             AppCompatDelegate.setApplicationLocales(appLocale)
+            Log.d("NenoonLocale", "AppCompatDelegate.setApplicationLocales() called successfully.")
+            // ********************************************************
 
-            // 참고: setApplicationLocales() 호출이 Activity를 재시작하므로,
-            // 별도로 dismissRequest를 호출할 필요는 없지만,
-            // setSettingsDialogState를 여기서 호출하여 상태를 정리하는 것도 가능합니다.
-            // viewModel.setSettingsDialogState(NenoonViewModel.SettingsDialogState.None)
         } else {
-            // 경고 또는 오류 처리 (MainActivity가 AppCompatActivity를 확장하지 않은 경우)
-            // throw IllegalStateException("Activity must extend AppCompatActivity for setApplicationLocales() to work with Compose.")
+            Log.e("NenoonLocale", "Activity cannot be cast to AppCompatActivity.")
         }
     }
 
@@ -86,7 +95,7 @@ fun SettingsScreen(
                     "es" to "Español"
                 ),
                 onItemSelected = { langCode ->
-                    applyNewLanguage
+                    applyNewLanguage(langCode)
                 },
                 onDismissRequest = {
                     viewModel.setSettingsDialogState(NenoonViewModel.SettingsDialogState.None)

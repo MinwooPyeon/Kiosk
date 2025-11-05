@@ -15,7 +15,6 @@ import android.util.SizeF
 import android.view.MotionEvent
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -78,6 +77,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
     val viewModel: NenoonViewModel by lazy {
         ViewModelProvider(this)[NenoonViewModel::class.java]
     }
