@@ -1,0 +1,2 @@
+../Core/Src/task_usb.c:16:13:vTaskUsb	1
+../Core/Src/task_usb.c:27:6:task_usb_start	1

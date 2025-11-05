@@ -1,0 +1,63 @@
+/*
+ * task_uart.c
+ *
+ *  Created on: Nov 4, 2025
+ *      Author: SSAFY
+ */
+
+
+#include "task_uart.h"
+#include "usart.h"
+#include "frame_parser.h"
+#include "frame_dispatcher.h"
+#include "uart_link.h"
+
+#include "FreeRTOS.h"
+#include "stream_buffer.h"
+#include "task.h"
+
+#define UART6_RX_SB_SIZE	512u
+#define UART6_RX_TRIG		1u
+
+static StreamBufferHandle_t s_uart6_rx_sb;
+static uint8_t				s_uart6_rx_dma[256];
+static frame_parser_t		s_fp;
+
+static void on_frame_rx(const uint8_t* frame, size_t len){
+	proto_dispatch_handle(frame, len);
+}
+
+static void vTaskUartRx(void * arg){
+	(void)arg;
+	STLINK_UART_Println("[task uart] start");
+	frame_parser_init(&s_fp, on_frame_rx);
+
+	HAL_UARTEx_ReceiveToIdle_DMA(&huart6, s_uart6_rx_dma, sizeof(s_uart6_rx_dma));
+	uint8_t chunk[64];
+	for(;;){
+		size_t n = xStreamBufferReceive(s_uart6_rx_sb, chunk, sizeof(chunk),portMAX_DELAY);
+		if(n){
+			frame_parser_feed(&s_fp, chunk, n);
+		}
+	}
+}
+
+void task_uart_start(uint32_t stack, osPriority_t prio){
+	s_uart6_rx_sb = xStreamBufferCreate(UART6_RX_SB_SIZE, UART6_RX_TRIG);
+
+	const osThreadAttr_t attr ={
+			.name = "uart_rx",
+			.stack_size = stack,
+			.priority = prio
+	};
+	osThreadNew(vTaskUartRx, NULL, &attr);
+}
+
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef* huart, uint16_t size){
+	if(huart->Instance == USART6){
+		BaseType_t xHigher = pdFALSE;
+		(void)xStreamBufferSendFromISR(s_uart6_rx_sb, s_uart6_rx_dma, size, &xHigher);
+		HAL_UARTEx_ReceiveToIdle_DMA(&huart6, s_uart6_rx_dma, sizeof(s_uart6_rx_dma));
+		portYIELD_FROM_ISR(xHigher);
+	}
+}

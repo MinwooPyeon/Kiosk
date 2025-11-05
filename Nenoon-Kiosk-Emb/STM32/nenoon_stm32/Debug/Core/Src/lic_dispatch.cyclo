@@ -1,0 +1,6 @@
+../Core/Src/lic_dispatch.c:13:6:lic_dispatch_mgr_login	4
+../Core/Src/lic_dispatch.c:29:6:lic_dispatch_issue	5
+../Core/Src/lic_dispatch.c:53:6:lic_dispatch_revoke	1
+../Core/Src/lic_dispatch.c:62:6:lic_dispatch_validate	1
+../Core/Src/lic_dispatch.c:71:6:lic_dispatch_get_challenge	2
+../Core/Src/lic_dispatch.c:88:6:lic_dispatch_get_jwt	2

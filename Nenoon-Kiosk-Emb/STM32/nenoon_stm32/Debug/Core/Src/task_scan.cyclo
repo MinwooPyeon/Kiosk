@@ -1,0 +1,2 @@
+../Core/Src/task_scan.c:14:13:vTaskScan	3
+../Core/Src/task_scan.c:29:6:task_scan_start	1

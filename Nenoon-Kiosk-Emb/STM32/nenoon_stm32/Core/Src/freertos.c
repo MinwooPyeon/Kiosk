@@ -23,6 +23,10 @@
 #include "main.h"
 #include "cmsis_os.h"
 
+#include "task_uart.h"
+#include "task_usb.h"
+#include "task_scan.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -108,8 +112,10 @@ void vApplicationMallocFailedHook(void)
   * @retval None
   */
 void MX_FREERTOS_Init(void) {
-  /* USER CODE BEGIN Init */
-
+  /* USER CODE BEGIN*/
+	task_uart_start(2048, osPriorityHigh);
+	task_usb_start(2048, osPriorityNormal);
+	task_scan_start(2048, osPriorityNormal);
   /* USER CODE END Init */
 
   /* USER CODE BEGIN RTOS_MUTEX */
