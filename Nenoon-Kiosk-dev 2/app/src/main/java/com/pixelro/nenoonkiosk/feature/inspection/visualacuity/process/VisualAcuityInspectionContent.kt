@@ -3,6 +3,7 @@ package com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,11 +20,12 @@ import androidx.compose.material.Text
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -84,7 +86,7 @@ fun VisualAcuityInspectionContent(
     getInspectionResult: () -> VisualAcuityInspectionResult,
     toResultScreen: (VisualAcuityInspectionResult) -> Unit,
 ) {
-    var progress by remember { mutableStateOf(0.1f) }
+    var progress by remember { mutableFloatStateOf(0.1f) }
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
@@ -150,70 +152,96 @@ private fun PortraitVisualAcuityContent(
     updateProgress: (Float) -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(vertical = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        VisualAcuityChartBox(
-            ansNum = ansNum,
-            sightLevel = sightLevel,
-            isFaceDetected = isFaceDetected,
-            isFacingForward = isFacingForward,
-        )
-
-        Text(
-            modifier = Modifier.padding(top = 40.dp),
-            text = stringResource(STRING_VISUAL_ACUITY_DESCRIPTION),
-            fontSize = 40.sp,
-            color = White,
-            fontWeight = FontWeight.Medium,
-            textAlign = TextAlign.Center,
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        LinearProgressIndicator(
+        // 시력표
+        Box(
             modifier = Modifier
-                .padding(bottom = 20.dp)
-                .width(490.dp)
-                .height(20.dp),
-            progress = animatedProgress,
-            color = neNoon_blue,
-        )
+                .fillMaxWidth()
+                .weight(0.5f),
+            contentAlignment = Alignment.Center
+        ) {
+            VisualAcuityChartBox(
+                ansNum = ansNum,
+                sightLevel = sightLevel,
+                isFaceDetected = isFaceDetected,
+                isFacingForward = isFacingForward,
+            )
+        }
 
-        Row {
-            DirectionSelectionButton(
-                direction = randomList[0],
-                onClick = {
-                    onAnswerSelected(0, updateProgress) {
-                        toResultScreen(getInspectionResult())
-                    }
-                }
+        // 설명 + 프로그레스 + 버튼들
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.5f)
+                .padding(horizontal = 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = stringResource(STRING_VISUAL_ACUITY_DESCRIPTION),
+                fontSize = 40.sp,
+                color = White,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center,
             )
-            DirectionSelectionButton(
-                direction = randomList[1],
-                onClick = {
-                    onAnswerSelected(1, updateProgress) {
-                        toResultScreen(getInspectionResult())
-                    }
-                }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .width(490.dp)
+                    .height(20.dp),
+                progress = animatedProgress,
+                color = neNoon_blue,
             )
-            DirectionSelectionButton(
-                direction = randomList[2],
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                DirectionSelectionButton(
+                    direction = randomList[0],
+                    onClick = {
+                        onAnswerSelected(0, updateProgress) {
+                            toResultScreen(getInspectionResult())
+                        }
+                    }
+                )
+                DirectionSelectionButton(
+                    direction = randomList[1],
+                    onClick = {
+                        onAnswerSelected(1, updateProgress) {
+                            toResultScreen(getInspectionResult())
+                        }
+                    }
+                )
+                DirectionSelectionButton(
+                    direction = randomList[2],
+                    onClick = {
+                        onAnswerSelected(2, updateProgress) {
+                            toResultScreen(getInspectionResult())
+                        }
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            CantSeeButton(
                 onClick = {
-                    onAnswerSelected(2, updateProgress) {
+                    onAnswerSelected(3, updateProgress) {
                         toResultScreen(getInspectionResult())
                     }
                 }
             )
         }
-
-        CantSeeButton(
-            onClick = {
-                onAnswerSelected(3, updateProgress) {
-                    toResultScreen(getInspectionResult())
-                }
-            }
-        )
     }
 }
 
@@ -230,126 +258,110 @@ private fun LandscapeVisualAcuityContent(
     toResultScreen: (VisualAcuityInspectionResult) -> Unit,
     updateProgress: (Float) -> Unit,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(horizontal = 60.dp, vertical = 30.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(
+        // 시력표
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 30.dp, vertical = 20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+                .fillMaxWidth()
+                .weight(0.5f),
+            contentAlignment = Alignment.Center
+        ) {
+            VisualAcuityChartBox(
+                ansNum = ansNum,
+                sightLevel = sightLevel,
+                isFaceDetected = isFaceDetected,
+                isFacingForward = isFacingForward,
+                modifier = Modifier
+                    .width(380.dp)
+                    .height(380.dp)
+            )
+        }
+
+        // 설명 텍스트
+        Text(
+            text = stringResource(STRING_VISUAL_ACUITY_DESCRIPTION),
+            fontSize = 36.sp,
+            color = White,
+            fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.Center,
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // 프로그레스 바
+        LinearProgressIndicator(
+            modifier = Modifier
+                .fillMaxWidth(0.6f)
+                .height(18.dp),
+            progress = animatedProgress,
+            color = neNoon_blue,
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // 방향 버튼 3개 (가로 배치)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // 왼쪽: 설명 텍스트 + 프로그레스 바
-            Column(
+            DirectionSelectionButton(
+                direction = randomList[0],
+                onClick = {
+                    onAnswerSelected(0, updateProgress) {
+                        toResultScreen(getInspectionResult())
+                    }
+                },
                 modifier = Modifier
-                    .weight(0.3f)
-                    .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = stringResource(STRING_VISUAL_ACUITY_DESCRIPTION),
-                    fontSize = 28.sp,
-                    color = White,
-                    fontWeight = FontWeight.Medium,
-                    textAlign = TextAlign.Center,
-                    lineHeight = 36.sp
-                )
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .height(14.dp),
-                    progress = animatedProgress,
-                    color = neNoon_blue,
-                )
-            }
-
-            // 중앙: 시력표 (카메라 위치)
-            Box(
+                    .width(140.dp)
+                    .height(140.dp)
+            )
+            Spacer(modifier = Modifier.width(20.dp))
+            DirectionSelectionButton(
+                direction = randomList[1],
+                onClick = {
+                    onAnswerSelected(1, updateProgress) {
+                        toResultScreen(getInspectionResult())
+                    }
+                },
                 modifier = Modifier
-                    .weight(0.4f)
-                    .fillMaxHeight(),
-                contentAlignment = Alignment.Center
-            ) {
-                VisualAcuityChartBox(
-                    ansNum = ansNum,
-                    sightLevel = sightLevel,
-                    isFaceDetected = isFaceDetected,
-                    isFacingForward = isFacingForward,
-                    modifier = Modifier
-                        .width(380.dp)
-                        .height(380.dp)
-                )
-            }
-
-            // 오른쪽: 방향 버튼 3개 + 안보임 버튼
-            Column(
+                    .width(140.dp)
+                    .height(140.dp)
+            )
+            Spacer(modifier = Modifier.width(20.dp))
+            DirectionSelectionButton(
+                direction = randomList[2],
+                onClick = {
+                    onAnswerSelected(2, updateProgress) {
+                        toResultScreen(getInspectionResult())
+                    }
+                },
                 modifier = Modifier
-                    .weight(0.3f)
-                    .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                // 방향 버튼 3개 (세로 배치)
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    DirectionSelectionButton(
-                        direction = randomList[0],
-                        onClick = {
-                            onAnswerSelected(0, updateProgress) {
-                                toResultScreen(getInspectionResult())
-                            }
-                        },
-                        modifier = Modifier
-                            .width(110.dp)
-                            .height(110.dp)
-                    )
-                    DirectionSelectionButton(
-                        direction = randomList[1],
-                        onClick = {
-                            onAnswerSelected(1, updateProgress) {
-                                toResultScreen(getInspectionResult())
-                            }
-                        },
-                        modifier = Modifier
-                            .width(110.dp)
-                            .height(110.dp)
-                    )
-                    DirectionSelectionButton(
-                        direction = randomList[2],
-                        onClick = {
-                            onAnswerSelected(2, updateProgress) {
-                                toResultScreen(getInspectionResult())
-                            }
-                        },
-                        modifier = Modifier
-                            .width(110.dp)
-                            .height(110.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // 안보임 버튼
-                CantSeeButton(
-                    onClick = {
-                        onAnswerSelected(3, updateProgress) {
-                            toResultScreen(getInspectionResult())
-                        }
-                    },
-                    modifier = Modifier
-                        .width(260.dp)
-                        .height(90.dp)
-                )
-            }
+                    .width(140.dp)
+                    .height(140.dp)
+            )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // 안보임 버튼
+        CantSeeButton(
+            onClick = {
+                onAnswerSelected(3, updateProgress) {
+                    toResultScreen(getInspectionResult())
+                }
+            },
+            modifier = Modifier
+                .width(460.dp)
+                .height(100.dp)
+        )
     }
 }
 
@@ -357,39 +369,57 @@ private fun LandscapeVisualAcuityContent(
 @Preview(
     showBackground = true,
     backgroundColor = 0xFF000000,
-    device = "spec:width=800dp,height=1280dp,dpi=240"
+    widthDp = 800,
+    heightDp = 1280
 )
 @Composable
 private fun PreviewVisualAcuityInspectionContent_Portrait() {
-    VisualAcuityInspectionContent(
-        randomList = listOf(2, 5, 7),
-        ansNum = 2,
-        sightLevel = 5,
-        isFaceDetected = true,
-        isFacingForward = true,
-        onAnswerSelected = { _, _, _ -> },
-        getInspectionResult = { VisualAcuityInspectionResult(leftEye = 10, rightEye = 10) },
-        toResultScreen = {}
-    )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+    ) {
+        PortraitVisualAcuityContent(
+            ansNum = 3,
+            sightLevel = 5,
+            isFaceDetected = true,
+            isFacingForward = true,
+            animatedProgress = 0.7f,
+            randomList = listOf(2, 5, 7),
+            onAnswerSelected = { _, _, _ -> },
+            getInspectionResult = { VisualAcuityInspectionResult(leftEye = 10, rightEye = 10) },
+            toResultScreen = {},
+            updateProgress = {}
+        )
+    }
 }
 
 @Preview(
     showBackground = true,
     backgroundColor = 0xFF000000,
-    device = "spec:width=1422dp,height=888dp,dpi=240"
+    widthDp = 1422,
+    heightDp = 888
 )
 @Composable
 private fun PreviewVisualAcuityInspectionContent_Landscape() {
-    VisualAcuityInspectionContent(
-        randomList = listOf(3, 4, 6),
-        ansNum = 3,
-        sightLevel = 5,
-        isFaceDetected = true,
-        isFacingForward = true,
-        onAnswerSelected = { _, _, _ -> },
-        getInspectionResult = { VisualAcuityInspectionResult(leftEye = 5, rightEye = 5) },
-        toResultScreen = {}
-    )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+    ) {
+        LandscapeVisualAcuityContent(
+            ansNum = 3,
+            sightLevel = 5,
+            isFaceDetected = true,
+            isFacingForward = true,
+            animatedProgress = 0.7f,
+            randomList = listOf(3, 4, 6),
+            onAnswerSelected = { _, _, _ -> },
+            getInspectionResult = { VisualAcuityInspectionResult(leftEye = 5, rightEye = 5) },
+            toResultScreen = {},
+            updateProgress = {}
+        )
+    }
 }
 
 private fun handleVoiceAnswer(
