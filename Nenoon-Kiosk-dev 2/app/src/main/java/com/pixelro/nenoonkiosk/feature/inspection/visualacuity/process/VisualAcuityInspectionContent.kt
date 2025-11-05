@@ -69,7 +69,6 @@ import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
 import com.pixelro.nenoonkiosk.core.util.AutoStartSTT
-import com.pixelro.nenoonkiosk.core.util.STT
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.components.CantSeeButton
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.components.DirectionSelectionButton
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.components.VisualAcuityChartBox
@@ -125,7 +124,7 @@ fun VisualAcuityInspectionCommonContent(
 }
 
 /**
- * 시력 검사 메인 컴포넌트 
+ * 시력 검사 메인 컴포넌트
  *
  * @param randomList 랜덤 방향 리스트 (3개)
  * @param ansNum 정답 방향 (2~7)
@@ -152,7 +151,7 @@ fun VisualAcuityInspectionContent(
         targetValue = progress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
     )
-    
+
     AutoStartSTT(
         onResult = { result ->
             handleVoiceAnswer(
@@ -168,7 +167,7 @@ fun VisualAcuityInspectionContent(
         onError = { error ->
         }
     )
-    
+
     Column(
         modifier =
             Modifier
@@ -249,7 +248,11 @@ fun VisualAcuityInspectionContent(
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF000000, device = "spec:width=800dp,height=1280dp,dpi=240")
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFF000000,
+    device = "spec:width=800dp,height=1280dp,dpi=240"
+)
 @Composable
 private fun PreviewVisualAcuityInspectionContent_Level1() {
     // sightLevel = 1 (가장 큰 크기)
@@ -265,7 +268,11 @@ private fun PreviewVisualAcuityInspectionContent_Level1() {
     )
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF000000, device = "spec:width=800dp,height=1280dp,dpi=240")
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFF000000,
+    device = "spec:width=800dp,height=1280dp,dpi=240"
+)
 @Composable
 private fun PreviewVisualAcuityInspectionContent_Level5() {
     // sightLevel = 5 (중간 크기)
@@ -281,7 +288,11 @@ private fun PreviewVisualAcuityInspectionContent_Level5() {
     )
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF000000, device = "spec:width=800dp,height=1280dp,dpi=240")
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFF000000,
+    device = "spec:width=800dp,height=1280dp,dpi=240"
+)
 @Composable
 private fun PreviewVisualAcuityInspectionContent_Level10_WithWarning() {
     // sightLevel = 10 (가장 작은 크기) + 얼굴 인식 실패 경고
@@ -308,7 +319,7 @@ private fun handleVoiceAnswer(
 ) {
     val voiceText = result.lowercase().trim()
     val compactText = voiceText.replace("\\s+".toRegex(), "")
-    
+
     // 숫자 인식
     val numberMap = mapOf(
         "이" to 2, "둘" to 2,
@@ -318,9 +329,9 @@ private fun handleVoiceAnswer(
         "육" to 6, "여섯" to 6,
         "칠" to 7, "일곱" to 7
     )
-    
+
     var selectedIdx: Int? = null
-    
+
     val normalized = voiceText.replace("\\s+".toRegex(), " ")
     val digitsInOrder = mutableListOf<Int>()
     for (ch in normalized) {
@@ -342,7 +353,7 @@ private fun handleVoiceAnswer(
             selectedIdx = idx
         }
     }
-    
+
     if (selectedIdx == null) {
         val tokens = voiceText.split("\\s+".toRegex()).filter { it.isNotBlank() }
         tokens.firstOrNull { tok -> numberMap.containsKey(tok) }?.let { tok ->
@@ -375,12 +386,20 @@ private fun handleVoiceAnswer(
     )
 
     val isUnknown = dontKnowPhrases.any { voiceText.contains(it) } ||
-            listOf("모르겠", "모름", "몰라", "안보여", "안보임", "안보인다", "안보입니다").any { compactText.contains(it) }
+            listOf(
+                "모르겠",
+                "모름",
+                "몰라",
+                "안보여",
+                "안보임",
+                "안보인다",
+                "안보입니다"
+            ).any { compactText.contains(it) }
 
     if (isUnknown) {
         selectedIdx = 3
     }
-    
+
     if (selectedIdx != null && selectedIdx in 0..3) {
         onAnswerSelected(selectedIdx, updateProgress, onComplete)
     }

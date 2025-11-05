@@ -41,8 +41,10 @@ fun VisualAcuityInspectionRoute(
     }
 
     // ViewModel 상태 구독 (거리 조정 및 시력 검사)
-    val isMeasuringDistanceVisible = visualAcuityViewModel.isMeasuringDistanceContentVisible.collectAsState().value
-    val isVisualAcuityVisible = visualAcuityViewModel.isVisualAcuityContentVisible.collectAsState().value
+    val isMeasuringDistanceVisible =
+        visualAcuityViewModel.isMeasuringDistanceContentVisible.collectAsState().value
+    val isVisualAcuityVisible =
+        visualAcuityViewModel.isVisualAcuityContentVisible.collectAsState().value
     val isLeftEye = visualAcuityViewModel.isLeftEye.collectAsState().value
 
     // ViewModel 상태 구독 (시력 검사 데이터)
@@ -110,9 +112,11 @@ fun VisualAcuityInspectionRoute(
                 toResultScreen = toResultScreen,
             )
         }
+
         InspectionType.LongDistanceVisualAcuity -> {
             // TODO: LongVisualAcuityInspectionContent 구현 시 추가
         }
+
         else -> {
             // Fallback
             ShortVisualAcuityInspectionContent(
