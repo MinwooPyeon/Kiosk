@@ -15,42 +15,40 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.ui.theme.White
+import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 @Composable
 fun StartButton(alphaVal: Float, toSurveyScreen: () -> Unit) {
     Box(
-        modifier =
-            Modifier
-                .fillMaxWidth(),
         contentAlignment = Alignment.Center,
     ) {
         Box(
             modifier =
                 Modifier
-                    .width(520.dp)
-                    .height(240.dp)
+                    .width(350.dp)
+                    .height(165.dp)
                     .alpha(alphaVal)
                     .border(
-                        border = BorderStroke(20.dp, Color(0xFF1D71E1)),
-                        shape = RoundedCornerShape(26.dp),
+                        border = BorderStroke(14.dp, neNoon_blue),
+                        shape = RoundedCornerShape(20.dp),
                     ),
         )
         Box(
             modifier =
                 Modifier
-                    .width(440.dp)
-                    .height(160.dp)
+                    .width(295.dp)
+                    .height(110.dp)
                     .clip(
                         shape = RoundedCornerShape(8.dp),
                     )
                     .background(
-                        color = Color(0xFF1D71E1),
+                        color = neNoon_blue,
                         shape = RoundedCornerShape(8.dp),
                     )
                     .clickable {
@@ -60,11 +58,11 @@ fun StartButton(alphaVal: Float, toSurveyScreen: () -> Unit) {
         ) {
             Text(
                 text =
-                    StringProvider.getStringComposable(
+                    stringResource(
                         R.string.intropage_start_button,
                     ),
-                fontSize = 75.sp,
-                color = Color(0xFFFFFFFF),
+                fontSize = 50.sp,
+                color = White,
                 fontWeight = FontWeight.ExtraBold,
             )
         }

@@ -44,7 +44,7 @@ val buttonTextStyle =
     TextStyle(
         fontFamily = defaultFont,
         fontWeight = FontWeight.Bold,
-        fontSize = 38.sp,
+        fontSize = 34.sp,
         letterSpacing = 0.5.sp,
     )
 

@@ -315,7 +315,6 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         TTS.tts.stop()
         TTS.destroyTTS()
-        viewModel.exoPlayer.release()
         PrinterManager.disconnectPrinter()
         super.onDestroy()
     }

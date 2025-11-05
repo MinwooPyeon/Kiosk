@@ -23,7 +23,7 @@ class FaceDetectionViewModel
     constructor(
         application: Application,
     ) : AndroidViewModel(application),
-        ContainerHost<FaceDetectionContract.State, FaceDetectionContract.SideEffect> {
+        ContainerHost<FaceDetectionUiState, FaceDetectionSideEffect> {
 
     companion object {
         // 기본 이미지 크기 상수
@@ -46,8 +46,8 @@ class FaceDetectionViewModel
         private const val TEXT_DETECTION_COUNT_INIT = 10
     }
 
-    override val container: Container<FaceDetectionContract.State, FaceDetectionContract.SideEffect> =
-        container(FaceDetectionContract.State())
+    override val container: Container<FaceDetectionUiState, FaceDetectionSideEffect> =
+        container(FaceDetectionUiState())
 
     // 얼굴 거리 및 위치 관련
     private val _screenToFaceDistance = MutableStateFlow(ZERO_FLOAT)

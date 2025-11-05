@@ -18,6 +18,7 @@ import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 import com.pixelro.nenoonkiosk.ui.theme.selectLargeTextStyle
+import com.pixelro.nenoonkiosk.ui.theme.topBackButtonTextStyle
 
 /**
  * 스크린세이버 안내 텍스트 컴포넌트
@@ -63,7 +64,7 @@ fun ScreenSaverGuideText(
         )
         Text(
             text = description3,
-            style = if (savedLanguage == "ko") bodyTextStyle else selectLargeTextStyle,
+            style = topBackButtonTextStyle,
             color = White,
             textAlign = TextAlign.Center,
         )

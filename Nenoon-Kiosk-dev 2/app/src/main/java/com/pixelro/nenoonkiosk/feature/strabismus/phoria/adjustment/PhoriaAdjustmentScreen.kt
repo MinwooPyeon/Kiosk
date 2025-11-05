@@ -51,7 +51,10 @@ fun PhoriaAdjustmentScreen(
     onShowHowToClicked: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
-        TTS.speechTTS(StringProvider.getString(R.string.tts_sawi_adjustment), TextToSpeech.QUEUE_FLUSH)
+        TTS.speechTTS(
+            StringProvider.getString(R.string.tts_sawi_adjustment),
+            TextToSpeech.QUEUE_FLUSH
+        )
     }
 
     // 텍스트 리소스
@@ -59,8 +62,8 @@ fun PhoriaAdjustmentScreen(
     val nextButtonText = StringProvider.getStringComposable(R.string.common_next)
     val mainText = StringProvider.getStringComposable(R.string.sawi_adjustment_main_text)
 
-    var crosshairPosition by remember { mutableStateOf<Offset?>(null) }
-    var circlePosition by remember { mutableStateOf<Offset?>(null) }
+    var crosshairPosition = remember { mutableStateOf<Offset?>(null) }
+    var circlePosition = remember { mutableStateOf<Offset?>(null) }
     var showHowToDialog by remember { mutableStateOf(false) }
 
     if (showHowToDialog) {
@@ -91,7 +94,7 @@ fun PhoriaAdjustmentScreen(
                 PrimaryButton(
                     onClick = {
                         if (crosshairPosition != null && circlePosition != null) {
-                            onConfirmClicked(crosshairPosition!!, circlePosition!!)
+                            onConfirmClicked(crosshairPosition.value!!, circlePosition.value!!)
                         }
                     },
                     text = nextButtonText,
@@ -111,10 +114,8 @@ fun PhoriaAdjustmentScreen(
             verticalArrangement = Arrangement.Center,
         ) {
             PhoriaAdjustmentCanvas(
-                crosshairPosition = crosshairPosition,
-                circlePosition = circlePosition,
-                onCrosshairPositionChange = { crosshairPosition = it },
-                onCirclePositionChange = { circlePosition = it }
+                crosshairPosition,
+                circlePosition
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
@@ -125,6 +126,7 @@ fun PhoriaAdjustmentScreen(
             )
         }
     }
+
 }
 
 @Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
@@ -138,6 +140,7 @@ private fun PhoriaAdjustmentScreenHorizontalPreview() {
         )
     }
 }
+
 
 @Preview(showBackground = true, device = "spec:width=800dp,height=1280dp,dpi=240")
 @Composable

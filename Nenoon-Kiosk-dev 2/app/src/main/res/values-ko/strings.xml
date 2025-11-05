@@ -555,12 +555,12 @@
     <string name="grip_strength_left_hand_instruction_tts">왼손을 힘껏 쥐어 주세요.</string>
     <string name="grip_strength_left_hand_completed_tts">왼손 악력 검사가 끝났습니다. 결과를 불러옵니다.</string>
 
-    <string name="grip_strength_right_hand_ready_text1"></string>
+    <string name="grip_strength_right_hand_ready_text1">당신의&#160;로 악력계를 잡으세요</string>
     <string name="grip_strength_right_hand_ready_text2">오른손</string>
     <string name="grip_strength_right_hand_ready_text3">으로 악력계를 잡고 준비해 주세요.</string>
     <string name="grip_strength_right_hand_completed_text">오른손 측정 완료.</string>
     <string name="grip_strength_right_hand_rest_text">다음은 왼손 악력 측정입니다.</string>
-    <string name="grip_strength_left_hand_ready_text1"></string>
+    <string name="grip_strength_left_hand_ready_text1">당신의&#160;로 악력계를 잡으세요</string>
     <string name="grip_strength_left_hand_ready_text2">왼손</string>
     <string name="grip_strength_left_hand_ready_text3">으로 악력계를 잡고 준비해 주세요.</string>
     <string name="grip_strength_left_hand_completed_text">왼손 악력 검사가 끝났습니다.</string>
@@ -634,9 +634,7 @@
     <string name="lung_age_test">폐나이 측정</string>
     <string name="blood_pressure_and_grip_strength">혈압, 악력</string>
     <string name="test_predescription_blood_pressure_title1">혈압 검사</string>
-    <string name="test_predescription_blood_pressure_title2"></string>
     <string name="test_predescription_grip_strength_title1">악력 검사</string>
-    <string name="test_predescription_grip_strength_title2"></string>
     <string name="dynamometer_disconnected_tts">악력계 연결이 끊어졌습니다.</string>
     <string name="dynamometer_connected_tts">악력계가 연결되었습니다. 악력 검사 시작 버튼을 눌러주세요.</string>
     <string name="qr_code_issue_button_text">로그인용 QR 코드 발급</string>
@@ -1027,6 +1025,9 @@
     <string name="sawi_result_general_disclaimer">내눈 앱의 모든 눈 검사는 자가 검사로 의학적 소견이 아니기에 정확한 판단과 진단은 병원을 방문하여 의사와 상담하시길 바랍니다. 내 눈의 상태와 주변 환경 또는 기기에 따라 검사 결과가 달라질 수 있습니다.</string>
     <string name="sawi_result_print_button">결과 프린트하기</string>
     <string name="sawi_result_back_to_main_button">메인 메뉴로 돌아가기</string>
+    <string name="fudo_result_right_eye_larger_format">오른쪽 눈의 망막상 크기가 %.1f%% 더 큽니다.</string>
+    <string name="fudo_result_left_eye_larger_format">왼쪽 눈의 망막상 크기가 %.1f%% 더 큽니다.</string>
+    <string name="printing_in_progress">결과를 프린트하고 있습니다.</string>
     <string name="sawi_result_normal_range_vertical">(0 ~ 0.5△)</string>
     <string name="sawi_result_normal">정상</string>
 

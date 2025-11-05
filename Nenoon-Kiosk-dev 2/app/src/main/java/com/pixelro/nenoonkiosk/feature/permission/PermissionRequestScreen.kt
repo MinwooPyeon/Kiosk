@@ -3,29 +3,25 @@ package com.pixelro.nenoonkiosk.feature.permission
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.constants.GlobalValue
-import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
+import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.permission.components.PermissionDialog
-import com.pixelro.nenoonkiosk.feature.permission.components.PermissionItemRow
-
+import com.pixelro.nenoonkiosk.feature.permission.components.PermissionItem
+import com.pixelro.nenoonkiosk.ui.theme.Gray
 
 @Composable
 fun PermissionRequestScreen(
@@ -34,55 +30,49 @@ fun PermissionRequestScreen(
     onConfirmClick: () -> Unit,
     onDismissDialog: () -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    val titleText = "앱 사용을 위해\n접근 권한 허용이 필요해요"
+    val descriptionText = "권한이 모두 설정되어있어야 다음 화면으로 넘어갑니다.\n체크되지 않은 항목을 선택하면 설정 페이지로 이동합니다."
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 40.dp, end = 40.dp)
+                .fillMaxHeight(0.9f)
+                .fillMaxWidth(0.9f)
         ) {
-            Spacer(modifier = Modifier.height((GlobalValue.statusBarPadding + 152).dp))
+            Spacer(modifier = Modifier.fillMaxHeight(0.15f))
 
             Text(
-                text = "앱 사용을 위해\n접근 권한 허용이 필요해요",
+                text = titleText,
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold
             )
 
+            Spacer(modifier = Modifier.fillMaxHeight(0.08f))
+
             Text(
-                modifier = Modifier.padding(top = 80.dp),
-                text = "권한이 모두 설정되어있어야 다음 화면으로 넘어갑니다\n체크되지 않은 항목을 선택하면 설정 페이지로 이동합니다",
+                text = descriptionText.let { if (isLandscape()) it.replace("\n", " ") else it },
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color(0xff878787)
+                color = Gray
             )
 
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.fillMaxHeight(0.08f))
 
-            items.forEach { item ->
-                PermissionItemRow(item)
-                Spacer(modifier = Modifier.height(20.dp))
-            }
+            PermissionItem(items = items)
         }
 
-        Button(
+        PrimaryButton(
             onClick = onConfirmClick,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(40.dp)
-                .height(60.dp),
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = colorResource(R.color.main),
-                contentColor = colorResource(R.color.white)
-            )
-        ) {
-            Text(
-                text = StringProvider.getStringComposable(R.string.confirm),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium
-            )
-        }
+                .padding(bottom = 40.dp)
+                .fillMaxWidth(0.9f),
+            enabled = true,
+            text = stringResource(R.string.confirm)
+        )
     }
 
     if (state.showRequireAllDialog) {
@@ -92,11 +82,7 @@ fun PermissionRequestScreen(
     }
 }
 
-
-
-
-
-@Preview(showBackground = true, widthDp = 800, heightDp = 1280, apiLevel = 34)
+@Preview(showBackground = true, widthDp = 1280, heightDp = 800, apiLevel = 34)
 @Composable
 private fun PermissionRequestScreen_Preview_AllGranted() {
     val dummyState = PermissionRequestState(

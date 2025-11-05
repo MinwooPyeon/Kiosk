@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,7 +30,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.start.components.
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.start.components.ConnectionErrorSection
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.start.components.DeviceSelectionSection
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.start.components.StandbySection
-import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.DynamometerConnectionScreenState
+import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripConnectionUiState
 
 @SuppressLint("MissingPermission")
 @OptIn(ExperimentalMaterialApi::class)
@@ -68,14 +67,14 @@ fun GripStrengthStartScreen(
                 verticalArrangement = Arrangement.Bottom,
             ) {
                 when (state.screenState) {
-                    DynamometerConnectionScreenState.Standby -> StandbySection(onStart = {
+                    InGripConnectionUiState.Standby -> StandbySection(onStart = {
                         onEvent(
                             GripAction.StartScan
                         )
                     })
 
 
-                    DynamometerConnectionScreenState.DeviceSelection -> DeviceSelectionSection(
+                    InGripConnectionUiState.DeviceSelection -> DeviceSelectionSection(
                         devices = state.availableDevices,
                         isConnecting = state.isConnecting,
                         onSelect = { onEvent(GripAction.SelectDevice(it)) },
@@ -83,15 +82,15 @@ fun GripStrengthStartScreen(
                     )
 
 
-                    DynamometerConnectionScreenState.Connecting -> ConnectingSection()
+                    InGripConnectionUiState.Connecting -> ConnectingSection()
 
 
-                    DynamometerConnectionScreenState.AwaitingStart -> AwaitingStartSection(
+                    InGripConnectionUiState.AwaitingStart -> AwaitingStartSection(
                         onStartTest = { onEvent(GripAction.StartTest) },
                     )
 
 
-                    DynamometerConnectionScreenState.ConnectionError -> ConnectionErrorSection(
+                    InGripConnectionUiState.ConnectionError -> ConnectionErrorSection(
                         onRetry = { onEvent(GripAction.RetryScan) },
                     )
                 }
@@ -115,7 +114,7 @@ private fun previewDevices() = listOf(
 private fun Preview_DeviceSelection_Scanning() {
     GripStrengthStartScreen(
         state = GripStrengthUiState(
-            screenState = DynamometerConnectionScreenState.DeviceSelection,
+            screenState = InGripConnectionUiState.DeviceSelection,
             isConnecting = true,
         ),
         onEvent = {},
@@ -128,7 +127,7 @@ private fun Preview_DeviceSelection_Scanning() {
 private fun Preview_DeviceSelection_List() {
     GripStrengthStartScreen(
         state = GripStrengthUiState(
-            screenState = DynamometerConnectionScreenState.DeviceSelection,
+            screenState = InGripConnectionUiState.DeviceSelection,
             availableDevices = previewDevices(),
             isConnecting = false,
         ),
@@ -142,7 +141,7 @@ private fun Preview_DeviceSelection_List() {
 private fun Preview_Connecting() {
     GripStrengthStartScreen(
         state = GripStrengthUiState(
-            screenState = DynamometerConnectionScreenState.Connecting,
+            screenState = InGripConnectionUiState.Connecting,
         ),
         onEvent = {},
     )
@@ -154,7 +153,7 @@ private fun Preview_Connecting() {
 private fun Preview_AwaitingStart() {
     GripStrengthStartScreen(
         state = GripStrengthUiState(
-            screenState = DynamometerConnectionScreenState.AwaitingStart,
+            screenState = InGripConnectionUiState.AwaitingStart,
             batteryPercent = 87,
             isBatteryFetching = false,
         ),
@@ -168,7 +167,7 @@ private fun Preview_AwaitingStart() {
 private fun Preview_ConnectionError() {
     GripStrengthStartScreen(
         state = GripStrengthUiState(
-            screenState = DynamometerConnectionScreenState.ConnectionError,
+            screenState = InGripConnectionUiState.ConnectionError,
         ),
         onEvent = {},
     )

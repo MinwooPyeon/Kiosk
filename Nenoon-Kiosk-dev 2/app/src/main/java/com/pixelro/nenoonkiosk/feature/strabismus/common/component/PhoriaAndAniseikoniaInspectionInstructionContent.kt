@@ -26,12 +26,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.HowToButton
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
+import com.pixelro.nenoonkiosk.core.ui.SettingsButton
+import com.pixelro.nenoonkiosk.core.ui.TopBarOrientation
 import com.pixelro.nenoonkiosk.core.ui.TopBarVertical
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.howtodialog.AniseikoniaHowToDialog
 import com.pixelro.nenoonkiosk.feature.strabismus.phoria.howtodialog.PhoriaHowToDialog
+import com.pixelro.nenoonkiosk.ui.theme.Black
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
+import com.pixelro.nenoonkiosk.ui.theme.White
 
 /**
  * 검사 안내 화면 공통 컴포넌트
@@ -43,7 +48,7 @@ import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
  * @param bottomBar 하단 버튼 영역
  */
 @Composable
-fun InspectionInstructionContent(
+fun PhoriaAndAniseikoniaInspectionInstructionContent(
     testType: String,
     texts: List<String>,
     imageRes: Int,
@@ -118,7 +123,7 @@ fun InspectionInstructionContent(
 @Composable
 private fun InspectionInstructionScreenHorizontalPreview() {
     NenoonKioskTheme {
-        InspectionInstructionContent(
+        PhoriaAndAniseikoniaInspectionInstructionContent(
             testType = "phoria",
             texts = listOf("검사 안내 화면 예시", "두 번째 줄 텍스트"),
             imageRes = R.drawable.glassimage,
@@ -145,7 +150,7 @@ private fun InspectionInstructionScreenHorizontalPreview() {
 @Composable
 private fun InspectionInstructionContentVerticalPreview() {
     NenoonKioskTheme {
-        InspectionInstructionContent(
+        PhoriaAndAniseikoniaInspectionInstructionContent(
             testType = "aniseikonia",
             texts = listOf("검사 안내 화면 예시"),
             imageRes = R.drawable.eyefilterimage,

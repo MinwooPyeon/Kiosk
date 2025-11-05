@@ -28,7 +28,7 @@ fun DualButtonBottomBar(
     primaryButtonText: String,
     onPrimaryButtonClick: () -> Unit,
     secondaryButtonText: String,
-    onSecondaryButtonClick: () -> Unit,
+    onSecondaryButtonClick: () -> Unit
 ) {
     Column(
         modifier =

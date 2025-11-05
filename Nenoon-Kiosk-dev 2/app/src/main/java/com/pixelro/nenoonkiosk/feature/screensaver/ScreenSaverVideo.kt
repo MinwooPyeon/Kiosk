@@ -23,15 +23,19 @@ import com.pixelro.nenoonkiosk.ui.theme.selectLargeTextStyle
  * ExoPlayer를 사용하여 비디오를 재생
  *
  * @param exoPlayer ExoPlayer 인스턴스 (null이면 프리뷰 모드)
+ * @param modifier Modifier
  */
 @Composable
-fun ScreenSaverVideo(exoPlayer: ExoPlayer?) {
+fun ScreenSaverVideo(
+    exoPlayer: ExoPlayer?,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
 
     if (exoPlayer != null) {
         AndroidView(
             modifier =
-                Modifier
+                modifier
                     .fillMaxWidth()
                     .aspectRatio(16f / 9f)
                     .background(
@@ -48,7 +52,7 @@ fun ScreenSaverVideo(exoPlayer: ExoPlayer?) {
         // 프리뷰용 플레이스홀더
         Box(
             modifier =
-                Modifier
+                modifier
                     .fillMaxWidth()
                     .aspectRatio(16f / 9f)
                     .background(

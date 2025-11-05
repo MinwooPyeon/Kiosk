@@ -16,13 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.feature.permission.PermissionItemUi
+import com.pixelro.nenoonkiosk.ui.theme.Gray
+import com.pixelro.nenoonkiosk.ui.theme.White
 
 @Composable
 fun PermissionItemRow(item: PermissionItemUi) {
@@ -30,7 +31,7 @@ fun PermissionItemRow(item: PermissionItemUi) {
         modifier = Modifier
             .height(120.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(color = Color(0xFFEEEEEE), shape = RoundedCornerShape(8.dp))
+            .background(color = White, shape = RoundedCornerShape(8.dp))
             .clickable { item.onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -53,7 +54,7 @@ fun PermissionItemRow(item: PermissionItemUi) {
             )
             Text(
                 text = item.description,
-                color = Color(0xff878787)
+                color = Gray
             )
         }
 
