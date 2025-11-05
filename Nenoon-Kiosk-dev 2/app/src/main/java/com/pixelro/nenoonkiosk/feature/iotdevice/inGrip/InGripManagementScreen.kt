@@ -2,17 +2,13 @@ package com.pixelro.nenoonkiosk.feature.iotdevice.inGrip
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +24,6 @@ import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.components.ConnectionStateContent
-import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 /**
  * 악력계 블루투스 연결 관리 화면
@@ -38,12 +33,14 @@ import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
  * @param state 악력계 관리 화면의 UI 상태 (연결 상태, 배터리 레벨, 사용 가능한 기기 목록 등)
  * @param onEvent 사용자 이벤트 핸들러 (연결 시작, 기기 선택, 연결 해제, 재시도, 뒤로가기 등)
  * @param modifier Compose Modifier
+ * @param showStartTest 검사 시작 버튼 표시 여부 (기본값: false)
  */
 @Composable
 fun InGripManagementScreen(
     state: InGripManagementUiState,
     onEvent: (InGripManagementEvent) -> Unit,
     modifier: Modifier = Modifier,
+    showStartTest: Boolean = false,
 ) {
     Column(
         modifier = modifier
@@ -53,7 +50,9 @@ fun InGripManagementScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        StyledText(stringResource(R.string.dynamometer_title), TextStyle.Title)
+        if (!showStartTest) {
+            StyledText(stringResource(R.string.dynamometer_title), TextStyle.Title)
+        }
 
         if (isLandscape()) {
             Row(
@@ -90,6 +89,7 @@ fun InGripManagementScreen(
                         ConnectionStateContent(
                             state = state,
                             onEvent = onEvent,
+                            showStartTest = showStartTest,
                         )
                     }
 
@@ -122,6 +122,7 @@ fun InGripManagementScreen(
                     ConnectionStateContent(
                         state = state,
                         onEvent = onEvent,
+                        showStartTest = showStartTest,
                     )
                 }
 

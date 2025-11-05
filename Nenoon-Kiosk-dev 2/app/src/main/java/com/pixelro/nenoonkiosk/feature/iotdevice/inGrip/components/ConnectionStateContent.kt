@@ -26,12 +26,14 @@ import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripManagementUiState
  *
  * @param state UI 상태
  * @param onEvent 이벤트 핸들러
+ * @param showStartTest 검사 시작 버튼 표시 여부 (기본값: false)
  */
 @Composable
 fun ConnectionStateContent(
     state: InGripManagementUiState,
     onEvent: (InGripManagementEvent) -> Unit,
     modifier: Modifier = Modifier,
+    showStartTest: Boolean = false,
 ) {
     when {
         // 대기 상태
@@ -84,13 +86,25 @@ fun ConnectionStateContent(
 
         // 연결 완료
         state.connectionState == InGripConnectionUiState.AwaitingStart -> {
-            AccentedTextWithButton(
-                prefixRes = R.string.dynamometer_device_connected1,
-                accentRes = R.string.dynamometer_device_connected2,
-                suffixRes = R.string.dynamometer_device_connected3,
-                buttonTextRes = R.string.dynamometer_disconnect,
-                onButtonClick = { onEvent(InGripManagementEvent.Disconnect) },
-            )
+            if (showStartTest) {
+                AccentedTextWithTwoButtons(
+                    prefixRes = R.string.dynamometer_device_connected1,
+                    accentRes = R.string.dynamometer_device_connected2,
+                    suffixRes = R.string.dynamometer_device_connected3,
+                    primaryButtonTextRes = R.string.dynamometer_device_connected2,
+                    onPrimaryButtonClick = { onEvent(InGripManagementEvent.StartTest) },
+                    secondaryButtonTextRes = R.string.dynamometer_disconnect,
+                    onSecondaryButtonClick = { onEvent(InGripManagementEvent.Disconnect) },
+                )
+            } else {
+                AccentedTextWithButton(
+                    prefixRes = R.string.dynamometer_device_connected1,
+                    accentRes = R.string.dynamometer_device_connected2,
+                    suffixRes = R.string.dynamometer_device_connected3,
+                    buttonTextRes = R.string.dynamometer_disconnect,
+                    onButtonClick = { onEvent(InGripManagementEvent.Disconnect) },
+                )
+            }
         }
 
         // 연결 오류
@@ -144,6 +158,45 @@ private fun AccentedTextWithButton(
         PrimaryButton(
             onClick = onButtonClick,
             text = stringResource(buttonTextRes),
+            modifier = Modifier.padding(bottom = 20.dp),
+        )
+    }
+}
+
+@Composable
+private fun AccentedTextWithTwoButtons(
+    prefixRes: Int,
+    accentRes: Int,
+    suffixRes: Int,
+    primaryButtonTextRes: Int,
+    onPrimaryButtonClick: () -> Unit,
+    secondaryButtonTextRes: Int,
+    onSecondaryButtonClick: () -> Unit,
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            AccentedText(
+                prefix = stringResource(prefixRes),
+                accent = stringResource(accentRes),
+                suffix = stringResource(suffixRes),
+            )
+        }
+        PrimaryButton(
+            onClick = onPrimaryButtonClick,
+            text = stringResource(primaryButtonTextRes),
+            modifier = Modifier.padding(bottom = 20.dp),
+        )
+        PrimaryButton(
+            onClick = onSecondaryButtonClick,
+            text = stringResource(secondaryButtonTextRes),
             modifier = Modifier.padding(bottom = 20.dp),
         )
     }

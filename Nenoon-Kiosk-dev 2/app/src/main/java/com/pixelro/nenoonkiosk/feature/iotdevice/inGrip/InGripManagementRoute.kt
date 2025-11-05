@@ -25,6 +25,9 @@ import kotlinx.coroutines.flow.collectLatest
 fun InGripManagementRoute(
     navController: NavHostController,
     viewModel: InGripViewModel = hiltViewModel(),
+    showStartTest: Boolean = false,
+    onStartTest: (() -> Unit)? = null,
+    onBack: (() -> Unit)? = null,
 ) {
     var dynamometerConnectionScreenState by remember {
         mutableStateOf(
@@ -142,11 +145,19 @@ fun InGripManagementRoute(
                     InGripManager.startScan()
                     dynamometerConnectionScreenState = InGripConnectionUiState.DeviceSelection
                 }
+                is InGripManagementEvent.StartTest -> {
+                    onStartTest?.invoke()
+                }
                 is InGripManagementEvent.Back -> {
                     TTS.stopTTS()
-                    navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
+                    if (onBack != null) {
+                        onBack()
+                    } else {
+                        navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
+                    }
                 }
             }
-        }
+        },
+        showStartTest = showStartTest,
     )
 }

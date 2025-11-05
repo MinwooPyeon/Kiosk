@@ -24,4 +24,5 @@ sealed class InGripManagementEvent {
     data object Disconnect : InGripManagementEvent()
     data object Retry : InGripManagementEvent()
     data object Back : InGripManagementEvent()
+    data object StartTest : InGripManagementEvent()
 }
