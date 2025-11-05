@@ -132,14 +132,3 @@ fun PhoriaAdjustmentCanvas(
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-private fun PhoriaAdjustmentCanvasPreview() {
-    var crosshairPosition by remember { mutableStateOf<Offset?>(null) }
-    var circlePosition by remember { mutableStateOf<Offset?>(null) }
-
-    NenoonKioskTheme {
-
-    }
-}
