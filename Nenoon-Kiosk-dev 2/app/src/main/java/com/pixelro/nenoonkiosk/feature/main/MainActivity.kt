@@ -20,6 +20,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import androidx.compose.foundation.layout.Arrangement
@@ -76,7 +77,7 @@ import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     val viewModel: NenoonViewModel by lazy {
         ViewModelProvider(this)[NenoonViewModel::class.java]
     }
