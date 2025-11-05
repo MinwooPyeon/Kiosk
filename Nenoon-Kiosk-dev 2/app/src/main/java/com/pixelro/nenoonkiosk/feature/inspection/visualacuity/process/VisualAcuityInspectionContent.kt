@@ -9,11 +9,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
@@ -262,15 +262,14 @@ private fun LandscapeVisualAcuityContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .padding(horizontal = 60.dp, vertical = 30.dp),
+            .padding(horizontal = 60.dp, vertical = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.Center
     ) {
-        // 시력표
+        // 시력표 (고정 크기로 찌부러짐 방지)
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.5f),
+                .size(400.dp),
             contentAlignment = Alignment.Center
         ) {
             VisualAcuityChartBox(
@@ -278,16 +277,16 @@ private fun LandscapeVisualAcuityContent(
                 sightLevel = sightLevel,
                 isFaceDetected = isFaceDetected,
                 isFacingForward = isFacingForward,
-                modifier = Modifier
-                    .width(380.dp)
-                    .height(380.dp)
+                modifier = Modifier.size(400.dp)
             )
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         // 설명 텍스트
         Text(
             text = stringResource(STRING_VISUAL_ACUITY_DESCRIPTION),
-            fontSize = 36.sp,
+            fontSize = 32.sp,
             color = White,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
@@ -299,12 +298,12 @@ private fun LandscapeVisualAcuityContent(
         LinearProgressIndicator(
             modifier = Modifier
                 .fillMaxWidth(0.6f)
-                .height(18.dp),
+                .height(16.dp),
             progress = animatedProgress,
             color = neNoon_blue,
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         // 방향 버튼 3개 (가로 배치)
         Row(
@@ -320,10 +319,10 @@ private fun LandscapeVisualAcuityContent(
                     }
                 },
                 modifier = Modifier
-                    .width(140.dp)
-                    .height(140.dp)
+                    .width(130.dp)
+                    .height(130.dp)
             )
-            Spacer(modifier = Modifier.width(20.dp))
+            Spacer(modifier = Modifier.width(16.dp))
             DirectionSelectionButton(
                 direction = randomList[1],
                 onClick = {
@@ -332,10 +331,10 @@ private fun LandscapeVisualAcuityContent(
                     }
                 },
                 modifier = Modifier
-                    .width(140.dp)
-                    .height(140.dp)
+                    .width(130.dp)
+                    .height(130.dp)
             )
-            Spacer(modifier = Modifier.width(20.dp))
+            Spacer(modifier = Modifier.width(16.dp))
             DirectionSelectionButton(
                 direction = randomList[2],
                 onClick = {
@@ -344,8 +343,8 @@ private fun LandscapeVisualAcuityContent(
                     }
                 },
                 modifier = Modifier
-                    .width(140.dp)
-                    .height(140.dp)
+                    .width(130.dp)
+                    .height(130.dp)
             )
         }
 
@@ -359,8 +358,8 @@ private fun LandscapeVisualAcuityContent(
                 }
             },
             modifier = Modifier
-                .width(460.dp)
-                .height(100.dp)
+                .width(422.dp)
+                .height(90.dp)
         )
     }
 }
