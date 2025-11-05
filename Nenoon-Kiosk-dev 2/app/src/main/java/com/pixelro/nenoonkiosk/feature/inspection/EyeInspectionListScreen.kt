@@ -40,10 +40,8 @@ import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
 import com.pixelro.nenoonkiosk.core.ui.TopBarOrientation
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.WarningBar
 import com.pixelro.nenoonkiosk.ui.theme.LightGray
-import com.pixelro.nenoonkiosk.ui.theme.Red
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 
@@ -67,7 +65,7 @@ fun EyeTestInspectionScreen(
     toTestScreen: (InspectionType) -> Unit,
 ) {
     val warningTextSize = if (savedLanguage == "ru") 10.sp else 16.sp
-    val isLandscapeMode = kotlin.run {
+    val isLandscapeMode = run {
         val config = androidx.compose.ui.platform.LocalConfiguration.current
         config.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
     }
@@ -166,7 +164,12 @@ private fun PortraitLayout(
 
         if (!isSenior) {
             HorizontalPager(
-                contentPadding = PaddingValues(start = 40.dp, top = 20.dp, end = 40.dp, bottom = 20.dp),
+                contentPadding = PaddingValues(
+                    start = 40.dp,
+                    top = 20.dp,
+                    end = 40.dp,
+                    bottom = 20.dp
+                ),
                 pageSpacing = 40.dp,
                 state = pagerState
             ) { page ->
@@ -183,7 +186,9 @@ private fun PortraitLayout(
         ) {
             if (isDescriptionShowing) {
                 Text(
-                    modifier = Modifier.offset(y = shiftVal.dp).align(Alignment.Center),
+                    modifier = Modifier
+                        .offset(y = shiftVal.dp)
+                        .align(Alignment.Center),
                     text = stringResource(R.string.test_list_description),
                     style = bodyTextStyle,
                     textAlign = TextAlign.Center
@@ -263,7 +268,12 @@ private fun LandscapeLayout(
                 ) {
                     if (!isSenior) {
                         HorizontalPager(
-                            contentPadding = PaddingValues(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                            contentPadding = PaddingValues(
+                                start = 0.dp,
+                                top = 0.dp,
+                                end = 0.dp,
+                                bottom = 0.dp
+                            ),
                             pageSpacing = 20.dp,
                             state = pagerState,
                             modifier = Modifier.fillMaxSize()
@@ -317,7 +327,7 @@ private fun LandscapeLayout(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
-                    title1 =stringResource(R.string.test_predescription_presbyopia_title1),
+                    title1 = stringResource(R.string.test_predescription_presbyopia_title1),
                     title2 = stringResource(R.string.test_predescription_presbyopia_title2),
                     alignment = Alignment.CenterStart,
                     isDone = isPresbyopiaDone,
@@ -426,7 +436,13 @@ private fun TestListSection(
 
 // Preview
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "EyeTestList - Senior False - Portrait", apiLevel = 34)
+@Preview(
+    showBackground = true,
+    widthDp = 888,
+    heightDp = 1422,
+    name = "EyeTestList - Senior False - Portrait",
+    apiLevel = 34
+)
 @Composable
 private fun Preview_EyeTestList_SeniorFalse_Portrait() {
     val fakePager = rememberPagerState(
@@ -453,7 +469,13 @@ private fun Preview_EyeTestList_SeniorFalse_Portrait() {
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "EyeTestList - Senior True - Portrait (No Ads)", apiLevel = 34)
+@Preview(
+    showBackground = true,
+    widthDp = 888,
+    heightDp = 1422,
+    name = "EyeTestList - Senior True - Portrait (No Ads)",
+    apiLevel = 34
+)
 @Composable
 private fun Preview_EyeTestList_SeniorTrue_Portrait() {
     val fakePager = rememberPagerState(
@@ -480,7 +502,13 @@ private fun Preview_EyeTestList_SeniorTrue_Portrait() {
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 1422, heightDp = 888, name = "EyeTestList - Senior False - Landscape", apiLevel = 34)
+@Preview(
+    showBackground = true,
+    widthDp = 1422,
+    heightDp = 888,
+    name = "EyeTestList - Senior False - Landscape",
+    apiLevel = 34
+)
 @Composable
 private fun Preview_EyeTestList_SeniorFalse_Landscape() {
     val fakePager = rememberPagerState(
@@ -507,7 +535,13 @@ private fun Preview_EyeTestList_SeniorFalse_Landscape() {
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 1422, heightDp = 888, name = "EyeTestList - Senior True - Landscape (No Ads)", apiLevel = 34)
+@Preview(
+    showBackground = true,
+    widthDp = 1422,
+    heightDp = 888,
+    name = "EyeTestList - Senior True - Landscape (No Ads)",
+    apiLevel = 34
+)
 @Composable
 private fun Preview_EyeTestList_SeniorTrue_Landscape() {
     val fakePager = rememberPagerState(

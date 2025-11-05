@@ -83,7 +83,7 @@ private fun formatVisualAcuity(value: Int): String {
             "ja" -> "${value.toFloat() / 10}"
             else -> "${value.toFloat() / 10}"
         }
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         "${value.toFloat() / 10}"
     }
 }

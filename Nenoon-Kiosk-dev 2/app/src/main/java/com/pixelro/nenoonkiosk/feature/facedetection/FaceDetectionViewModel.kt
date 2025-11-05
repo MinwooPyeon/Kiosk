@@ -19,28 +19,28 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FaceDetectionViewModel
-    @Inject
-    constructor(
-        application: Application,
-    ) : AndroidViewModel(application),
-        ContainerHost<FaceDetectionUiState, FaceDetectionSideEffect> {
+@Inject
+constructor(
+    application: Application,
+) : AndroidViewModel(application),
+    ContainerHost<FaceDetectionUiState, FaceDetectionSideEffect> {
 
     companion object {
         // 기본 이미지 크기 상수
         private const val DEFAULT_IMAGE_SIZE = 1088f
         private const val ZERO_FLOAT = 0f
         private const val EYE_CENTER_X = 544f
-        
+
         // 거리 측정 상수
         private const val FOCAL_LENGTH_MULTIPLIER = 1.33f
         private const val INTERPUPILLARY_DISTANCE_MM = 63
         private const val MAX_VALID_DISTANCE = 600f
         private const val MIN_VALID_DISTANCE = 1f
-        
+
         // 텍스트 기반 거리 계산 상수
         private const val TEXT_WIDTH_CONSTANT = 3200
         private const val TEXT_DISTANCE_MULTIPLIER = 10f
-        
+
         // 타이머 상수
         private const val TIMER_DELAY_MS = 100L
         private const val TEXT_DETECTION_COUNT_INIT = 10
@@ -52,86 +52,86 @@ class FaceDetectionViewModel
     // 얼굴 거리 및 위치 관련
     private val _screenToFaceDistance = MutableStateFlow(ZERO_FLOAT)
     val screenToFaceDistance: StateFlow<Float> = _screenToFaceDistance
-    
+
     private val _inputImageSizeX = MutableStateFlow(DEFAULT_IMAGE_SIZE)
     private val _inputImageSizeY = MutableStateFlow(DEFAULT_IMAGE_SIZE)
-    
+
     private val _rightEyePosition = MutableStateFlow(PointF(ZERO_FLOAT, ZERO_FLOAT))
     val rightEyePosition: StateFlow<PointF> = _rightEyePosition
-    
+
     private val _leftEyePosition = MutableStateFlow(PointF(ZERO_FLOAT, ZERO_FLOAT))
     val leftEyePosition: StateFlow<PointF> = _leftEyePosition
 
     // 얼굴 회전 각도
     private val _rotX = MutableStateFlow(ZERO_FLOAT)
     val rotX: StateFlow<Float> = _rotX
-    
+
     private val _rotY = MutableStateFlow(ZERO_FLOAT)
     val rotY: StateFlow<Float> = _rotY
-    
+
     private val _rotZ = MutableStateFlow(ZERO_FLOAT)
     val rotZ: StateFlow<Float> = _rotZ
 
     // 얼굴 윤곽 데이터
     private val _leftEyeContour = MutableStateFlow(listOf(PointF(ZERO_FLOAT, ZERO_FLOAT)))
     val leftEyeContour: StateFlow<List<PointF>> = _leftEyeContour
-    
+
     private val _rightEyeContour = MutableStateFlow(listOf(PointF(ZERO_FLOAT, ZERO_FLOAT)))
     val rightEyeContour: StateFlow<List<PointF>> = _rightEyeContour
-    
+
     private val _upperLipTopContour = MutableStateFlow(listOf(PointF(ZERO_FLOAT, ZERO_FLOAT)))
     val upperLipTopContour: StateFlow<List<PointF>> = _upperLipTopContour
-    
+
     private val _upperLipBottomContour = MutableStateFlow(listOf(PointF(ZERO_FLOAT, ZERO_FLOAT)))
     val upperLipBottomContour: StateFlow<List<PointF>> = _upperLipBottomContour
-    
+
     private val _lowerLipTopContour = MutableStateFlow(listOf(PointF(ZERO_FLOAT, ZERO_FLOAT)))
     val lowerLipTopContour: StateFlow<List<PointF>> = _lowerLipTopContour
-    
+
     private val _lowerLipBottomContour = MutableStateFlow(listOf(PointF(ZERO_FLOAT, ZERO_FLOAT)))
     val lowerLipBottomContour: StateFlow<List<PointF>> = _lowerLipBottomContour
-    
+
     private val _faceContour = MutableStateFlow(listOf(PointF(ZERO_FLOAT, ZERO_FLOAT)))
     val faceContour: StateFlow<List<PointF>> = _faceContour
 
     // 눈 열림 확률
     private val _leftEyeOpenProbability = MutableStateFlow(ZERO_FLOAT)
     val leftEyeOpenProbability: StateFlow<Float> = _leftEyeOpenProbability
-    
+
     private val _rightEyeOpenProbability = MutableStateFlow(ZERO_FLOAT)
     val rightEyeOpenProbability: StateFlow<Float> = _rightEyeOpenProbability
 
     // 감지 상태
     private val _isFaceDetected = MutableStateFlow(false)
     val isFaceDetected: StateFlow<Boolean> = _isFaceDetected
-    
+
     private val _isDistanceOK = MutableStateFlow(0)
     val isDistanceOK: StateFlow<Int> = _isDistanceOK
-    
+
     private val _isLeftEyeCovered = MutableStateFlow(false)
     val isLeftEyeCovered: StateFlow<Boolean> = _isLeftEyeCovered
-    
+
     private val _isRightEyeCovered = MutableStateFlow(false)
     val isRightEyeCovered: StateFlow<Boolean> = _isRightEyeCovered
-    
+
     private val _isNenoonTextDetected = MutableStateFlow(false)
     val isNenoonTextDetected: StateFlow<Boolean> = _isNenoonTextDetected
-    
+
     private var textDetectionCount = 0
 
     // TTS 완료 상태
     private val _isOccluderPickedTTSDone = MutableStateFlow(true)
     val isOccluderPickedTTSDone: StateFlow<Boolean> = _isOccluderPickedTTSDone
-    
+
     private val _isFaceDetectedTTSDone = MutableStateFlow(true)
     val isFaceDetectedTTSDone: StateFlow<Boolean> = _isFaceDetectedTTSDone
-    
+
     private val _isEyeCoveredTTSDone = MutableStateFlow(true)
     val isEyeCoveredTTSDone: StateFlow<Boolean> = _isEyeCoveredTTSDone
-    
+
     private val _isDistanceMeasuredTTSDone = MutableStateFlow(true)
     val isDistanceMeasuredTTSDone: StateFlow<Boolean> = _isDistanceMeasuredTTSDone
-    
+
     private val _isPressStartButtonTTSDone = MutableStateFlow(true)
     val isPressStartButtonTTSDone: StateFlow<Boolean> = _isPressStartButtonTTSDone
 
@@ -179,14 +179,14 @@ class FaceDetectionViewModel
                 faceBoundingBox = boundingBox
             )
         }
-        
+
         // Legacy 함수 호출
         updateFaceDetectionData(
             boundingBox, leftEyePosition, rightEyePosition,
             rotX, rotY, rotZ, leftEyeOpenProbability, rightEyeOpenProbability
         )
     }
-    
+
     // 텍스트 인식 데이터 업데이트
     fun onTextRecognized(textBoundingBox: Rect?) = intent {
         reduce {
@@ -194,7 +194,7 @@ class FaceDetectionViewModel
         }
         updateTextRecognitionData(textBoundingBox)
     }
-    
+
     // 얼굴 감지 여부 업데이트
     fun onFaceDetectionChanged(isDetected: Boolean) = intent {
         reduce {
@@ -202,7 +202,7 @@ class FaceDetectionViewModel
         }
         updateIsFaceDetected(isDetected)
     }
-    
+
     // NENOON 텍스트 감지 여부 업데이트
     fun onNenoonTextDetected(isDetected: Boolean) = intent {
         reduce {
@@ -210,7 +210,7 @@ class FaceDetectionViewModel
         }
         updateIsNenoonTextDetected(isDetected)
     }
-    
+
     // 시선 추적 결과 업데이트
     fun onGazeResultDetected(irisResult: IrisResult) = intent {
         reduce {
@@ -239,7 +239,12 @@ class FaceDetectionViewModel
         leftEyeOpenProbability: Float?,
         rightEyeOpenProbability: Float?,
     ) {
-        _rightEyePosition.update { PointF(rightEyePosition?.x ?: it.x, rightEyePosition?.y ?: it.y) }
+        _rightEyePosition.update {
+            PointF(
+                rightEyePosition?.x ?: it.x,
+                rightEyePosition?.y ?: it.y
+            )
+        }
         _leftEyePosition.update { PointF(leftEyePosition?.x ?: it.x, leftEyePosition?.y ?: it.y) }
         _rotX.update { rotX }
         _rotY.update { rotY }
@@ -272,13 +277,13 @@ class FaceDetectionViewModel
         if (!_isNenoonTextDetected.value) {
             val eyeDistance = rightEyePosition.value.x - leftEyePosition.value.x
             val lensWidth = GlobalValue.lensSize.width
-            
+
             if (eyeDistance != ZERO_FLOAT && lensWidth != ZERO_FLOAT) {
                 _screenToFaceDistance.update { prev ->
-                    val calculatedDistance = FOCAL_LENGTH_MULTIPLIER * 
-                        (GlobalValue.focalLength * INTERPUPILLARY_DISTANCE_MM) * 
-                        _inputImageSizeX.value / (eyeDistance * lensWidth)
-                    
+                    val calculatedDistance = FOCAL_LENGTH_MULTIPLIER *
+                            (GlobalValue.focalLength * INTERPUPILLARY_DISTANCE_MM) *
+                            _inputImageSizeX.value / (eyeDistance * lensWidth)
+
                     if (calculatedDistance > MAX_VALID_DISTANCE || calculatedDistance < MIN_VALID_DISTANCE) {
                         prev
                     } else {
@@ -300,10 +305,10 @@ class FaceDetectionViewModel
     // 텍스트 거리 계산
     fun updateTextRecognitionData(textBox: Rect?) {
         _textBox.update { textBox }
-        
-        val textCenterX = ((_textBox.value?.right?.toFloat() ?: ZERO_FLOAT) + 
-                          (_textBox.value?.left?.toFloat() ?: ZERO_FLOAT)) / 2
-        
+
+        val textCenterX = ((_textBox.value?.right?.toFloat() ?: ZERO_FLOAT) +
+                (_textBox.value?.left?.toFloat() ?: ZERO_FLOAT)) / 2
+
         if (textCenterX > EYE_CENTER_X) {
             _isLeftEyeCovered.update { true }
             _isRightEyeCovered.update { false }
@@ -311,10 +316,10 @@ class FaceDetectionViewModel
             _isLeftEyeCovered.update { false }
             _isRightEyeCovered.update { true }
         }
-        
-        val textWidth = (_textBox.value?.right?.toFloat() ?: ZERO_FLOAT) - 
-                       (_textBox.value?.left?.toFloat() ?: ZERO_FLOAT)
-        
+
+        val textWidth = (_textBox.value?.right?.toFloat() ?: ZERO_FLOAT) -
+                (_textBox.value?.left?.toFloat() ?: ZERO_FLOAT)
+
         _distance.update { TEXT_WIDTH_CONSTANT / textWidth }
         _screenToFaceDistance.update { _distance.value * TEXT_DISTANCE_MULTIPLIER }
     }
@@ -325,7 +330,7 @@ class FaceDetectionViewModel
             while (true) {
                 delay(TIMER_DELAY_MS)
                 textDetectionCount--
-                
+
                 if (textDetectionCount < 0) {
                     _isNenoonTextDetected.update { false }
                     textDetectionCount = 0
