@@ -1,20 +1,32 @@
 package com.pixelro.nenoonkiosk.feature.termsofservice.base
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.boundsInParent
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
@@ -33,6 +45,27 @@ fun TermsOfServiceScreen(
     onClickAgree: () -> Unit,
     onClickBack: () -> Unit
 ) {
+    val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+    var sensitiveTableY by remember { mutableFloatStateOf(0f) }
+    var agreeButtonY by remember { mutableFloatStateOf(0f) }
+    
+    LaunchedEffect(state.acceptedPersonal) {
+        if (state.acceptedPersonal != null && sensitiveTableY > 0) {
+            coroutineScope.launch {
+                scrollState.animateScrollTo(sensitiveTableY.toInt())
+            }
+        }
+    }
+
+    LaunchedEffect(state.acceptedSensitive) {
+        if (state.acceptedSensitive != null && agreeButtonY > 0) {
+            coroutineScope.launch {
+                scrollState.animateScrollTo(agreeButtonY.toInt())
+            }
+        }
+    }
+    
     Scaffold { paddingValues ->
         Surface(
             modifier = Modifier
@@ -41,7 +74,9 @@ fun TermsOfServiceScreen(
                 .padding(40.dp)
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(Modifier.height(30.dp))
@@ -65,10 +100,16 @@ fun TermsOfServiceScreen(
 
                 HorizontalDivider(modifier = Modifier.padding(vertical = 18.dp), color = Color(0x1F000000))
 
-                TermsTable(
-                    data = sensitiveTable,
-                    textSize = state.textSize
-                )
+                Box(
+                    modifier = Modifier.onGloballyPositioned { coordinates ->
+                        sensitiveTableY = coordinates.boundsInParent().top
+                    }
+                ) {
+                    TermsTable(
+                        data = sensitiveTable,
+                        textSize = state.textSize
+                    )
+                }
                 Spacer(Modifier.height(16.dp))
                 ConsentRow(
                     description = StringProvider.getStringComposable(R.string.sensitive_info_checkbox_description),
@@ -78,12 +119,15 @@ fun TermsOfServiceScreen(
                     textSize = state.textSize
                 )
 
-                Spacer(Modifier.weight(1f))
+                Spacer(Modifier.height(40.dp))
 
                 PrimaryButton(
                     onClick = onClickAgree,
                     enabled = state.acceptedPersonal == true && state.acceptedSensitive == true,
                     text = StringProvider.getStringComposable(R.string.button_agree),
+                    modifier = Modifier.onGloballyPositioned { coordinates ->
+                        agreeButtonY = coordinates.boundsInParent().top
+                    }
                 )
                 Spacer(Modifier.height(20.dp))
                 PrimaryButton(
@@ -130,6 +174,34 @@ private fun TermsOfServiceScreen_Preview_Partial() {
         state = TermsOfServiceUiState(
             acceptedPersonal = true,
             acceptedSensitive = null,
+            textSize = 20.sp
+        ),
+        personalTable = TermsTableData(
+            label = "개인정보 수집·이용",
+            column1 = "성명/연락처",
+            column2 = "본인확인 및 상담",
+            column3 = "1년 보관"
+        ),
+        sensitiveTable = TermsTableData(
+            label = "민감정보 수집·이용",
+            column1 = "건강정보",
+            column2 = "맞춤 서비스 제공",
+            column3 = "동의 철회시까지"
+        ),
+        onChangePersonal = {},
+        onChangeSensitive = {},
+        onClickAgree = {},
+        onClickBack = {}
+    )
+}
+
+@Preview(showBackground = true, widthDp = 1422, heightDp = 1155, name = "Horizontal", apiLevel = 34)
+@Composable
+private fun TermsOfServiceScreen_Preview_Horizontal() {
+    TermsOfServiceScreen(
+        state = TermsOfServiceUiState(
+            acceptedPersonal = true,
+            acceptedSensitive = true,
             textSize = 20.sp
         ),
         personalTable = TermsTableData(
