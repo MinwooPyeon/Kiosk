@@ -723,6 +723,7 @@ object BP170BManager {
         if (bluetoothGatt == null) return
         bluetoothGatt?.disconnect()
         closeGatt()
+        device = null
         _connectionState.value = BluetoothConnectionState.DISCONNECTED
         pollingJob?.cancel() // Stop polling
         testCompletionJob?.cancel() // Stop test completion observer
