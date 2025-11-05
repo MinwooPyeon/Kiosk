@@ -1,6 +1,8 @@
 package com.pixelro.nenoonkiosk.core.util
 
+import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -36,6 +38,8 @@ object STT {
     private var lastPartialCandidate: String? = null
     private var phraseHints: Set<String> = emptySet()
     private var phraseBoost: Int = 30
+    private var originalSystemVolume: Int = -1
+    private var originalNotificationVolume: Int = -1
     private val phoneticToDigit: Map<String, String> = mapOf(
         "two" to "2", "three" to "3", "four" to "4", "five" to "5", "six" to "6", "seven" to "7", "eight" to "8", "nine" to "9",
         "ee" to "2", "eee" to "2", 
@@ -410,6 +414,8 @@ object STT {
             }
         }
         
+        muteSystemSounds()
+        
         deliveredInSession = false
         suppressNextError = false
         hadSpeechInSession = false
@@ -423,12 +429,51 @@ object STT {
     fun stopListening() {
         speechRecognizer?.stopListening()
         isListening = false
+        restoreSystemSounds()
     }
     
     // 음성 인식 취소
     fun cancelListening() {
         speechRecognizer?.cancel()
         isListening = false
+        restoreSystemSounds()
+    }
+    
+    private fun muteSystemSounds() {
+        try {
+            val ctx = NenoonKioskApplication.applicationContext()
+            val audioManager = ctx.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+            audioManager?.let { am ->
+                originalSystemVolume = am.getStreamVolume(AudioManager.STREAM_SYSTEM)
+                originalNotificationVolume = am.getStreamVolume(AudioManager.STREAM_NOTIFICATION)
+                
+                am.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0)
+                am.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, 0)
+                
+            }
+        } catch (e: Exception) {
+            Log.e("STT", "muteSystemSounds: 오류 - ${e.message}")
+        }
+    }
+    
+    private fun restoreSystemSounds() {
+        try {
+            val ctx = NenoonKioskApplication.applicationContext()
+            val audioManager = ctx.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+            audioManager?.let { am ->
+                if (originalSystemVolume >= 0) {
+                    am.setStreamVolume(AudioManager.STREAM_SYSTEM, originalSystemVolume, 0)
+                    Log.d("STT", "restoreSystemSounds: 시스템 사운드 복원 (SYSTEM: 0 -> $originalSystemVolume)")
+                }
+                if (originalNotificationVolume >= 0) {
+                    am.setStreamVolume(AudioManager.STREAM_NOTIFICATION, originalNotificationVolume, 0)
+                }
+                originalSystemVolume = -1
+                originalNotificationVolume = -1
+            }
+        } catch (e: Exception) {
+            Log.e("STT", "restoreSystemSounds: 오류 - ${e.message}")
+        }
     }
 
     fun startContinuousListening(
@@ -462,7 +507,7 @@ object STT {
             }
         }
         onErrorCallback = { code ->
-            if (isContinuous && code != SpeechRecognizer.ERROR_NO_MATCH) onError?.invoke(code) 
+            if (isContinuous) onError?.invoke(code) 
             if (isContinuous) {
                 val sinceEnd = (System.currentTimeMillis() - lastSessionEndedAt).coerceAtLeast(0)
                 
@@ -564,11 +609,13 @@ fun AutoStartSTT(
     onResult: (String) -> Unit,
     language: String = "ko-KR",
     onError: ((Int) -> Unit)? = null,
+    onReady: (() -> Unit)? = null,
     enabled: Boolean = true,
     delay: Long = 0
 ) {
     val latestOnResult = rememberUpdatedState(onResult)
     val latestOnError = rememberUpdatedState(onError)
+    val latestOnReady = rememberUpdatedState(onReady)
     
     LaunchedEffect(enabled) {
         if (enabled) {
@@ -589,7 +636,10 @@ fun AutoStartSTT(
                     Log.d("AutoStartSTT", "onError 콜백 호출: error=$error")
                     latestOnError.value?.invoke(error)
                 },
-                onReady = null,
+                onReady = {
+                    Log.d("AutoStartSTT", "onReady 콜백 호출")
+                    latestOnReady.value?.invoke()
+                },
             )
         } else {
             Log.d("AutoStartSTT", "enabled=false: 연속 인식 중지")

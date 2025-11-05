@@ -43,6 +43,7 @@ package com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -61,11 +62,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.util.Log
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
 import com.pixelro.nenoonkiosk.core.util.AutoStartSTT
@@ -148,6 +151,7 @@ fun VisualAcuityInspectionContent(
     toResultScreen: (VisualAcuityInspectionResult) -> Unit,
 ) {
     var progress by remember { mutableStateOf(0.1f) }
+    var showErrorText by remember { mutableStateOf(false) }
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
@@ -155,7 +159,7 @@ fun VisualAcuityInspectionContent(
     
     AutoStartSTT(
         onResult = { result ->
-            handleVoiceAnswer(
+            val isMatched = handleVoiceAnswer(
                 result = result,
                 randomList = randomList,
                 ansNum = ansNum,
@@ -164,9 +168,19 @@ fun VisualAcuityInspectionContent(
                 updateProgress = { newProgress -> progress = newProgress },
                 onComplete = { toResultScreen(getInspectionResult()) }
             )
+            if (isMatched) {
+                showErrorText = false
+            } else {
+                showErrorText = true
+            }
         },
         enabled = true,
         onError = { error ->
+            if (error == android.speech.SpeechRecognizer.ERROR_NO_MATCH) {
+                showErrorText = true
+            }
+        },
+        onReady = {
         }
     )
     
@@ -200,6 +214,23 @@ fun VisualAcuityInspectionContent(
                 Modifier
                     .height(20.dp),
         )
+        Box(
+            modifier = Modifier.height(60.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            if (showErrorText) {
+                Text(
+                    modifier =
+                        Modifier
+                            .padding(vertical = 10.dp),
+                    text = "다시 한번 말씀해주세요",
+                    fontSize = 36.sp,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
         //프로그레스 바
         LinearProgressIndicator(
             modifier =
@@ -307,8 +338,8 @@ private fun handleVoiceAnswer(
     onAnswerSelected: (Int, (Float) -> Unit, () -> Unit) -> Unit,
     updateProgress: (Float) -> Unit,
     onComplete: () -> Unit
-) {
-    android.util.Log.d("VisualAcuity", "handleVoiceAnswer: result='$result', randomList=$randomList, ansNum=$ansNum")
+): Boolean {
+    Log.d("VisualAcuity", "handleVoiceAnswer: result='$result', randomList=$randomList, ansNum=$ansNum")
     
     val voiceText = result.lowercase().trim()
     val compactText = voiceText.replace("\\s+".toRegex(), "")
@@ -329,7 +360,7 @@ private fun handleVoiceAnswer(
     val directNumber = result.trim().toIntOrNull()
     if (directNumber != null) {
         recognizedNumber = directNumber
-        android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 직접 숫자 인식 - $directNumber")
+        Log.d("VisualAcuity", "handleVoiceAnswer: 직접 숫자 인식 - $directNumber")
     }
     
     if (recognizedNumber == null) {
@@ -349,7 +380,7 @@ private fun handleVoiceAnswer(
         }
         recognizedNumber = digitsInOrder.firstOrNull()
         if (recognizedNumber != null) {
-            android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 문자에서 숫자 추출 - $recognizedNumber")
+            Log.d("VisualAcuity", "handleVoiceAnswer: 문자에서 숫자 추출 - $recognizedNumber")
         }
     }
     
@@ -357,7 +388,7 @@ private fun handleVoiceAnswer(
         val tokens = voiceText.split("\\s+".toRegex()).filter { it.isNotBlank() }
         tokens.firstOrNull { tok -> numberMap.containsKey(tok) }?.let { tok ->
             recognizedNumber = numberMap[tok]!!
-            android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 한글 숫자 인식 - '$tok' -> $recognizedNumber")
+            Log.d("VisualAcuity", "handleVoiceAnswer: 한글 숫자 인식 - '$tok' -> $recognizedNumber")
         }
     }
 
@@ -368,7 +399,7 @@ private fun handleVoiceAnswer(
         val tokens = voiceText.split("\\s+".toRegex()).filter { it.isNotBlank() }
         tokens.firstOrNull { tok -> engMap.containsKey(tok) }?.let { tok ->
             recognizedNumber = engMap[tok]!!
-            android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 영어 숫자 인식 - '$tok' -> $recognizedNumber")
+            Log.d("VisualAcuity", "handleVoiceAnswer: 영어 숫자 인식 - '$tok' -> $recognizedNumber")
         }
     }
 
@@ -377,7 +408,7 @@ private fun handleVoiceAnswer(
             val idx = randomList.indexOf(recognizedNumber)
             if (idx != -1) {
                 selectedIdx = idx
-                android.util.Log.d("VisualAcuity", "handleVoiceAnswer: randomList 매칭 성공 - $recognizedNumber -> idx=$idx")
+                Log.d("VisualAcuity", "handleVoiceAnswer: randomList 매칭 성공 - $recognizedNumber -> idx=$idx")
             }
         }
         else if (recognizedNumber == ansNum) {
@@ -385,15 +416,15 @@ private fun handleVoiceAnswer(
                 val idx = randomList.indexOf(ansNum)
                 if (idx != -1) {
                     selectedIdx = idx
-                    android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 정답 매칭 성공 - $recognizedNumber == ansNum($ansNum) -> idx=$idx")
+                    Log.d("VisualAcuity", "handleVoiceAnswer: 정답 매칭 성공 - $recognizedNumber == ansNum($ansNum) -> idx=$idx")
                 }
             } else {
-                android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 정답($ansNum)이 randomList에 없음")
+                Log.d("VisualAcuity", "handleVoiceAnswer: 정답($ansNum)이 randomList에 없음")
                 selectedIdx = 3
             }
         }
         else {
-            android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 인식된 숫자($recognizedNumber)가 randomList에 없음")
+            Log.d("VisualAcuity", "handleVoiceAnswer: 인식된 숫자($recognizedNumber)가 randomList에 없음")
             selectedIdx = 3
         }
     }
@@ -409,13 +440,15 @@ private fun handleVoiceAnswer(
 
     if (isUnknown) {
         selectedIdx = 3
-        android.util.Log.d("VisualAcuity", "handleVoiceAnswer: '모르겠다' 등 처리 - idx=3")
+        Log.d("VisualAcuity", "handleVoiceAnswer: '모르겠다' 등 처리 - idx=3")
     }
     
     if (selectedIdx != null && selectedIdx in 0..3) {
-        android.util.Log.d("VisualAcuity", "handleVoiceAnswer: onAnswerSelected 호출 - idx=$selectedIdx")
+        Log.d("VisualAcuity", "handleVoiceAnswer: onAnswerSelected 호출 - idx=$selectedIdx")
         onAnswerSelected(selectedIdx, updateProgress, onComplete)
+        return true
     } else {
-        android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 매칭 실패 - result='$result', randomList=$randomList, ansNum=$ansNum, recognizedNumber=$recognizedNumber, selectedIdx=$selectedIdx")
+        Log.d("VisualAcuity", "handleVoiceAnswer: 매칭 실패 - result='$result', randomList=$randomList, ansNum=$ansNum, recognizedNumber=$recognizedNumber, selectedIdx=$selectedIdx")
+        return false
     }
 }
