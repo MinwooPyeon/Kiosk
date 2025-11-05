@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.intro
+package com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.intro
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview

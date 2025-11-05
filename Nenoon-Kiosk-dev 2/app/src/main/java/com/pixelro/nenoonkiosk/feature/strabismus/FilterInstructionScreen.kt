@@ -19,7 +19,7 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.strabismus.common.component.InspectionInstructionContent
+import com.pixelro.nenoonkiosk.feature.strabismus.common.component.PhoriaAndAniseikoniaInspectionInstructionContent
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import kotlinx.coroutines.delay
 
@@ -58,7 +58,7 @@ fun FilterInstructionScreen(
             R.drawable.eyefilterimage
         }
 
-    InspectionInstructionContent(
+    PhoriaAndAniseikoniaInspectionInstructionContent(
         testType = testType,
         texts = listOf(mainText1, mainText2),
         imageRes = imageRes,

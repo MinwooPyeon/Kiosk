@@ -1,7 +1,11 @@
-package com.pixelro.nenoonkiosk.feature.strabismus
+package com.pixelro.nenoonkiosk.core.manager
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Typeface
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
@@ -10,7 +14,6 @@ import com.mangoslab.nemonicsdk.NPrintInfo
 import com.mangoslab.nemonicsdk.NPrinter
 import com.mangoslab.nemonicsdk.constants.NPrinterType
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 
 /**
@@ -30,7 +33,8 @@ object StrabismusPrintHelper {
         vResult: String,
         vDesc: String
     ) {
-        val bitmap = createPhoriaResultBitmap(context, hTitle, hResult, hDesc, vTitle, vResult, vDesc)
+        val bitmap =
+            createPhoriaResultBitmap(context, hTitle, hResult, hDesc, vTitle, vResult, vDesc)
         printBitmap(bitmap)
     }
 
@@ -43,7 +47,14 @@ object StrabismusPrintHelper {
         opinionResult: String,
         opinionDescription: String
     ) {
-        val bitmap = createAniseikoniaResultBitmap(context, retinalTitle, retinalDescription, opinionTitle, opinionResult, opinionDescription)
+        val bitmap = createAniseikoniaResultBitmap(
+            context,
+            retinalTitle,
+            retinalDescription,
+            opinionTitle,
+            opinionResult,
+            opinionDescription
+        )
         printBitmap(bitmap)
     }
 
@@ -63,7 +74,7 @@ object StrabismusPrintHelper {
             color = Color.BLACK
             textSize = 18f
         }
-        
+
         val titlePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.BLACK
             textSize = 24f
@@ -84,14 +95,32 @@ $vResult
 $vDesc
         """.trimIndent()
 
-        val titleLayout = StaticLayout.Builder.obtain(title, 0, title.length, titlePaint, PAPER_WIDTH - 2 * PADDING.toInt())
+        val titleLayout = StaticLayout.Builder.obtain(
+            title,
+            0,
+            title.length,
+            titlePaint,
+            PAPER_WIDTH - 2 * PADDING.toInt()
+        )
             .setAlignment(Layout.Alignment.ALIGN_CENTER)
             .build()
 
-        val resultLayout = StaticLayout.Builder.obtain(resultText, 0, resultText.length, textPaint, PAPER_WIDTH - 2 * PADDING.toInt())
+        val resultLayout = StaticLayout.Builder.obtain(
+            resultText,
+            0,
+            resultText.length,
+            textPaint,
+            PAPER_WIDTH - 2 * PADDING.toInt()
+        )
             .build()
 
-        val disclaimerLayout = StaticLayout.Builder.obtain(disclaimer, 0, disclaimer.length, disclaimerPaint, PAPER_WIDTH - 2 * PADDING.toInt())
+        val disclaimerLayout = StaticLayout.Builder.obtain(
+            disclaimer,
+            0,
+            disclaimer.length,
+            disclaimerPaint,
+            PAPER_WIDTH - 2 * PADDING.toInt()
+        )
             .build()
 
         val bitmapHeight = titleLayout.height + resultLayout.height + disclaimerLayout.height + 100
@@ -138,7 +167,7 @@ $vDesc
             textSize = 24f
             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         }
-        
+
         val disclaimerPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.GRAY
             textSize = 16f
@@ -152,14 +181,32 @@ $opinionResult
 $opinionDescription
         """.trimIndent()
 
-        val titleLayout = StaticLayout.Builder.obtain(title, 0, title.length, titlePaint, PAPER_WIDTH - 2 * PADDING.toInt())
+        val titleLayout = StaticLayout.Builder.obtain(
+            title,
+            0,
+            title.length,
+            titlePaint,
+            PAPER_WIDTH - 2 * PADDING.toInt()
+        )
             .setAlignment(Layout.Alignment.ALIGN_CENTER)
             .build()
 
-        val resultLayout = StaticLayout.Builder.obtain(resultText, 0, resultText.length, textPaint, PAPER_WIDTH - 2 * PADDING.toInt())
+        val resultLayout = StaticLayout.Builder.obtain(
+            resultText,
+            0,
+            resultText.length,
+            textPaint,
+            PAPER_WIDTH - 2 * PADDING.toInt()
+        )
             .build()
 
-        val disclaimerLayout = StaticLayout.Builder.obtain(disclaimer, 0, disclaimer.length, disclaimerPaint, PAPER_WIDTH - 2 * PADDING.toInt())
+        val disclaimerLayout = StaticLayout.Builder.obtain(
+            disclaimer,
+            0,
+            disclaimer.length,
+            disclaimerPaint,
+            PAPER_WIDTH - 2 * PADDING.toInt()
+        )
             .build()
 
         val bitmapHeight = titleLayout.height + resultLayout.height + disclaimerLayout.height + 100
@@ -185,7 +232,6 @@ $opinionDescription
         return bitmap
     }
 
-    
 
     private fun printBitmap(bitmap: Bitmap) {
         val printerInfo = PrinterManager.getPrinterInfo()
@@ -199,10 +245,17 @@ $opinionDescription
         }
 
         try {
-            nPrinterController.print(NPrintInfo(NPrinter(printerType ?: NPrinterType.NEMONIC_MIP201, "Printer", printerMacAddress), bitmap).apply {
-                copies = 1
-                isEnableDither = true
-            })
+            nPrinterController.print(
+                NPrintInfo(
+                    NPrinter(
+                        printerType ?: NPrinterType.NEMONIC_MIP201,
+                        "Printer",
+                        printerMacAddress
+                    ), bitmap
+                ).apply {
+                    copies = 1
+                    isEnableDither = true
+                })
             Log.d("StrabismusPrintHelper", "Print command sent successfully.")
         } catch (e: Exception) {
             Log.e("StrabismusPrintHelper", "Error during print command: ${'$'}e.message")

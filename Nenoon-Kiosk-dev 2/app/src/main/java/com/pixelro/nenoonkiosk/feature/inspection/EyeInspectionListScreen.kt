@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -147,7 +148,7 @@ private fun PortraitLayout(
             .background(color = White)
     ) {
         NenoonTopBar(
-            title = StringProvider.getString(R.string.test_list_tittle),
+            title = stringResource(R.string.test_list_tittle),
             orientation = TopBarOrientation.Vertical,
             showBackButton = true,
             onBackClicked = onBackToIntro,
@@ -183,7 +184,7 @@ private fun PortraitLayout(
             if (isDescriptionShowing) {
                 Text(
                     modifier = Modifier.offset(y = shiftVal.dp).align(Alignment.Center),
-                    text = StringProvider.getString(R.string.test_list_description),
+                    text = stringResource(R.string.test_list_description),
                     style = bodyTextStyle,
                     textAlign = TextAlign.Center
                 )
@@ -224,7 +225,7 @@ private fun LandscapeLayout(
             .background(color = White)
     ) {
         NenoonTopBar(
-            title = StringProvider.getString(R.string.test_list_tittle),
+            title = stringResource(R.string.test_list_tittle),
             orientation = TopBarOrientation.Horizontal,
             showBackButton = true,
             onBackClicked = onBackToIntro,
@@ -302,8 +303,8 @@ private fun LandscapeLayout(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
-                    title1 = StringProvider.getString(R.string.test_predescription_short_visual_acuity_title1),
-                    title2 = StringProvider.getString(R.string.test_predescription_short_visual_acuity_title2),
+                    title1 = stringResource(R.string.test_predescription_short_visual_acuity_title1),
+                    title2 = stringResource(R.string.test_predescription_short_visual_acuity_title2),
                     alignment = Alignment.CenterStart,
                     isDone = isShortVisualAcuityDone,
                     isSenior = isSenior,
@@ -316,8 +317,8 @@ private fun LandscapeLayout(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
-                    title1 = StringProvider.getString(R.string.test_predescription_presbyopia_title1),
-                    title2 = StringProvider.getString(R.string.test_predescription_presbyopia_title2),
+                    title1 =stringResource(R.string.test_predescription_presbyopia_title1),
+                    title2 = stringResource(R.string.test_predescription_presbyopia_title2),
                     alignment = Alignment.CenterStart,
                     isDone = isPresbyopiaDone,
                     isSenior = isSenior,
@@ -330,8 +331,8 @@ private fun LandscapeLayout(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
-                    title1 = StringProvider.getString(R.string.test_predescription_amsler_title1),
-                    title2 = StringProvider.getString(R.string.test_predescription_amsler_title2),
+                    title1 = stringResource(R.string.test_predescription_amsler_title1),
+                    title2 = stringResource(R.string.test_predescription_amsler_title2),
                     alignment = Alignment.CenterStart,
                     isDone = isAmslerGridDone,
                     isSenior = isSenior,
@@ -344,8 +345,8 @@ private fun LandscapeLayout(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
-                    title1 = StringProvider.getString(R.string.test_predescription_mchart_title1),
-                    title2 = StringProvider.getString(R.string.test_predescription_mchart_title2),
+                    title1 = stringResource(R.string.test_predescription_mchart_title1),
+                    title2 = stringResource(R.string.test_predescription_mchart_title2),
                     alignment = Alignment.CenterStart,
                     isDone = isMChartDone,
                     isSenior = isSenior,
@@ -371,8 +372,8 @@ private fun TestListSection(
 
         InspectionSelectionButton(
             modifier = itemModifier,
-            title1 = StringProvider.getString(R.string.test_predescription_short_visual_acuity_title1),
-            title2 = StringProvider.getString(R.string.test_predescription_short_visual_acuity_title2),
+            title1 = stringResource(R.string.test_predescription_short_visual_acuity_title1),
+            title2 = stringResource(R.string.test_predescription_short_visual_acuity_title2),
             alignment = Alignment.CenterStart,
             isDone = isShortVisualAcuityDone,
             isSenior = isSenior,
@@ -384,8 +385,8 @@ private fun TestListSection(
 
         InspectionSelectionButton(
             modifier = itemModifier,
-            title1 = StringProvider.getString(R.string.test_predescription_presbyopia_title1),
-            title2 = StringProvider.getString(R.string.test_predescription_presbyopia_title2),
+            title1 = stringResource(R.string.test_predescription_presbyopia_title1),
+            title2 = stringResource(R.string.test_predescription_presbyopia_title2),
             alignment = Alignment.CenterStart,
             isDone = isPresbyopiaDone,
             isSenior = isSenior,
@@ -397,8 +398,8 @@ private fun TestListSection(
 
         InspectionSelectionButton(
             modifier = itemModifier,
-            title1 = StringProvider.getString(R.string.test_predescription_amsler_title1),
-            title2 = StringProvider.getString(R.string.test_predescription_amsler_title2),
+            title1 = stringResource(R.string.test_predescription_amsler_title1),
+            title2 = stringResource(R.string.test_predescription_amsler_title2),
             alignment = Alignment.CenterStart,
             isDone = isAmslerGridDone,
             isSenior = isSenior,
@@ -410,8 +411,8 @@ private fun TestListSection(
 
         InspectionSelectionButton(
             modifier = itemModifier,
-            title1 = StringProvider.getString(R.string.test_predescription_mchart_title1),
-            title2 = StringProvider.getString(R.string.test_predescription_mchart_title2),
+            title1 = stringResource(R.string.test_predescription_mchart_title1),
+            title2 = stringResource(R.string.test_predescription_mchart_title2),
             alignment = Alignment.CenterStart,
             isDone = isMChartDone,
             isSenior = isSenior,

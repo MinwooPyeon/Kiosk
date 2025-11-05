@@ -36,7 +36,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.survey.model.SurveyGlass
+import com.pixelro.nenoonkiosk.ui.theme.White
 
 @Composable
 fun RedGreenFilterGlassDialog(
@@ -77,15 +79,23 @@ fun RedGreenFilterGlassDialog(
 
     Dialog(onDismissRequest = onDismissRequest) {
         Column(
-            modifier =
+            modifier = if (!isLandscape())
                 Modifier
                     .width(800.dp)
                     .height(1000.dp)
                     .background(
-                        color = Color(0xffffffff),
+                        color = White,
                         shape = RoundedCornerShape(16.dp),
                     )
-                    .padding(40.dp),
+                    .padding(40.dp)
+            else Modifier
+                .width(1000.dp)
+                .height(600.dp)
+                .background(
+                    color = White,
+                    shape = RoundedCornerShape(16.dp),
+                )
+                .padding(40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -100,12 +110,12 @@ fun RedGreenFilterGlassDialog(
                             },
                     ),
                 contentDescription = null,
-                modifier = Modifier.size(400.dp),
+                modifier = if(isLandscape()) Modifier.size(300.dp) else Modifier.size(400.dp) ,
             )
             Spacer(modifier = Modifier.height(40.dp))
             Text(
                 text = StringProvider.getString(R.string.red_green_filter_glass_prompt),
-                fontSize = 32.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
             )

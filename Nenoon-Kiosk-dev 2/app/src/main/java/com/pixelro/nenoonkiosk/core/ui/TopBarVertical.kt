@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
-import com.pixelro.nenoonkiosk.ui.theme.titleTextStyle
+import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 
 /**
  * 세로 모드 상단 바 컴포넌트
@@ -35,8 +35,8 @@ fun TopBarVertical(
     contentColor: Color = Color.Black,
 ) {
     CenterAlignedTopAppBar(
-        modifier = Modifier.padding(horizontal = 18.dp, vertical = 34.dp),
-        title = { Text(text = title, style = titleTextStyle, color = contentColor) },
+        modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp),
+        title = { Text(text = title, style = bodyTextStyle, color = contentColor) },
         navigationIcon = {
             if (showBackButton) {
                 BackButtonVertical(onClick = onBackClicked)

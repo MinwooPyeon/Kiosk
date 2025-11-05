@@ -58,9 +58,8 @@ import com.pixelro.nenoonkiosk.feature.print.ResultPrintRoute
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverRoute
 import com.pixelro.nenoonkiosk.feature.splash.SplashScreen
 import com.pixelro.nenoonkiosk.feature.strabismus.AppNavigation
-import com.pixelro.nenoonkiosk.feature.strabismus.PhoriaAndAniseikoniaTestListScreen
+import com.pixelro.nenoonkiosk.feature.strabismus.PhoriaAndAniseikoniaRoute
 import com.pixelro.nenoonkiosk.feature.survey.SurveyRoute
-import com.pixelro.nenoonkiosk.feature.survey.SurveyScreen
 import com.pixelro.nenoonkiosk.feature.termsofservice.base.TermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.termsofservice.faceid.FaceIdTermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.undeveloped.AdminPageScreen
@@ -470,7 +469,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            PhoriaAndAniseikoniaTestListScreen(
+            PhoriaAndAniseikoniaRoute(
                 checkIsTestDone = viewModel::checkIsTestDone,
                 toTestScreen = {
                     val route =
