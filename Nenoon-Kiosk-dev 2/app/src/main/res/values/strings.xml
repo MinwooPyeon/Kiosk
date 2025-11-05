@@ -147,9 +147,9 @@
     <string name="presbyopia_description2_2">\'다음\'</string>
     <string name="presbyopia_description2_3">을 누르세요</string>
     <string name="presbyopia_description3">아래의 깜빡이는 시표를 봐주세요</string>
-    <string name="presbyopia_under_25cm_description1">첫 번째 측정에서\n노안이 발견되지 않았습니다.\n아래의&#160;</string>
-    <string name="presbyopia_under_25cm_description2">두 번째 측정에서\n노안이 발견되지 않았습니다.\n아래의&#160;</string>
-    <string name="presbyopia_under_25cm_description3">마지막 측정에서\n노안이 발견되지 않았습니다.\n아래의&#160;</string>
+    <string name="presbyopia_under_25cm_description1">노안이 발견되지 않았습니다.\n아래의&#160;</string>
+    <string name="presbyopia_under_25cm_description2">노안이 발견되지 않았습니다.\n아래의&#160;</string>
+    <string name="presbyopia_under_25cm_description3">노안이 발견되지 않았습니다.\n아래의&#160;</string>
     <string name="presbyopia_test_start1">조절력 검사를\n시작하겠습니다</string>
     <string name="presbyopia_test_start2">두번째 검사를\n시작하겠습니다</string>
     <string name="presbyopia_test_start3">마지막 검사를\n시작하겠습니다</string>

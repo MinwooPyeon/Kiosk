@@ -37,7 +37,7 @@ fun BottomWarningButton(
     val coroutineScope = rememberCoroutineScope()
 
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         contentAlignment = Alignment.BottomCenter,
     ) {
         PrimaryButton(
