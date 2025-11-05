@@ -319,8 +319,6 @@ private fun LandscapeVisualAcuityContent(
                     }
                 },
                 modifier = Modifier
-                    .width(130.dp)
-                    .height(130.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
             DirectionSelectionButton(
@@ -331,8 +329,6 @@ private fun LandscapeVisualAcuityContent(
                     }
                 },
                 modifier = Modifier
-                    .width(130.dp)
-                    .height(130.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
             DirectionSelectionButton(
@@ -343,24 +339,18 @@ private fun LandscapeVisualAcuityContent(
                     }
                 },
                 modifier = Modifier
-                    .width(130.dp)
-                    .height(130.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            // 안보임 버튼
+            CantSeeButton(
+                onClick = {
+                    onAnswerSelected(3, updateProgress) {
+                        toResultScreen(getInspectionResult())
+                    }
+                },
+                modifier = Modifier
             )
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // 안보임 버튼
-        CantSeeButton(
-            onClick = {
-                onAnswerSelected(3, updateProgress) {
-                    toResultScreen(getInspectionResult())
-                }
-            },
-            modifier = Modifier
-                .width(422.dp)
-                .height(90.dp)
-        )
     }
 }
 
