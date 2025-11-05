@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,6 +25,9 @@ import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.print.components.ResultsGrid
+import com.pixelro.nenoonkiosk.ui.theme.Black
+import com.pixelro.nenoonkiosk.ui.theme.Gray
+import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 
 @Composable
@@ -57,12 +59,17 @@ private fun PortraitResultPrintScreen(
     onBack: () -> Unit,
     onPrint: () -> Unit,
 ) {
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = White
+    ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             NenoonTopBar(
                 title = state.title,
                 showBackButton = true,
                 onBackClicked = onBack,
+                containerColor = White,
+                contentColor = Black
             )
 
             Spacer(
@@ -70,7 +77,7 @@ private fun PortraitResultPrintScreen(
                     .padding(horizontal = 5.dp)
                     .fillMaxWidth()
                     .height(1.dp)
-                    .background(Color(0xff000000))
+                    .background(Gray)
             )
 
             Column(
@@ -126,12 +133,17 @@ private fun LandscapeResultPrintScreen(
     onBack: () -> Unit,
     onPrint: () -> Unit,
 ) {
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = White
+    ) {
         Column {
             NenoonTopBar(
                 title = state.title,
                 showBackButton = true,
                 onBackClicked = onBack,
+                containerColor = White,
+                contentColor = Black
             )
 
             Spacer(
@@ -139,7 +151,7 @@ private fun LandscapeResultPrintScreen(
                     .padding(horizontal = 5.dp)
                     .fillMaxWidth()
                     .height(1.dp)
-                    .background(Color(0xff000000))
+                    .background(Gray)
             )
 
             Row(
@@ -190,7 +202,7 @@ private fun LandscapeResultPrintScreen(
                     modifier = Modifier
                         .width(1.dp)
                         .fillMaxHeight()
-                        .background(Color(0xFFEBEBEB))
+                        .background(Gray)
                 )
 
                 // 오른쪽: 프린트 버튼 영역
