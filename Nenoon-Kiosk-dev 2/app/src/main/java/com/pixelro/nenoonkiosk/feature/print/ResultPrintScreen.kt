@@ -16,13 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.print.components.ResultsGrid
 import com.pixelro.nenoonkiosk.ui.theme.Black
@@ -88,7 +88,7 @@ private fun PortraitResultPrintScreen(
                 when {
                     state.loading -> {
                         Text(
-                            text = StringProvider.getStringComposable(R.string.result_print_screen_loading_results),
+                            text = stringResource(R.string.result_print_screen_loading_results),
                             style = bodyTextStyle,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
@@ -99,7 +99,7 @@ private fun PortraitResultPrintScreen(
 
                     state.summaries.isEmpty() -> {
                         Text(
-                            text = StringProvider.getStringComposable(R.string.result_print_screen_loading_results),
+                            text = stringResource(R.string.result_print_screen_loading_results),
                             style = bodyTextStyle,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
@@ -120,7 +120,7 @@ private fun PortraitResultPrintScreen(
                 PrimaryButton(
                     onClick = onPrint,
                     enabled = state.canPrint,
-                    text = StringProvider.getStringComposable(R.string.result_print_screen_print_button)
+                    text = stringResource(R.string.result_print_screen_print_button)
                 )
             }
         }
@@ -171,7 +171,7 @@ private fun LandscapeResultPrintScreen(
                     when {
                         state.loading -> {
                             Text(
-                                text = StringProvider.getStringComposable(R.string.result_print_screen_loading_results),
+                                text = stringResource(R.string.result_print_screen_loading_results),
                                 style = bodyTextStyle,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
@@ -182,7 +182,7 @@ private fun LandscapeResultPrintScreen(
 
                         state.summaries.isEmpty() -> {
                             Text(
-                                text = StringProvider.getStringComposable(R.string.result_print_screen_loading_results),
+                                text = stringResource(R.string.result_print_screen_loading_results),
                                 style = bodyTextStyle,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
@@ -216,7 +216,7 @@ private fun LandscapeResultPrintScreen(
                     PrimaryButton(
                         onClick = onPrint,
                         enabled = state.canPrint,
-                        text = StringProvider.getStringComposable(R.string.result_print_screen_print_button),
+                        text = stringResource(R.string.result_print_screen_print_button),
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
                             .height(100.dp)
