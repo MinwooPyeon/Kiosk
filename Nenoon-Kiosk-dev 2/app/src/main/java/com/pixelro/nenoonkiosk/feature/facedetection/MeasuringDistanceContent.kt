@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -69,7 +70,12 @@ fun MeasuringDistanceContent(
     faceDetectionViewModel: FaceDetectionViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
+    val sharedPreferences = remember {
+        context.getSharedPreferences(
+            NavConstants.PREFERENCE_NAME,
+            Context.MODE_PRIVATE
+        )
+    }
     val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
     val faceDetectionTextSize = if (savedLanguage == "ru") 20.sp else 35.sp
     val warningBoxTextSize = if (savedLanguage == "ru") 25.sp else 50.sp
@@ -104,7 +110,7 @@ fun MeasuringDistanceContent(
          * 2 = true - 거리 초과
          * 5 = false
          */
-        val isWarningShowing = remember { mutableStateOf(5) }
+        val isWarningShowing = remember { mutableIntStateOf(5) }
 
         LaunchedEffect(isLeftEye) {
             if (isLeftEye) {
@@ -314,6 +320,7 @@ fun MeasuringDistanceContent(
                                                             StringProvider.getString(
                                                                 R.string.measuring_distance_description1,
                                                             )
+
                                                         else ->
                                                             StringProvider.getString(
                                                                 R.string.measuring_distance_description2,
@@ -335,6 +342,7 @@ fun MeasuringDistanceContent(
                                                             StringProvider.getString(
                                                                 R.string.measuring_distance_description1,
                                                             )
+
                                                         else ->
                                                             StringProvider.getString(
                                                                 R.string.measuring_distance_description2,
@@ -369,7 +377,7 @@ fun MeasuringDistanceContent(
                             .fillMaxSize(),
                     contentAlignment = Alignment.Center,
                 ) {
-                    if (isWarningShowing.value in 0..4) {
+                    if (isWarningShowing.intValue in 0..4) {
                         Text(
                             modifier =
                                 Modifier
@@ -385,7 +393,7 @@ fun MeasuringDistanceContent(
                                     .padding(20.dp)
                                     .fillMaxWidth(),
                             text =
-                                when (isWarningShowing.value) {
+                                when (isWarningShowing.intValue) {
                                     0 ->
                                         buildAnnotatedString {
                                             append(
@@ -394,6 +402,7 @@ fun MeasuringDistanceContent(
                                                 ),
                                             )
                                         }
+
                                     1 ->
                                         buildAnnotatedString {
                                             append(
@@ -420,6 +429,7 @@ fun MeasuringDistanceContent(
                                                 ),
                                             )
                                         }
+
                                     else ->
                                         buildAnnotatedString {
                                             append(
@@ -547,6 +557,7 @@ fun MeasuringDistanceContent(
                                                 ),
                                             )
                                         }
+
                                     else ->
                                         buildAnnotatedString {
                                             append(
@@ -587,11 +598,11 @@ fun MeasuringDistanceContent(
                  * 4 = 눈가리개 인식 X
                  */
                 if (
-                    /**
-                     * 조건 1: 눈가리개 인식
-                     * 조건 2: 눈가리개 위치
-                     * 조건 1 & 2
-                     */
+                /**
+                 * 조건 1: 눈가리개 인식
+                 * 조건 2: 눈가리개 위치
+                 * 조건 1 & 2
+                 */
                     faceDetectionViewModel.isNenoonTextDetected.collectAsState().value &&
                     when (!isLeftEye) {
                         true -> faceDetectionViewModel.isLeftEyeCovered.collectAsState().value
@@ -666,14 +677,14 @@ fun MeasuringDistanceContent(
                                         0 -> {
                                             coroutineScope.launch {
                                                 for (i in 1..2) {
-                                                    isWarningShowing.value = 0
+                                                    isWarningShowing.intValue = 0
                                                     delay(400)
-                                                    isWarningShowing.value = 5
+                                                    isWarningShowing.intValue = 5
                                                     delay(400)
                                                 }
-                                                isWarningShowing.value = 0
+                                                isWarningShowing.intValue = 0
                                                 delay(1500)
-                                                isWarningShowing.value = 5
+                                                isWarningShowing.intValue = 5
                                             }
                                         }
 
@@ -683,14 +694,14 @@ fun MeasuringDistanceContent(
                                             } else {
                                                 coroutineScope.launch {
                                                     for (i in 1..3) {
-                                                        isWarningShowing.value = 1
+                                                        isWarningShowing.intValue = 1
                                                         delay(400)
-                                                        isWarningShowing.value = 5
+                                                        isWarningShowing.intValue = 5
                                                         delay(400)
                                                     }
-                                                    isWarningShowing.value = 1
+                                                    isWarningShowing.intValue = 1
                                                     delay(2000)
-                                                    isWarningShowing.value = 5
+                                                    isWarningShowing.intValue = 5
                                                 }
                                             }
                                         }
@@ -698,14 +709,14 @@ fun MeasuringDistanceContent(
                                         else -> {
                                             coroutineScope.launch {
                                                 for (i in 1..2) {
-                                                    isWarningShowing.value = 2
+                                                    isWarningShowing.intValue = 2
                                                     delay(400)
-                                                    isWarningShowing.value = 5
+                                                    isWarningShowing.intValue = 5
                                                     delay(400)
                                                 }
-                                                isWarningShowing.value = 2
+                                                isWarningShowing.intValue = 2
                                                 delay(1500)
-                                                isWarningShowing.value = 5
+                                                isWarningShowing.intValue = 5
                                             }
                                         }
                                     }

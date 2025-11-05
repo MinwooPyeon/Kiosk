@@ -90,7 +90,12 @@ fun MeasuringDistanceDialog(
                                     ),
                                 )
                             }
-                            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = colorResource(R.color.main))) {
+                            withStyle(
+                                SpanStyle(
+                                    fontWeight = FontWeight.Bold,
+                                    color = colorResource(R.color.main)
+                                )
+                            ) {
                                 append(
                                     StringProvider.getString(
                                         R.string.dialog_description1_pickup2,
