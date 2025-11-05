@@ -339,8 +339,6 @@ private fun handleVoiceAnswer(
     updateProgress: (Float) -> Unit,
     onComplete: () -> Unit
 ): Boolean {
-    Log.d("VisualAcuity", "handleVoiceAnswer: result='$result', randomList=$randomList, ansNum=$ansNum")
-    
     val voiceText = result.lowercase().trim()
     val compactText = voiceText.replace("\\s+".toRegex(), "")
     
@@ -360,7 +358,6 @@ private fun handleVoiceAnswer(
     val directNumber = result.trim().toIntOrNull()
     if (directNumber != null) {
         recognizedNumber = directNumber
-        Log.d("VisualAcuity", "handleVoiceAnswer: 직접 숫자 인식 - $directNumber")
     }
     
     if (recognizedNumber == null) {
@@ -379,16 +376,12 @@ private fun handleVoiceAnswer(
             if (v != null) digitsInOrder.add(v)
         }
         recognizedNumber = digitsInOrder.firstOrNull()
-        if (recognizedNumber != null) {
-            Log.d("VisualAcuity", "handleVoiceAnswer: 문자에서 숫자 추출 - $recognizedNumber")
-        }
     }
     
     if (recognizedNumber == null) {
         val tokens = voiceText.split("\\s+".toRegex()).filter { it.isNotBlank() }
         tokens.firstOrNull { tok -> numberMap.containsKey(tok) }?.let { tok ->
             recognizedNumber = numberMap[tok]!!
-            Log.d("VisualAcuity", "handleVoiceAnswer: 한글 숫자 인식 - '$tok' -> $recognizedNumber")
         }
     }
 
@@ -399,7 +392,6 @@ private fun handleVoiceAnswer(
         val tokens = voiceText.split("\\s+".toRegex()).filter { it.isNotBlank() }
         tokens.firstOrNull { tok -> engMap.containsKey(tok) }?.let { tok ->
             recognizedNumber = engMap[tok]!!
-            Log.d("VisualAcuity", "handleVoiceAnswer: 영어 숫자 인식 - '$tok' -> $recognizedNumber")
         }
     }
 
@@ -408,7 +400,6 @@ private fun handleVoiceAnswer(
             val idx = randomList.indexOf(recognizedNumber)
             if (idx != -1) {
                 selectedIdx = idx
-                Log.d("VisualAcuity", "handleVoiceAnswer: randomList 매칭 성공 - $recognizedNumber -> idx=$idx")
             }
         }
         else if (recognizedNumber == ansNum) {
@@ -416,15 +407,12 @@ private fun handleVoiceAnswer(
                 val idx = randomList.indexOf(ansNum)
                 if (idx != -1) {
                     selectedIdx = idx
-                    Log.d("VisualAcuity", "handleVoiceAnswer: 정답 매칭 성공 - $recognizedNumber == ansNum($ansNum) -> idx=$idx")
                 }
             } else {
-                Log.d("VisualAcuity", "handleVoiceAnswer: 정답($ansNum)이 randomList에 없음")
                 selectedIdx = 3
             }
         }
         else {
-            Log.d("VisualAcuity", "handleVoiceAnswer: 인식된 숫자($recognizedNumber)가 randomList에 없음")
             selectedIdx = 3
         }
     }
@@ -440,15 +428,13 @@ private fun handleVoiceAnswer(
 
     if (isUnknown) {
         selectedIdx = 3
-        Log.d("VisualAcuity", "handleVoiceAnswer: '모르겠다' 등 처리 - idx=3")
     }
     
     if (selectedIdx != null && selectedIdx in 0..3) {
-        Log.d("VisualAcuity", "handleVoiceAnswer: onAnswerSelected 호출 - idx=$selectedIdx")
         onAnswerSelected(selectedIdx, updateProgress, onComplete)
         return true
     } else {
-        Log.d("VisualAcuity", "handleVoiceAnswer: 매칭 실패 - result='$result', randomList=$randomList, ansNum=$ansNum, recognizedNumber=$recognizedNumber, selectedIdx=$selectedIdx")
+        Log.d("VisualAcuity", "매칭 실패 - result='$result', randomList=$randomList, ansNum=$ansNum")
         return false
     }
 }
