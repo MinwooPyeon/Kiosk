@@ -24,12 +24,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.termsofservice.components.ConsentRow
 import com.pixelro.nenoonkiosk.feature.termsofservice.components.TermsTable
 import com.pixelro.nenoonkiosk.feature.termsofservice.components.TosDescription
@@ -91,8 +91,8 @@ fun TermsOfServiceScreen(
                 )
                 Spacer(Modifier.height(16.dp))
                 ConsentRow(
-                    description = StringProvider.getStringComposable(R.string.personal_info_checkbox_description),
-                    question = StringProvider.getStringComposable(R.string.personal_info_checkbox_question),
+                    description = stringResource(R.string.personal_info_checkbox_description),
+                    question = stringResource(R.string.personal_info_checkbox_question),
                     accepted = state.acceptedPersonal,
                     onAcceptedChange = onChangePersonal,
                     textSize = state.textSize
@@ -112,8 +112,8 @@ fun TermsOfServiceScreen(
                 }
                 Spacer(Modifier.height(16.dp))
                 ConsentRow(
-                    description = StringProvider.getStringComposable(R.string.sensitive_info_checkbox_description),
-                    question = StringProvider.getStringComposable(R.string.sensitive_info_checkbox_question),
+                    description = stringResource(R.string.sensitive_info_checkbox_description),
+                    question = stringResource(R.string.sensitive_info_checkbox_question),
                     accepted = state.acceptedSensitive,
                     onAcceptedChange = onChangeSensitive,
                     textSize = state.textSize
@@ -124,7 +124,7 @@ fun TermsOfServiceScreen(
                 PrimaryButton(
                     onClick = onClickAgree,
                     enabled = state.acceptedPersonal == true && state.acceptedSensitive == true,
-                    text = StringProvider.getStringComposable(R.string.button_agree),
+                    text = stringResource(R.string.button_agree),
                     modifier = Modifier.onGloballyPositioned { coordinates ->
                         agreeButtonY = coordinates.boundsInParent().top
                     }
@@ -132,7 +132,7 @@ fun TermsOfServiceScreen(
                 Spacer(Modifier.height(20.dp))
                 PrimaryButton(
                     onClick = onClickBack,
-                    text = StringProvider.getStringComposable(R.string.back),
+                    text = stringResource(R.string.back),
                 )
             }
         }
