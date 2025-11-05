@@ -10,6 +10,7 @@ android {
     namespace 'com.pixelro.nenoonkiosk'
     compileSdk 36
 
+
     defaultConfig {
         applicationId "com.pixelro.nenoonkiosk"
         minSdk 26
@@ -36,9 +37,15 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+    // 다국어
+    androidResources {
+        generateLocaleConfig = true
+    }
+    
     buildFeatures {
         compose true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.13"
     }
@@ -167,6 +174,8 @@ dependencies {
     implementation("org.orbit-mvi:orbit-viewmodel:10.0.0")
     implementation("org.orbit-mvi:orbit-compose:10.0.0")
     testImplementation("org.orbit-mvi:orbit-test:10.0.0")
+
+    implementation("androidx.appcompat:appcompat:1.6.1")
 }
 
 kapt {

@@ -2,6 +2,7 @@ package com.pixelro.nenoonkiosk.core.ui
 
 import android.content.Context
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -76,7 +77,14 @@ fun InspectionSelectionButton(
     time: Int,
     icon: Int? = null,
     enabled: Boolean = true,
+    currentLanguage: String = "ko"
 ) {
+    Log.d(
+        "InspectionButton",
+        "✅ 호출됨 | title1=$title1, title2=$title2, time=$time, large=$large, isSenior=$isSenior, currentLang=$currentLanguage"
+    )
+
+
     val context = LocalContext.current
     val sharedPreferences =
         remember {
@@ -85,13 +93,13 @@ fun InspectionSelectionButton(
                 Context.MODE_PRIVATE
             )
         }
-    val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
+//    val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
 
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-    val boxTimeTextSize = if (savedLanguage in listOf("ru", "en")) 16.sp else 20.sp
-    val approximateTextSize = if (savedLanguage in listOf("ru", "en")) 24.sp else 30.sp
-    val textSize = getDynamicFontSize(isSenior, large, savedLanguage, time).sp
+    val boxTimeTextSize = if (currentLanguage in listOf("ru", "en")) 16.sp else 20.sp
+    val approximateTextSize = if (currentLanguage in listOf("ru", "en")) 24.sp else 30.sp
+    val textSize = getDynamicFontSize(isSenior, large, currentLanguage, time).sp
 
     // 그라데이션: isDone일 때만 적용
     val gradientColors = if (isDone) {

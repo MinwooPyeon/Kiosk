@@ -41,7 +41,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStreng
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.InspectionResultUtil.textAsBitmap
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.aiComment
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.result.AmslerGridTestResultRoute
+import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.result.AmslerGridTestResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
@@ -135,7 +135,7 @@ fun InspectionResultRoute(
                     )
                 }
                 InspectionType.AmslerGrid -> {
-                    AmslerGridTestResultRoute(
+                    AmslerGridTestResultContent(
                         testResult = testResult as AmslerGridTestResult,
                     )
                 }

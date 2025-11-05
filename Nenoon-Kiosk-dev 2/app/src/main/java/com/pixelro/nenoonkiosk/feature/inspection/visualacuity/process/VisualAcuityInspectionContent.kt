@@ -43,6 +43,7 @@ package com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -61,11 +62,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.util.Log
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
 import com.pixelro.nenoonkiosk.core.util.AutoStartSTT
@@ -148,6 +151,7 @@ fun VisualAcuityInspectionContent(
     toResultScreen: (VisualAcuityInspectionResult) -> Unit,
 ) {
     var progress by remember { mutableStateOf(0.1f) }
+    var showErrorText by remember { mutableStateOf(false) }
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
@@ -155,17 +159,28 @@ fun VisualAcuityInspectionContent(
     
     AutoStartSTT(
         onResult = { result ->
-            handleVoiceAnswer(
+            val isMatched = handleVoiceAnswer(
                 result = result,
                 randomList = randomList,
+                ansNum = ansNum,
                 currentProgress = progress,
                 onAnswerSelected = onAnswerSelected,
                 updateProgress = { newProgress -> progress = newProgress },
                 onComplete = { toResultScreen(getInspectionResult()) }
             )
+            if (isMatched) {
+                showErrorText = false
+            } else {
+                showErrorText = true
+            }
         },
         enabled = true,
         onError = { error ->
+            if (error == android.speech.SpeechRecognizer.ERROR_NO_MATCH) {
+                showErrorText = true
+            }
+        },
+        onReady = {
         }
     )
     
@@ -199,6 +214,23 @@ fun VisualAcuityInspectionContent(
                 Modifier
                     .height(20.dp),
         )
+        Box(
+            modifier = Modifier.height(60.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            if (showErrorText) {
+                Text(
+                    modifier =
+                        Modifier
+                            .padding(vertical = 10.dp),
+                    text = "다시 한번 말씀해주세요",
+                    fontSize = 36.sp,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
         //프로그레스 바
         LinearProgressIndicator(
             modifier =
@@ -301,11 +333,12 @@ private fun PreviewVisualAcuityInspectionContent_Level10_WithWarning() {
 private fun handleVoiceAnswer(
     result: String,
     randomList: List<Int>,
+    ansNum: Int,
     currentProgress: Float,
     onAnswerSelected: (Int, (Float) -> Unit, () -> Unit) -> Unit,
     updateProgress: (Float) -> Unit,
     onComplete: () -> Unit
-) {
+): Boolean {
     val voiceText = result.lowercase().trim()
     val compactText = voiceText.replace("\\s+".toRegex(), "")
     
@@ -320,51 +353,67 @@ private fun handleVoiceAnswer(
     )
     
     var selectedIdx: Int? = null
+    var recognizedNumber: Int? = null
     
-    val normalized = voiceText.replace("\\s+".toRegex(), " ")
-    val digitsInOrder = mutableListOf<Int>()
-    for (ch in normalized) {
-        val v = when (ch) {
-            '2' -> 2
-            '3' -> 3
-            '4' -> 4
-            '5' -> 5
-            '6' -> 6
-            '7' -> 7
-            else -> null
-        }
-        if (v != null) digitsInOrder.add(v)
-    }
-    val matchValue = digitsInOrder.firstOrNull { randomList.contains(it) }
-    if (matchValue != null) {
-        val idx = randomList.indexOf(matchValue)
-        if (idx != -1) {
-            selectedIdx = idx
-        }
+    val directNumber = result.trim().toIntOrNull()
+    if (directNumber != null) {
+        recognizedNumber = directNumber
     }
     
-    if (selectedIdx == null) {
+    if (recognizedNumber == null) {
+        val normalized = voiceText.replace("\\s+".toRegex(), " ")
+        val digitsInOrder = mutableListOf<Int>()
+        for (ch in normalized) {
+            val v = when (ch) {
+                '2' -> 2
+                '3' -> 3
+                '4' -> 4
+                '5' -> 5
+                '6' -> 6
+                '7' -> 7
+                else -> null
+            }
+            if (v != null) digitsInOrder.add(v)
+        }
+        recognizedNumber = digitsInOrder.firstOrNull()
+    }
+    
+    if (recognizedNumber == null) {
         val tokens = voiceText.split("\\s+".toRegex()).filter { it.isNotBlank() }
         tokens.firstOrNull { tok -> numberMap.containsKey(tok) }?.let { tok ->
-            val numberValue = numberMap[tok]!!
-            val idx = randomList.indexOf(numberValue)
-            if (idx != -1) {
-                selectedIdx = idx
-            }
+            recognizedNumber = numberMap[tok]!!
         }
     }
 
-    if (selectedIdx == null) {
+    if (recognizedNumber == null) {
         val engMap = mapOf(
             "two" to 2, "three" to 3, "four" to 4, "five" to 5, "six" to 6, "seven" to 7
         )
         val tokens = voiceText.split("\\s+".toRegex()).filter { it.isNotBlank() }
         tokens.firstOrNull { tok -> engMap.containsKey(tok) }?.let { tok ->
-            val v = engMap[tok]!!
-            val idx = randomList.indexOf(v)
+            recognizedNumber = engMap[tok]!!
+        }
+    }
+
+    if (recognizedNumber != null) {
+        if (randomList.contains(recognizedNumber)) {
+            val idx = randomList.indexOf(recognizedNumber)
             if (idx != -1) {
                 selectedIdx = idx
             }
+        }
+        else if (recognizedNumber == ansNum) {
+            if (randomList.contains(ansNum)) {
+                val idx = randomList.indexOf(ansNum)
+                if (idx != -1) {
+                    selectedIdx = idx
+                }
+            } else {
+                selectedIdx = 3
+            }
+        }
+        else {
+            selectedIdx = 3
         }
     }
 
@@ -383,5 +432,9 @@ private fun handleVoiceAnswer(
     
     if (selectedIdx != null && selectedIdx in 0..3) {
         onAnswerSelected(selectedIdx, updateProgress, onComplete)
+        return true
+    } else {
+        Log.d("VisualAcuity", "매칭 실패 - result='$result', randomList=$randomList, ansNum=$ansNum")
+        return false
     }
 }

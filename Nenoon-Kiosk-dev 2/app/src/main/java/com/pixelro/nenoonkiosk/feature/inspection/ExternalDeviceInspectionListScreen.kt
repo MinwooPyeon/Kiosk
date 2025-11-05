@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -68,8 +67,6 @@ import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
 import com.pixelro.nenoonkiosk.ui.theme.DarkRed
 import com.pixelro.nenoonkiosk.ui.theme.DividerGray
 import com.pixelro.nenoonkiosk.ui.theme.Gray999
-import com.pixelro.nenoonkiosk.ui.theme.NavyBlue
-import com.pixelro.nenoonkiosk.ui.theme.SkyBlue
 import com.pixelro.nenoonkiosk.ui.theme.White
 import kotlinx.coroutines.delay
 

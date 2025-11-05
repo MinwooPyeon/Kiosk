@@ -8,7 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.feature.inspection.strabismus.GlassInstructionScreen
 import com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.adjustment.AniseikoniaAdjustmentScreen
-import com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.intro.AniseikoniaIntroScreen
+import com.pixelro.nenoonkiosk.feature.strabismus.aniseikonia.intro.AniseikoniaIntroScreen
 import com.pixelro.nenoonkiosk.feature.inspection.strabismus.aniseikonia.question.AniseikoniaQuestionScreen
 import com.pixelro.nenoonkiosk.feature.inspection.strabismus.phoria.intro.PhoriaIntroScreen
 import com.pixelro.nenoonkiosk.feature.inspection.strabismus.phoria.question.PhoriaQuestionScreen

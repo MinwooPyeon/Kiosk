@@ -1,6 +1,8 @@
 package com.pixelro.nenoonkiosk.feature.strabismus.phoria.result
 
 import android.speech.tts.TextToSpeech
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,9 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,16 +18,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.strabismus.StrabismusPrintHelper
+import com.pixelro.nenoonkiosk.core.manager.StrabismusPrintHelper
+import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
+import com.pixelro.nenoonkiosk.core.ui.SecondaryButton
+import com.pixelro.nenoonkiosk.feature.inspection.components.InspectionDivider
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.DualButtonBottomBar
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.ResultCard
+import com.pixelro.nenoonkiosk.feature.strabismus.common.component.WarningNotice
+import com.pixelro.nenoonkiosk.feature.strabismus.common.component.isLandscape
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 import com.pixelro.nenoonkiosk.ui.theme.buttonTextStyle
@@ -59,7 +62,10 @@ fun PhoriaResultScreen(
     onBackToMainClicked: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
-        TTS.speechTTS(StringProvider.getString(R.string.tts_result_screen), TextToSpeech.QUEUE_FLUSH)
+        TTS.speechTTS(
+            StringProvider.getString(R.string.tts_result_screen),
+            TextToSpeech.QUEUE_FLUSH
+        )
     }
 
     val context = LocalContext.current
@@ -71,7 +77,8 @@ fun PhoriaResultScreen(
     val myResultText = StringProvider.getStringComposable(R.string.sawi_result_my_result)
     val disclaimerText = StringProvider.getStringComposable(R.string.sawi_result_general_disclaimer)
     val printButtonText = StringProvider.getStringComposable(R.string.sawi_result_print_button)
-    val backButtonText = StringProvider.getStringComposable(R.string.sawi_result_back_to_main_button)
+    val backButtonText =
+        StringProvider.getStringComposable(R.string.sawi_result_back_to_main_button)
 
     // 정상 예시 데이터
     val normalLeftTitle: String
@@ -92,17 +99,26 @@ fun PhoriaResultScreen(
         } else {
             StringProvider.getStringComposable(R.string.sawi_result_right_eye)
         }
-        normalLeftResult = "${StringProvider.getStringComposable(R.string.sawi_result_normal_range_exo)}\n${StringProvider.getStringComposable(R.string.sawi_result_normal_range_eso)}"
-        normalLeftDescription = StringProvider.getStringComposable(R.string.sawi_result_normal_range_exo_eso_desc)
-        normalRightResult = "${StringProvider.getStringComposable(R.string.sawi_result_normal)}\n${StringProvider.getStringComposable(R.string.sawi_result_normal_range_vertical)}"
-        normalRightDescription = StringProvider.getStringComposable(R.string.sawi_result_normal_range_vertical_desc)
+        normalLeftResult =
+            "${StringProvider.getStringComposable(R.string.sawi_result_normal_range_exo)}\n${
+                StringProvider.getStringComposable(R.string.sawi_result_normal_range_eso)
+            }"
+        normalLeftDescription =
+            StringProvider.getStringComposable(R.string.sawi_result_normal_range_exo_eso_desc)
+        normalRightResult = "${StringProvider.getStringComposable(R.string.sawi_result_normal)}\n${
+            StringProvider.getStringComposable(R.string.sawi_result_normal_range_vertical)
+        }"
+        normalRightDescription =
+            StringProvider.getStringComposable(R.string.sawi_result_normal_range_vertical_desc)
     } else {
         normalLeftTitle = StringProvider.getStringComposable(R.string.sawi_result_left_eye)
         normalRightTitle = StringProvider.getStringComposable(R.string.sawi_result_right_eye)
         normalLeftResult = StringProvider.getStringComposable(R.string.sawi_result_normal)
-        normalLeftDescription = StringProvider.getStringComposable(R.string.sawi_result_normal_status)
+        normalLeftDescription =
+            StringProvider.getStringComposable(R.string.sawi_result_normal_status)
         normalRightResult = StringProvider.getStringComposable(R.string.sawi_result_normal)
-        normalRightDescription = StringProvider.getStringComposable(R.string.sawi_result_normal_status)
+        normalRightDescription =
+            StringProvider.getStringComposable(R.string.sawi_result_normal_status)
     }
 
     // 사용자 결과 데이터
@@ -125,10 +141,13 @@ fun PhoriaResultScreen(
     when (answer) {
         1 -> {
             userHorizontalResult = StringProvider.getStringComposable(R.string.sawi_result_normal)
-            userHorizontalDescription = StringProvider.getStringComposable(R.string.sawi_result_normal_status)
+            userHorizontalDescription =
+                StringProvider.getStringComposable(R.string.sawi_result_normal_status)
             userVerticalResult = StringProvider.getStringComposable(R.string.sawi_result_normal)
-            userVerticalDescription = StringProvider.getStringComposable(R.string.sawi_result_normal_status)
+            userVerticalDescription =
+                StringProvider.getStringComposable(R.string.sawi_result_normal_status)
         }
+
         2 -> {
             val dpi = 243f
             val pixelDiffX = (crossX ?: 0f) - (circleX ?: 0f)
@@ -140,25 +159,56 @@ fun PhoriaResultScreen(
                 when {
                     hDev > 0 ->
                         when {
-                            abs(hDev) <= 2.5f -> StringProvider.getStringComposable(R.string.sawi_result_normal_range) to StringProvider.getStringComposable(R.string.sawi_result_desc_normal_eso)
-                            abs(hDev) <= 5.5f -> StringProvider.getString(R.string.sawi_result_mild_esophoria) to StringProvider.getStringComposable(R.string.sawi_result_desc_mild_eso)
-                            else -> StringProvider.getStringComposable(R.string.sawi_result_severe_esophoria) to StringProvider.getStringComposable(R.string.sawi_result_desc_severe_eso)
+                            abs(hDev) <= 2.5f -> StringProvider.getStringComposable(R.string.sawi_result_normal_range) to StringProvider.getStringComposable(
+                                R.string.sawi_result_desc_normal_eso
+                            )
+
+                            abs(hDev) <= 5.5f -> StringProvider.getString(R.string.sawi_result_mild_esophoria) to StringProvider.getStringComposable(
+                                R.string.sawi_result_desc_mild_eso
+                            )
+
+                            else -> StringProvider.getStringComposable(R.string.sawi_result_severe_esophoria) to StringProvider.getStringComposable(
+                                R.string.sawi_result_desc_severe_eso
+                            )
                         }
+
                     hDev < 0 ->
                         when {
-                            abs(hDev) <= 6.5f -> StringProvider.getStringComposable(R.string.sawi_result_normal_range) to StringProvider.getStringComposable(R.string.sawi_result_desc_normal_exo)
-                            abs(hDev) <= 10.5f -> StringProvider.getStringComposable(R.string.sawi_result_mild_exophoria) to StringProvider.getStringComposable(R.string.sawi_result_desc_mild_exo)
-                            else -> StringProvider.getStringComposable(R.string.sawi_result_severe_exophoria) to StringProvider.getStringComposable(R.string.sawi_result_desc_severe_exo)
+                            abs(hDev) <= 6.5f -> StringProvider.getStringComposable(R.string.sawi_result_normal_range) to StringProvider.getStringComposable(
+                                R.string.sawi_result_desc_normal_exo
+                            )
+
+                            abs(hDev) <= 10.5f -> StringProvider.getStringComposable(R.string.sawi_result_mild_exophoria) to StringProvider.getStringComposable(
+                                R.string.sawi_result_desc_mild_exo
+                            )
+
+                            else -> StringProvider.getStringComposable(R.string.sawi_result_severe_exophoria) to StringProvider.getStringComposable(
+                                R.string.sawi_result_desc_severe_exo
+                            )
                         }
-                    else -> StringProvider.getStringComposable(R.string.sawi_result_normal) to StringProvider.getStringComposable(R.string.sawi_result_no_horizontal_phoria)
+
+                    else -> StringProvider.getStringComposable(R.string.sawi_result_normal) to StringProvider.getStringComposable(
+                        R.string.sawi_result_no_horizontal_phoria
+                    )
                 }
 
             val (vResult, vDesc) =
                 when {
-                    abs(vDev) <= 0f -> StringProvider.getString(R.string.sawi_result_normal) to StringProvider.getStringComposable(R.string.sawi_result_no_vertical_phoria)
-                    abs(vDev) <= 0.75f -> StringProvider.getString(R.string.sawi_result_normal_range) to StringProvider.getStringComposable(R.string.sawi_result_no_vertical_phoria)
-                    abs(vDev) <= 1.75f -> StringProvider.getStringComposable(R.string.sawi_result_mild_vertical_phoria) to StringProvider.getStringComposable(R.string.sawi_result_desc_mild_vertical)
-                    else -> StringProvider.getStringComposable(R.string.sawi_result_severe_vertical_phoria) to StringProvider.getStringComposable(R.string.sawi_result_desc_severe_vertical)
+                    abs(vDev) <= 0f -> StringProvider.getString(R.string.sawi_result_normal) to StringProvider.getStringComposable(
+                        R.string.sawi_result_no_vertical_phoria
+                    )
+
+                    abs(vDev) <= 0.75f -> StringProvider.getString(R.string.sawi_result_normal_range) to StringProvider.getStringComposable(
+                        R.string.sawi_result_no_vertical_phoria
+                    )
+
+                    abs(vDev) <= 1.75f -> StringProvider.getStringComposable(R.string.sawi_result_mild_vertical_phoria) to StringProvider.getStringComposable(
+                        R.string.sawi_result_desc_mild_vertical
+                    )
+
+                    else -> StringProvider.getStringComposable(R.string.sawi_result_severe_vertical_phoria) to StringProvider.getStringComposable(
+                        R.string.sawi_result_desc_severe_vertical
+                    )
                 }
 
             val hPrism = "(${String.format("%.1f", abs(hDev))}△)"
@@ -169,65 +219,51 @@ fun PhoriaResultScreen(
             userVerticalResult = "$vResult $vPrism"
             userVerticalDescription = vDesc
         }
+
         3 -> {
             userHorizontalResult = StringProvider.getStringComposable(R.string.sawi_result_normal)
-            userHorizontalDescription = StringProvider.getStringComposable(R.string.sawi_result_normal_status)
-            userVerticalResult = StringProvider.getStringComposable(R.string.sawi_result_suppression_suspicion)
-            userVerticalDescription = StringProvider.getStringComposable(R.string.sawi_result_desc_suppression_right)
+            userHorizontalDescription =
+                StringProvider.getStringComposable(R.string.sawi_result_normal_status)
+            userVerticalResult =
+                StringProvider.getStringComposable(R.string.sawi_result_suppression_suspicion)
+            userVerticalDescription =
+                StringProvider.getStringComposable(R.string.sawi_result_desc_suppression_right)
         }
+
         4 -> {
-            userHorizontalResult = StringProvider.getStringComposable(R.string.sawi_result_suppression_suspicion)
-            userHorizontalDescription = StringProvider.getStringComposable(R.string.sawi_result_desc_suppression_left)
+            userHorizontalResult =
+                StringProvider.getStringComposable(R.string.sawi_result_suppression_suspicion)
+            userHorizontalDescription =
+                StringProvider.getStringComposable(R.string.sawi_result_desc_suppression_left)
             userVerticalResult = StringProvider.getStringComposable(R.string.sawi_result_normal)
-            userVerticalDescription = StringProvider.getStringComposable(R.string.sawi_result_normal_status)
+            userVerticalDescription =
+                StringProvider.getStringComposable(R.string.sawi_result_normal_status)
         }
+
         else -> {
             userHorizontalResult = StringProvider.getStringComposable(R.string.sawi_result_error)
-            userHorizontalDescription = StringProvider.getStringComposable(R.string.sawi_result_error_desc)
+            userHorizontalDescription =
+                StringProvider.getStringComposable(R.string.sawi_result_error_desc)
             userVerticalResult = "-"
             userVerticalDescription = ""
         }
     }
 
-    Scaffold(
-        containerColor = Color.White,
-        bottomBar = {
-            DualButtonBottomBar(
-                primaryButtonText = printButtonText,
-                onPrimaryButtonClick = {
-                    TTS.speechTTS(StringProvider.getString(R.string.printing_in_progress), TextToSpeech.QUEUE_FLUSH)
-                    StrabismusPrintHelper.printPhoriaResult(
-                        context = context,
-                        hTitle = userLeftTitle,
-                        hResult = userHorizontalResult,
-                        hDesc = userHorizontalDescription,
-                        vTitle = userRightTitle,
-                        vResult = userVerticalResult,
-                        vDesc = userVerticalDescription,
-                    )
-                    onPrintClicked()
-                },
-                secondaryButtonText = backButtonText,
-                onSecondaryButtonClick = onBackToMainClicked
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text = screenTitle,
-                style = bodyTextStyle,
-                color = Color.Black,
-                modifier = Modifier.padding(top = 32.dp, bottom = 16.dp),
-            )
-
+    Column(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = screenTitle,
+            style = bodyTextStyle,
+            color = Color.Black,
+            modifier = Modifier.padding(vertical = 32.dp),
+        )
+        InspectionDivider()
+        if (!isLandscape()) {
             Text(
                 text = normalCaseInfo,
                 style = inputTextStyle,
@@ -281,19 +317,95 @@ fun PhoriaResultScreen(
                     description = userVerticalDescription,
                 )
             }
-
             Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = disclaimerText,
-                fontSize = 14.sp,
-                color = Color.DarkGray,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 16.dp),
+            Spacer(modifier = Modifier.weight(1F))
+            WarningNotice(16.sp)
+            DualButtonBottomBar(
+                primaryButtonText = printButtonText,
+                onPrimaryButtonClick = {
+                    TTS.speechTTS(
+                        StringProvider.getString(R.string.printing_in_progress),
+                        TextToSpeech.QUEUE_FLUSH
+                    )
+                    StrabismusPrintHelper.printPhoriaResult(
+                        context = context,
+                        hTitle = userLeftTitle,
+                        hResult = userHorizontalResult,
+                        hDesc = userHorizontalDescription,
+                        vTitle = userRightTitle,
+                        vResult = userVerticalResult,
+                        vDesc = userVerticalDescription,
+                    )
+                    onPrintClicked()
+                },
+                secondaryButtonText = backButtonText,
+                onSecondaryButtonClick = onBackToMainClicked
             )
+        } else {
+            Row(modifier = Modifier.fillMaxSize().weight(1F), verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.fillMaxSize().weight(2F), verticalArrangement = Arrangement.Center) {
+                    Text(
+                        text = myResultText,
+                        style = buttonTextStyle,
+                        color = Color.Black,
+                        modifier = Modifier.padding(bottom = 16.dp),
+                    )
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        ResultCard(
+                            modifier = Modifier.weight(1f),
+                            title = userLeftTitle,
+                            result = userHorizontalResult,
+                            description = userHorizontalDescription,
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        ResultCard(
+                            modifier = Modifier.weight(1f),
+                            title = userRightTitle,
+                            result = userVerticalResult,
+                            description = userVerticalDescription,
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(36.dp))
+                Column(
+                    modifier =
+                        Modifier
+                            .weight(1.2F)
+                            .background(Color.White)
+                            .padding(16.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    PrimaryButton(
+                        onClick = {
+                            TTS.speechTTS(
+                                StringProvider.getString(R.string.printing_in_progress),
+                                TextToSpeech.QUEUE_FLUSH
+                            )
+                            StrabismusPrintHelper.printPhoriaResult(
+                                context = context,
+                                hTitle = userLeftTitle,
+                                hResult = userHorizontalResult,
+                                hDesc = userHorizontalDescription,
+                                vTitle = userRightTitle,
+                                vResult = userVerticalResult,
+                                vDesc = userVerticalDescription,
+                            )
+                            onPrintClicked()
+                        },
+                        text = printButtonText,
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    SecondaryButton(
+                        onClick = onBackToMainClicked,
+                        text = backButtonText,
+                    )
+                }
+            }
+            WarningNotice(14.sp)
         }
     }
 }
+
 
 //가로 모드 내용 잘림-> 수정 필요
 @Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
