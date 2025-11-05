@@ -40,6 +40,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetectionViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -64,8 +65,8 @@ fun MeasuringDistanceDialog(
         Column(
             modifier =
                 Modifier
-                    .width(800.dp)
-                    .height(1000.dp)
+                    .width(if(isLandscape()) 600.dp else 800.dp)
+                    .height(if(isLandscape()) 800.dp else 1000.dp)
                     .background(
                         color = Color(0xffffffff),
                         shape = RoundedCornerShape(8.dp),
@@ -74,7 +75,7 @@ fun MeasuringDistanceDialog(
             Column(
                 modifier =
                     Modifier
-                        .height(800.dp),
+                        .height(if(isLandscape()) 500.dp else 800.dp),
             ) {
                 Text(
                     modifier =

@@ -41,7 +41,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureIns
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.process.DementiaInspectionRoute
 import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthInspectionEntryPoint
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.InspectionResultRoute
-import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.progress.AmslerGridInspectionRoute
+import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.progress.AmslerGridTestContent
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.progress.MChartInspectionRoute
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionRoute
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.VisualAcuityInspectionRoute
@@ -115,7 +115,7 @@ fun nenoonApp(
             Modifier
                 .fillMaxSize(),
         navController = navController,
-        startDestination = NavConstants.ROUTE_SPLASH,
+        startDestination = NavConstants.ROUTE_TEST_LIST,
         contentAlignment = Alignment.TopCenter,
     ) {
         /*
@@ -619,7 +619,7 @@ fun nenoonApp(
                             }
 
                             InspectionType.AmslerGrid -> {
-                                AmslerGridInspectionRoute(
+                                AmslerGridTestContent(
                                     toResultScreen = {
                                         viewModel.amslerGridTestResult = it
                                         navigateToResult.value()

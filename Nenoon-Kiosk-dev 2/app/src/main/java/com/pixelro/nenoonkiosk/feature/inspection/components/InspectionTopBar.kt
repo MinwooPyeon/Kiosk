@@ -29,7 +29,7 @@ fun InspectionTopBar(
         modifier = Modifier
             .padding(
                 start = 40.dp,
-                top = (GlobalValue.statusBarPadding + 20).dp,
+                top = 20.dp,
                 end = 40.dp,
                 bottom = 20.dp
             )
