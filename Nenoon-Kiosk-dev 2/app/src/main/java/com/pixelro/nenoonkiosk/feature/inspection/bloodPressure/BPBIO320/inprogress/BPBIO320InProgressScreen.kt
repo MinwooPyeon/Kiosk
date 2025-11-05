@@ -22,7 +22,6 @@ import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BpMeasure
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.BPBIO320InProgressEvent
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.BPBIO320InProgressUiState
 
-
 @Composable
 fun BPBIO320InProgressScreen(
     state: BPBIO320InProgressUiState,

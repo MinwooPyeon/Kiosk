@@ -52,6 +52,7 @@ private fun getLandoltCDrawableId(ansNum: Int, sightLevel: Int): Int {
             9 -> R.drawable._50cm_2_9
             else -> R.drawable._50cm_2_10
         }
+
         3 -> when (sightLevel) {
             1 -> R.drawable._50cm_3_1
             2 -> R.drawable._50cm_3_2
@@ -64,6 +65,7 @@ private fun getLandoltCDrawableId(ansNum: Int, sightLevel: Int): Int {
             9 -> R.drawable._50cm_3_9
             else -> R.drawable._50cm_3_10
         }
+
         4 -> when (sightLevel) {
             1 -> R.drawable._50cm_4_1
             2 -> R.drawable._50cm_4_2
@@ -76,6 +78,7 @@ private fun getLandoltCDrawableId(ansNum: Int, sightLevel: Int): Int {
             9 -> R.drawable._50cm_4_9
             else -> R.drawable._50cm_4_10
         }
+
         5 -> when (sightLevel) {
             1 -> R.drawable._50cm_5_1
             2 -> R.drawable._50cm_5_2
@@ -88,6 +91,7 @@ private fun getLandoltCDrawableId(ansNum: Int, sightLevel: Int): Int {
             9 -> R.drawable._50cm_5_9
             else -> R.drawable._50cm_5_10
         }
+
         6 -> when (sightLevel) {
             1 -> R.drawable._50cm_6_1
             2 -> R.drawable._50cm_6_2
@@ -100,6 +104,7 @@ private fun getLandoltCDrawableId(ansNum: Int, sightLevel: Int): Int {
             9 -> R.drawable._50cm_6_9
             else -> R.drawable._50cm_6_10
         }
+
         else -> when (sightLevel) { // 7
             1 -> R.drawable._50cm_7_1
             2 -> R.drawable._50cm_7_2

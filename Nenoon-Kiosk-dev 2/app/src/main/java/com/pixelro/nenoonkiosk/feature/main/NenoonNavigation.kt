@@ -49,10 +49,12 @@ import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.children.C
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.longdistance.LongVisualAcuityInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortVisualAcuityInspectionResult
 import com.pixelro.nenoonkiosk.feature.intro.IntroScreen
-import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ManagementScreen
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BViewModel
+import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ManagementRoute
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
-import com.pixelro.nenoonkiosk.feature.iotdevice.BTDeviceManagementScreen
+import com.pixelro.nenoonkiosk.feature.iotdevice.BTDeviceMenuScreen
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripManagementRoute
+import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripViewModel
 import com.pixelro.nenoonkiosk.feature.permission.PermissionRequestRoute
 import com.pixelro.nenoonkiosk.feature.print.ResultPrintRoute
 import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverRoute
@@ -70,8 +72,8 @@ import com.pixelro.nenoonkiosk.feature.undeveloped.SoftwareInfoScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.VideoTelephonyScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.concentration_exercise.ConcentrationExerciseContent
 import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseContent
-import com.pixelro.nenoonkiosk.feature.undeveloped.iotdevice.BP170B.BP170BConnectionScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.testcontent.ChildrenVisualAcuityTestContent
+import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BManagementRoute
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -84,6 +86,8 @@ import kotlinx.coroutines.launch
 fun nenoonApp(
     viewModel: NenoonViewModel = hiltViewModel(),
     bloodPressureMonitorViewModel: BPBIO320ViewModel = hiltViewModel(),
+    bp170bViewModel: BP170BViewModel = hiltViewModel(),
+    inGripViewModel: InGripViewModel = hiltViewModel(),
     loginViewModel: LoginViewModel = hiltViewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
@@ -795,9 +799,11 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            BTDeviceManagementScreen(
+            BTDeviceMenuScreen(
                 navController = navController,
-                bPBIO320ViewModel = bloodPressureMonitorViewModel,
+                bpbio320ViewModel = bloodPressureMonitorViewModel,
+                bp170bViewModel = bp170bViewModel,
+                inGripViewModel = inGripViewModel,
             )
         }
 
@@ -811,14 +817,14 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            BPBIO320ManagementScreen(
+            BPBIO320ManagementRoute(
                 navController = navController,
                 viewModel = bloodPressureMonitorViewModel,
             )
         }
 
         /**
-         * 혈압계 연결 화면 (BP170B)
+         * 혈압계 연결 화면 (BP170B - 25년형)
          */
         composable(
             route = NavConstants.ROUTE_BP170B_CONNECT,
@@ -827,8 +833,9 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            BP170BConnectionScreen(
+            BP170BManagementRoute(
                 navController = navController,
+                viewModel = bp170bViewModel,
             )
         }
 
