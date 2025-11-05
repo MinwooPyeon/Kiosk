@@ -1,5 +1,31 @@
 package com.pixelro.nenoonkiosk.feature.inspection.bloodPressure
 
+/**
+ * 혈압 검사 진입점
+ *
+ * 네비게이션 흐름:
+ * 1. Start (연결 화면)
+ *    - BPBIO320ManagementRoute 또는 BP170BManagementRoute 사용 (showStartTest = true)
+ *    - 혈압계 기기 검색 → 연결 → "검사 시작" 버튼 표시
+ *    - "검사 시작" 클릭 → Instructions로 이동
+ *
+ * 2. Instructions (사용 설명)
+ *    - 측정 방법 안내
+ *    - "시작" 클릭 → InProgress로 이동
+ *
+ * 3. InProgress (측정 중)
+ *    - 혈압 측정 진행
+ *    - 측정 완료 → Result 화면으로 이동
+ *
+ * 4. Error (에러)
+ *    - 연결 끊김 또는 측정 오류 시 표시
+ *
+ * 특이사항:
+ * - 연결 해제 시 자동으로 Start 화면으로 복귀 (LaunchedEffect)
+ * - BPBIO320ManagementRoute, BP170BManagementRoute는 iotdevice/에서 재사용
+ * - SharedPreferencesManager로 BPBIO320(24년형) vs BP170B(25년형) 구분
+ */
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -16,13 +42,13 @@ import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.inprogress.BP170BInProgressRoute
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.start.BP170BStartRoute
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.inprogress.BPBIO320InProgressRoute
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BPBIO320.start.BPBIO320StartRoute
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.error.BloodPressureErrorRoute
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.instructions.BloodPressureInstructionsRoute
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
+import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ManagementRoute
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
+import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BManagementRoute
 
 enum class BloodPressureInspectionNavRoute {
     Start,
@@ -63,15 +89,23 @@ fun BloodPressureInspectionEntryPoint(
         composable(BloodPressureInspectionNavRoute.Start.name) {
             when (bloodPressureMonitorType) {
                 SharedPreferencesManager.BloodPressureMonitorType.BPBIO320 ->
-                    BPBIO320StartRoute(
+                    BPBIO320ManagementRoute(
                         navController = localNavController,
                         viewModel = bpbiO320ViewModel,
+                        showStartTest = true,
+                        onStartTest = {
+                            localNavController.navigate(BloodPressureInspectionNavRoute.Instructions.name)
+                        },
                         onBack = { navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false) },
                     )
                 SharedPreferencesManager.BloodPressureMonitorType.BP170B ->
-                    BP170BStartRoute(
+                    BP170BManagementRoute(
                         navController = localNavController,
                         viewModel = bP170BViewModel,
+                        showStartTest = true,
+                        onStartTest = {
+                            localNavController.navigate(BloodPressureInspectionNavRoute.Instructions.name)
+                        },
                         onBack = { navController.popBackStack(NavConstants.ROUTE_EXTERNAL_DEVICE_TEST_LIST, false) },
                     )
             }
