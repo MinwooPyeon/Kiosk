@@ -19,8 +19,8 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.AnswerRow
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.BottomCounter
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.QuestionBox
+import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
 
 @Composable
@@ -39,12 +39,12 @@ fun DementiaInspectionContent(
             .padding(40.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        QuestionBox(
-            currentIndex = currentIndex,
-            totalQuestions = totalQuestions,
-            questionText = StringProvider.getStringComposable(questionResId),
-            questionTextSize = questionTextSize
-        )
+            QuestionBox(
+                currentIndex = currentIndex,
+                totalQuestions = totalQuestions,
+                questionText = StringProvider.getStringComposable(questionResId),
+                questionTextSize = questionTextSize
+            )
         Spacer(Modifier.height(52.dp))
         AnswerRow(
             selected = selectedAnswer,
@@ -52,9 +52,6 @@ fun DementiaInspectionContent(
             onClickNo = { onAnswer(DementiaViewModel.DementiaAnswer.No) }
         )
         Spacer(Modifier.height(24.dp))
-        BottomCounter(
-            index1Based = currentIndex + 1
-        )
     }
 }
 
@@ -101,4 +98,19 @@ private fun Preview_DementiaTestScreen_Mid() {
         questionTextSize = 50.sp,
         onAnswer = {}
     )
+}
+
+@Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
+@Composable
+private fun Preview_DementiaTestScreen_LandScape() {
+    NenoonKioskTheme {
+        DementiaInspectionContent(
+            currentIndex = 6,
+            totalQuestions = 14,
+            questionResId = R.string.dementia_survey_question6,
+            selectedAnswer = DementiaViewModel.DementiaAnswer.Yes,
+            questionTextSize = 50.sp,
+            onAnswer = {}
+        )
+    }
 }

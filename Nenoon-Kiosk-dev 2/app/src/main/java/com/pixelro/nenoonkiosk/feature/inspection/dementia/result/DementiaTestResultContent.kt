@@ -16,10 +16,13 @@ import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel.DementiaAnswer
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.GuideImageContainer
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.TheContent
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.WebContainer
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.process.DementiaInspectionContent
+import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 
 
 @Composable
@@ -132,4 +135,26 @@ private fun Preview_DementiaResult_Guide() {
         onShowWeb = {},
         onShowGuide = {},
     )
+}
+
+@Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
+@Composable
+private fun Preview_DementiaResult_Default_LandScape() {
+    NenoonKioskTheme {
+        val result = DementiaInspectionResult(
+            scores = listOf(
+                DementiaAnswer.Yes, DementiaAnswer.No, DementiaAnswer.Yes,
+                DementiaAnswer.No, DementiaAnswer.Yes, DementiaAnswer.Yes
+            )
+        )
+        DementiaInspectionResultContent(
+            testResult = result,
+            isWebViewShowing = false,
+            isGuideShowing = false,
+            onClickBackFromWeb = {},
+            onCloseGuide = {},
+            onShowWeb = {},
+            onShowGuide = {},
+        )
+    }
 }

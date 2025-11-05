@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pixelro.nenoonkiosk.core.util.isLandscape
 
 @Composable
 fun AnswerCard(
@@ -33,8 +34,8 @@ fun AnswerCard(
         modifier = Modifier
             .padding(start = biasPaddingStart)
             .clip(shape)
-            .width(355.dp)
-            .heightIn(min = 180.dp)
+            .width(if(isLandscape())255.dp else 355.dp)
+            .heightIn(min = if(isLandscape())140.dp else 180.dp)
             .border(BorderStroke(4.dp, blue), shape)
             .background(if (selected) blue else Color.White, shape)
             .clickable(onClick = onClick),
