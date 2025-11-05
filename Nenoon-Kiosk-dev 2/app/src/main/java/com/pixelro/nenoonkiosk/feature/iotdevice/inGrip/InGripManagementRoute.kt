@@ -18,6 +18,8 @@ import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.manager.InGripManager
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.feature.iotdevice.common.DeviceManagementScreen
+import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.components.InGripConnectionStateContent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
@@ -25,13 +27,10 @@ import kotlinx.coroutines.flow.collectLatest
 fun InGripManagementRoute(
     navController: NavHostController,
     viewModel: InGripViewModel = hiltViewModel(),
+    showStartTest: Boolean = false,
+    onStartTest: (() -> Unit)? = null,
+    onBack: (() -> Unit)? = null,
 ) {
-    var dynamometerConnectionScreenState by remember {
-        mutableStateOf(
-            InGripConnectionUiState.Standby,
-        )
-    }
-
     val dynamometerData by InGripManager.dataReceived.collectAsState()
     var batteryLevel by remember { mutableStateOf<Double?>(null) }
     var isBatteryFetching by remember { mutableStateOf(false) }
@@ -43,6 +42,15 @@ fun InGripManagementRoute(
 
     val context = LocalContext.current
 
+    // 초기 상태를 연결 상태에 따라 설정
+    val initialState = if (connectionState.value == InGripManager.BluetoothConnectionState.CONNECTED) {
+        InGripConnectionUiState.AwaitingStart
+    } else {
+        InGripConnectionUiState.Standby
+    }
+
+    var dynamometerConnectionScreenState by remember { mutableStateOf(initialState) }
+
     LaunchedEffect(Unit) {
         if (!InGripManager.isInitialized.value) {
             InGripManager.init(context)
@@ -51,11 +59,13 @@ fun InGripManagementRoute(
 
     LaunchedEffect(Unit) {
         viewModel.resetTest()
-        TTS.speechTTS(StringProvider.getString(R.string.dynamometer_initial_instruction), TextToSpeech.QUEUE_ADD)
-        isBatteryFetching = false
-        if (connectionState.value == InGripManager.BluetoothConnectionState.CONNECTED) {
-            dynamometerConnectionScreenState = InGripConnectionUiState.AwaitingStart
+        val ttsMessage = if (connectionState.value == InGripManager.BluetoothConnectionState.CONNECTED) {
+            StringProvider.getString(R.string.dynamometer_connected_tts)
+        } else {
+            StringProvider.getString(R.string.dynamometer_initial_instruction)
         }
+        TTS.speechTTS(ttsMessage, TextToSpeech.QUEUE_ADD)
+        isBatteryFetching = false
     }
 
     LaunchedEffect(dynamometerConnectionScreenState) {
@@ -111,42 +121,70 @@ fun InGripManagementRoute(
         }
     }
 
-    InGripManagementScreen(
-        state = InGripManagementUiState(
-            connectionState = dynamometerConnectionScreenState,
-            batteryLevel = batteryLevel?.toInt(),
-            isBatteryFetching = isBatteryFetching,
-            availableDevices = availableDevices,
-            connecting = connecting,
-        ),
-        onEvent = { event ->
-            when (event) {
-                is InGripManagementEvent.StartConnection -> {
-                    dynamometerConnectionScreenState = InGripConnectionUiState.DeviceSelection
-                    InGripManager.startScan()
-                    TTS.speechTTS(
-                        StringProvider.getString(R.string.dynamometer_searching_tts),
-                        TextToSpeech.QUEUE_ADD,
-                    )
-                }
-                is InGripManagementEvent.DeviceSelected -> {
-                    selectedDevice = event.device
-                    InGripManager.connect(event.device)
-                    dynamometerConnectionScreenState = InGripConnectionUiState.Connecting
-                }
-                is InGripManagementEvent.Disconnect -> {
-                    InGripManager.disconnect()
-                    dynamometerConnectionScreenState = InGripConnectionUiState.Standby
-                }
-                is InGripManagementEvent.Retry -> {
-                    InGripManager.startScan()
-                    dynamometerConnectionScreenState = InGripConnectionUiState.DeviceSelection
-                }
-                is InGripManagementEvent.Back -> {
-                    TTS.stopTTS()
-                    navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
-                }
+    val uiState = InGripManagementUiState(
+        connectionState = dynamometerConnectionScreenState,
+        batteryLevel = batteryLevel?.toInt(),
+        isBatteryFetching = isBatteryFetching,
+        availableDevices = availableDevices,
+        connecting = connecting,
+    )
+
+    DeviceManagementScreen(
+        titleRes = R.string.dynamometer_title,
+        imageRes = R.drawable.grip_strength_icon,
+        imageContentDescriptionRes = R.string.dynamometer_image_content_description,
+        batteryLevel = uiState.batteryLevel,
+        hideBattery = !uiState.isBatteryFetching && uiState.batteryLevel == null,
+        showStartTest = showStartTest,
+        onBack = {
+            TTS.stopTTS()
+            if (onBack != null) {
+                onBack()
+            } else {
+                navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
             }
-        }
+        },
+        connectionContent = {
+            InGripConnectionStateContent(
+                state = uiState,
+                onEvent = { event ->
+                    when (event) {
+                        is InGripManagementEvent.StartConnection -> {
+                            dynamometerConnectionScreenState = InGripConnectionUiState.DeviceSelection
+                            InGripManager.startScan()
+                            TTS.speechTTS(
+                                StringProvider.getString(R.string.dynamometer_searching_tts),
+                                TextToSpeech.QUEUE_ADD,
+                            )
+                        }
+                        is InGripManagementEvent.DeviceSelected -> {
+                            selectedDevice = event.device
+                            InGripManager.connect(event.device)
+                            dynamometerConnectionScreenState = InGripConnectionUiState.Connecting
+                        }
+                        is InGripManagementEvent.Disconnect -> {
+                            InGripManager.disconnect()
+                            dynamometerConnectionScreenState = InGripConnectionUiState.Standby
+                        }
+                        is InGripManagementEvent.Retry -> {
+                            InGripManager.startScan()
+                            dynamometerConnectionScreenState = InGripConnectionUiState.DeviceSelection
+                        }
+                        is InGripManagementEvent.StartTest -> {
+                            onStartTest?.invoke()
+                        }
+                        is InGripManagementEvent.Back -> {
+                            TTS.stopTTS()
+                            if (onBack != null) {
+                                onBack()
+                            } else {
+                                navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
+                            }
+                        }
+                    }
+                },
+                showStartTest = showStartTest,
+            )
+        },
     )
 }
