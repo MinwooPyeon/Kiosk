@@ -223,24 +223,22 @@ class VisualAcuityViewModel
         }
 
         private fun updateRandomList() {
-            _randomList.update { mutableListOf() }
+            val newList = mutableListOf<Int>()
 //        var ranNum = (2..11).random()
             var ranNum = (2..7).random()
             for (i in 1..3) {
-                while (ranNum in randomList.value) {
+                while (ranNum in newList) {
 //                ranNum = (2..11).random()
                     ranNum = (2..7).random()
                 }
-                _randomList.update {
-                    it.add(ranNum)
-                    it
-                }
+                newList.add(ranNum)
             }
+            _randomList.value = newList
             val prevNum = ansNum.value
             _ansNum.update {
-                var newNum = randomList.value[(0..2).random()]
+                var newNum = newList[(0..2).random()]
                 while (prevNum == newNum) {
-                    newNum = randomList.value[(0..2).random()]
+                    newNum = newList[(0..2).random()]
                 }
                 newNum
             }

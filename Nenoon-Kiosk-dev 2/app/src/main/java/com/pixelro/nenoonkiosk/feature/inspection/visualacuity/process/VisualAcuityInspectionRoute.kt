@@ -41,14 +41,14 @@ fun VisualAcuityInspectionRoute(
     }
 
     // ViewModel 상태 구독 (거리 조정 및 시력 검사)
-    val isMeasuringDistanceVisible = visualAcuityViewModel.isMeasuringDistanceContentVisible.collectAsState().value
-    val isVisualAcuityVisible = visualAcuityViewModel.isVisualAcuityContentVisible.collectAsState().value
-    val isLeftEye = visualAcuityViewModel.isLeftEye.collectAsState().value
+    val isMeasuringDistanceVisible by visualAcuityViewModel.isMeasuringDistanceContentVisible.collectAsState()
+    val isVisualAcuityVisible by visualAcuityViewModel.isVisualAcuityContentVisible.collectAsState()
+    val isLeftEye by visualAcuityViewModel.isLeftEye.collectAsState()
 
     // ViewModel 상태 구독 (시력 검사 데이터)
-    val randomList = visualAcuityViewModel.randomList.collectAsState().value
-    val ansNum = visualAcuityViewModel.ansNum.collectAsState().value
-    val sightLevel = visualAcuityViewModel.sightLevel.collectAsState().value
+    val randomList by visualAcuityViewModel.randomList.collectAsState()
+    val ansNum by visualAcuityViewModel.ansNum.collectAsState()
+    val sightLevel by visualAcuityViewModel.sightLevel.collectAsState()
 
     // FaceDetection 상태 구독
     val faceDetectionState by faceDetectionViewModel.container.stateFlow.collectAsState()
