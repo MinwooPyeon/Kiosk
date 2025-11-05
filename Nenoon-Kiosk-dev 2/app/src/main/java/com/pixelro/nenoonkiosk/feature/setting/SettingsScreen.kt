@@ -37,39 +37,19 @@ fun SettingsScreen(
     viewModel: NenoonViewModel = hiltViewModel(),
     loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
-    // 2. Activity Context 가져오기 (AppCompatActivity로 캐스팅) [1, 2]
     val context = LocalContext.current
-    val activity = context as? AppCompatActivity
 
-    // 3. 언어 변경 API 호출 함수 정의 (UI 레이어의 핵심 로직)
+    // (다국어)언어 변경 API 호출 함수 정의
     val applyNewLanguage: (String) -> Unit = { langCode ->
 
-        Log.d("NenoonLocale", "Language selection event received for: $langCode")
-        // 이 섹션(applyNewLanguage 람다 내부)에는 @Composable 함수가 들어갈 수 없습니다.
-
-        // 1. ViewModel 로직 호출 (일반 Kotlin 함수)
+        // 기존 ViewModel 함수호출
         viewModel.updateLanguage(langCode)
-
-//        val context = LocalContext.current // ⚠️ LocalContext.current는 Composable 내에서만 접근 가능하지만,
-        // Activity Context를 얻는 데 사용되는 이 줄은
-        // 보통 Composable 본문 내에 위치하거나,
-        // 람다가 Composable 내에서 정의될 때만 안전하게 사용되어야 합니다.
-        // (다이얼로그 콜백 내에서는 이미 context가 외부에서 정의되어야 합니다.)
-
-        // 만약 LocalContext.current를 람다 내부에서 호출했다면, 이 자체로 오류가 날 수 있습니다.
-        // context를 SettingsScreen 최상단에서 정의하고 람다로 전달하거나,
-        // 람다 바디 내에서는 오직 아래와 같은 비-Composable 함수만 호출해야 합니다.
 
         val activity = context as? AppCompatActivity
 
         if (activity != null) {
             val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(langCode)
-
-            // *************** 일반 Kotlin 함수만 포함 ***************
-            Log.d("NenoonLocale", "Attempting to set locale to: $langCode")
-            AppCompatDelegate.setApplicationLocales(appLocale)
-            Log.d("NenoonLocale", "AppCompatDelegate.setApplicationLocales() called successfully.")
-            // ********************************************************
+            AppCompatDelegate.setApplicationLocales(appLocale) // activity 재실행
 
         } else {
             Log.e("NenoonLocale", "Activity cannot be cast to AppCompatActivity.")
