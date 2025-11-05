@@ -11,6 +11,7 @@ import android.os.Looper
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberUpdatedState
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
@@ -26,10 +27,10 @@ object STT {
     private var isContinuous = false
     private val handler = Handler(Looper.getMainLooper())
     private var deliveredInSession = false
-    private var retryDelayMs: Long = 800L
-    private val retryDelayMaxMs: Long = 5000L
+    private var retryDelayMs: Long = 300L
+    private val retryDelayMaxMs: Long = 1000L
     private var lastSessionEndedAt: Long = 0L
-    private val minRestartIntervalMs: Long = 1200L
+    private val minRestartIntervalMs: Long = 300L
     private var hadSpeechInSession: Boolean = false
     private var suppressNextError: Boolean = false
     private var lastPartialCandidate: String? = null
@@ -49,6 +50,10 @@ object STT {
     private var restartScheduled: Boolean = false
 
     fun initSTT() {
+        if (speechRecognizer != null) {
+            Log.d("STT", "initSTT: 이미 초기화됨, 재사용")
+            return
+        }
         val context = NenoonKioskApplication.applicationContext()
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
 
@@ -138,7 +143,7 @@ object STT {
                 Log.d("STT", "onResults: 전체 매칭 목록 = $matches")
                 if (!deliveredInSession) {
                     deliveredInSession = true
-                    retryDelayMs = 800L
+                    retryDelayMs = 300L  
                     onResultCallback?.invoke(text)
                 } else {
                     Log.d("STT", "onResults: 이미 전달된 세션 결과, 무시")
@@ -212,7 +217,7 @@ object STT {
                         if (normalized.isNotBlank()) {
                             Log.d("STT", "onPartialResults: 조기 확정 = '$normalized' (원본: '$candidate')")
                             deliveredInSession = true
-                            retryDelayMs = 800L
+                            retryDelayMs = 300L
                             onResultCallback?.invoke(normalized)
                             suppressNextError = true
 
@@ -377,6 +382,8 @@ object STT {
         if (speechRecognizer == null) {
             Log.d("STT", "startListening: SpeechRecognizer 초기화")
             initSTT()
+        } else {
+            Log.d("STT", "startListening: 기존 SpeechRecognizer 재사용")
         }
         
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
@@ -457,13 +464,27 @@ object STT {
         onErrorCallback = { code ->
             if (isContinuous && code != SpeechRecognizer.ERROR_NO_MATCH) onError?.invoke(code) 
             if (isContinuous) {
-                retryDelayMs = (retryDelayMs * 2).coerceAtMost(retryDelayMaxMs)
                 val sinceEnd = (System.currentTimeMillis() - lastSessionEndedAt).coerceAtLeast(0)
-                var delayMs = maxOf(restartDelayOnErrorMs, retryDelayMs, minRestartIntervalMs - sinceEnd)
-                if (code == SpeechRecognizer.ERROR_NO_MATCH) {
-                    delayMs = minOf(delayMs, 400L)
+                
+                var delayMs = when (code) {
+                    SpeechRecognizer.ERROR_NO_MATCH -> {
+                        maxOf(300L, minRestartIntervalMs - sinceEnd)
+                    }
+                    SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> {
+                        maxOf(500L, minRestartIntervalMs - sinceEnd)
+                    }
+                    SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> {
+                        maxOf(800L, minRestartIntervalMs - sinceEnd)
+                    }
+                    else -> {
+                        maxOf(restartDelayOnErrorMs, minRestartIntervalMs - sinceEnd)
+                    }
                 }
-                if (!hadSpeechInSession) delayMs += 400L
+                
+                if (!hadSpeechInSession) delayMs += 200L
+                
+                delayMs = delayMs.coerceAtMost(1000L)
+                
                 if (!restartScheduled) {
                     restartScheduled = true
                     handler.postDelayed({
@@ -495,7 +516,7 @@ object STT {
         handler.removeCallbacksAndMessages(null)
         cancelListening()
         deliveredInSession = false
-        retryDelayMs = 800L
+        retryDelayMs = 300L  // 초기값도 최소화
     }
     
     // STT 종료
@@ -508,7 +529,7 @@ object STT {
         onErrorCallback = null
         onReadyCallback = null
         deliveredInSession = false
-        retryDelayMs = 800L
+        retryDelayMs = 300L  
     }
     
     // 현재 음성 인식 중인지
@@ -546,6 +567,9 @@ fun AutoStartSTT(
     enabled: Boolean = true,
     delay: Long = 0
 ) {
+    val latestOnResult = rememberUpdatedState(onResult)
+    val latestOnError = rememberUpdatedState(onError)
+    
     LaunchedEffect(enabled) {
         if (enabled) {
             Log.d("AutoStartSTT", "LaunchedEffect 실행 - enabled=$enabled")
@@ -559,11 +583,11 @@ fun AutoStartSTT(
                 language = language,
                 onResult = {
                     Log.d("AutoStartSTT", "onResult 콜백 호출: result='$it'")
-                    onResult(it)
+                    latestOnResult.value(it)
                 },
                 onError = { error ->
                     Log.d("AutoStartSTT", "onError 콜백 호출: error=$error")
-                    onError?.invoke(error)
+                    latestOnError.value?.invoke(error)
                 },
                 onReady = null,
             )

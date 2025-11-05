@@ -158,6 +158,7 @@ fun VisualAcuityInspectionContent(
             handleVoiceAnswer(
                 result = result,
                 randomList = randomList,
+                ansNum = ansNum,
                 currentProgress = progress,
                 onAnswerSelected = onAnswerSelected,
                 updateProgress = { newProgress -> progress = newProgress },
@@ -301,11 +302,14 @@ private fun PreviewVisualAcuityInspectionContent_Level10_WithWarning() {
 private fun handleVoiceAnswer(
     result: String,
     randomList: List<Int>,
+    ansNum: Int,
     currentProgress: Float,
     onAnswerSelected: (Int, (Float) -> Unit, () -> Unit) -> Unit,
     updateProgress: (Float) -> Unit,
     onComplete: () -> Unit
 ) {
+    android.util.Log.d("VisualAcuity", "handleVoiceAnswer: result='$result', randomList=$randomList, ansNum=$ansNum")
+    
     val voiceText = result.lowercase().trim()
     val compactText = voiceText.replace("\\s+".toRegex(), "")
     
@@ -320,51 +324,77 @@ private fun handleVoiceAnswer(
     )
     
     var selectedIdx: Int? = null
+    var recognizedNumber: Int? = null
     
-    val normalized = voiceText.replace("\\s+".toRegex(), " ")
-    val digitsInOrder = mutableListOf<Int>()
-    for (ch in normalized) {
-        val v = when (ch) {
-            '2' -> 2
-            '3' -> 3
-            '4' -> 4
-            '5' -> 5
-            '6' -> 6
-            '7' -> 7
-            else -> null
-        }
-        if (v != null) digitsInOrder.add(v)
-    }
-    val matchValue = digitsInOrder.firstOrNull { randomList.contains(it) }
-    if (matchValue != null) {
-        val idx = randomList.indexOf(matchValue)
-        if (idx != -1) {
-            selectedIdx = idx
-        }
+    val directNumber = result.trim().toIntOrNull()
+    if (directNumber != null) {
+        recognizedNumber = directNumber
+        android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 직접 숫자 인식 - $directNumber")
     }
     
-    if (selectedIdx == null) {
+    if (recognizedNumber == null) {
+        val normalized = voiceText.replace("\\s+".toRegex(), " ")
+        val digitsInOrder = mutableListOf<Int>()
+        for (ch in normalized) {
+            val v = when (ch) {
+                '2' -> 2
+                '3' -> 3
+                '4' -> 4
+                '5' -> 5
+                '6' -> 6
+                '7' -> 7
+                else -> null
+            }
+            if (v != null) digitsInOrder.add(v)
+        }
+        recognizedNumber = digitsInOrder.firstOrNull()
+        if (recognizedNumber != null) {
+            android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 문자에서 숫자 추출 - $recognizedNumber")
+        }
+    }
+    
+    if (recognizedNumber == null) {
         val tokens = voiceText.split("\\s+".toRegex()).filter { it.isNotBlank() }
         tokens.firstOrNull { tok -> numberMap.containsKey(tok) }?.let { tok ->
-            val numberValue = numberMap[tok]!!
-            val idx = randomList.indexOf(numberValue)
-            if (idx != -1) {
-                selectedIdx = idx
-            }
+            recognizedNumber = numberMap[tok]!!
+            android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 한글 숫자 인식 - '$tok' -> $recognizedNumber")
         }
     }
 
-    if (selectedIdx == null) {
+    if (recognizedNumber == null) {
         val engMap = mapOf(
             "two" to 2, "three" to 3, "four" to 4, "five" to 5, "six" to 6, "seven" to 7
         )
         val tokens = voiceText.split("\\s+".toRegex()).filter { it.isNotBlank() }
         tokens.firstOrNull { tok -> engMap.containsKey(tok) }?.let { tok ->
-            val v = engMap[tok]!!
-            val idx = randomList.indexOf(v)
+            recognizedNumber = engMap[tok]!!
+            android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 영어 숫자 인식 - '$tok' -> $recognizedNumber")
+        }
+    }
+
+    if (recognizedNumber != null) {
+        if (randomList.contains(recognizedNumber)) {
+            val idx = randomList.indexOf(recognizedNumber)
             if (idx != -1) {
                 selectedIdx = idx
+                android.util.Log.d("VisualAcuity", "handleVoiceAnswer: randomList 매칭 성공 - $recognizedNumber -> idx=$idx")
             }
+        }
+        else if (recognizedNumber == ansNum) {
+            if (randomList.contains(ansNum)) {
+                val idx = randomList.indexOf(ansNum)
+                if (idx != -1) {
+                    selectedIdx = idx
+                    android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 정답 매칭 성공 - $recognizedNumber == ansNum($ansNum) -> idx=$idx")
+                }
+            } else {
+                android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 정답($ansNum)이 randomList에 없음")
+                selectedIdx = 3
+            }
+        }
+        else {
+            android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 인식된 숫자($recognizedNumber)가 randomList에 없음")
+            selectedIdx = 3
         }
     }
 
@@ -379,9 +409,13 @@ private fun handleVoiceAnswer(
 
     if (isUnknown) {
         selectedIdx = 3
+        android.util.Log.d("VisualAcuity", "handleVoiceAnswer: '모르겠다' 등 처리 - idx=3")
     }
     
     if (selectedIdx != null && selectedIdx in 0..3) {
+        android.util.Log.d("VisualAcuity", "handleVoiceAnswer: onAnswerSelected 호출 - idx=$selectedIdx")
         onAnswerSelected(selectedIdx, updateProgress, onComplete)
+    } else {
+        android.util.Log.d("VisualAcuity", "handleVoiceAnswer: 매칭 실패 - result='$result', randomList=$randomList, ansNum=$ansNum, recognizedNumber=$recognizedNumber, selectedIdx=$selectedIdx")
     }
 }
