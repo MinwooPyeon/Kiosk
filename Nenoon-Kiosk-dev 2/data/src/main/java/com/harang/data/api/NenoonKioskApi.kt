@@ -1,56 +1,21 @@
 package com.harang.data.api
 
-import com.harang.data.model.AmslerTestResult
-import com.harang.data.model.BloodPressureTestResult
-import com.harang.data.model.DementiaTestResult
-import com.harang.data.model.GetCompoundTestResult
-import com.harang.data.model.GetPastSurveyId
-import com.harang.data.model.GetUserProfileResponse
-import com.harang.data.model.GripStrengthTestResult
-import com.harang.data.model.MchartsTestResult
-import com.harang.data.model.PresbyopiaTestResult
-import com.harang.data.model.PulmonaryTestResult
-import com.harang.data.model.SendAmslerGridTestResultRequest
-import com.harang.data.model.SendAmslerGridTestResultResponse
-import com.harang.data.model.SendBloodPressureTestResultRequest
-import com.harang.data.model.SendBloodPressureTestResultResponse
-import com.harang.data.model.SendDementiaTestResultRequest
-import com.harang.data.model.SendDementiaTestResultResponse
-import com.harang.data.model.SendGripStrengthTestResultRequest
-import com.harang.data.model.SendGripStrengthTestResultResponse
-import com.harang.data.model.SendLocationSignInDataResponse
-import com.harang.data.model.SendMChartTestResultRequest
-import com.harang.data.model.SendMChartTestResultResponse
-import com.harang.data.model.SendPresbyopiaTestResultRequest
-import com.harang.data.model.SendPresbyopiaTestResultResponse
-import com.harang.data.model.SendPulmonaryFunctionTestResultRequest
-import com.harang.data.model.SendPulmonaryFunctionTestResultResponse
-import com.harang.data.model.SendShortVisualAcuityTestResultRequest
-import com.harang.data.model.SendShortVisualAcuityTestResultResponse
-import com.harang.data.model.SendSignUpDataRequest
-import com.harang.data.model.SendSignUpDataResponse
-import com.harang.data.model.SendSurveyDataRequest
-import com.harang.data.model.SendSurveyDataResponse
-import com.harang.data.model.SendUserFaceSignInDataRequest
-import com.harang.data.model.SendUserFaceUpdateDataRequest
-import com.harang.data.model.SendUserFaceUpdateDataResponse
-import com.harang.data.model.SendUserQrCodeUpdateDataResponse
-import com.harang.data.model.SendUserQrCodeUrlResponse
-import com.harang.data.model.SendUserSignInDataRequest
-import com.harang.data.model.SendUserSignInDataResponse
-import com.harang.data.model.SightTestResult
-import okhttp3.MultipartBody
-import okhttp3.ResponseBody
+import com.harang.data.model.dto.AmslerTestResult
+import com.harang.data.model.dto.BloodPressureTestResult
+import com.harang.data.model.dto.DementiaTestResult
+import com.harang.data.model.dto.GetCompoundTestResult
+import com.harang.data.model.dto.GripStrengthTestResult
+import com.harang.data.model.dto.MchartsTestResult
+import com.harang.data.model.dto.PresbyopiaTestResult
+import com.harang.data.model.dto.PulmonaryTestResult
+import com.harang.data.model.dto.request.*
+import com.harang.data.model.dto.response.*
+import com.harang.data.model.dto.SightTestResult
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.Multipart
-import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.Part
-import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface NenoonKioskApi {
     // region API Functions with Token
@@ -111,38 +76,6 @@ interface NenoonKioskApi {
         @Body body: PulmonaryTestResult,
     ): Response<SendPulmonaryFunctionTestResultResponse>
 
-    // 설문 데이터 전송 (사용자 토큰 포함)
-    @POST("api/v1/survey/user")
-    suspend fun sendSurveyData(
-        @Header("authorization") token: String,
-        @Body body: SendSurveyDataRequest,
-    ): Response<SendSurveyDataResponse>
-
-    // 설문 상태 확인
-    @GET("api/v1/users/survey-status")
-    suspend fun getSurveyStatus(
-        @Header("authorization") token: String,
-    ): Response<GetPastSurveyId>
-
-    // 결과 열 생성
-    @POST("api/v1/users/survey-result")
-    suspend fun generateResultsChart(
-        @Header("authorization") token: String,
-    ): Response<GetPastSurveyId>
-
-    // 얼굴 데이터 업데이트
-    @PATCH("api/v1/users/vector")
-    suspend fun updateFaceData(
-        @Header("authorization") token: String,
-        @Body body: SendUserFaceUpdateDataRequest,
-    ): Response<SendUserFaceUpdateDataResponse>
-
-    // QR 코드 URL 조회
-    @GET("api/v1/users/qr-image")
-    suspend fun getQrUrl(
-        @Header("authorization") token: String,
-    ): Response<SendUserQrCodeUrlResponse>
-
     // 암슬러 격자 검사
     @POST("api/v1/test/result/amsler")
     suspend fun sendAmslerGridResult(
@@ -191,59 +124,9 @@ interface NenoonKioskApi {
         @Body body: SendPulmonaryFunctionTestResultRequest,
     ): Response<SendPulmonaryFunctionTestResultResponse>
 
-    // 설문 데이터 전송
-    @POST("api/v1/survey")
-    suspend fun sendSurveyData(
-        @Body body: SendSurveyDataRequest,
-    ): Response<SendSurveyDataResponse>
-
-    // location (기관) 로그인
-    @GET("api/v1/location/signin")
-    suspend fun sendLocationSignInData(
-        @Query("id") id: String,
-        @Query("pw") pw: String,
-    ): Response<SendLocationSignInDataResponse>
-
-    // 사용자 로그인
-    @POST("api/v1/users/login")
-    suspend fun sendUserSignInData(
-        @Body body: SendUserSignInDataRequest,
-    ): Response<SendUserSignInDataResponse>
-
-    // 얼굴로 사용자 로그인
-    @POST("api/v1/users/vector-login")
-    suspend fun signInUserWithFace(
-        @Body body: SendUserFaceSignInDataRequest,
-    ): Response<SendUserSignInDataResponse>
-
-    // 사용자 회원가입
-    @POST("api/v1/users/register")
-    suspend fun sendUserSignUpData(
-        @Body body: SendSignUpDataRequest,
-    ): Response<SendSignUpDataResponse>
-
-    // QR 코드 업데이트
-    @Multipart
-    @POST("api/v1/users/qr-image/upload")
-    suspend fun updateQrCode(
-        @Part qrCode: MultipartBody.Part,
-    ): Response<SendUserQrCodeUpdateDataResponse>
-
-    // QR 코드 이미지 가져오기
-    @GET("api/v1/users/qr-image/{filename}")
-    suspend fun getQrCode(
-        @Path("filename") filename: String,
-    ): Response<ResponseBody>
-
     // 복합 검사 결과 가져오기
     @GET("api/v1/users/survey-results")
     suspend fun getCompoundTestResult(
         @Header("authorization") token: String,
     ): Response<GetCompoundTestResult>
-
-    // 사용자 프로필 조회
-    @GET("api/v1/users/profile")
-    suspend fun getUserProfile(
-        @Header("authorization") token: String,
-    ): Response<GetUserProfileResponse>
 }

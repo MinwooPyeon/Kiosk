@@ -1,12 +1,12 @@
 package com.harang.data.datasource
 
-import com.harang.data.api.NenoonKioskApi
-import com.harang.data.model.GetPastSurveyId
-import com.harang.data.model.SendSurveyDataRequest
-import com.harang.data.model.SendSurveyDataResponse
+import com.harang.data.api.SurveyApi
+import com.harang.data.model.dto.response.GetPastSurveyId
+import com.harang.data.model.dto.request.*
+import com.harang.data.model.dto.response.*
 
 class SurveyRemoteDataSource(
-    private val api: NenoonKioskApi,
+    private val api: SurveyApi,
 ) {
     suspend fun sendSurveyData(
         token: String?,

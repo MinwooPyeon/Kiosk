@@ -21,16 +21,16 @@ import android.print.PrintManager
 import android.util.Log
 import androidx.core.graphics.scale
 import androidx.lifecycle.AndroidViewModel
-import com.harang.data.model.AmslerTestResultAPI
-import com.harang.data.model.BloodPressureTestResultAPI
-import com.harang.data.model.CompoundTestResultAPI
-import com.harang.data.model.DementiaTestResultAPI
-import com.harang.data.model.GripStrengthTestResultAPI
-import com.harang.data.model.MChartsTestResultAPI
-import com.harang.data.model.PresbyopiaTestResultAPI
-import com.harang.data.model.PulmonaryTestResultAPI
-import com.harang.data.model.SightTestResultAPI
-import com.harang.data.model.User
+import com.harang.data.model.dto.AmslerTestResultAPI
+import com.harang.data.model.dto.BloodPressureTestResultAPI
+import com.harang.data.model.dto.CompoundTestResultAPI
+import com.harang.data.model.dto.DementiaTestResultAPI
+import com.harang.data.model.dto.GripStrengthTestResultAPI
+import com.harang.data.model.dto.MChartsTestResultAPI
+import com.harang.data.model.dto.PresbyopiaTestResultAPI
+import com.harang.data.model.dto.PulmonaryTestResultAPI
+import com.harang.data.model.dto.SightTestResultAPI
+import com.harang.data.model.dto.User
 import com.harang.data.repository.TestResultRepository
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.ColorProvider
@@ -55,7 +55,6 @@ class ResultPrintViewModel
     ) : AndroidViewModel(application) {
         suspend fun getCompoundTestResult(token: String): List<CompoundTestResultAPI> {
             val data = testResultRepository.getCompoundTestResult(token)
-            Log.d("HHHHHHHHHHH", "$data")
             return data?.data?.results?.sortedByDescending { it.createAt } ?: emptyList()
         }
 
@@ -438,8 +437,8 @@ class ResultPrintViewModel
                     drawResultRow(
                         canvas,
                         StringProvider.getString(R.string.pdf_visual_acuity_title),
-                        if (latestResult.shortVisualAcuityTestResult != null) {
-                            "${StringProvider.getString(R.string.pdf_left_eye)}: ${latestResult.shortVisualAcuityTestResult.leftEye}\n${StringProvider.getString(R.string.pdf_right_eye)}: ${latestResult.shortVisualAcuityTestResult.rightEye}"
+                        if (latestResult.shortVisualAcuityInspectionResult != null) {
+                            "${StringProvider.getString(R.string.pdf_left_eye)}: ${latestResult.shortVisualAcuityInspectionResult.leftEye}\n${StringProvider.getString(R.string.pdf_right_eye)}: ${latestResult.shortVisualAcuityInspectionResult.rightEye}"
                         } else {
                             StringProvider.getString(R.string.pdf_test_not_conducted)
                         },
@@ -525,43 +524,6 @@ class ResultPrintViewModel
                         currentY,
                         titlePaint, textPaint, notTestedPaint, linePaint,
                         tipText = StringProvider.getString(R.string.pdf_gs_tip),
-                        context,
-                        lineHeightAmplifier = lineHeightAmplifier,
-                    )
-
-                val pulmonaryFunctionData =
-                    listOf(
-                        Triple(
-                            StringProvider.getString(R.string.pdf_pf_range_normal),
-                            StringProvider.getString(R.string.pdf_pf_interp_normal),
-                            StringProvider.getString(R.string.pdf_pf_recomm_normal),
-                        ),
-                        Triple(
-                            StringProvider.getString(R.string.pdf_pf_range_mild),
-                            StringProvider.getString(R.string.pdf_pf_interp_mild),
-                            StringProvider.getString(R.string.pdf_pf_recomm_mild),
-                        ),
-                        Triple(
-                            StringProvider.getString(R.string.pdf_pf_range_moderate),
-                            StringProvider.getString(R.string.pdf_pf_interp_moderate),
-                            StringProvider.getString(R.string.pdf_pf_recomm_moderate),
-                        ),
-                    )
-                currentY =
-                    drawResultRow(
-                        canvas,
-                        StringProvider.getString(R.string.pdf_pulmonary_age_title),
-                        if (latestResult.pulmonaryFunctionTestResult != null) {
-                            "${latestResult.pulmonaryFunctionTestResult.pulmonaryAge} ${StringProvider.getString(R.string.pdf_age_unit)}"
-                        } else {
-                            StringProvider.getString(R.string.pdf_test_not_conducted)
-                        },
-                        pulmonaryFunctionData,
-                        columnStarts,
-                        col1Width, col2Width, col3Width, col4Width,
-                        currentY,
-                        titlePaint, textPaint, notTestedPaint, linePaint,
-                        tipText = StringProvider.getString(R.string.pdf_pf_tip),
                         context,
                         lineHeightAmplifier = lineHeightAmplifier,
                     )
@@ -699,7 +661,7 @@ class ResultPrintViewModel
                 canvas.drawText(formattedDate, xOffset, currentY, textPaint)
                 xOffset += dateWidth + columnGap
 
-                val vaText = result.shortVisualAcuityTestResult?.let { "L: ${it.leftEye} /  R: ${it.rightEye}" } ?: "--"
+                val vaText = result.shortVisualAcuityInspectionResult?.let { "L: ${it.leftEye} /  R: ${it.rightEye}" } ?: "--"
                 canvas.drawText(vaText, xOffset, currentY, textPaint)
                 xOffset += vaWidth + columnGap
 
@@ -711,11 +673,7 @@ class ResultPrintViewModel
                 canvas.drawText(gsText, xOffset, currentY, textPaint)
                 xOffset += gsWidth + columnGap
 
-                val pfText = result.pulmonaryFunctionTestResult?.let { StringProvider.getString(R.string.pdf_label_age) + "${it.pulmonaryAge}" } ?: "--"
-                canvas.drawText(pfText, xOffset, currentY, textPaint)
-                xOffset += pfWidth + columnGap
-
-                val presbyopiaText = result.presbyopiaTestResult?.let { "${it.avgDistance}cm" } ?: "--"
+                val presbyopiaText = result.presbyopiaInspectionResult?.let { "${it.avgDistance}cm" } ?: "--"
                 canvas.drawText(presbyopiaText, xOffset, currentY, textPaint)
                 xOffset += presbyopiaWidth + columnGap
 
@@ -748,7 +706,7 @@ class ResultPrintViewModel
                 xOffset += amslerWidth + columnGap
 
                 val mChartText =
-                    result.mChartTestResult?.let {
+                    result.mChartInspectionResult?.let {
                         "L:${it.leftEyeVertical}, ${it.leftEyeHorizontal} / R:${it.rightEyeVertical}, ${it.rightEyeHorizontal}"
                     } ?: "--"
                 canvas.drawText(mChartText, xOffset, currentY, textPaint)

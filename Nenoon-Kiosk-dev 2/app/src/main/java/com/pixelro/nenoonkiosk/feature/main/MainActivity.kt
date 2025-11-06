@@ -15,14 +15,18 @@ import android.util.SizeF
 import android.view.MotionEvent
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,6 +38,8 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -70,7 +76,8 @@ import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+
     val viewModel: NenoonViewModel by lazy {
         ViewModelProvider(this)[NenoonViewModel::class.java]
     }
@@ -172,11 +179,17 @@ class MainActivity : ComponentActivity() {
         val locale = SharedPreferencesManager.getString("language")
 
         if (locale.isBlank()) {
-            TTS.initTTS("en")
-            viewModel.updateLanguage("en")
+            TTS.initTTS("ko-KR") 
+            viewModel.updateLanguage("ko-KR")
         } else {
             TTS.initTTS(locale)
             viewModel.updateLanguage(locale)
+        }
+        
+        // TTS 초기화 후 한국어 설정
+        lifecycleScope.launch {
+            delay(1000) 
+            TTS.forceKoreanLanguage()
         }
         window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
@@ -197,54 +210,59 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             NenoonKioskTheme {
-                val systemUiController = rememberSystemUiController()
-                systemUiController.setStatusBarColor(
-                    color = Color(0x00000000),
-                )
-                systemUiController.isNavigationBarVisible = false
-                val context = LocalContext.current
-                val configuration = LocalConfiguration.current
-                LaunchedEffect(true) {
-                    val cameraManager =
-                        context.getSystemService(CAMERA_SERVICE) as CameraManager
-                    val cameraCharacteristics =
-                        (context.getSystemService(CAMERA_SERVICE) as CameraManager).getCameraCharacteristics(
-                            cameraManager.cameraIdList[if (DebugConstants.EMULATOR_MODE) 0 else 1],
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = colorScheme.background
+                ) {
+                    val systemUiController = rememberSystemUiController()
+                    systemUiController.setStatusBarColor(
+                        color = Color(0x00000000),
+                    )
+                    systemUiController.isNavigationBarVisible = false
+                    val context = LocalContext.current
+                    val configuration = LocalConfiguration.current
+                    LaunchedEffect(true) {
+                        val cameraManager =
+                            context.getSystemService(CAMERA_SERVICE) as CameraManager
+                        val cameraCharacteristics =
+                            (context.getSystemService(CAMERA_SERVICE) as CameraManager).getCameraCharacteristics(
+                                cameraManager.cameraIdList[if (DebugConstants.EMULATOR_MODE) 0 else 1],
+                            )
+                        viewModel.updateLocalConfigurationValues(
+                            pixelDensity = context.resources.displayMetrics.density,
+                            screenWidthDp = configuration.screenWidthDp,
+                            screenHeightDp = configuration.screenHeightDp,
+                            focalLength =
+                                cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
+                                    ?.get(0) ?: 0f,
+                            lensSize =
+                                cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)
+                                    ?: SizeF(0f, 0f),
                         )
-                    viewModel.updateLocalConfigurationValues(
-                        pixelDensity = context.resources.displayMetrics.density,
-                        screenWidthDp = configuration.screenWidthDp,
-                        screenHeightDp = configuration.screenHeightDp,
-                        focalLength =
-                            cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
-                                ?.get(0) ?: 0f,
-                        lensSize =
-                            cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)
-                                ?: SizeF(0f, 0f),
-                    )
-                }
-                val sharedPreferences =
-                    getSharedPreferences(
-                        NavConstants.PREFERENCE_NAME,
-                        MODE_PRIVATE,
-                    )
+                    }
+                    val sharedPreferences =
+                        getSharedPreferences(
+                            NavConstants.PREFERENCE_NAME,
+                            MODE_PRIVATE,
+                        )
 
-                nenoonApp()
+                    nenoonApp()
 
-                if (showPasswordDialog) {
-                    PasswordDialog(
-                        onDismiss = { showPasswordDialog = false },
-                        onPasswordEntered = { password ->
-                            if (password == ADMIN_PASSWORD) {
-                                Toast.makeText(context, "Password correct! Shutting down application...", Toast.LENGTH_SHORT).show()
-                                showPasswordDialog = false
+                    if (showPasswordDialog) {
+                        PasswordDialog(
+                            onDismiss = { showPasswordDialog = false },
+                            onPasswordEntered = { password ->
+                                if (password == ADMIN_PASSWORD) {
+                                    Toast.makeText(context, "Password correct! Shutting down application...", Toast.LENGTH_SHORT).show()
+                                    showPasswordDialog = false
 
-                                Process.killProcess(Process.myPid())
-                            } else {
-                                Toast.makeText(context, "Incorrect password", Toast.LENGTH_SHORT).show()
-                            }
-                        },
-                    )
+                                    Process.killProcess(Process.myPid())
+                                } else {
+                                    Toast.makeText(context, "Incorrect password", Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -298,7 +316,6 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         TTS.tts.stop()
         TTS.destroyTTS()
-        viewModel.exoPlayer.release()
         PrinterManager.disconnectPrinter()
         super.onDestroy()
     }

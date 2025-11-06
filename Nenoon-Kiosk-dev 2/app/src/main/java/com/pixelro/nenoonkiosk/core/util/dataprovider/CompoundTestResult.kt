@@ -1,31 +1,29 @@
 package com.pixelro.nenoonkiosk.core.util.dataprovider
 
-import com.harang.data.model.CompoundTestResultAPI
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestResult
+import com.harang.data.model.dto.CompoundTestResultAPI
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.MacularDisorderType
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortVisualAcuityInspectionResult
 
 data class CompoundTestResult(
-    val shortVisualAcuityTestResult: ShortVisualAcuityTestResult?,
-    val presbyopiaTestResult: PresbyopiaTestResult?,
+    val shortVisualAcuityInspectionResult: ShortVisualAcuityInspectionResult?,
+    val presbyopiaInspectionResult: PresbyopiaInspectionResult?,
     val amslerGridTestResult: AmslerGridTestResult?,
-    val mChartTestResult: MChartTestResult?,
-    val bloodPressureTestResult: BloodPressureTestResult?,
-    val gripStrengthTestResult: GripStrengthTestResult?,
-    val dementiaTestResult: DementiaTestResult?,
-    val pulmonaryFunctionTestResult: PulmonaryFunctionTestResult?,
+    val mChartInspectionResult: MChartInspectionResult?,
+    val bloodPressureTestResult: BloodPressureInspectionResult?,
+    val gripStrengthTestResult: GripStrengthInspectionResultContract?,
+    val dementiaTestResult: DementiaInspectionResult?,
     val createAt: String?, // Added createAt property
 ) {
     // This constructor now takes CompoundTestResultAPI as a parameter
     constructor(apiResult: CompoundTestResultAPI) : this(
-        shortVisualAcuityTestResult =
+        shortVisualAcuityInspectionResult =
             apiResult.eyeSight?.run {
                 val left = leftSight
                 val right = rightSight
@@ -33,13 +31,13 @@ data class CompoundTestResult(
                     null
                 } else {
                     try {
-                        ShortVisualAcuityTestResult(left.toInt(), right.toInt())
+                        ShortVisualAcuityInspectionResult(left.toInt(), right.toInt())
                     } catch (e: NumberFormatException) {
                         null
                     }
                 }
             },
-        presbyopiaTestResult =
+        presbyopiaInspectionResult =
             apiResult.eyePresbyopia?.run {
                 val d1 = distance1
                 val d2 = distance2
@@ -48,7 +46,7 @@ data class CompoundTestResult(
                 if (d1 == null || d2 == null || d3 == null || dAvg == null) {
                     null
                 } else {
-                    PresbyopiaTestResult(d1.toFloat(), d2.toFloat(), d3.toFloat(), dAvg.toFloat())
+                    PresbyopiaInspectionResult(d1.toFloat(), d2.toFloat(), d3.toFloat(), dAvg.toFloat())
                 }
             },
         amslerGridTestResult =
@@ -64,7 +62,7 @@ data class CompoundTestResult(
                     )
                 }
             },
-        mChartTestResult =
+        mChartInspectionResult =
             apiResult.eyeMCharts?.run {
                 val leftVer = leftEyeVer
                 val rightVer = rightEyeVer
@@ -74,7 +72,7 @@ data class CompoundTestResult(
                     null
                 } else {
                     try {
-                        MChartTestResult(leftVer.toInt(), rightVer.toInt(), leftHor.toInt(), rightHor.toInt())
+                        MChartInspectionResult(leftVer.toInt(), rightVer.toInt(), leftHor.toInt(), rightHor.toInt())
                     } catch (e: NumberFormatException) {
                         null
                     }
@@ -89,7 +87,7 @@ data class CompoundTestResult(
                     null
                 } else {
                     try {
-                        BloodPressureTestResult(sys.toInt(), dias.toInt(), pulse.toInt())
+                        BloodPressureInspectionResult(sys.toInt(), dias.toInt(), pulse.toInt())
                     } catch (e: NumberFormatException) {
                         null
                     }
@@ -102,7 +100,7 @@ data class CompoundTestResult(
                 if (right == null || left == null) {
                     null
                 } else {
-                    GripStrengthTestResult(right, left)
+                    GripStrengthInspectionResultContract(right, left)
                 }
             },
         dementiaTestResult =
@@ -118,18 +116,7 @@ data class CompoundTestResult(
                 if (scores.any { it == null || it == "null" }) {
                     null
                 } else {
-                    DementiaTestResult(scores.map { it!!.toDementiaAnswer() })
-                }
-            },
-        pulmonaryFunctionTestResult =
-            apiResult.pulmonary?.run {
-                val age = pulmonaryAge
-                val power = pulmonaryPower
-                val capacity = pulmonaryCapacity
-                if (age == null || power == null || capacity == null) {
-                    null
-                } else {
-                    PulmonaryFunctionTestResult(power, capacity, age)
+                    DementiaInspectionResult(scores.map { it!!.toDementiaAnswer() })
                 }
             },
         createAt = apiResult.createAt, // Assigning the createAt value

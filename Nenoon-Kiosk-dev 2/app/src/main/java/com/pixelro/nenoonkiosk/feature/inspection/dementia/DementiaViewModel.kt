@@ -71,8 +71,8 @@ class DementiaViewModel
             return true
         }
 
-        fun getDementiaData(): DementiaTestResult {
-            return DementiaTestResult(_dementiaScores.value)
+        fun getDementiaData(): DementiaInspectionResult {
+            return DementiaInspectionResult(_dementiaScores.value)
         }
 
         fun init(): Map<DementiaScore, Boolean> {

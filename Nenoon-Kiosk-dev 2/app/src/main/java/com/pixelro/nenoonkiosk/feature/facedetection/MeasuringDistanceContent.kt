@@ -15,7 +15,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,11 +36,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -49,8 +47,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
@@ -58,7 +54,9 @@ import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
+import com.pixelro.nenoonkiosk.feature.facedetection.components.FaceDetectionWithPreview
+import com.pixelro.nenoonkiosk.feature.facedetection.components.MeasuringDistanceDialog
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -67,12 +65,17 @@ import kotlin.math.roundToInt
 fun MeasuringDistanceContent(
     measuringDistanceContentVisibleState: MutableTransitionState<Boolean>,
     toNextContent: () -> Unit,
-    selectedTestType: TestType,
+    selectedTestType: InspectionType,
     isLeftEye: Boolean,
     faceDetectionViewModel: FaceDetectionViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
+    val sharedPreferences = remember {
+        context.getSharedPreferences(
+            NavConstants.PREFERENCE_NAME,
+            Context.MODE_PRIVATE
+        )
+    }
     val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
     val faceDetectionTextSize = if (savedLanguage == "ru") 20.sp else 35.sp
     val warningBoxTextSize = if (savedLanguage == "ru") 25.sp else 50.sp
@@ -107,7 +110,7 @@ fun MeasuringDistanceContent(
          * 2 = true - 거리 초과
          * 5 = false
          */
-        val isWarningShowing = remember { mutableStateOf(5) }
+        val isWarningShowing = remember { mutableIntStateOf(5) }
 
         LaunchedEffect(isLeftEye) {
             if (isLeftEye) {
@@ -317,6 +320,7 @@ fun MeasuringDistanceContent(
                                                             StringProvider.getString(
                                                                 R.string.measuring_distance_description1,
                                                             )
+
                                                         else ->
                                                             StringProvider.getString(
                                                                 R.string.measuring_distance_description2,
@@ -338,6 +342,7 @@ fun MeasuringDistanceContent(
                                                             StringProvider.getString(
                                                                 R.string.measuring_distance_description1,
                                                             )
+
                                                         else ->
                                                             StringProvider.getString(
                                                                 R.string.measuring_distance_description2,
@@ -372,7 +377,7 @@ fun MeasuringDistanceContent(
                             .fillMaxSize(),
                     contentAlignment = Alignment.Center,
                 ) {
-                    if (isWarningShowing.value in 0..4) {
+                    if (isWarningShowing.intValue in 0..4) {
                         Text(
                             modifier =
                                 Modifier
@@ -388,7 +393,7 @@ fun MeasuringDistanceContent(
                                     .padding(20.dp)
                                     .fillMaxWidth(),
                             text =
-                                when (isWarningShowing.value) {
+                                when (isWarningShowing.intValue) {
                                     0 ->
                                         buildAnnotatedString {
                                             append(
@@ -397,6 +402,7 @@ fun MeasuringDistanceContent(
                                                 ),
                                             )
                                         }
+
                                     1 ->
                                         buildAnnotatedString {
                                             append(
@@ -423,6 +429,7 @@ fun MeasuringDistanceContent(
                                                 ),
                                             )
                                         }
+
                                     else ->
                                         buildAnnotatedString {
                                             append(
@@ -471,7 +478,7 @@ fun MeasuringDistanceContent(
                                 .padding(bottom = (GlobalValue.navigationBarPadding + 100).dp),
                         color =
                             when (selectedTestType) {
-                                TestType.ShortDistanceVisualAcuity -> {
+                                InspectionType.ShortDistanceVisualAcuity -> {
                                     when (faceDetectionViewModel.screenToFaceDistance.collectAsState().value) {
                                         in 396.0..505.0 -> Color(0xff1d71e1)
                                         else -> Color(0xffff0000)
@@ -500,7 +507,7 @@ fun MeasuringDistanceContent(
                                 .border(
                                     border =
                                         when (selectedTestType) {
-                                            TestType.ShortDistanceVisualAcuity -> {
+                                            InspectionType.ShortDistanceVisualAcuity -> {
                                                 if (faceDetectionViewModel.screenToFaceDistance.collectAsState().value > 505.0 ||
                                                     faceDetectionViewModel.screenToFaceDistance.collectAsState().value < 396.0
                                                 ) {
@@ -528,7 +535,7 @@ fun MeasuringDistanceContent(
                         Text(
                             text =
                                 when (selectedTestType) {
-                                    TestType.ShortDistanceVisualAcuity ->
+                                    InspectionType.ShortDistanceVisualAcuity ->
                                         buildAnnotatedString {
                                             append(
                                                 StringProvider.getString(
@@ -550,6 +557,7 @@ fun MeasuringDistanceContent(
                                                 ),
                                             )
                                         }
+
                                     else ->
                                         buildAnnotatedString {
                                             append(
@@ -590,11 +598,11 @@ fun MeasuringDistanceContent(
                  * 4 = 눈가리개 인식 X
                  */
                 if (
-                    /**
-                     * 조건 1: 눈가리개 인식
-                     * 조건 2: 눈가리개 위치
-                     * 조건 1 & 2
-                     */
+                /**
+                 * 조건 1: 눈가리개 인식
+                 * 조건 2: 눈가리개 위치
+                 * 조건 1 & 2
+                 */
                     faceDetectionViewModel.isNenoonTextDetected.collectAsState().value &&
                     when (!isLeftEye) {
                         true -> faceDetectionViewModel.isLeftEyeCovered.collectAsState().value
@@ -602,7 +610,7 @@ fun MeasuringDistanceContent(
                     }
                 ) {
                     when (selectedTestType) {
-                        TestType.ShortDistanceVisualAcuity -> {
+                        InspectionType.ShortDistanceVisualAcuity -> {
                             when (faceDetectionViewModel.screenToFaceDistance.collectAsState().value) {
                                 in 0.1..396.0 -> {
                                     faceDetectionViewModel.updateIsDistanceOK(0)
@@ -669,14 +677,14 @@ fun MeasuringDistanceContent(
                                         0 -> {
                                             coroutineScope.launch {
                                                 for (i in 1..2) {
-                                                    isWarningShowing.value = 0
+                                                    isWarningShowing.intValue = 0
                                                     delay(400)
-                                                    isWarningShowing.value = 5
+                                                    isWarningShowing.intValue = 5
                                                     delay(400)
                                                 }
-                                                isWarningShowing.value = 0
+                                                isWarningShowing.intValue = 0
                                                 delay(1500)
-                                                isWarningShowing.value = 5
+                                                isWarningShowing.intValue = 5
                                             }
                                         }
 
@@ -686,14 +694,14 @@ fun MeasuringDistanceContent(
                                             } else {
                                                 coroutineScope.launch {
                                                     for (i in 1..3) {
-                                                        isWarningShowing.value = 1
+                                                        isWarningShowing.intValue = 1
                                                         delay(400)
-                                                        isWarningShowing.value = 5
+                                                        isWarningShowing.intValue = 5
                                                         delay(400)
                                                     }
-                                                    isWarningShowing.value = 1
+                                                    isWarningShowing.intValue = 1
                                                     delay(2000)
-                                                    isWarningShowing.value = 5
+                                                    isWarningShowing.intValue = 5
                                                 }
                                             }
                                         }
@@ -701,14 +709,14 @@ fun MeasuringDistanceContent(
                                         else -> {
                                             coroutineScope.launch {
                                                 for (i in 1..2) {
-                                                    isWarningShowing.value = 2
+                                                    isWarningShowing.intValue = 2
                                                     delay(400)
-                                                    isWarningShowing.value = 5
+                                                    isWarningShowing.intValue = 5
                                                     delay(400)
                                                 }
-                                                isWarningShowing.value = 2
+                                                isWarningShowing.intValue = 2
                                                 delay(1500)
-                                                isWarningShowing.value = 5
+                                                isWarningShowing.intValue = 5
                                             }
                                         }
                                     }
@@ -743,178 +751,6 @@ fun MeasuringDistanceContent(
                         )
                     }
                 }
-            }
-        }
-    }
-}
-
-/**
- * 눈가리개 사용 dialog
- */
-@Composable
-fun MeasuringDistanceDialog(
-    onDismissRequest: () -> Unit,
-    faceDetectionViewModel: FaceDetectionViewModel = hiltViewModel(),
-) {
-    Dialog(
-        onDismissRequest = onDismissRequest,
-        properties = DialogProperties(),
-    ) {
-        val coroutineScope = rememberCoroutineScope()
-        val isWarningShowing = remember { mutableStateOf(false) }
-        LaunchedEffect(true) {
-            TTS.speechTTS(StringProvider.getString(R.string.tts_dialog), TextToSpeech.QUEUE_ADD)
-        }
-        Column(
-            modifier =
-                Modifier
-                    .width(800.dp)
-                    .height(1000.dp)
-                    .background(
-                        color = Color(0xffffffff),
-                        shape = RoundedCornerShape(8.dp),
-                    ),
-        ) {
-            Column(
-                modifier =
-                    Modifier
-                        .height(800.dp),
-            ) {
-                Text(
-                    modifier =
-                        Modifier
-                            .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 8.dp)
-                            .fillMaxWidth(),
-                    text =
-                        buildAnnotatedString {
-                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append(
-                                    StringProvider.getString(
-                                        R.string.dialog_description1_pickup1,
-                                    ),
-                                )
-                            }
-                            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = colorResource(R.color.main))) {
-                                append(
-                                    StringProvider.getString(
-                                        R.string.dialog_description1_pickup2,
-                                    ),
-                                )
-                            }
-                            append(
-                                StringProvider.getString(
-                                    R.string.dialog_description1_pickup3,
-                                ),
-                            )
-                        },
-                    fontSize = 40.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                )
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Image(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .rotate(-25f),
-                        painter = painterResource(id = R.drawable.occluder2),
-                        contentDescription = null,
-                    )
-                    if (isWarningShowing.value) {
-                        Text(
-                            modifier =
-                                Modifier
-                                    .padding(start = 40.dp, end = 40.dp)
-                                    .border(
-                                        border = BorderStroke(2.dp, Color(0xFF000000)),
-                                        shape = RoundedCornerShape(8.dp),
-                                    )
-                                    .background(
-                                        color = Color(0xFFFFFFFF),
-                                        shape = RoundedCornerShape(8.dp),
-                                    )
-                                    .padding(20.dp)
-                                    .fillMaxWidth(),
-                            text =
-                                buildAnnotatedString {
-                                    append(
-                                        StringProvider.getString(
-                                            R.string.dialog_description2_announcement1,
-                                        ),
-                                    )
-                                    withStyle(
-                                        style =
-                                            SpanStyle(
-                                                color = Color(0xff1d71e1),
-                                                fontWeight = FontWeight.Bold,
-                                            ),
-                                    ) {
-                                        append(
-                                            StringProvider.getString(
-                                                R.string.dialog_description2_announcement2,
-                                            ),
-                                        )
-                                    }
-                                    append(
-                                        StringProvider.getString(
-                                            R.string.dialog_description2_announcement3,
-                                        ),
-                                    )
-                                },
-                            fontSize = 50.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                }
-            }
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxSize(),
-                contentAlignment = Alignment.BottomCenter,
-            ) {
-                Text(
-                    modifier =
-                        Modifier
-                            .padding(start = 20.dp, top = 8.dp, end = 20.dp, bottom = 20.dp)
-                            .fillMaxWidth()
-                            .clip(
-                                shape = RoundedCornerShape(8.dp),
-                            )
-                            .border(
-                                border = BorderStroke(1.dp, Color(0xffc3c3c3)),
-                                shape = RoundedCornerShape(8.dp),
-                            )
-                            .clickable {
-                                if (TTS.tts.isSpeaking) {
-                                    coroutineScope.launch {
-                                        for (i in 1..3) {
-                                            isWarningShowing.value = true
-                                            delay(400)
-                                            isWarningShowing.value = false
-                                            delay(400)
-                                        }
-                                        isWarningShowing.value = true
-                                        delay(2000)
-                                        isWarningShowing.value = false
-                                    }
-                                } else {
-                                    faceDetectionViewModel.updateIsOccluderPickedTTSDone(true)
-                                    onDismissRequest()
-                                }
-                            }
-                            .padding(20.dp),
-                    text = StringProvider.getString(R.string.confirm),
-                    fontSize = 50.sp,
-                    color = Color(0xff1d71e1),
-                    fontWeight = FontWeight.Medium,
-                    textAlign = TextAlign.Center,
-                )
             }
         }
     }

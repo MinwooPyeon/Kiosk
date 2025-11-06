@@ -1,5 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.main
 
+import SettingsScreen
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.activity.compose.BackHandler
@@ -11,9 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,52 +28,52 @@ import com.google.accompanist.navigation.animation.composable
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
 import com.pixelro.nenoonkiosk.feature.auth.AccountManagementScreen
-import com.pixelro.nenoonkiosk.feature.auth.FaceIdTermsOfServiceScreen
 import com.pixelro.nenoonkiosk.feature.auth.FaceUpdateScreen
 import com.pixelro.nenoonkiosk.feature.auth.SignInScreen
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListScreen
-import com.pixelro.nenoonkiosk.feature.exerciseglasses.concentration_exercise.ConcentrationExerciseContent
-import com.pixelro.nenoonkiosk.feature.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseContent
-import com.pixelro.nenoonkiosk.feature.inspection.ExternalDeviceTestListScreen
-import com.pixelro.nenoonkiosk.feature.inspection.EyeTestListScreen
-import com.pixelro.nenoonkiosk.feature.inspection.PhoriaAndAniseikoniaTestListScreen
-import com.pixelro.nenoonkiosk.feature.inspection.TestResultScreen
-import com.pixelro.nenoonkiosk.feature.inspection.TestScreen
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestContent
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestContent
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestContent
-import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestContent
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestContent
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestContent
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.ChildrenVisualAcuityTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.LongVisualAcuityTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortDistanceVisualAcuityTestContent
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.ExternalDeviceInspectionListScreen
+import com.pixelro.nenoonkiosk.feature.inspection.EyeTestInspectionRoute
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionScreenRoute
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureInspectionEntryPoint
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.process.DementiaInspectionRoute
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthInspectionEntryPoint
+import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.InspectionResultRoute
+import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.progress.AmslerGridTestContent
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.progress.MChartInspectionRoute
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionRoute
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.VisualAcuityInspectionRoute
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.children.ChildrenVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.longdistance.LongVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortVisualAcuityInspectionResult
 import com.pixelro.nenoonkiosk.feature.intro.IntroScreen
-import com.pixelro.nenoonkiosk.feature.intro.PermissionRequestScreen
-import com.pixelro.nenoonkiosk.feature.intro.termsOfServiceScreen
-import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BConnectionScreen
-import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ManagementScreen
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BViewModel
+import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ManagementRoute
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
-import com.pixelro.nenoonkiosk.feature.iotdevice.BTDeviceManagementScreen
-import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripManagmentScreen
-import com.pixelro.nenoonkiosk.feature.print.ResultPrintScreen
-import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverScreen
-import com.pixelro.nenoonkiosk.feature.setting.SettingsScreen
+import com.pixelro.nenoonkiosk.feature.iotdevice.BTDeviceMenuScreen
+import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripManagementRoute
+import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripViewModel
+import com.pixelro.nenoonkiosk.feature.permission.PermissionRequestRoute
+import com.pixelro.nenoonkiosk.feature.print.ResultPrintRoute
+import com.pixelro.nenoonkiosk.feature.screensaver.ScreenSaverRoute
 import com.pixelro.nenoonkiosk.feature.splash.SplashScreen
-import com.pixelro.nenoonkiosk.feature.strabismustest.AppNavigation
-import com.pixelro.nenoonkiosk.feature.survey.SurveyScreen
-import com.pixelro.nenoonkiosk.feature.testcontent.ChildrenVisualAcuityTestContent
-import com.pixelro.nenoonkiosk.feature.testcontent.LongDistanceVisualAcuityTestContent
+import com.pixelro.nenoonkiosk.feature.strabismus.AppNavigation
+import com.pixelro.nenoonkiosk.feature.strabismus.PhoriaAndAniseikoniaRoute
+import com.pixelro.nenoonkiosk.feature.survey.SurveyRoute
+import com.pixelro.nenoonkiosk.feature.termsofservice.base.TermsOfServiceRoute
+import com.pixelro.nenoonkiosk.feature.termsofservice.faceid.FaceIdTermsOfServiceRoute
 import com.pixelro.nenoonkiosk.feature.undeveloped.AdminPageScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.ContactScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.EntriesScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.ExerciseListScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.SoftwareInfoScreen
 import com.pixelro.nenoonkiosk.feature.undeveloped.VideoTelephonyScreen
+import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.concentration_exercise.ConcentrationExerciseContent
+import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseContent
+import com.pixelro.nenoonkiosk.feature.undeveloped.testcontent.ChildrenVisualAcuityTestContent
+import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BManagementRoute
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -83,6 +86,8 @@ import kotlinx.coroutines.launch
 fun nenoonApp(
     viewModel: NenoonViewModel = hiltViewModel(),
     bloodPressureMonitorViewModel: BPBIO320ViewModel = hiltViewModel(),
+    bp170bViewModel: BP170BViewModel = hiltViewModel(),
+    inGripViewModel: InGripViewModel = hiltViewModel(),
     loginViewModel: LoginViewModel = hiltViewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
@@ -114,7 +119,7 @@ fun nenoonApp(
             Modifier
                 .fillMaxSize(),
         navController = navController,
-        startDestination = NavConstants.ROUTE_SPLASH,
+        startDestination = NavConstants.ROUTE_CATEGORY_LIST,
         contentAlignment = Alignment.TopCenter,
     ) {
         /*
@@ -214,7 +219,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            FaceIdTermsOfServiceScreen(
+            FaceIdTermsOfServiceRoute(
                 onTermsAccepted = {
                     navController.popBackStack(NavConstants.ROUTE_ACCOUNT_MANAGEMENT, false)
                     navController.navigate(NavConstants.ROUTE_FACE_UPDATE)
@@ -254,7 +259,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            termsOfServiceScreen(
+            TermsOfServiceRoute(
                 onTermsAccepted = {
                     navController.popBackStack(NavConstants.ROUTE_SIGN_IN, false)
                     navController.navigate(NavConstants.ROUTE_INTRO)
@@ -276,7 +281,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            ScreenSaverScreen(
+            ScreenSaverRoute(
                 exoPlayer = viewModel.exoPlayer,
                 isSignedIn = viewModel.isSignedIn.collectAsState().value,
                 initializeTestDoneStatus = {
@@ -295,7 +300,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            PermissionRequestScreen(
+            PermissionRequestRoute(
                 viewModel,
                 toLoginScreen = { // 권한 다 허용 되면 로그인 화면으로
                     navController.popBackStack(NavConstants.ROUTE_SPLASH, false)
@@ -336,7 +341,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            SurveyScreen(
+            SurveyRoute(
                 isLoggedIn = viewModel.isSignedIn.collectAsState().value,
                 toCategoryListScreen = {
                     navController.navigate(NavConstants.ROUTE_CATEGORY_LIST)
@@ -393,11 +398,6 @@ fun nenoonApp(
                 toAccountManagementScreen = {
                     navController.navigate(NavConstants.ROUTE_ACCOUNT_MANAGEMENT)
                 },
-                toPulmonaryTestResultScreen = {
-                    viewModel.pulmonaryFunctionTestResult = it
-                    viewModel.updateSelectedTestType(TestType.PulmonaryFunction)
-                    navController.navigate(NavConstants.ROUTE_TEST_RESULT)
-                },
                 toSettingsScreen = {
                     navController.navigate(NavConstants.ROUTE_SETTINGS)
                 },
@@ -415,7 +415,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            EyeTestListScreen(
+            EyeTestInspectionRoute(
                 checkIsTestDone = viewModel::checkIsTestDone,
                 toTestScreen = {
                     viewModel.updateSelectedTestType(it)
@@ -445,7 +445,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            ExternalDeviceTestListScreen(
+            ExternalDeviceInspectionListScreen(
                 checkIsTestDone = viewModel::checkIsTestDone,
                 toTestScreen = {
                     viewModel.updateSelectedTestType(it)
@@ -473,13 +473,13 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            PhoriaAndAniseikoniaTestListScreen(
+            PhoriaAndAniseikoniaRoute(
                 checkIsTestDone = viewModel::checkIsTestDone,
                 toTestScreen = {
                     val route =
                         when (it) {
-                            TestType.Phoria -> "strabismus_test/sawi_intro"
-                            TestType.Aniseikonia -> "strabismus_test/fudo_intro"
+                            InspectionType.Phoria -> "strabismus_test/sawi_intro"
+                            InspectionType.Aniseikonia -> "strabismus_test/fudo_intro"
                             else -> ""
                         }
                     if (route.isNotEmpty()) {
@@ -568,135 +568,134 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            TestScreen(
+            val selectedTest by viewModel.selectedTestType.collectAsState()
+            val isSignedIn by viewModel.isSignedIn.collectAsState()
+
+            val navigateToResult = rememberUpdatedState(newValue = {
+                navController.navigate(NavConstants.ROUTE_TEST_RESULT)
+            })
+
+            InspectionScreenRoute(
                 viewModel = viewModel,
                 navController = navController,
                 content = {
-                    when (selectedTest) {
-                        TestType.Presbyopia -> {
-                            PresbyopiaTestContent(
-                                toResultScreen = {
-                                    navController.navigate(NavConstants.ROUTE_TEST_RESULT)
-                                    viewModel.presbyopiaTestResult = it
-                                },
-                            )
-                        }
-
-                        TestType.ShortDistanceVisualAcuity -> {
-                            ShortDistanceVisualAcuityTestContent(
-                                toResultScreen = {
-                                    navController.navigate(NavConstants.ROUTE_TEST_RESULT)
-                                    viewModel.shortVisualAcuityTestResult =
-                                        ShortVisualAcuityTestResult(
-                                            it.leftEye,
-                                            it.rightEye,
-                                        )
-                                },
-                            )
-                        }
-
-                        TestType.LongDistanceVisualAcuity -> {
-                            LongDistanceVisualAcuityTestContent(
-                                toResultScreen = {
-                                    navController.navigate(NavConstants.ROUTE_TEST_RESULT)
-                                    viewModel.longVisualAcuityTestResult =
-                                        LongVisualAcuityTestResult(
-                                            it.leftEye,
-                                            it.rightEye,
-                                        )
-                                },
-                            )
-                        }
-
-                        TestType.ChildrenVisualAcuity -> {
-                            ChildrenVisualAcuityTestContent(
-                                toResultScreen = {
-                                    navController.navigate(NavConstants.ROUTE_TEST_RESULT)
-                                    viewModel.childrenVisualAcuityTestResult =
-                                        ChildrenVisualAcuityTestResult(
-                                            it.leftEye,
-                                            it.rightEye,
-                                        )
-                                },
-                            )
-                        }
-
-                        TestType.AmslerGrid -> {
-                            AmslerGridTestContent(
-                                toResultScreen = {
-                                    navController.navigate(NavConstants.ROUTE_TEST_RESULT)
-                                    viewModel.amslerGridTestResult = it
-                                },
-                            )
-                        }
-
-                        TestType.MChart -> {
-                            MChartTestContent(
-                                toResultScreen = {
-                                    navController.navigate(NavConstants.ROUTE_TEST_RESULT)
-                                    viewModel.mChartTestResult = it
-                                },
-                            )
-                        }
-
-                        TestType.Dementia -> {
-                            DementiaTestContent(
-                                toResultScreen = {
-                                    navController.navigate(NavConstants.ROUTE_TEST_RESULT)
-                                    viewModel.dementiaTestResult = it
-                                },
-                            )
-                        }
-
-                        TestType.Presbyopia_Glasses -> {
-                            PresbyopiaExerciseContent(
-                                toResultScreen = {
-                                    navController.navigate(NavConstants.ROUTE_TEST_RESULT)
-                                    viewModel.presbyopiaExerciseResult = it
-                                },
-                            )
-                        }
-
-                        TestType.Concentration_Glasses -> {
-                            ConcentrationExerciseContent(
-                                toResultScreen = {
-                                    navController.navigate(NavConstants.ROUTE_TEST_RESULT)
-                                    viewModel.concentrationExerciseResult = it
-                                },
-                            )
-                        }
-
-                        TestType.BloodPressure -> {
-                            BloodPressureTestContent(
-                                toResultScreen = {
-                                    navController.navigate(NavConstants.ROUTE_TEST_RESULT)
-                                    viewModel.bloodPressureTestResult = it
-                                },
-                                navController = navController,
-                                isSignedIn = viewModel.isSignedIn.collectAsState().value,
-                                bpbiO320ViewModel = bloodPressureMonitorViewModel,
-                                loginViewModel = loginViewModel,
-                            )
-                        }
-
-                        TestType.GripStrength -> {
-                            GripStrengthTestContent(
-                                toResultScreen = {
-                                    navController.navigate(NavConstants.ROUTE_TEST_RESULT)
-                                    viewModel.gripStrengthTestResult = it
-                                },
-                                navController = navController,
-                                isSignedIn = viewModel.isSignedIn.collectAsState().value,
-                                loginViewModel = loginViewModel,
-                            )
-                        }
-
-                        else -> {
-                            Box {
+                    key(selectedTest) {
+                        when (selectedTest) {
+                            InspectionType.Presbyopia -> {
+                                PresbyopiaInspectionRoute(
+                                    toResultScreen = {
+                                        viewModel.presbyopiaInspectionResult = it
+                                        navigateToResult.value()
+                                    }
+                                )
                             }
+
+                            InspectionType.ShortDistanceVisualAcuity -> {
+                                VisualAcuityInspectionRoute(
+                                    inspectionType = InspectionType.ShortDistanceVisualAcuity,
+                                    toResultScreen = {
+                                        viewModel.shortVisualAcuityInspectionResult =
+                                            ShortVisualAcuityInspectionResult(it.leftEye, it.rightEye)
+                                        navigateToResult.value()
+                                    }
+                                )
+                            }
+
+                            InspectionType.LongDistanceVisualAcuity -> {
+                                VisualAcuityInspectionRoute(
+                                    inspectionType = InspectionType.LongDistanceVisualAcuity,
+                                    toResultScreen = {
+                                        viewModel.longVisualAcuityInspectionResult =
+                                            LongVisualAcuityInspectionResult(it.leftEye, it.rightEye)
+                                        navigateToResult.value()
+                                    }
+                                )
+                            }
+
+                            InspectionType.ChildrenVisualAcuity -> {
+                                ChildrenVisualAcuityTestContent(
+                                    toResultScreen = {
+                                        viewModel.childrenVisualAcuityTestResult =
+                                            ChildrenVisualAcuityInspectionResult(it.leftEye, it.rightEye)
+                                        navigateToResult.value()
+                                    }
+                                )
+                            }
+
+                            InspectionType.AmslerGrid -> {
+                                AmslerGridTestContent(
+                                    toResultScreen = {
+                                        viewModel.amslerGridTestResult = it
+                                        navigateToResult.value()
+                                    }
+                                )
+                            }
+
+                            InspectionType.MChart -> {
+                                MChartInspectionRoute(
+                                    toResultScreen = {
+                                        viewModel.mChartInspectionResult = it
+                                        navigateToResult.value()
+                                    }
+                                )
+                            }
+
+                            InspectionType.Dementia -> {
+                                DementiaInspectionRoute(
+                                    toResultScreen = {
+                                        viewModel.dementiaTestResult = it
+                                        navigateToResult.value()
+                                    }
+                                )
+                            }
+
+                            InspectionType.Presbyopia_Glasses -> {
+                                PresbyopiaExerciseContent(
+                                    toResultScreen = {
+                                        viewModel.presbyopiaExerciseResult = it
+                                        navigateToResult.value()
+                                    }
+                                )
+                            }
+
+                            InspectionType.Concentration_Glasses -> {
+                                ConcentrationExerciseContent(
+                                    toResultScreen = {
+                                        viewModel.concentrationExerciseResult = it
+                                        navigateToResult.value()
+                                    }
+                                )
+                            }
+
+                            InspectionType.BloodPressure -> {
+                                BloodPressureInspectionEntryPoint(
+                                    toResultScreen = {
+                                        viewModel.bloodPressureTestResult = it
+                                        navigateToResult.value()
+                                    },
+                                    navController = navController,
+                                    isSignedIn = isSignedIn,
+                                    bpbiO320ViewModel = bloodPressureMonitorViewModel,
+                                    loginViewModel = loginViewModel
+                                )
+                            }
+
+                            InspectionType.GripStrength -> {
+                                GripStrengthInspectionEntryPoint(
+                                    toResultScreen = {
+                                        viewModel.gripStrengthTestResult = it
+                                        navigateToResult.value()
+                                    },
+                                    navController = navController,
+                                    isSignedIn = isSignedIn,
+                                    loginViewModel = loginViewModel
+                                )
+                            }
+
+                            else -> Box { /* no-op */ }
                         }
                     }
-                },
+                }
             )
         }
 
@@ -711,42 +710,40 @@ fun nenoonApp(
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
             when (viewModel.selectedTestType.collectAsState().value) {
-                TestType.Presbyopia -> viewModel.updateIsPresbyopiaTestDone(true)
-                TestType.ShortDistanceVisualAcuity -> viewModel.updateIsShortVisualAcuityTestDone(
+                InspectionType.Presbyopia -> viewModel.updateIsPresbyopiaTestDone(true)
+                InspectionType.ShortDistanceVisualAcuity -> viewModel.updateIsShortVisualAcuityTestDone(
                     true
                 )
 
-                TestType.AmslerGrid -> viewModel.updateIsAmslerGridTestDone(true)
-                TestType.MChart -> viewModel.updateIsMChartTestDone(true)
-                TestType.BloodPressure -> viewModel.updateIsBloodPressureTestDone(true)
-                TestType.GripStrength -> viewModel.updateIsGripStrengthTestDone(true)
-                TestType.PulmonaryFunction -> viewModel.updateIsPulmonaryFunctionTestDone(true)
+                InspectionType.AmslerGrid -> viewModel.updateIsAmslerGridTestDone(true)
+                InspectionType.MChart -> viewModel.updateIsMChartTestDone(true)
+                InspectionType.BloodPressure -> viewModel.updateIsBloodPressureTestDone(true)
+                InspectionType.GripStrength -> viewModel.updateIsGripStrengthTestDone(true)
                 else -> {
                 }
             }
             val surveyId = viewModel.surveyId.collectAsState().value
-            TestResultScreen(
+            InspectionResultRoute(
                 surveyId = surveyId,
                 testType = viewModel.selectedTestType.collectAsState().value,
                 testResult =
                     when (
                         viewModel.selectedTestType.collectAsState().value
                     ) {
-                        TestType.Presbyopia -> viewModel.presbyopiaTestResult
-                        TestType.ShortDistanceVisualAcuity -> viewModel.shortVisualAcuityTestResult
-                        TestType.LongDistanceVisualAcuity -> viewModel.longVisualAcuityTestResult
-                        TestType.ChildrenVisualAcuity -> viewModel.childrenVisualAcuityTestResult
-                        TestType.AmslerGrid -> viewModel.amslerGridTestResult
-                        TestType.MChart -> viewModel.mChartTestResult
-                        TestType.Dementia -> viewModel.dementiaTestResult
-                        TestType.Presbyopia_Glasses -> viewModel.presbyopiaExerciseResult
-                        TestType.Concentration_Glasses -> viewModel.concentrationExerciseResult
-                        TestType.BloodPressure -> viewModel.bloodPressureTestResult
-                        TestType.GripStrength -> viewModel.gripStrengthTestResult
-                        TestType.PulmonaryFunction -> viewModel.pulmonaryFunctionTestResult
-                        TestType.None -> null
-                        TestType.Phoria -> TODO()
-                        TestType.Aniseikonia -> TODO()
+                        InspectionType.Presbyopia -> viewModel.presbyopiaInspectionResult
+                        InspectionType.ShortDistanceVisualAcuity -> viewModel.shortVisualAcuityInspectionResult
+                        InspectionType.LongDistanceVisualAcuity -> viewModel.longVisualAcuityInspectionResult
+                        InspectionType.ChildrenVisualAcuity -> viewModel.childrenVisualAcuityTestResult
+                        InspectionType.AmslerGrid -> viewModel.amslerGridTestResult
+                        InspectionType.MChart -> viewModel.mChartInspectionResult
+                        InspectionType.Dementia -> viewModel.dementiaTestResult
+                        InspectionType.Presbyopia_Glasses -> viewModel.presbyopiaExerciseResult
+                        InspectionType.Concentration_Glasses -> viewModel.concentrationExerciseResult
+                        InspectionType.BloodPressure -> viewModel.bloodPressureTestResult
+                        InspectionType.GripStrength -> viewModel.gripStrengthTestResult
+                        InspectionType.None -> null
+                        InspectionType.Phoria -> TODO()
+                        InspectionType.Aniseikonia -> TODO()
                     },
                 navController = navController,
                 onLogout = {
@@ -784,7 +781,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            ResultPrintScreen(
+            ResultPrintRoute(
                 surveyId = viewModel.surveyId.collectAsState().value,
                 qrCode = loginViewModel.accountQrCode.collectAsState().value,
                 navController = navController,
@@ -802,9 +799,11 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            BTDeviceManagementScreen(
+            BTDeviceMenuScreen(
                 navController = navController,
-                bPBIO320ViewModel = bloodPressureMonitorViewModel,
+                bpbio320ViewModel = bloodPressureMonitorViewModel,
+                bp170bViewModel = bp170bViewModel,
+                inGripViewModel = inGripViewModel,
             )
         }
 
@@ -818,14 +817,14 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            BPBIO320ManagementScreen(
+            BPBIO320ManagementRoute(
                 navController = navController,
                 viewModel = bloodPressureMonitorViewModel,
             )
         }
 
         /**
-         * 혈압계 연결 화면 (BP170B)
+         * 혈압계 연결 화면 (BP170B - 25년형)
          */
         composable(
             route = NavConstants.ROUTE_BP170B_CONNECT,
@@ -834,8 +833,9 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            BP170BConnectionScreen(
+            BP170BManagementRoute(
                 navController = navController,
+                viewModel = bp170bViewModel,
             )
         }
 
@@ -849,7 +849,7 @@ fun nenoonApp(
             popEnterTransition = { AnimationProvider.popEnterTransition },
             popExitTransition = { AnimationProvider.popExitTransition },
         ) {
-            InGripManagmentScreen(
+            InGripManagementRoute(
                 navController = navController,
             )
         }

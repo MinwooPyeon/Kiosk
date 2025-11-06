@@ -1,22 +1,14 @@
 package com.harang.data.datasource
 
-import com.harang.data.api.NenoonKioskApi
-import com.harang.data.model.GetUserProfileResponse
-import com.harang.data.model.SendLocationSignInDataResponse
-import com.harang.data.model.SendSignUpDataRequest
-import com.harang.data.model.SendSignUpDataResponse
-import com.harang.data.model.SendUserFaceSignInDataRequest
-import com.harang.data.model.SendUserFaceUpdateDataRequest
-import com.harang.data.model.SendUserFaceUpdateDataResponse
-import com.harang.data.model.SendUserQrCodeUpdateDataResponse
-import com.harang.data.model.SendUserQrCodeUrlResponse
-import com.harang.data.model.SendUserSignInDataRequest
-import com.harang.data.model.SendUserSignInDataResponse
+import com.harang.data.api.AuthApi
+import com.harang.data.model.dto.response.SendSignUpDataRequest
+import com.harang.data.model.dto.request.*
+import com.harang.data.model.dto.response.*
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 
 class SignInRemoteDataSource(
-    private val api: NenoonKioskApi,
+    private val api: AuthApi,
 ) {
     suspend fun locationSignIn(
         id: String,

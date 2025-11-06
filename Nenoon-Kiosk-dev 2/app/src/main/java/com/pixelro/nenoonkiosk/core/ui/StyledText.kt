@@ -8,12 +8,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
+import com.pixelro.nenoonkiosk.ui.theme.defaultFont
 
 enum class TextStyle {
     Title,
@@ -46,10 +48,13 @@ fun StyledText(
             else -> 42.sp
         } * if (savedLanguage == "en") 0.8f else 1f
 
+    val fontFamily = defaultFont
+
     Text(
         text = text,
         fontSize = fontSize,
         textAlign = textAlign,
+        fontFamily = fontFamily,
         fontWeight =
             fontWeight
                 ?: when (style) {

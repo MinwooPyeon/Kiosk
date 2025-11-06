@@ -22,7 +22,6 @@
     <string name="not_allow_camera">カメラの権限が許可されていません</string>
     <string name="not_exist_print">接続されたプリンターがありません</string>
 
-
     <!-- 로그인 화면 -->
     <string name="id_input">IDを入力してください</string>
     <string name="pw_input">パスワードを入力してください</string>
@@ -34,7 +33,7 @@
     <string name="toast_check_wifi">Wi-Fiが接続されているか確認してください</string>
 
     <!-- 화면 보호기 화면 -->
-    <string name="screensaver_description1">画面を</string>
+    <string name="screensaver_description1">画面を&#160;</string>
     <string name="screensaver_description2">タッチ</string>
     <string name="screensaver_description3">すると\n検査が始まります</string>
 
@@ -91,7 +90,7 @@
     <string name="test_list_dialog_warning1">当該検査は既に完了しました\nまだ問診票を作成していない場合、正確な検査のために下の </string>
     <string name="test_list_dialog_warning2">を選択してください\n\n検査を再度行う場合は、下の </string>
     <string name="test_list_dialog_warning3">を選択してください</string>
-    <string name="test_list_dialog_warning4"></string>
+    <string name="test_list_dialog_warning4">を\n選択してください</string>
     <string name="test_list_dialog_re_button">再検査する</string>
     <string name="test_list_dialog_cancel_button">キャンセル</string>
     <string name="test_predescription_presbyopia_title1">老眼ピント調節力検査</string>
@@ -132,18 +131,14 @@
     <string name="mchart_name">M-CHARTS変視症検査</string>
 
     <!-- 노안 조절력 검사 -->
-    <!--    <string name="presbyopia_video_guide">次は検査方法の案内ビデオです</string>-->
     <string name="presbyopia_video_guide_1">次は検査</string>
     <string name="presbyopia_video_guide_2">方法の案内ビデオ</string>
     <string name="presbyopia_video_guide_3">です</string>
-    <!--    <string name="presbyopia_video_guide_above">上のビデオは検査方法の案内ビデオです</string>-->
     <string name="presbyopia_video_guide_above_1">上のビデオは検査</string>
     <string name="presbyopia_video_guide_above_2">方法の案内ビデオ</string>
     <string name="presbyopia_video_guide_above_3">です</string>
-    <!--    <string name="presbyopia_description1">画面からの距離を75～85cm\nに調整してください</string>-->
     <string name="presbyopia_description1_1">画面からの距離を</string>
     <string name="presbyopia_description1_3">\nに調整してください</string>
-    <!--    <string name="presbyopia_description2">少しずつ近づき時表がぼやける所で\n止まり、「次へ」を押してください</string>-->
     <string name="presbyopia_description2_1">少しずつ近づき時表がぼやける所で\n止まり、</string>
     <string name="presbyopia_description2_2">「次へ」</string>
     <string name="presbyopia_description2_3">を押してください</string>
@@ -154,7 +149,7 @@
     <string name="presbyopia_test_start1">調節力の検査を\n始めます</string>
     <string name="presbyopia_test_start2">二回目の検査を\n始めます</string>
     <string name="presbyopia_test_start3">最後の検査を\n始めます</string>
-    <string name="test_screen_current_distance">"現在の距離: "</string>
+    <string name="test_screen_current_distance">現在の距離: </string>
     <string name="next">次へ</string>
 
     <!-- 거리 조절 화면 -->
@@ -169,10 +164,10 @@
 
     <!-- Dialog -->
     <string name="dialog_description1_pickup1">この検査では専用のアイマスクを使用します</string>
-    <string name="dialog_description1_pickup2"></string>
-    <string name="dialog_description1_pickup3"></string>
-    <string name="dialog_description2_announcement2"></string>
-    <string name="dialog_description2_announcement3"></string>
+    <string name="dialog_description1_pickup2">アイマスク</string>
+    <string name="dialog_description1_pickup3">を持ち上げてください</string>
+    <string name="dialog_description2_announcement2">最後まで</string>
+    <string name="dialog_description2_announcement3">聞いてください</string>
     <string name="dialog_description2_announcement1">音声ガイドを\n最後まで聞いてください</string>
     <string name="dialog_description3_distance_further">もう少し遠くへ行ってください</string>
     <string name="dialog_description4_closer">もう少し近くへ来てください</string>
@@ -185,7 +180,6 @@
 
     <!-- 암슬러 차트 검사 -->
     <string name="amsler_description1_blink">下のチャートの中央の点滅する点を見つめてください</string>
-    <!--    <string name="amsler_description2_distortion">黒く見えるか歪んでいる部分を選択してください\n見えない場合は、完了ボタンを押してください</string>-->
     <string name="amsler_description2_distortion_1">黒く見えるか歪んでいる部分</string>
     <string name="amsler_description2_distortion_2">を選択してください</string>
     <string name="amsler_description2_distortion_3">\n見えない場合は</string>
@@ -199,7 +193,6 @@
     <string name="amsler_complete_button">完了</string>
 
     <!-- M-chart 검사 -->
-    <!--    <string name="mchart_test_description">下の線が真っすぐな線に見えるか、曲がっている線に見えるか選択してください</string>-->
     <string name="mchart_test_description_1">下の線が</string>
     <string name="mchart_test_description_2">真っすぐな線</string>
     <string name="mchart_test_description_3">に見えるか、</string>
@@ -218,7 +211,7 @@
     <string name="mchart_result_title">M-CHARTS変視症検査の結果</string>
     <string name="result_button1_print">結果をプリントする</string>
     <string name="result_button2_back">検査リストに戻る</string>
-    <string name="result_dementia_back">初めて</string>
+    <string name="result_dementia_back">検査リストへ</string>
 
     <!-- 노안 조절력 검사 결과 -->
     <string name="presbyopia_result_description1_normal">老眼の症状は見つかりませんでした</string>
@@ -347,7 +340,7 @@
     <string name="experience_glasses">\n老眼運動眼鏡の効果を体験しましたか？</string>
     <string name="consistently_wear">老眼鏡を継続して着用することで、\n視力調節力を強化しましょう</string>
     <string name="retest">再テスト</string>
-    <string name="to_beginning">最初から</string>
+    <string name="to_beginning">検査リストへ</string>
     <string name="square_frame">\n四角いフレーム内でゆっくりと読んでください</string>
     <string name="feel_more_immersive">\n文字がより鮮明になり、\n没入感を体験できます</string>
     <string name="concentration_test_chart">集中力テストチャート</string>
@@ -355,291 +348,688 @@
     <string name="chart_en">英語チャート</string>
     <string name="chart_ko">韓国語チャート</string>
 
-    <string name="blood_pressure_monitor_initial_instruction">"혈압계 연결을 시작합니다."</string>
-    <string name="blood_pressure_monitor_disconnected">"혈압계 연결이 끊어졌습니다. 다시 연결을 시도합니다."</string>
-    <string name="blood_pressure_monitor_connected">"혈압계가 연결되었습니다. 시작 버튼을 눌러주세요."</string>
-    <string name="blood_pressure_monitor_connection_failed">"혈압계 연결이 실패하였습니다.\n다시 시도해주세요."</string>
-    <string name="blood_pressure_monitor_title">혈압계 관리</string>
-    <string name="blood_pressure_monitor_image_content_description">혈압계</string>
-    <string name="blood_pressure_monitor_standby_instruction1">"혈압계 연결을 시작하려면\n"</string>
-    <string name="blood_pressure_monitor_standby_instruction2">"연결 시작 버튼"</string>
-    <string name="blood_pressure_monitor_standby_instruction3">"을 눌러주세요."</string>
-    <string name="blood_pressure_monitor_start_connection">연결 시작</string>
-    <string name="blood_pressure_monitor_searching_device">BP170B 혈압계 연결 시도 중...</string>
-    <string name="blood_pressure_monitor_retry_connection">연결 재시도</string>
-    <string name="blood_pressure_monitor_connecting">혈압계 연결 중...</string>
-    <string name="blood_pressure_monitor_device_connected">혈압계가 연결됨.</string>
-    <string name="blood_pressure_monitor_disconnect">연결 해제</string>
-    <string name="blood_pressure_monitor_connection_error">혈압계 연결 오류!</string>
-    <string name="blood_pressure_monitor_error_message">오류: %1$s</string>
-    <string name="blood_pressure_monitor_try_again">다시 시도</string>
-    <string name="blood_pressure_monitor_systolic">수축기</string>
-    <string name="blood_pressure_monitor_diastolic">이완기</string>
-    <string name="blood_pressure_monitor_heart_rate">심박수</string>
-    <string name="blood_pressure_monitor_select_device">혈압계를 선택해주세요:</string>
-    <string name="test_instructions">검사 방법 안내:</string>
+    <!--NEW-->
+    <string name="blood_pressure_monitor_initial_instruction">血圧計の接続を開始します。</string>
+    <string name="blood_pressure_monitor_disconnected">血圧計の接続が切断されました。再接続を試みます。</string>
+    <string name="blood_pressure_monitor_connected">血圧計が接続されました。開始ボタンを押してください。</string>
+    <string name="blood_pressure_monitor_connection_failed">血圧計の接続に失敗しました。\n再度お試しください。</string>
+    <string name="blood_pressure_monitor_title">血圧計管理</string>
+    <string name="blood_pressure_monitor_image_content_description">血圧計</string>
+    <string name="blood_pressure_monitor_standby_instruction1">血圧計の接続を開始するには\n</string>
+    <string name="blood_pressure_monitor_standby_instruction2">接続開始ボタン</string>
+    <string name="blood_pressure_monitor_standby_instruction3">を押してください。</string>
+    <string name="blood_pressure_monitor_start_connection">接続開始</string>
+    <string name="blood_pressure_monitor_searching_device">BP170B血圧計接続試行中...</string>
+    <string name="blood_pressure_monitor_retry_connection">再接続</string>
+    <string name="blood_pressure_monitor_connecting">血圧計接続中...</string>
+    <string name="blood_pressure_monitor_device_connected">血圧計が接続されました。</string>
+    <string name="blood_pressure_monitor_disconnect">接続解除</string>
+    <string name="blood_pressure_monitor_connection_error">血圧計接続エラー！</string>
+    <string name="blood_pressure_monitor_error_message">エラー: %1$s</string>
+    <string name="blood_pressure_monitor_try_again">再試行</string>
+    <string name="blood_pressure_monitor_systolic">収縮期</string>
+    <string name="blood_pressure_monitor_diastolic">拡張期</string>
+    <string name="blood_pressure_monitor_heart_rate">心拍数</string>
+    <string name="blood_pressure_monitor_select_device">血圧計を選択してください:</string>
+    <string name="test_instructions">検査方法のご案内:</string>
 
-    <string name="dynamometer_initial_instruction">"악력계 연결 화면입니다. 연결 시작 버튼을 눌러주세요."</string>
-    <string name="dynamometer_searching_tts">"악력계를 탐색 중입니다. 악력계 전원버튼을 눌러주세요."</string>
-    <string name="dynamometer_connection_error_tts">"연결이 실패하였습니다. 다시 시도해 주세요."</string>
-    <string name="dynamometer_back_button_content_description">뒤로가기 버튼</string>
-    <string name="dynamometer_title">악력계 관리</string>
-    <string name="dynamometer_image_content_description">악력계</string>
-    <string name="dynamometer_standby_instruction1">"악력계 연결을 시작하려면\n"</string>
-    <string name="dynamometer_standby_instruction2">"연결 시작 버튼"</string>
-    <string name="dynamometer_standby_instruction3">"을 눌러주세요."</string>
-    <string name="dynamometer_start_connection">연결 시작</string>
-    <string name="dynamometer_select_device">악력계를 선택해주세요:</string>
-    <string name="dynamometer_unknown_device_name">알 수 없는 기기</string>
-    <string name="dynamometer_connecting">악력계 연결 중...</string>
-    <string name="dynamometer_searching">악력계 탐색 중...\n악력계 전원버튼을 눌러주세요</string>
-    <string name="dynamometer_not_connected_instruction">"악력계가 연결되지 않았습니다.\n악력계의 전원을 켜주세요."</string>
-    <string name="dynamometer_retry_connection">연결 재시도</string>
-    <string name="dynamometer_device_connected1">악력계가 연결됨.\n</string>
-    <string name="dynamometer_device_connected2">악력 검사 시작&#160;</string>
-    <string name="dynamometer_device_connected3">버튼을 눌러주세요.</string>
-    <string name="dynamometer_disconnect">연결 해제</string>
-    <string name="dynamometer_complete_connection">연결 완료</string>
-    <string name="dynamometer_connection_error">악력계 연결 오류!</string>
-    <string name="dynamometer_connection_error_details">기기가 연결되지 않았거나 통신에 문제가 발생했습니다.</string>
-    <string name="dynamometer_try_again">다시 시도</string>
+    <string name="dynamometer_initial_instruction">握力計接続画面です。接続開始ボタンを押してください。</string>
+    <string name="dynamometer_searching_tts">握力計を検索中です。握力計の電源ボタンを押してください。</string>
+    <string name="dynamometer_connection_error_tts">接続に失敗しました。再度お試しください。</string>
+    <string name="dynamometer_back_button_content_description">戻るボタン</string>
+    <string name="dynamometer_title">握力計管理</string>
+    <string name="dynamometer_image_content_description">握力計</string>
+    <string name="dynamometer_standby_instruction1">握力計の接続を開始するには\n</string>
+    <string name="dynamometer_standby_instruction2">接続開始ボタン</string>
+    <string name="dynamometer_standby_instruction3">を押してください。</string>
+    <string name="dynamometer_start_connection">接続開始</string>
+    <string name="dynamometer_select_device">握力計を選択してください:</string>
+    <string name="dynamometer_unknown_device_name">不明なデバイス</string>
+    <string name="dynamometer_connecting">握力計接続中...</string>
+    <string name="dynamometer_searching">握力計検索中...\n握力計の電源ボタンを押してください</string>
+    <string name="dynamometer_not_connected_instruction">握力計が接続されていません。\n握力計の電源を入れてください。</string>
+    <string name="dynamometer_retry_connection">再接続</string>
+    <string name="dynamometer_device_connected1">握力計が接続されました。\n</string>
+    <string name="dynamometer_device_connected2">握力テスト開始&#160;</string>
+    <string name="dynamometer_device_connected3">ボタンを押してください。</string>
+    <string name="dynamometer_disconnect">接続解除</string>
+    <string name="dynamometer_complete_connection">接続完了</string>
+    <string name="dynamometer_connection_error">握力計接続エラー！</string>
+    <string name="dynamometer_connection_error_details">デバイスが接続されていないか、通信に問題が発生しました。</string>
+    <string name="dynamometer_try_again">再試行</string>
 
-    <string name="bt_device_management_title">블루투스 기기 관리</string>
-    <string name="bt_device_management_bp_connected">혈압계 연결됨</string>
-    <string name="bt_device_management_bp_disconnected">혈압계 연결 안됨</string>
-    <string name="bt_device_management_manage_bp">혈압계 관리</string>
-    <string name="bt_device_management_dynamometer_connected">악력계 연결됨</string>
-    <string name="bt_device_management_dynamometer_disconnected">악력계 연결 안됨</string>
-    <string name="bt_device_management_manage_dynamometer">악력계 관리</string>
+    <string name="bt_device_management_title">Bluetoothデバイス管理</string>
+    <string name="bt_device_management_bp_connected">血圧計接続済み</string>
+    <string name="bt_device_management_bp_disconnected">血圧計未接続</string>
+    <string name="bt_device_management_manage_bp">血圧計管理</string>
+    <string name="bt_device_management_dynamometer_connected">握力計接続済み</string>
+    <string name="bt_device_management_dynamometer_disconnected">握力計未接続</string>
+    <string name="bt_device_management_manage_dynamometer">握力計管理</string>
 
-    <string name="default_sign_in_manage_bt_devices">블루투스 기기 관리</string>
-    <string name="default_sign_in_qr_login">QR 로그인</string>
-    <string name="default_sign_in_face_recognition">얼굴인식 로그인</string>
-    <string name="default_sign_in_sign_up">회원가입</string>
+    <string name="user_sign_in">個人ログイン</string>
 
-    <string name="qr_sign_in_title">QR 로그인</string>
-    <string name="qr_sign_in_scan_instruction">로그인용 QR 코드를 보여주세요.</string>
-    <string name="qr_sign_in_scanned_success">QR 코드를 스캔했습니다. 로그인 버튼을 누르세요.</string>
-    <string name="qr_sign_in_invalid_qr">유효하지 않은 QR 코드입니다. 다시 스캔해주세요.</string>
-    <string name="qr_sign_in_invalid_qr_toast">유효하지 않은 QR 코드입니다.</string>
-    <string name="qr_sign_in_camera_permission_error">카메라를 시작할 수 없습니다. 권한을 확인하세요.</string>
-    <string name="qr_sign_in_scanned_info_header">스캔된 정보</string>
-    <string name="qr_sign_in_id_label">아이디:</string>
-    <string name="qr_sign_in_password_label">비밀번호:</string>
-    <string name="qr_sign_in_rescan_button">다시 스캔</string>
-    <string name="qr_sign_in_login_button">로그인</string>
-    <string name="qr_sign_in_login_processing">로그인 처리 중...</string>
-    <string name="qr_sign_in_no_scanned_info_toast">스캔된 정보가 없습니다. QR 코드를 스캔해주세요.</string>
-    <string name="qr_sign_in_login_success_toast">로그인 성공!</string>
+    <string name="default_sign_in_manage_bt_devices">Bluetoothデバイス管理</string>
+    <string name="default_sign_in_qr_login">QRログイン</string>
+    <string name="default_sign_in_face_recognition">顔認識ログイン</string>
+    <string name="default_sign_in_sign_up">会員登録</string>
+    <string name="id_pw_sign_in">ID/パスワードログイン</string>
 
-    <string name="signin_vm_face_detection_status_looking">얼굴을 찾고 있습니다...</string>
-    <string name="signin_vm_validation_password_length">비밀번호는 8자 이상 32자 이하로 입력해주세요.</string>
-    <string name="signin_vm_validation_password_mismatch">비밀번호가 일치하지 않습니다.</string>
-    <string name="signin_vm_validation_email_invalid">유효한 이메일 주소를 입력해주세요.</string>
-    <string name="signin_vm_signup_validation_fill_all">모든 필수 정보를 올바르게 입력해주세요.</string>
-    <string name="signin_vm_signup_face_enrollment_required">회원가입을 위해 얼굴 등록이 필요합니다.</string>
-    <string name="signin_vm_face_processing">얼굴 정보를 처리 중...</string>
-    <string name="signin_vm_face_enrollment_ready">얼굴 등록 준비 완료!</string>
-    <string name="signin_vm_face_extraction_failed_retry">얼굴 정보를 추출할 수 없습니다. 다시 시도해주세요.</string>
-    <string name="signin_vm_face_recognition_failed_no_valid_face">얼굴 인식 실패: 유효한 얼굴을 찾을 수 없습니다.</string>
-    <string name="signin_vm_face_processing_error">얼굴 처리 중 오류 발생.</string>
-    <string name="signin_vm_face_recognition_error">얼굴 인식 중 오류 발생: %1$s</string>
-    <string name="signin_vm_face_recognizing">얼굴 인식 중...</string>
-    <string name="signin_vm_face_info_extraction_failed">얼굴 인식을 위한 정보를 추출할 수 없습니다.</string>
-    <string name="signin_vm_login_success">로그인 성공!\n환영합니다, %1$s님!</string>
-    <string name="signin_vm_face_no_match">일치하는 얼굴이 없습니다. 다시 시도해주세요.</string>
-    <string name="signin_vm_face_registration_in_progress">얼굴 정보 등록 중...</string>
-    <string name="signin_vm_face_registration_error_id_exists">오류: 사용자 ID \'%1$s\'는 이미 등록되어 있습니다.</string>
-    <string name="signin_vm_face_registration_success">얼굴이 성공적으로 등록되었습니다! 사용자: %1$s</string>
-    <string name="signin_vm_face_registration_extraction_failed">얼굴 정보 추출에 실패하여 등록할 수 없습니다.</string>
+    <string name="qr_sign_in_title">QRログイン</string>
+    <string name="qr_sign_in_scan_instruction">ログイン用QRコードを見せてください。</string>
+    <string name="qr_sign_in_scanned_success">QRコードをスキャンしました。ログインボタンを押してください。</string>
+    <string name="qr_sign_in_invalid_qr">無効なQRコードです。再度スキャンしてください。</string>
+    <string name="qr_sign_in_invalid_qr_toast">無効なQRコードです。</string>
+    <string name="qr_sign_in_camera_permission_error">カメラを起動できません。権限を確認してください。</string>
+    <string name="qr_sign_in_scanned_info_header">スキャンされた情報</string>
+    <string name="qr_sign_in_id_label">ID:</string>
+    <string name="qr_sign_in_password_label">パスワード:</string>
+    <string name="qr_sign_in_rescan_button">再スキャン</string>
+    <string name="qr_sign_in_login_button">ログイン</string>
+    <string name="qr_sign_in_login_processing">ログイン処理中...</string>
+    <string name="qr_sign_in_no_scanned_info_toast">スキャンされた情報がありません。QRコードをスキャンしてください。</string>
+    <string name="qr_sign_in_login_success_toast">ログイン成功！</string>
 
-    <string name="face_id_sign_in_title">얼굴 인식 로그인</string>
+    <string name="signin_vm_face_detection_status_looking">顔を探しています...</string>
+    <string name="signin_vm_validation_password_length">パスワードは8文字以上32文字以下で入力してください。</string>
+    <string name="signin_vm_validation_password_mismatch">パスワードが一致しません。</string>
+    <string name="signin_vm_validation_email_invalid">有効なメールアドレスを入力してください。</string>
+    <string name="signin_vm_signup_validation_fill_all">すべての必須情報を正しく入力してください。</string>
+    <string name="signin_vm_signup_face_enrollment_required">会員登録には顔登録が必要です。</string>
+    <string name="signin_vm_face_processing">顔情報を処理中...</string>
+    <string name="signin_vm_face_enrollment_ready">顔登録準備完了！</string>
+    <string name="signin_vm_face_extraction_failed_retry">顔情報を抽出できません。再度お試しください。</string>
+    <string name="signin_vm_face_recognition_failed_no_valid_face">顔認識失敗：有効な顔が見つかりません。</string>
+    <string name="signin_vm_face_processing_error">顔処理中にエラーが発生しました。</string>
+    <string name="signin_vm_face_recognition_error">顔認識中にエラーが発生しました: %1$s</string>
+    <string name="signin_vm_face_recognizing">顔認識中...</string>
+    <string name="signin_vm_face_info_extraction_failed">顔認識のための情報を抽出できません。</string>
+    <string name="signin_vm_login_success">ログイン成功！\nようこそ、%1$sさん！</string>
+    <string name="signin_vm_face_no_match">一致する顔がありません。再度お試しください。</string>
+    <string name="signin_vm_face_registration_in_progress">顔情報登録中...</string>
+    <string name="signin_vm_face_registration_error_id_exists">エラー: ユーザーID \'%1$s\'は既に登録されています。</string>
+    <string name="signin_vm_face_registration_success">顔が正常に登録されました！</string>
+    <string name="signin_vm_face_registration_extraction_failed">顔情報の抽出に失敗したため登録できません。</string>
 
-    <string name="pulmonary_function_test">폐나이 측정</string>
-    <string name="pulmonary_function_test_result">폐나이 측정 결과</string>
-    <string name="pulmonary_capacity_label">폐활량</string>
-    <string name="pulmonary_power_label">폐근력</string>
-    <string name="pulmonary_status_label">폐상태</string>
-    <string name="pulmonary_age_label">폐나이</string>
-    <string name="pulmonary_age_format">%s 세</string>
-    <string name="pulmonary_age_short_format">%s 세</string>
+    <string name="face_id_sign_in_title">画面を&#160;</string>
 
-    <string name="pdf_print_job_name">Nenoon Result Sheet</string>
-    <string name="pdf_print_write_failed">Failed to write document: %1$s</string>
-    <string name="pdf_print_failed_generic">Print Failed</string>
-    <string name="pdf_overall_result_title">Overall Result</string>
-    <string name="pdf_label_name">Name: </string>
-    <string name="pdf_label_age">Age: </string>
-    <string name="pdf_label_date">Date: </string>
-    <string name="pdf_qr_code_label">Sign In QR Code</string>
-    <string name="pdf_test_not_conducted">Test Not Conducted</string>
+    <string name="pulmonary_function_test">肺年齢測定</string>
+    <string name="pulmonary_function_test_result">肺年齢測定結果</string>
+    <string name="pulmonary_capacity_label">肺活量</string>
+    <string name="pulmonary_power_label">肺筋力</string>
+    <string name="pulmonary_status_label">肺状態</string>
+    <string name="pulmonary_age_label">肺年齢</string>
+    <string name="pulmonary_age_format">%s 歳</string>
+    <string name="pulmonary_age_short_format">%s 歳</string>
 
-    <string name="pdf_visual_acuity_title">Visual Acuity\n (Left/Right)</string>
-    <string name="pdf_left_eye">Left Eye</string>
-    <string name="pdf_right_eye">Right Eye</string>
-    <string name="pdf_va_range_normal">0.8 or higher</string>
-    <string name="pdf_va_interp_normal">Normal range, no or minor early presbyopia symptoms</string>
-    <string name="pdf_va_recomm_normal">Regular check-ups recommended, lifestyle management needed to reduce eye fatigue</string>
+    <string name="pdf_print_job_name">Nenoonキオスク+結果表</string>
+    <string name="pdf_print_write_failed">文書作成失敗: %1$s</string>
+    <string name="pdf_print_failed_generic">印刷失敗</string>
+    <string name="pdf_overall_result_title">総合結果</string>
+    <string name="pdf_label_name">名前:&#160;</string>
+    <string name="pdf_label_age">年齢:&#160;</string>
+    <string name="pdf_label_date">日付:&#160;</string>
+    <string name="pdf_qr_code_label">ログイン用QRコード</string>
+    <string name="pdf_test_not_conducted">検査未実施</string>
+
+    <string name="pdf_visual_acuity_title">視力結果（左/右）</string>
+    <string name="pdf_left_eye">左眼</string>
+    <string name="pdf_right_eye">右眼</string>
+    <string name="pdf_va_range_normal">0.8以上</string>
+    <string name="pdf_va_interp_normal">正常範囲、老眼初期症状なしまたは軽微</string>
+    <string name="pdf_va_recomm_normal">定期的な検診推奨、目の疲労を減らすための生活管理必要</string>
     <string name="pdf_va_range_mild">0.5 ~ 0.7</string>
-    <string name="pdf_va_interp_mild">Mild low vision, possible presbyopia or reduced accommodation</string>
-    <string name="pdf_va_recomm_mild">Consider glasses/reading glasses, improve lighting environment and recommend eye exercises</string>
-    <string name="pdf_va_range_moderate">0.4 or lower</string>
-    <string name="pdf_va_interp_moderate">Moderate or severe low vision or possible progression of presbyopia</string>
-    <string name="pdf_va_recomm_moderate">Professional ophthalmological examination required, essential to use low vision aids and improve living environment</string>
+    <string name="pdf_va_interp_mild">軽度低視力、老眼または調節力低下の可能性</string>
+    <string name="pdf_va_recomm_mild">眼鏡/老眼鏡検討、照明環境改善および目の運動推奨</string>
+    <string name="pdf_va_range_moderate">0.4以下</string>
+    <string name="pdf_va_interp_moderate">中等度以上低視力または老眼進行の可能性</string>
+    <string name="pdf_va_recomm_moderate">専門眼科検診必要、補助光学機器および生活環境改善必須</string>
 
-    <string name="pdf_blood_pressure_title">Blood Pressure</string>
-    <string name="pdf_systolic">Systolic</string>
-    <string name="pdf_diastolic">Diastolic</string>
-    <string name="pdf_pulse_rate">Pulse Rate</string>
-    <string name="pdf_bp_range_normal">120/80 mmHg or lower</string>
-    <string name="pdf_bp_interp_normal">Normal Blood Pressure</string>
-    <string name="pdf_bp_recomm_normal">Maintain current lifestyle, regular measurement recommended</string>
+    <string name="pdf_blood_pressure_title">血圧数値</string>
+    <string name="pdf_systolic">収縮期</string>
+    <string name="pdf_diastolic">拡張期</string>
+    <string name="pdf_pulse_rate">脈拍</string>
+    <string name="pdf_bp_range_normal">120/80 mmHg以下</string>
+    <string name="pdf_bp_interp_normal">正常血圧</string>
+    <string name="pdf_bp_recomm_normal">現在の生活習慣維持、定期的測定推奨</string>
     <string name="pdf_bp_range_prehypertension">121-139 / 81-89 mmHg</string>
-    <string name="pdf_bp_interp_prehypertension">Prehypertension (Borderline Hypertension)</string>
-    <string name="pdf_bp_recomm_prehypertension">Reduce sodium intake, regular exercise, stress management, etc. Lifestyle improvement needed</string>
-    <string name="pdf_bp_range_hypertension">140/90 mmHg or higher</string>
-    <string name="pdf_bp_interp_hypertension">Suspected Hypertension or Hypertensive State</string>
-    <string name="pdf_bp_recomm_hypertension">Professional medical consultation recommended, medication may be needed</string>
-    <string name="pdf_bp_tip">Note: General classification reflecting recommendations from the Korean Society of Hypertension and WHO</string>
+    <string name="pdf_bp_interp_prehypertension">高血圧前段階（境界血圧）</string>
+    <string name="pdf_bp_recomm_prehypertension">ナトリウム摂取削減、定期的な運動、ストレス管理など生活習慣改善必要</string>
+    <string name="pdf_bp_range_hypertension">140/90 mmHg以上</string>
+    <string name="pdf_bp_interp_hypertension">高血圧疑いまたは高血圧状態</string>
+    <string name="pdf_bp_recomm_hypertension">病院訪問して専門診療推奨、必要時薬物治療併用</string>
+    <string name="pdf_bp_tip">参考：大韓高血圧学会およびWHO勧告を反映した一般的な分類</string>
 
-    <string name="pdf_grip_strength_title">Grip Strength</string>
-    <string name="pdf_left_hand">Left Hand</string>
-    <string name="pdf_right_hand">Right Hand</string>
-    <string name="pdf_gs_range_normal">Male: 35kg or more / Female: 25kg or more</string>
-    <string name="pdf_gs_interp_normal">Normal muscle strength range</string>
-    <string name="pdf_gs_recomm_normal">Light weight training and aerobic exercise recommended to maintain muscle strength</string>
-    <string name="pdf_gs_range_mild">Male: 30-34kg / Female: 20-24kg</string>
-    <string name="pdf_gs_interp_mild">Possible early muscle weakness</string>
-    <string name="pdf_gs_recomm_mild">Grip exercises and upper body strengthening needed (using rubber balls, dumbbells, etc.)</string>
-    <string name="pdf_gs_range_moderate">Male: 29kg or lower / Female: 19kg or lower</string>
-    <string name="pdf_gs_interp_moderate">Muscle weakness or sarcopenia concern</string>
-    <string name="pdf_gs_recomm_moderate">Consider professional exercise program or detailed examination for sarcopenia, maintaining daily activity is important</string>
-    <string name="pdf_gs_tip">Note: Based on average grip strength standards for Koreans</string>
+    <string name="pdf_grip_strength_title">握力</string>
+    <string name="pdf_left_hand">左手</string>
+    <string name="pdf_right_hand">右手</string>
+    <string name="pdf_gs_range_normal">男: 35kg以上 / 女: 25kg以上</string>
+    <string name="pdf_gs_interp_normal">筋力正常範囲</string>
+    <string name="pdf_gs_recomm_normal">筋力維持のための軽い重量トレーニングおよび有酸素運動併用推奨</string>
+    <string name="pdf_gs_range_mild">男: 30-34kg / 女: 20-24kg</string>
+    <string name="pdf_gs_interp_mild">筋力低下初期の可能性</string>
+    <string name="pdf_gs_recomm_mild">握力運動および上体筋力強化必要（ゴムボール、ダンベルなど活用）</string>
+    <string name="pdf_gs_range_moderate">男: 29kg以下 / 女: 19kg以下</string>
+    <string name="pdf_gs_interp_moderate">筋力低下またはサルコペニアの懸念</string>
+    <string name="pdf_gs_recomm_moderate">専門運動プログラムまたはサルコペニア精密検診検討、日常生活活動性維持重要</string>
+    <string name="pdf_gs_tip">参考：韓国人の平均握力基準をもとに構成</string>
+    <string name="pdf_normal">正常</string>
+    <string name="pdf_abnormal">異常</string>
 
-    <string name="pdf_pulmonary_age_title">Pulmonary Age</string>
-    <string name="pdf_age_unit">years old</string>
-    <string name="pdf_pf_range_normal">Equal to or younger than actual age</string>
-    <string name="pdf_pf_interp_normal">Good lung function</string>
-    <string name="pdf_pf_recomm_normal">Maintain current condition, avoid smoking and continue regular aerobic exercise</string>
-    <string name="pdf_pf_range_mild">Actual age + 5~10 years</string>
-    <string name="pdf_pf_interp_mild">Possible mild lung function decline</string>
-    <string name="pdf_pf_recomm_mild">Start light breathing exercises (abdominal breathing, balloon blowing, etc.) and regular aerobic exercise</string>
-    <string name="pdf_pf_range_moderate">Actual age + 11 years or more</string>
-    <string name="pdf_pf_interp_moderate">Lung function decline or risk of lung disease</string>
-    <string name="pdf_pf_recomm_moderate">Professional consultation recommended, immediate smoking cessation if applicable, focus on lung exercises to improve lung capacity</string>
-    <string name="pdf_pf_tip">Note: Exhalation test (Spirometry) provides a simple lung function indicator, accurate diagnosis requires detailed lung function tests at a medical institution</string>
+    <string name="pdf_pulmonary_age_title">肺年齢</string>
+    <string name="pdf_age_unit">歳</string>
+    <string name="pdf_pf_range_normal">実年齢以下</string>
+    <string name="pdf_pf_interp_normal">肺機能良好</string>
+    <string name="pdf_pf_recomm_normal">現在の状態維持、喫煙避け、継続的な有酸素運動持続推奨</string>
+    <string name="pdf_pf_range_mild">実年齢 + 5~10歳</string>
+    <string name="pdf_pf_interp_mild">軽微な肺機能低下の可能性</string>
+    <string name="pdf_pf_recomm_mild">軽い呼吸運動（腹式呼吸、風船吹きなど）および定期的な有酸素運動開始推奨</string>
+    <string name="pdf_pf_range_moderate">実年齢 + 11歳以上</string>
+    <string name="pdf_pf_interp_moderate">肺機能低下または肺疾患リスクの可能性</string>
+    <string name="pdf_pf_recomm_moderate">専門医相談推奨、喫煙時即時禁煙、肺活量向上のための肺運動集中必要</string>
+    <string name="pdf_pf_tip">参考：呼気検査(Spirometry)は簡便な肺機能指標提供用であり、正確な診断は医療機関の肺機能精密検査で確認する必要があります</string>
 
-    <string name="pdf_macular_degeneration_title">Macular Degeneration</string>
-    <string name="pdf_md_range_normal">No distortion/spots/blind spots (Normal)</string>
-    <string name="pdf_md_interp_normal">No signs of retinal abnormality</string>
-    <string name="pdf_md_recomm_normal">Maintain periodic (6 months~1 year) self-examination, lifestyle management such as blue light blocking recommended</string>
-    <string name="pdf_md_range_mild">Slight distortion or blurriness</string>
-    <string name="pdf_md_interp_mild">Early stage macular degeneration or subtle retinal abnormalities possible</string>
-    <string name="pdf_md_recomm_mild">Early detection stage, recommend detailed OCT (retinal tomography) examination at an ophthalmologist</string>
-    <string name="pdf_md_range_moderate">Clear line distortion, blind spots, central blurriness</string>
-    <string name="pdf_md_interp_moderate">Moderate or severe macular degeneration or possible retinal disease</string>
-    <string name="pdf_md_recomm_moderate">Immediate ophthalmological visit required, detailed examination and confirmation of treatment (for exclusion of high-risk diseases like wet macular degeneration)</string>
-    <string name="pdf_md_present">Present</string>
-    <string name="pdf_md_absent">Absent</string>
-    <string name="pdf_md_tip">Note: Amsler Grid, M-chart, etc., are used for self-diagnosis or primary discrimination</string>
+    <string name="pdf_macular_degeneration_title">黄斑変性</string>
+    <string name="pdf_md_range_normal">歪み/点/暗点なし（正常）</string>
+    <string name="pdf_md_interp_normal">網膜異常兆候なし</string>
+    <string name="pdf_md_recomm_normal">定期的（6ヶ月~1年）自己検査維持、ブルーライトカットなど生活管理推奨</string>
+    <string name="pdf_md_range_mild">軽微な歪みまたはぼやけ</string>
+    <string name="pdf_md_interp_mild">黄斑変性初期または網膜部位微細異常の可能性</string>
+    <string name="pdf_md_recomm_mild">早期発見段階、眼科来院して精密OCT（網膜断層撮影）検査推奨</string>
+    <string name="pdf_md_range_moderate">線の歪み、暗点、中心ぼやけ明瞭</string>
+    <string name="pdf_md_interp_moderate">中等度以上黄斑変性または網膜疾患の可能性</string>
+    <string name="pdf_md_recomm_moderate">即時眼科訪問必要、精密検診および治療可否確認（湿性黄斑変性など危険疾患排除目的）</string>
+    <string name="pdf_md_present">有</string>
+    <string name="pdf_md_absent">無</string>
+    <string name="pdf_md_tip">参考：アムスラーグリッド(Amsler Grid)、Mチャート(M-chart)などを活用して自己診断または1次判別</string>
 
-    <string name="grip_strength_test_instruction_tts">Please move to the dynamometer and measure your grip strength.</string>
-    <string name="grip_strength_start_test">Start Grip Strength Test</string>
+    <string name="grip_strength_test_instruction_tts">握力計に移動して握力を測定してください。</string>
+    <string name="grip_strength_start_test">握力検査開始</string>
 
-    <string name="grip_strength_ready_instruction_tts">Please prepare for grip strength measurement.</string>
-    <string name="grip_strength_right_hand_instruction_tts">Squeeze your right hand\nas hard as you can.</string>
-    <string name="grip_strength_right_hand_completed_tts">Right hand measurement complete. Taking a short break.</string>
-    <string name="grip_strength_left_hand_instruction_tts">Squeeze your left hand\nas hard as you can.</string>
-    <string name="grip_strength_left_hand_completed_tts">Left hand grip strength measurement finished. Retrieving results.</string>
+    <string name="grip_strength_ready_instruction_tts">握力測定を準備してください。</string>
+    <string name="grip_strength_right_hand_instruction_tts">右手を力いっぱい握ってください。</string>
+    <string name="grip_strength_right_hand_completed_tts">右手測定完了。しばらく休憩します。</string>
+    <string name="grip_strength_left_hand_instruction_tts">左手を力いっぱい握ってください。</string>
+    <string name="grip_strength_left_hand_completed_tts">左手握力検査が終了しました。結果を読み込みます。</string>
 
-    <string name="grip_strength_right_hand_ready_text1">Hold the dynamometer with your&#160;</string>
-    <string name="grip_strength_right_hand_ready_text2">right hand</string>
-    <string name="grip_strength_right_hand_ready_text3">&#160;and prepare.</string>
-    <string name="grip_strength_right_hand_completed_text">Right hand measurement complete.</string>
-    <string name="grip_strength_right_hand_rest_text">Next is left hand grip strength measurement.</string>
-    <string name="grip_strength_left_hand_ready_text1">Hold the dynamometer with your&#160;</string>
-    <string name="grip_strength_left_hand_ready_text2">left hand</string>
-    <string name="grip_strength_left_hand_ready_text3">&#160;and prepare.</string>
-    <string name="grip_strength_left_hand_completed_text">Left hand grip strength measurement finished.</string>
+    <string name="grip_strength_right_hand_ready_text1">ダイナモメーターをあなたの&#160;で持ってください</string>
+    <string name="grip_strength_right_hand_ready_text2">右手</string>
+    <string name="grip_strength_right_hand_ready_text3">で握力計を持って準備してください。</string>
+    <string name="grip_strength_right_hand_completed_text">右手測定完了。</string>
+    <string name="grip_strength_right_hand_rest_text">次は左手握力測定です。</string>
+    <string name="grip_strength_left_hand_ready_text1">ダイナモメーターをあなたの&#160;で持ってください</string>
+    <string name="grip_strength_left_hand_ready_text2">左手</string>
+    <string name="grip_strength_left_hand_ready_text3">で握力計を持って準備してください。</string>
+    <string name="grip_strength_left_hand_completed_text">左手握力検査が終了しました。</string>
 
-    <string name="grip_strength_countdown_start_text"> seconds until measurements begin.</string>
-    <string name="grip_strength_hold_instruction_text">Please hold firmly according to the handle guide.</string>
-    <string name="grip_strength_rest_instruction_text">Taking a short break.</string>
-    <string name="grip_strength_next_left_hand_text">Next is left hand grip strength measurement.</string>
-    <string name="grip_strength_fetching_results_text">Retrieving results.</string>
+    <string name="grip_strength_countdown_start_text">秒後に測定を開始します。</string>
+    <string name="grip_strength_hold_instruction_text">ハンドルガイドに合わせて力いっぱい握った状態を維持してください。</string>
+    <string name="grip_strength_rest_instruction_text">しばらく休憩します。</string>
+    <string name="grip_strength_next_left_hand_text">次は左手握力測定です。</string>
+    <string name="grip_strength_fetching_results_text">結果を読み込みます。</string>
 
-    <string name="grip_strength_right_hand_value">Right Hand Grip: </string>
-    <string name="grip_strength_left_hand_value">Left Hand Grip: </string>
-    <string name="cancel">Cancel</string>
-    <string name="enter">Confirm</string>
-    <string name="password">Password</string>
+    <string name="grip_strength_right_hand_value">右手握力:&#160;</string>
+    <string name="grip_strength_left_hand_value">左手握力:&#160;</string>
 
-    <string name="visual_acuity_result_normal_heading">No Abnormal Findings</string>
-    <string name="visual_acuity_result_normal_body">Please continue to maintain good eye health.</string>
-    <string name="visual_acuity_result_abnormal_heading">Symptoms Suspected</string>
-    <string name="visual_acuity_result_abnormal_body">Consultation with a specialist is required.</string>
+    <!--미분류-->
+    <string name="lung_age_test">肺年齢測定</string>
+    <string name="blood_pressure_and_grip_strength">血圧、握力</string>
+    <string name="test_predescription_blood_pressure_title1">血圧検査</string>
+    <string name="test_predescription_grip_strength_title1">握力検査</string>
+    <string name="dynamometer_disconnected_tts">握力計の接続が切断されました。</string>
+    <string name="dynamometer_connected_tts">握力計が接続されました。握力検査開始ボタンを押してください。</string>
+    <string name="cancel">キャンセル</string>
+    <string name="enter">確認</string>
+    <string name="password">パスワード</string>
+    <string name="qr_code_issue_button_text">ログイン用QRコード発行</string>
 
-    <string name="amsler_result_normal_heading">No Abnormal Findings</string>
-    <string name="amsler_result_normal_body">Please continue to maintain good eye health.</string>
-    <string name="amsler_result_abnormal_heading">Symptoms Suspected</string>
-    <string name="amsler_result_abnormal_body">Consultation with a specialist is required.</string>
+    <string name="close_button_description">閉じるボタン</string>
+    <string name="qr_print_success">QRコード印刷成功</string>
+    <string name="qr_print_fail">QRコード印刷失敗</string>
+    <string name="qr_generation_fail">QRコード生成失敗</string>
+    <string name="qr_not_signed_in">ログインしているユーザーがいません。QRコードを発行できません。</string>
 
-    <string name="mchart_result_normal_heading">No Abnormal Findings</string>
-    <string name="mchart_result_normal_body">Please continue to maintain good eye health.</string>
-    <string name="mchart_result_abnormal_heading">Symptoms Suspected</string>
-    <string name="mchart_result_abnormal_body">Consultation with a specialist is required.</string>
+    <string name="visual_acuity_result_normal_heading">異常所見なし</string>
+    <string name="visual_acuity_result_normal_body">継続して目の健康を維持してください。</string>
+    <string name="visual_acuity_result_abnormal_heading">異常症状の疑い</string>
+    <string name="visual_acuity_result_abnormal_body">専門家との相談が必要です。</string>
 
-    <string name="bp_result_normal_heading">Your blood pressure is within the recommended range.</string>
-    <string name="bp_result_normal_body">You are in good condition. Please continue to maintain healthy habits.</string>
-    <string name="bp_result_pre_hypertension_heading">Your blood pressure reading is slightly higher than normal.</string>
-    <string name="bp_result_pre_hypertension_body">The following lifestyle habits are recommended to prevent high blood pressure:</string>
-    <string name="bp_result_pre_hypertension_tip1">Eat less salt</string>
-    <string name="bp_result_pre_hypertension_tip2">Eat vegetables and fruits often</string>
-    <string name="bp_result_pre_hypertension_tip3">Quit smoking and limit alcohol</string>
-    <string name="bp_result_pre_hypertension_tip4">Do light exercise like walking</string>
-    <string name="bp_result_hypertension_heading">Your blood pressure reading is at a high level.</string>
-    <string name="bp_result_hypertension_body">Generally, this level recommends consultation with a medical professional and health management.</string>
+    <string name="amsler_result_normal_heading">異常所見なし</string>
+    <string name="amsler_result_normal_body">継続して目の健康を維持してください</string>
+    <string name="amsler_result_abnormal_heading">異常症状の疑い</string>
+    <string name="amsler_result_abnormal_body">専門家との相談が必要です</string>
 
-    <string name="grip_strength_m_30s_label">Average male grip strength (under 30s)</string>
+    <string name="mchart_result_normal_heading">異常所見なし</string>
+    <string name="mchart_result_normal_body">継続して目の健康を維持してください。</string>
+    <string name="mchart_result_abnormal_heading">異常症状の疑い</string>
+    <string name="mchart_result_abnormal_body">専門家との相談が必要です。</string>
+
+    <string name="bp_result_normal_heading">血圧数値が推奨範囲内にあります。</string>
+    <string name="bp_result_normal_body">良好な状態を維持しています。今後も健康的な習慣を維持してください。</string>
+    <string name="bp_result_pre_hypertension_heading">測定結果、血圧数値が一般基準よりやや高めです。</string>
+    <string name="bp_result_pre_hypertension_body">高血圧予防には次のような生活習慣が推奨されます。</string>
+    <string name="bp_result_pre_hypertension_tip1">薄味で食べる</string>
+    <string name="bp_result_pre_hypertension_tip2">野菜と果物を頻繁に摂取</string>
+    <string name="bp_result_pre_hypertension_tip3">禁煙・節酒</string>
+    <string name="bp_result_pre_hypertension_tip4">ウォーキングなどの軽い運動</string>
+    <string name="bp_result_hypertension_heading">測定された血圧数値が高い水準です。</string>
+    <string name="bp_result_hypertension_body">一般的にこの数値は医療専門家の相談と健康管理が推奨されます。</string>
+
+    <string name="grip_strength_m_30s_label">30代以下男性平均握力</string>
     <string name="grip_strength_m_30s_value">47.3kg</string>
-    <string name="grip_strength_m_40_50s_label">Average male grip strength (40s-50s)</string>
+    <string name="grip_strength_m_40_50s_label">40~50代男性平均握力</string>
     <string name="grip_strength_m_40_50s_value">45.5kg</string>
-    <string name="grip_strength_m_60s_label">Average male grip strength (60s)</string>
+    <string name="grip_strength_m_60s_label">60代男性平均握力</string>
     <string name="grip_strength_m_60s_value">40.9kg</string>
-    <string name="grip_strength_w_30s_label">Average female grip strength (under 30s)</string>
+    <string name="grip_strength_w_30s_label">30代以下女性平均握力</string>
     <string name="grip_strength_w_30s_value">27.4kg</string>
-    <string name="grip_strength_w_40_50s_label">Average female grip strength (40s-50s)</string>
+    <string name="grip_strength_w_40_50s_label">40~50代女性平均握力</string>
     <string name="grip_strength_w_40_50s_value">26.8kg</string>
-    <string name="grip_strength_w_60s_label">Average female grip strength (60s)</string>
+    <string name="grip_strength_w_60s_label">60代女性平均握力</string>
     <string name="grip_strength_w_60s_value">25.2kg</string>
-    <string name="grip_strength_result_body">※ The table above shows average values by age group provided by the Ministry of Culture, Sports and Tourism. We recommend continuous muscle maintenance and health management.</string>
+    <string name="grip_strength_result_body">※上記の表は文化体育観光部が提供する年齢帯別平均数値です。継続的な筋力維持と健康管理をお勧めします。</string>
 
-    <string name="location_signin">Organization Sign-In</string>
+    <string name="location_signin">機関ログイン</string>
 
-    <string name="lung_age_test">Lung Age Test</string>
-    <string name="blood_pressure_and_grip_strength">Blood Pressure, Grip Strength</string>
-    <string name="test_predescription_blood_pressure_title1">Blood Pressure Test</string>
-    <string name="test_predescription_blood_pressure_title2"></string>
-    <string name="test_predescription_grip_strength_title1">Grip Strength Test</string>
-    <string name="test_predescription_grip_strength_title2"></string>
-    <string name="dynamometer_disconnected_tts">Dynamometer disconnected.</string>
-    <string name="account_management_title">Account Management</string>
-    <string name="qr_code_issue_button_text">Issue QR code for sign in</string>
-    <string name="face_enroll_button_text">Face Registration</string>
-    <string name="close_button_description">Close button</string>
-    <string name="qr_print_success">QR code print successful</string>
-    <string name="qr_print_fail">QR code print failed</string>
-    <string name="qr_generation_fail">QR code generation failed</string>
-    <string name="qr_not_signed_in">No user is logged in. Cannot issue QR code.</string>
+    <string name="account_management_title">アカウント管理</string>
+    <string name="qr_code_user_name">%1$sさんの\nログイン用QRコードです:</string>
+    <string name="qr_code_image_description">生成されたQRコード</string>
+    <string name="not_signed_in_message">ログインしていません</string>
+    <string name="qr_code_print_button">QRコード出力</string>
+    <string name="face_enroll_button_text">顔登録/再登録</string>
 
-    <string name="qr_code_user_name">This is the sign in QR code for %1$s:</string>
-    <string name="qr_code_image_description">Generated QR Code</string>
-    <string name="not_signed_in_message">You are not signed in</string>
-    <string name="qr_code_print_button">Print QR Code</string>
+    <string name="captured_face_image_description">キャプチャされた顔</string>
+    <string name="face_enrollment_success">顔認識成功</string>
+    <string name="enroll_my_face_button">自分の顔を登録</string>
+    <string name="cancel_button">キャンセル</string>
 
-    <string name="captured_face_image_description">Captured Face</string>
-    <string name="face_enrollment_success">Face Registration Success</string>
-    <string name="enroll_my_face_button">Enroll My Face</string>
-    <string name="cancel_button">Cancel</string>
-    <string name="location">Location</string>
+    <string name="admin_page">管理者ページ</string>
+
+    <string name="terms_of_service_title_primary">Nenoon バイタルプラス</string>
+    <string name="terms_of_service_title_secondary">サービス利用のための個人情報および機密情報の収集・利用同意書</string>
+    <string name="terms_of_service_description">株式会社Pixelloは、継続的な健康データ管理サービスのために、以下のように個人情報および機密情報を収集・利用しようとします。内容を詳しくお読みになった上で、同意の可否を決定してください。</string>
+
+    <string name="personal_info_table_label">▶ 個人情報収集・利用内訳</string>
+    <string name="personal_info_table_column1">年齢、性別</string>
+    <string name="personal_info_table_column2">検査結果および健康状態管理</string>
+    <string name="personal_info_table_column3">1年</string>
+    <string name="personal_info_checkbox_description">※\t上記の個人情報収集・利用に対する同意を拒否する権利があります。\n\t\tただし、同意を拒否する場合、会員登録サービスの利用に制限を受ける可能性があります。</string>
+    <string name="personal_info_checkbox_question">⇨\t上記のように個人情報を収集・利用することに同意しますか？</string>
+
+    <string name="sensitive_info_table_label">▶ 機密情報収集・利用内訳</string>
+    <string name="sensitive_info_table_column1">目の健康、肺年齢、血圧、握力</string>
+    <string name="sensitive_info_table_column2">検査結果および健康状態管理</string>
+    <string name="sensitive_info_table_column3">6ヶ月</string>
+    <string name="sensitive_info_checkbox_description">※\t上記の機密情報収集・利用に対する同意を拒否する権利があります。\n\t\tただし、同意を拒否する場合、会員登録サービスの利用に制限を受ける可能性があります。</string>
+    <string name="sensitive_info_checkbox_question">⇨\t上記のように機密情報を収集・利用することに同意しますか？</string>
+
+    <string name="button_agree">同意します</string>
+    <string name="button_back">戻る</string>
+    <string name="table_header_item">項目</string>
+    <string name="table_header_purpose">収集・利用目的</string>
+    <string name="table_header_period">保有・利用期間</string>
+    <string name="checkbox_agree">同意</string>
+    <string name="checkbox_disagree">不同意</string>
+
+    <string name="face_id_terms_title_primary">Nenoon バイタルプラス</string>
+    <string name="face_id_terms_title_secondary">顔情報（生体情報）収集・利用個人情報同意書</string>
+    <string name="face_id_terms_description">株式会社Pixelloは、お客様の個人情報保護のため、「個人情報保護法」および該当施行令に従い、次のように顔情報（生体情報）の収集・利用について同意を得ようとします。下記の内容を細かくお読みになった上で、同意の可否を選択してください。</string>
+
+    <string name="face_id_table_label">▶ 個人情報収集・利用内訳</string>
+    <string name="face_id_table_column1">顔写真およびそれから\n生成・抽出される生体認識情報\n（顔情報）</string>
+    <string name="face_id_table_column2">本人識別および認証、\n出入管理、サービス提供など</string>
+    <string name="face_id_table_column3">収集・利用目的達成\nまで保有および利用し、\n目的達成時即時破棄。\nただし、関連法令に\n別途保管期間が定められた\n場合は該当期間まで保管。</string>
+
+    <string name="face_id_checkbox_description">※\t上記の個人情報収集・利用に対する同意を拒否する権利があります。\n\t\t同意拒否時、顔情報（生体情報）を基盤とするサービス利用が制限される\n\t\t可能性があります。</string>
+    <string name="face_id_checkbox_question">⇨\t上記のように個人情報を収集・利用することに同意しますか？</string>
+
+    <string name="face_id_disclaimer_1">※\t\t本同意書は「個人情報保護法」（第15条、第21条、第22条、第23条）、同施行令（第18条）、\n\t\t個人情報保護委員会生体情報保護ガイドライン(2021.9)など関連法令と指針を根拠に\n\t\t作成されました。</string>
+    <string name="face_id_disclaimer_2">※\t\t本同意書は、お客様が顔情報（生体情報）の収集・利用について十分に認知し、自発的に\n\t\t同意するという意味です。顔情報（生体情報）は「個人情報保護法」上の機密情報に\n\t\t該当し、別途の同意が要求されます。</string>
+
+    <string name="signup_terms_title_primary">Nenoon バイタルプラス</string>
+    <string name="signup_terms_title_secondary">会員登録とサービス利用のための個人情報および機密情報収集・利用同意書</string>
+    <string name="signup_terms_description">株式会社Pixelloは、会員登録および継続的な健康データ管理サービスのために、以下のように個人情報および機密情報を収集・利用しようとします。内容を詳しくお読みになった上で、同意の可否を決定してください。</string>
+
+    <string name="signup_personal_info_table_label">▶ 個人情報収集・利用内訳</string>
+    <string name="signup_personal_info_table_column1">氏名、年齢、性別、\nメール</string>
+    <string name="signup_personal_info_table_column2">会員識別および検査結果照会サービス提供</string>
+    <string name="signup_personal_info_table_column3">1年</string>
+    <string name="signup_personal_info_checkbox_description">※\t上記の個人情報収集・利用に対する同意を拒否する権利があります。\n\t\tただし、同意を拒否する場合、会員登録サービスの利用に制限を受ける可能性があります。</string>
+    <string name="signup_personal_info_checkbox_question">⇨\t上記のように個人情報を収集・利用することに同意しますか？</string>
+
+    <string name="signup_sensitive_info_table_label">▶ 機密情報収集・利用内訳</string>
+    <string name="signup_sensitive_info_table_column1">目の健康、肺年齢、\n血圧、握力</string>
+    <string name="signup_sensitive_info_table_column2">検査結果および健康状態管理</string>
+    <string name="signup_sensitive_info_table_column3">6ヶ月</string>
+    <string name="signup_sensitive_info_checkbox_description">※\t上記の機密情報収集・利用に対する同意を拒否する権利があります。\n\t\tただし、同意を拒否する場合、会員登録サービスの利用に制限を受ける可能性があります。</string>
+    <string name="signup_sensitive_info_checkbox_question">⇨\t上記のように機密情報を収集・利用することに同意しますか？</string>
+
+    <string name="id_pw_sign_in_title">ログイン</string>
+    <string name="id_pw_sign_in_id_hint">ID入力</string>
+    <string name="id_pw_sign_in_pw_hint">パスワード入力</string>
+    <string name="id_pw_sign_in_pw_hide">パスワード非表示</string>
+    <string name="id_pw_sign_in_pw_show">パスワード表示</string>
+    <string name="id_pw_sign_in_button">ログイン</string>
+
+    <string name="qr_sign_in_camera_bind_fail">カメラバインディング失敗</string>
+    <string name="default_user_name">ユーザー</string>
+    <string name="qr_sign_in_login_success">%1$sさんログイン成功！</string>
+
+    <string name="cross_eye_test">斜位、不等像視検査</string>
+    <string name="phoria_test">斜位検査</string>
+    <string name="aniseikonia_test">不等像視検査</string>
+    <string name="red_green_filter_glass_prompt">右に赤色、左に緑色が位置するように赤緑フィルターメガネを着用してください。</string>
+    <string name="tts_red_green_filter_glass_prompt">右に赤色、左に緑色が位置するように赤緑フィルターメガネを着用してください。</string>
+
+    <string name="face_detection_status_detected">顔検出: %1$s個</string>
+    <string name="face_detection_status_invalid_area">顔領域が小さすぎるか無効です。</string>
+    <string name="face_detection_status_size_issue">顔検出失敗（サイズ問題）。</string>
+    <string name="face_detection_status_no_face"></string>
+    <string name="image_conversion_failed">画像変換失敗。</string>
+    <string name="face_detection_error">顔検出エラー: %1$s</string>
+    <string name="camera_init_failed">カメラ初期化失敗。</string>
+    <string name="unsupported_image_format_error">サポートされていない画像形式: %1$s。YUV_420_888のみサポートされています。</string>
+    <string name="camera_binding_failed_log">カメラバインディング失敗</string>
+
+    <string name="bp170b_step_1_title">STEP 1.</string>
+    <string name="bp170b_step_1_prefix">血圧計（カフ）を&#160;</string>
+    <string name="bp170b_step_1_accent">左腕</string>
+    <string name="bp170b_step_1_suffix">に装着してください（血圧計に書かれた説明参照）。</string>
+    <string name="bp170b_step_2_title">STEP 2.</string>
+    <string name="bp170b_step_2_prefix">装着後、血圧計の&#160;</string>
+    <string name="bp170b_step_2_accent">開始/停止ボタン</string>
+    <string name="bp170b_step_2_suffix">を押してください。</string>
+    <string name="bp170b_initialization_required">血圧計の初期化が必要です。</string>
+    <string name="bp170b_turn_off_bp_monitor">血圧計の電源を切ってください。</string>
+
+    <string name="bp170b_measurement_completed_tts">測定が完了しました。結果を確認してください。</string>
+    <string name="bp170b_measurement_error_tts">血圧測定中にエラーが発生しました。再度お試しいただくか、管理者にお問い合わせください。</string>
+    <string name="bp170b_connection_lost_tts">血圧計の接続が切断されました。画面をタッチして再度お試しください。</string>
+    <string name="bp170b_measuring_message">血圧を測定中です。\n動いたり話したりしないでください。</string>
+    <string name="bp170b_stop_test">検査中断</string>
+    <string name="bp170b_measurement_completed_message">測定が完了しました。</string>
+    <string name="bp170b_check_results">結果確認</string>
+
+    <string name="ingrip_measurement_failed_tts">握力測定に失敗しました。再度お試しください。</string>
+    <string name="ingrip_error_title">検査失敗</string>
+    <string name="ingrip_retest">再検査</string>
+
+    <string name="ingrip_step_1_title">STEP 1.</string>
+    <string name="ingrip_step_1_instruction">足を肩幅に広げてまっすぐ立ってください。</string>
+    <string name="ingrip_step_2_title">STEP 2.</string>
+    <string name="ingrip_step_2_prefix">両腕を伸ばして体から少し離した状態で握力計を&#160;</string>
+    <string name="ingrip_step_2_accent">右手</string>
+    <string name="ingrip_step_2_suffix">で持ってください。</string>
+    <string name="ingrip_step_3_title">STEP 3.</string>
+    <string name="ingrip_step_3_prefix">準備ができたら&#160;</string>
+    <string name="ingrip_step_3_accent">キオスク画面の開始ボタン</string>
+    <string name="ingrip_step_3_suffix">を押した後、画面の説明に従って検査を進めます。</string>
+    <string name="ingrip_start_test">検査開始</string>
+
+    <string name="grip_strength_test">握力検査</string>
+    <string name="blood_pressure_test">血圧検査</string>
+
+    <string name="admin_loading_error">ページ読み込みエラー: %s</string>
+
+    <string name="bpbio320_instruction_start">血圧計に腕を入れて測定準備ボタンを押してください。</string>
+    <string name="bpbio320_measurement_in_progress">血圧を測定中です。\n動いたり話したりしないでください。</string>
+    <string name="bpbio320_measurement_completed">測定が完了しました。</string>
+    <string name="bpbio320_measurement_error_during">血圧測定中にエラーが発生しました。\n再度お試しいただくか、管理者にお問い合わせください。</string>
+    <string name="bpbio320_measurement_stop">検査中断</string>
+    <string name="bpbio320_check_result">結果確認</string>
+
+    <string name="bpbio320_error_message">血圧測定に失敗しました。再度お試しください。</string>
+    <string name="bpbio320_error_title">検査失敗</string>
+
+    <string name="bpbio320_instructions_step1_title">STEP 1.</string>
+    <string name="bpbio320_instructions_step1_text">血圧計の前に着席してください。</string>
+    <string name="bpbio320_instructions_step2_title">STEP 2.</string>
+    <string name="bpbio320_instructions_step2_prefix">ガイドに合わせて血圧計に </string>
+    <string name="bpbio320_instructions_step2_accent">右腕</string>
+    <string name="bpbio320_instructions_step2_suffix">を入れてください。</string>
+    <string name="bpbio320_instructions_step3_title">STEP 3.</string>
+    <string name="bpbio320_instructions_step3_prefix">準備ができたら </string>
+    <string name="bpbio320_instructions_step3_accent">キオスク画面の開始ボタン</string>
+    <string name="bpbio320_instructions_step3_suffix">を押してください。</string>
+    <string name="bpbio320_start_test_button">検査開始</string>
+
+    <string name="grip_strength_result">握力測定結果</string>
+    <string name="blood_pressure_result">血圧測定結果</string>
+
+    <string name="user_signup_title">会員登録</string>
+    <string name="user_signup_input_id_hint">ID入力</string>
+    <string name="user_signup_input_name_hint">名前入力</string>
+    <string name="user_signup_input_email_hint">メール（選択）</string>
+    <string name="user_signup_input_password_hint">パスワード入力</string>
+    <string name="user_signup_input_confirm_password_hint">パスワード確認</string>
+    <string name="user_signup_password_hide_cd">パスワード非表示</string>
+    <string name="user_signup_password_show_cd">パスワード表示</string>
+    <string name="user_signup_face_enrollment_button">より簡単なログインのための顔登録</string>
+    <string name="user_signup_face_enrollment_complete">顔登録完了</string>
+    <string name="user_signup_signup_and_qr_button">会員登録 &amp; QR生成</string>
+    <string name="user_signup_error_duplicate_id">別のIDを使用してください</string>
+    <string name="user_signup_error_signup_failed">会員登録に失敗しました</string>
+    <string name="user_signup_qr_description">QRコードを撮影しておくと\nより便利にログインできます。</string>
+    <string name="user_signup_qr_image_cd">生成されたQRコード</string>
+    <string name="user_signup_back_button">戻る</string>
+
+    <string name="start">スタート</string>
+
+    <string name="tts_bp170b_device_check">血圧計を探索中です。しばらくお待ちください。</string>
+    <string name="tts_bp170b_turn_off_device_initialization">血圧計の初期化が必要です。血圧計の開始/停止ボタンを一度だけ押してください。</string>
+    <string name="tts_bp170b_standby_instructions">血圧計を左腕に装着してください。装着後、血圧計の開始/停止ボタンを押してください。</string>
+    <string name="tts_bp170b_connected_message">血圧計が接続されました。測定を開始する準備ができました。</string>
+    <string name="tts_bp170b_connection_failed">血圧計の接続に失敗しました。再度お試しください。</string>
+
+    <string name="tts_bpbio320_instructions">まず血圧計の前に着席してください。次に、ガイドに合わせて血圧計に右腕を入れてください。準備ができたらキオスク画面の開始ボタンを押してください。</string>
+    <string name="tts_ingrip_instructions">まず足を肩幅に広げてまっすぐ立ってください。次に、両腕を伸ばして体から少し離した状態で握力計を右手で持ってください。準備ができたらキオスク画面の開始ボタンを押した後、画面の説明に従って検査を進めます。</string>
+
+    <string name="grip_instructions_step1_title">STEP 1.</string>
+    <string name="grip_instructions_step1_text">足を肩幅に広げてまっすぐ立ってください。</string>
+    <string name="grip_instructions_step2_title">STEP 2.</string>
+    <string name="grip_instructions_step2_prefix">両腕を伸ばして体から少し離した状態で握力計を&#160;</string>
+    <string name="grip_instructions_step2_accent">右手</string>
+    <string name="grip_instructions_step2_suffix">で持ってください。</string>
+    <string name="grip_instructions_step3_title">STEP 3.</string>
+    <string name="grip_instructions_step3_prefix">準備ができたら&#160;</string>
+    <string name="grip_instructions_step3_accent">キオスク画面の開始ボタン</string>
+    <string name="grip_instructions_step3_suffix">を押した後、画面の説明に従って検査を進めます。</string>
+    <string name="grip_instructions_start_button">検査開始</string>
+
+    <string name="grip_strength_ready_instruction_button_tts_right">右手で握力計を握ってください。下の測定開始ボタンを押した後、握力計をできるだけ強く握ってください。</string>
+    <string name="grip_strength_ready_instruction_button_tts_left">左手で握力計を握ってください。下の測定開始ボタンを押した後、握力計をできるだけ強く握ってください。</string>
+    <string name="grip_strength_press_button_and_squeeze_text">下の測定開始ボタンを押して\n握力計をできるだけ強く握ってください。</string>
+    <string name="grip_strength_start_button">測定開始</string>
+    <string name="grip_strength_measuring_text">測定中...</string>
+
+    <string name="result_print_screen_result_title">検査結果</string>
+    <string name="result_print_screen_visual_acuity_test">視力検査</string>
+    <string name="result_print_screen_presbyopia_test">老眼検査</string>
+    <string name="result_print_screen_amsler_grid_test">アムスラーグリッド検査</string>
+    <string name="result_print_screen_m_chart_test">M-Chart検査</string>
+    <string name="result_print_screen_strabismus_test">斜視検査</string>
+    <string name="result_print_screen_blood_pressure_test">血圧検査</string>
+    <string name="result_print_screen_grip_strength_test">握力検査</string>
+    <string name="result_print_screen_dementia_survey">認知症アンケート</string>
+    <string name="result_print_screen_pulmonary_function_test">肺年齢検査</string>
+    <string name="result_print_screen_test_completed">検査完了</string>
+    <string name="result_print_screen_test_not_conducted">検査未実施</string>
+    <string name="result_print_screen_coming_soon">準備中</string>
+    <string name="result_print_screen_loading_results">検査結果を読み込み中...</string>
+    <string name="result_print_screen_print_button">印刷</string>
+
+    <string name="pdf_range_header">範囲</string>
+    <string name="pdf_interpretation_header">解釈</string>
+    <string name="pdf_recommendation_header">推奨事項</string>
+    <string name="location">機関</string>
+
+    <string name="survey_loading_message">以前のアンケート記録を確認中...</string>
+    <string name="survey_error_title">ユーザーアカウントに問題が発生しました。</string>
+    <string name="survey_error_message">再度ログイン後にお試しください。</string>
+
+    <string name="user_face_update_title">顔アップデート</string>
+    <string name="user_face_update_initial_status">顔を正面に向けてください。</string>
+    <string name="user_face_update_ready_status">顔データ準備完了！</string>
+    <string name="user_face_update_scan_prompt">顔をスキャンしてください</string>
+    <string name="user_face_update_retry_scan">再度スキャンしてください</string>
+    <string name="user_face_update_captured_face_description">キャプチャされた顔</string>
+    <string name="user_face_update_capture_button">顔キャプチャ</string>
+    <string name="user_face_update_recapture_button">顔再キャプチャ</string>
+    <string name="user_face_update_save_button">自分の顔をアップデート</string>
+
+    <string name="pdf_past_results_title">過去の結果</string>
+    <string name="pdf_date_header">日付</string>
+    <string name="pdf_va_short">視力</string>
+    <string name="pdf_bp_short">血圧</string>
+    <string name="pdf_gs_short">握力</string>
+    <string name="pdf_pf_short">肺機能</string>
+    <string name="pdf_presbyopia_short">老眼</string>
+    <string name="pdf_amsler_short">黄斑変性</string>
+    <string name="pdf_mcharts_short">M-チャート</string>
+
+    <string name="user_signup_success_title">会員登録成功！</string>
+    <string name="user_signup_face_enrollment_prompt">より速いログインのために顔認証を登録しますか？</string>
+    <string name="user_signup_enroll_face_button">顔認証登録</string>
+    <string name="user_signup_continue_button">続ける</string>
+
+    <string name="select_test_tts">検査項目を選択してください</string>
+    <string name="printing">印刷中...</string>
+
+    <!-- Common -->
+    <string name="common_exit">終了</string>
+    <string name="common_back_arrow">←</string>
+    <string name="common_back_content_desc">戻る</string>
+    <string name="common_test_guide">検査方法</string>
+    <string name="common_view_test_guide">検査方法を見る</string>
+    <string name="common_start_test">検査開始</string>
+    <string name="common_next">次へ</string>
+    <string name="common_confirm">確認</string>
+    <string name="common_yes">はい</string>
+    <string name="common_no">いいえ</string>
+    <string name="common_step1">ステップ1</string>
+    <string name="common_step2">ステップ2</string>
+    <string name="common_step3">ステップ3</string>
+
+    <!-- GlassInstructionScreen -->
+    <string name="glass_instruction_title">メガネ着用のご案内</string>
+    <string name="glass_instruction_main_text">現在メガネを着用していますか？</string>
+
+    <!-- FilterInstructionScreen -->
+    <string name="filter_instruction_main_text_1">右に赤色、左に緑色が位置するように</string>
+    <string name="filter_instruction_main_text_2">赤緑フィルターメガネを着用してください。</string>
+
+    <!-- SawiIntroScreen -->
+    <string name="sawi_intro_title">斜位（潜伏斜視）検査</string>
+    <string name="sawi_intro_description">平常時は両目が正しく整列していますが、
+片目を隠すなど特定の状況でのみ目が回転する現象を斜位といいます。</string>
+
+    <!-- FudoIntroScreen -->
+    <string name="fudo_intro_title">不等像視検査</string>
+    <string name="fudo_intro_description">両目の網膜像サイズの差を確認する検査です。</string>
+
+    <!-- SawiHowToDialog -->
+    <string name="sawi_howto_title">斜位（潜伏斜視）検査方法</string>
+    <string name="sawi_howto_step1_desc">赤緑フィルターメガネを着用してください。</string>
+    <string name="sawi_howto_step2_desc">図の十字の位置を確認後、正しいボタンを押してください。</string>
+    <string name="sawi_howto_step3_desc">画面に表示される十字の位置を円の中心にドラッグして移動してください。</string>
+
+    <!-- FudoHowToDialog -->
+    <string name="fudo_howto_title">不等像視検査方法</string>
+    <string name="fudo_howto_step1_desc">赤緑フィルターメガネを着用してください。</string>
+    <string name="fudo_howto_step2_desc">画面に表示される図を確認した後、次へボタンを押してください。</string>
+    <string name="fudo_howto_step3_desc">2つの半円のサイズを同じに調整した後、次へボタンを押してください。</string>
+
+    <!-- SawiQuestionScreen -->
+    <string name="sawi_question_title">斜位検査</string>
+    <string name="fudo_question_title">不等像視検査</string>
+    <string name="common_test_title">検査</string>
+    <string name="sawi_question_main_text">画面の図がどのように見えますか？</string>
+    <string name="sawi_question_option1">円の中央に十字がある</string>
+    <string name="sawi_question_option2">円の中央に十字がない</string>
+    <string name="sawi_question_option3">十字だけ見える</string>
+    <string name="sawi_question_option4">円だけ見える</string>
+
+    <!-- FudoQuestionScreen -->
+    <string name="fudo_question_option1">円と十字が両方見える</string>
+    <string name="fudo_question_option2">円だけ見える</string>
+    <string name="fudo_question_option3">十字だけ見える</string>
+
+    <!-- FudoAdjustmentScreen -->
+    <string name="fudo_adjustment_main_text">両側の半円がどのように見えますか？</string>
+    <string name="fudo_adjustment_button_left_smaller">左が小さい</string>
+    <string name="fudo_adjustment_button_right_smaller">右が小さい</string>
+    <string name="fudo_adjustment_bottom_text">サイズが同じなら次へボタンを押してください</string>
+
+    <!-- FudoResultScreen -->
+    <string name="fudo_result_title">不等像視検査結果</string>
+    <string name="fudo_result_retinal_image_size_diff">網膜像サイズの差</string>
+    <string name="fudo_result_clinical_opinion">臨床的所見</string>
+    <string name="fudo_result_no_size_diff">両眼の網膜像サイズに差はありません。</string>
+    <string name="fudo_result_normal_desc">ほとんど症状がなく自覚もないため治療は必要ありません。定期観察中に不便な場合はご相談ください。</string>
+    <string name="fudo_result_right_eye_larger">右目 %1$.1f%%</string>
+    <string name="fudo_result_right_eye_larger_desc">右目の網膜像が大きいです。</string>
+    <string name="fudo_result_left_eye_larger">左目 %1$.1f%%</string>
+    <string name="fudo_result_left_eye_larger_desc">左目の網膜像が大きいです。</string>
+    <string name="fudo_result_none">両眼の網膜像サイズに差はありません。</string>
+    <string name="fudo_result_mild_aniseikonia">軽度不等像視</string>
+    <string name="fudo_result_severe_aniseikonia">重度不等像視</string>
+    <string name="fudo_result_desc_mild">長時間作業時に目の疲労感や集中力低下、不快感を感じることがあります。症状に応じてサイズ補正用コンタクトレンズの着用を検討できます。</string>
+    <string name="fudo_result_desc_severe">複視、立体視低下、距離感の歪みとともに頭痛を伴うことがあり、積極的な治療が必要です。</string>
+
+    <!-- SawiAdjustmentScreen -->
+    <string name="sawi_adjustment_main_text">画面に表示される十字を
+円の中心に来るように移動してください。</string>
+
+    <!-- SawiResultScreen -->
+    <string name="sawi_result_title">近見斜位検査結果</string>
+    <string name="sawi_result_normal_case_info">異常がない場合は以下のような結果になります。</string>
+    <string name="sawi_result_horizontal_phoria">水平斜位</string>
+    <string name="sawi_result_vertical_phoria">垂直斜位</string>
+    <string name="sawi_result_left_eye">左目</string>
+    <string name="sawi_result_right_eye">右目</string>
+    <string name="sawi_result_no_horizontal_phoria">水平斜位はありません。</string>
+    <string name="sawi_result_no_vertical_phoria">垂直斜位はありません。</string>
+    <string name="sawi_result_normal_status">正常です。</string>
+    <string name="sawi_result_normal_example">正常例</string>
+    <string name="sawi_result_normal_range_exo">外斜位(0 ~ 6.0△)</string>
+    <string name="sawi_result_normal_range_eso">内斜位(0 ~ 2.0△)</string>
+    <string name="sawi_result_normal_range_exo_eso_desc">外斜位、内斜位の範囲が正常です。</string>
+    <string name="sawi_result_normal_range_vertical_desc">垂直斜位の範囲が正常です。</string>
+    <string name="sawi_result_my_result">私の結果</string>
+    <string name="sawi_result_normal_range">正常範囲</string>
+    <string name="sawi_result_mild_esophoria">軽度内斜位</string>
+    <string name="sawi_result_severe_esophoria">重度内斜位</string>
+    <string name="sawi_result_mild_exophoria">軽度外斜位</string>
+    <string name="sawi_result_severe_exophoria">重度外斜位</string>
+    <string name="sawi_result_mild_vertical_phoria">軽度垂直斜位</string>
+    <string name="sawi_result_severe_vertical_phoria">重度垂直斜位</string>
+    <string name="sawi_result_desc_normal_eso">内斜位の範囲が正常です。</string>
+    <string name="sawi_result_desc_mild_eso">軽度の内斜位が疑われます。</string>
+    <string name="sawi_result_desc_severe_eso">内斜位が疑われますので専門家にご相談ください。</string>
+    <string name="sawi_result_desc_normal_exo">外斜位の範囲が正常です。</string>
+    <string name="sawi_result_desc_mild_exo">軽度の外斜位が疑われます。</string>
+    <string name="sawi_result_desc_severe_exo">外斜位が疑われますので専門家にご相談ください。</string>
+    <string name="sawi_result_desc_mild_vertical">軽度の垂直斜位が疑われます。</string>
+    <string name="sawi_result_desc_severe_vertical">垂直斜位が疑われますので専門家にご相談ください。</string>
+    <string name="sawi_result_suppression_suspicion">抑制の疑い</string>
+    <string name="sawi_result_desc_suppression_right">右目の抑制が疑われますので専門家にご相談ください。</string>
+    <string name="sawi_result_desc_suppression_left">左目の抑制が疑われますので専門家にご相談ください。</string>
+    <string name="sawi_result_error">エラー</string>
+    <string name="sawi_result_error_desc">不明な結果です。</string>
+    <string name="sawi_result_general_disclaimer">Nenoonアプリのすべての目の検査は自己検査であり、医学的所見ではないため、正確な判断と診断は病院を訪問して医師にご相談ください。目の状態や周辺環境またはデバイスによって検査結果が変わることがあります。</string>
+    <string name="sawi_result_print_button">結果を印刷する</string>
+    <string name="sawi_result_back_to_main_button">メインメニューに戻る</string>
+    <string name="fudo_result_right_eye_larger_format">右目の網膜像のサイズが %.1f%% 大きいです。</string>
+    <string name="fudo_result_left_eye_larger_format">左目の網膜像のサイズが %.1f%% 大きいです。</string>
+    <string name="printing_in_progress">結果を印刷しています。</string>
+    <string name="sawi_result_normal_range_vertical">(0 ~ 0.5△)</string>
+    <string name="sawi_result_normal">正常</string>
+
+    <!-- Strabismus Test TTS -->
+    <string name="tts_glass_instruction">現在メガネを着用していますか？</string>
+    <string name="tts_filter_instruction">右に赤色、左に緑色が位置するように赤緑フィルターメガネを着用してください。</string>
+    <string name="tts_sawi_question">画面の図がどのように見えますか？、1.円の中央に十字がある、2.円の中央に十字がない、3.十字だけ見える、4.円だけ見える</string>
+    <string name="tts_fudo_question">画面の図がどのように見えますか？、1.円と十字が両方見える、2.円だけ見える、3.十字だけ見える</string>
+    <string name="tts_sawi_adjustment">画面に表示される十字を円の中心に来るように移動してください。</string>
+    <string name="tts_fudo_adjustment">両側の半円のサイズを同じに調整した後、サイズが同じになったら次へを押してください。</string>
+    <string name="tts_result_screen">検査が完了しました。結果印刷ボタンを押して結果を印刷してください。</string>
 </resources>

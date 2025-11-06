@@ -1,7 +1,7 @@
 package com.pixelro.nenoonkiosk.feature.iotdevice.inGrip
 
 import androidx.lifecycle.ViewModel
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,8 +45,8 @@ class InGripViewModel
             _testFailed.value = false
         }
 
-        fun getGripStrengthData(): GripStrengthTestResult {
-            return GripStrengthTestResult(
+        fun getGripStrengthData(): GripStrengthInspectionResultContract {
+            return GripStrengthInspectionResultContract(
                 rightGrip = _rightGrip.value,
                 leftGrip = _leftGrip.value,
             )

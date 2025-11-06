@@ -15,6 +15,8 @@ import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginScreen
+import com.pixelro.nenoonkiosk.feature.termsofservice.faceid.FaceIdTermsOfServiceRoute
+import com.pixelro.nenoonkiosk.feature.termsofservice.signup.SignUpTermsOfServiceRoute
 
 enum class SignInScreenState {
     LocationSignIn,
@@ -92,24 +94,34 @@ fun SignInScreen(
         composable(
             SignInScreenState.SignUpTermsOfService.name,
         ) {
-            signUpTermsOfServiceScreen(
+            SignUpTermsOfServiceRoute(
                 onTermsAccepted = {
                     signInNavController.popBackStack(SignInScreenState.UserSignIn.name, false)
                     signInNavController.navigate(SignInScreenState.SignUp.name)
                 },
-                onTermsRejected = { signInNavController.popBackStack(SignInScreenState.UserSignIn.name, false) },
+                onTermsRejected = {
+                    signInNavController.popBackStack(
+                        SignInScreenState.UserSignIn.name,
+                        false
+                    )
+                },
             )
         }
         composable(
             SignInScreenState.FaceIdTermsOfService.name,
         ) {
-            FaceIdTermsOfServiceScreen(
+            FaceIdTermsOfServiceRoute(
                 onTermsAccepted = {
                     signInNavController.popBackStack(SignInScreenState.SignUp.name, false)
                     signInNavController.navigate(SignInScreenState.FaceEnrollment.name)
                     isFaceIdTermsOfServiceAccepted = true
                 },
-                onTermsRejected = { signInNavController.popBackStack(SignInScreenState.UserSignIn.name, false) },
+                onTermsRejected = {
+                    signInNavController.popBackStack(
+                        SignInScreenState.UserSignIn.name,
+                        false
+                    )
+                },
             )
         }
         composable(

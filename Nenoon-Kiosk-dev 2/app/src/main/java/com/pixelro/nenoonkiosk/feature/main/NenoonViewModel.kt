@@ -29,21 +29,20 @@ import com.pixelro.nenoonkiosk.core.constants.DebugConstants
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.util.dataprovider.TestType
-import com.pixelro.nenoonkiosk.feature.exerciseglasses.concentration_exercise.ConcentrationExerciseResult
-import com.pixelro.nenoonkiosk.feature.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResult
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
+import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.concentration_exercise.ConcentrationExerciseResult
+import com.pixelro.nenoonkiosk.feature.undeveloped.exerciseglasses.presbyopia_exercise.PresbyopiaExerciseResult
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
-import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.GripStrengthTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.gripStrength.result.GripStrengthInspectionResultContract
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.pulmonaryFunction.PulmonaryFunctionTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.children.ChildrenVisualAcuityTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.longdistance.LongVisualAcuityTestResult
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.shortdistance.ShortVisualAcuityTestResult
-import com.pixelro.nenoonkiosk.feature.survey.surveytype.SurveyGlass
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.children.ChildrenVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.longdistance.LongVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.survey.model.SurveyGlass
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.delay
@@ -140,8 +139,9 @@ class NenoonViewModel
 
         fun updateLanguage(language: String) {
             SharedPreferencesManager.putString("language", language)
-            getApplication<Application>().resources.configuration.setLocale(Locale(language))
-            TTS.tts.setLanguage(Locale(language))
+            val locale = Locale.forLanguageTag(language)
+            getApplication<Application>().resources.configuration.setLocale(locale)
+            TTS.setLanguage(language) 
             _settingsDialogState.update { SettingsDialogState.None }
         }
 
@@ -309,8 +309,8 @@ class NenoonViewModel
             }
         }
 
-        private val _selectedTestType = MutableStateFlow(TestType.None)
-        val selectedTestType: StateFlow<TestType> = _selectedTestType
+        private val _selectedTestType = MutableStateFlow(InspectionType.None)
+        val selectedTestType: StateFlow<InspectionType> = _selectedTestType
 
         fun updateToResumed() {
             _isResumed.update { true }
@@ -322,7 +322,7 @@ class NenoonViewModel
             _isPaused.update { true }
         }
 
-        fun updateSelectedTestType(testType: TestType) {
+        fun updateSelectedTestType(testType: InspectionType) {
             _selectedTestType.update { testType }
         }
 
@@ -418,37 +418,37 @@ class NenoonViewModel
             _isAniseikoniaTestDone.update { false }
         }
 
-        fun checkIsTestDone(testType: TestType): Boolean {
+        fun checkIsTestDone(testType: InspectionType): Boolean {
             when (testType) {
-                TestType.Phoria -> {
+                InspectionType.Phoria -> {
                     return _isPhoriaTestDone.value
                 }
 
-                TestType.Aniseikonia -> {
+                InspectionType.Aniseikonia -> {
                     return _isAniseikoniaTestDone.value
                 }
 
-                TestType.Presbyopia -> {
+                InspectionType.Presbyopia -> {
                     return _isPresbyopiaTestDone.value
                 }
 
-                TestType.ShortDistanceVisualAcuity -> {
+                InspectionType.ShortDistanceVisualAcuity -> {
                     return _isShortVisualAcuityTestDone.value
                 }
 
-                TestType.AmslerGrid -> {
+                InspectionType.AmslerGrid -> {
                     return _isAmslerGridTestDone.value
                 }
 
-                TestType.MChart -> {
+                InspectionType.MChart -> {
                     return _isMChartTestDone.value
                 }
 
-                TestType.BloodPressure -> {
+                InspectionType.BloodPressure -> {
                     return _isBloodPressureTestDone.value
                 }
 
-                TestType.GripStrength -> {
+                InspectionType.GripStrength -> {
                     return _isGripStrengthTestDone.value
                 }
 
@@ -458,23 +458,28 @@ class NenoonViewModel
             }
         }
 
-        var presbyopiaTestResult = PresbyopiaTestResult()
-        var shortVisualAcuityTestResult = ShortVisualAcuityTestResult()
-        var longVisualAcuityTestResult = LongVisualAcuityTestResult()
-        var childrenVisualAcuityTestResult = ChildrenVisualAcuityTestResult()
+        var presbyopiaInspectionResult = PresbyopiaInspectionResult()
+        var shortVisualAcuityInspectionResult = ShortVisualAcuityInspectionResult()
+        var longVisualAcuityInspectionResult = LongVisualAcuityInspectionResult()
+        var childrenVisualAcuityTestResult = ChildrenVisualAcuityInspectionResult()
         var amslerGridTestResult = AmslerGridTestResult()
-        var mChartTestResult = MChartTestResult()
-        var dementiaTestResult = DementiaTestResult(scores = List(14) { DementiaViewModel.DementiaAnswer.None })
+        var mChartInspectionResult = MChartInspectionResult()
+        var dementiaTestResult = DementiaInspectionResult(scores = List(14) { DementiaViewModel.DementiaAnswer.None })
         var presbyopiaExerciseResult = PresbyopiaExerciseResult()
         var concentrationExerciseResult = ConcentrationExerciseResult()
-        var bloodPressureTestResult = BloodPressureTestResult(systolic = 0, diastolic = 0, pulseRate = 0)
-        var gripStrengthTestResult = GripStrengthTestResult(leftGrip = 0.0, rightGrip = 0.0)
-        var pulmonaryFunctionTestResult = PulmonaryFunctionTestResult()
+        var bloodPressureTestResult = BloodPressureInspectionResult(systolic = 0, diastolic = 0, pulseRate = 0)
+        var gripStrengthTestResult = GripStrengthInspectionResultContract(leftGrip = 0.0, rightGrip = 0.0)
 
         init {
             checkBackgroundStatus()
             exoPlayer = ExoPlayer.Builder(getApplication()).build()
             exoPlayer.repeatMode = Player.REPEAT_MODE_ONE
             exoPlayer.volume = 0f
+        }
+
+        override fun onCleared() {
+            super.onCleared()
+            // ViewModel이 완전히 제거될 때 ExoPlayer 정리
+            exoPlayer.release()
         }
     }

@@ -10,6 +10,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.harang.data.repository.ScreenSaverRepository
 import com.pixelro.nenoonkiosk.R
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,7 +25,7 @@ class ScreenSaverViewModel
             isSignedIn: Boolean,
             exoPlayer: ExoPlayer,
         ) {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.Main) {
                 if (isSignedIn) {
                     val videoURI = screenSaverRepository.getScreenSaverVideoURI()
                     exoPlayer.setMediaItem(MediaItem.fromUri(videoURI))
@@ -33,7 +34,7 @@ class ScreenSaverViewModel
                     exoPlayer.setMediaItem(MediaItem.fromUri(RawResourceDataSource.buildRawResourceUri(R.raw.ad_sub)))
                 }
                 exoPlayer.prepare()
-                exoPlayer.playWhenReady
+                exoPlayer.playWhenReady = true
             }
         }
     }
