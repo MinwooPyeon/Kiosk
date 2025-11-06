@@ -68,7 +68,15 @@ object BP170BManager {
     val availableDevices: StateFlow<List<BluetoothDevice>> = _availableDevices
 
     private var isScanning = false
+
+    private val _currentDevice = MutableStateFlow<BluetoothDevice?>(null)
+    val currentDevice: StateFlow<BluetoothDevice?> = _currentDevice
+
     private var device: BluetoothDevice? = null // store connected device
+        set(value) {
+            field = value
+            _currentDevice.value = value
+        }
 
     private val _isInitialized = MutableStateFlow(false)
     val isInitialized: StateFlow<Boolean> = _isInitialized
@@ -97,39 +105,37 @@ object BP170BManager {
                     rssi: Int,
                     scanRecord: ByteArray?,
                 ) {
-                    // 이미 연결 시도 중인 디바이스는 제외
+                    // ===== 성능 최적화 =====
+                    // 변경 전: onLeScan이 메인 스레드에서 실행되므로 getConnectionState() 호출 시 UI 블로킹 발생
+                    // 변경 후: 무거운 작업(getConnectionState)을 Dispatchers.Default로 이동하여 메인 스레드 블로킹 방지
+
                     if (BP170BManager.device?.address == device.address) {
                         return
                     }
-                    
-                    if (device.name?.startsWith("BP170B") == true && !_availableDevices.value.contains(device)) {
-                        val connectionState = bluetoothManager?.getConnectionState(device, BluetoothProfile.GATT)
-                        val isAlreadyConnected = connectionState == BluetoothProfile.STATE_CONNECTED || 
-                                                 connectionState == BluetoothProfile.STATE_CONNECTING
-                        
-                        if (!isAlreadyConnected) {
-                            Log.d(TAG, "Found BP device: ${device.name} - ${device.address}")
-                            _availableDevices.value = _availableDevices.value + device
-                        } else {
-                            Log.d(TAG, "Skipping already connected device: ${device.name} - ${device.address} (state: $connectionState)")
-                        }
-                    } else if (device.name?.startsWith("BP170B") == true && _availableDevices.value.any { it.address == device.address }) {
-                        val connectionState = bluetoothManager?.getConnectionState(device, BluetoothProfile.GATT)
-                        val isNowConnected = connectionState == BluetoothProfile.STATE_CONNECTED || 
-                                            connectionState == BluetoothProfile.STATE_CONNECTING
-                        
-                        if (isNowConnected && BP170BManager.device?.address != device.address) {
-                            Log.d(TAG, "Removing device connected elsewhere: ${device.name} - ${device.address} (state: $connectionState)")
-                            _availableDevices.value = _availableDevices.value.filter { it.address != device.address }
+
+                    if (device.name?.startsWith("BP170B") == true) {
+                        // 백그라운드 스레드에서 연결 상태 체크 (메인 스레드 블로킹 방지)
+                        managerScope.launch(Dispatchers.Default) {
+                            val connectionState = bluetoothManager?.getConnectionState(device, BluetoothProfile.GATT)
+                            val isConnected = connectionState == BluetoothProfile.STATE_CONNECTED ||
+                                             connectionState == BluetoothProfile.STATE_CONNECTING
+
+                            // 연결되지 않은 기기만 리스트에 추가
+                            if (!isConnected && !_availableDevices.value.any { it.address == device.address }) {
+                                Log.d(TAG, "Found BP device: ${device.name} - ${device.address}")
+                                _availableDevices.value = _availableDevices.value + device
+                            }
                         }
                     }
                 }
             }
         bluetoothAdapter?.startLeScan(deviceListener)
         
+        // ===== 성능 최적화: 5초마다 체크 (200ms는 너무 빈번) =====
+        // 이미 리스트에 추가된 기기가 다른 곳에서 연결되면 제거하는 용도
         managerScope.launch {
             while (isScanning) {
-                delay(200)
+                delay(5000) // 200ms → 5초로 변경
                 if (isScanning) {
                     _availableDevices.value = _availableDevices.value.filter { scanDevice ->
                         if (BP170BManager.device?.address == scanDevice.address) {
@@ -163,6 +169,9 @@ object BP170BManager {
 
     @SuppressLint("MissingPermission")
     private fun filterConnectedDevices() {
+        // ===== 스캔 종료 후 최종 정리 (1회만 호출) =====
+        // 스캔 중에 다른 앱에서 연결된 기기를 최종적으로 제거
+        // 5초 주기 체크로 놓친 마지막 구간(0~5초)의 변화를 정리
         _availableDevices.value = _availableDevices.value.filter { scanDevice ->
             if (BP170BManager.device?.address == scanDevice.address) {
                 return@filter false
@@ -188,23 +197,30 @@ object BP170BManager {
         }
         
         val connectionState = bluetoothManager?.getConnectionState(device, BluetoothProfile.GATT)
-        val isConnectedElsewhere = connectionState == BluetoothProfile.STATE_CONNECTED || 
+        val isConnectedElsewhere = connectionState == BluetoothProfile.STATE_CONNECTED ||
                                    connectionState == BluetoothProfile.STATE_CONNECTING
-        
+
         if (isConnectedElsewhere) {
-            Log.w(TAG, "Device is already connected elsewhere, cannot connect: ${device.name} - ${device.address} (state: $connectionState)")
-            _availableDevices.value = _availableDevices.value.filter { it.address != device.address }
+            Log.w(TAG, "Device already connected elsewhere, cleaning up previous connection: ${device.name} - ${device.address} (state: $connectionState)")
+            // 기존 연결 정리
+            closeGatt()
+            // 정리 시간 대기 후 재연결 (비동기)
             managerScope.launch {
-                _connectionState.value = BluetoothConnectionState.ERROR("Device is already connected to another device")
+                delay(500)  // GATT 정리 대기
+                Log.d(TAG, "Retrying connection after cleanup: ${device.name} - ${device.address}")
+                _connectionState.value = BluetoothConnectionState.CONNECTING
+                _availableDevices.value = _availableDevices.value.filter { it.address != device.address }
+                BP170BManager.device = device
+                bluetoothGatt = device.connectGatt(appContext, true, gattCallback)
             }
             return
         }
-        
+
         // 연결 시도 시 즉시 상태 변경 및 디바이스 리스트에서 제거
         _connectionState.value = BluetoothConnectionState.CONNECTING
         _availableDevices.value = _availableDevices.value.filter { it.address != device.address }
         BP170BManager.device = device
-        bluetoothGatt = device.connectGatt(appContext, false, gattCallback)
+        bluetoothGatt = device.connectGatt(appContext, true, gattCallback)
     }
 
     private val gattCallback =
@@ -237,7 +253,13 @@ object BP170BManager {
 
                         BluetoothProfile.STATE_DISCONNECTED -> {
                             Log.d(TAG, "Disconnected from GATT server. Status: $status")
+                            pollingJob?.cancel() // Stop polling when disconnected
+                            testCompletionJob?.cancel() // Stop test completion observer
+                            _bloodPressureResult.value = null // Clear previous result
+                            _testCompletionTrigger.value = false // Reset trigger
+
                             if (status != BluetoothGatt.GATT_SUCCESS) {
+                                // 에러로 끊긴 경우만 정리
                                 Log.e(TAG, "Connection failed with status: $status")
                                 _connectionState.value = BluetoothConnectionState.ERROR("Connection failed with status: $status")
                                 device?.let { failedDevice ->
@@ -246,15 +268,14 @@ object BP170BManager {
                                         Log.d(TAG, "Re-added failed device to available list: ${failedDevice.address}")
                                     }
                                 }
+                                closeGatt()
+                                device = null
                             } else {
+                                // 정상 해제는 device와 gatt 유지 (자동 재연결 허용)
+                                Log.d(TAG, "Normal disconnection, keeping device for reconnection")
                                 _connectionState.value = BluetoothConnectionState.DISCONNECTED
+                                // device 유지, closeGatt() 안 함
                             }
-                            closeGatt()
-                            device = null
-                            pollingJob?.cancel() // Stop polling when disconnected
-                            testCompletionJob?.cancel() // Stop test completion observer
-                            _bloodPressureResult.value = null // Clear previous result
-                            _testCompletionTrigger.value = false // Reset trigger
                         }
 
                         else -> {
@@ -300,29 +321,9 @@ object BP170BManager {
                                     closeGatt()
                                     return@launch
                                 }
-                                
+
+                                // Notification 활성화 (폴링은 onDescriptorWrite에서 시작됨)
                                 enableNotifications(readCharacteristic)
-
-                                // Cancel any existing polling job before starting a new one
-                                pollingJob?.cancel()
-                                pollingJob =
-                                    managerScope.launch {
-                                        while (isActive && connectionState.value == BluetoothConnectionState.CONNECTED) {
-                                            sendDeviceStatusCheckCommand() // Poll for general status
-                                            delay(STATUS_POLLING_INTERVAL_MS)
-                                        }
-                                    }
-
-                                // Start observing _testCompletionTrigger
-                                testCompletionJob?.cancel()
-                                testCompletionJob =
-                                    managerScope.launch {
-                                        _testCompletionTrigger.filter { it }.collect {
-                                            Log.d(TAG, "0xBA command received. Sending command to fetch last measured data (0xC4).")
-                                            sendLastMeasuredDataCommand()
-                                            _testCompletionTrigger.value = false // Reset trigger after sending command
-                                        }
-                                    }
                             } ?: run {
                                 Log.e(TAG, "Nordic UART Service not found")
                                 _connectionState.value =
@@ -619,7 +620,6 @@ object BP170BManager {
                 super.onCharacteristicChanged(gatt, characteristic)
                 managerScope.launch {
                     val rawBytes = characteristic.value
-                    Log.d(TAG, "Characteristic changed - Raw bytes: ${rawBytes?.joinToString(" ") { String.format("%02X", it) }}")
                     val data = parseBP170Data(rawBytes, "change")
                     _dataReceived.value = data
                     Log.d(TAG, "Parsed data: $data")
@@ -634,7 +634,29 @@ object BP170BManager {
                 super.onDescriptorWrite(gatt, descriptor, status)
                 managerScope.launch {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
-                        Log.d(TAG, "Descriptor write success")
+                        Log.d(TAG, "Notifications enabled successfully, starting polling")
+                        _connectionState.value = BluetoothConnectionState.CONNECTED
+
+                        // Notification 활성화 완료 후 폴링 시작
+                        pollingJob?.cancel()
+                        pollingJob =
+                            managerScope.launch {
+                                while (isActive && connectionState.value == BluetoothConnectionState.CONNECTED) {
+                                    sendDeviceStatusCheckCommand()
+                                    delay(STATUS_POLLING_INTERVAL_MS)
+                                }
+                            }
+
+                        // 측정 완료 트리거 감시 시작
+                        testCompletionJob?.cancel()
+                        testCompletionJob =
+                            managerScope.launch {
+                                _testCompletionTrigger.filter { it }.collect {
+                                    Log.d(TAG, "0xBA command received. Sending command to fetch last measured data (0xC4).")
+                                    sendLastMeasuredDataCommand()
+                                    _testCompletionTrigger.value = false
+                                }
+                            }
                     } else {
                         Log.e(TAG, "Descriptor write failed, status: $status")
                         _connectionState.value =
@@ -744,7 +766,6 @@ object BP170BManager {
      * This command checks the current status of the device (e.g., setting clock, during measurement).
      */
     fun sendDeviceStatusCheckCommand() {
-        Log.d(TAG, "Sending APP Device Status Check command (0xC0)")
         writeCommand(createBP170Command(0xC0.toByte(), 0x00.toByte()))
     }
 

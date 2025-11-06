@@ -35,14 +35,14 @@ fun GripStrengthInstructionsScreen(
             titleText = stringResource(R.string.grip_instructions_step1_title),
             instructionText = stringResource(R.string.grip_instructions_step1_text),
         )
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         InstructionItem(
             titleText = stringResource(R.string.grip_instructions_step2_title),
             prefix = stringResource(R.string.grip_instructions_step2_prefix),
             accent = stringResource(R.string.grip_instructions_step2_accent),
             suffix = stringResource(R.string.grip_instructions_step2_suffix),
         )
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         InstructionItem(
             titleText = stringResource(R.string.grip_instructions_step3_title),
             prefix = stringResource(R.string.grip_instructions_step3_prefix),
@@ -62,7 +62,7 @@ fun GripStrengthInstructionsScreen(
     TtsWarning(ttsWarningActive)
 }
 
-@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "Instructions – Idle")
+@Preview(showBackground = true, widthDp = 800, heightDp = 1280, name = "Instructions – Idle")
 @Composable
 private fun Preview_Instructions_Idle() {
     GripStrengthInstructionsScreen(
@@ -73,9 +73,9 @@ private fun Preview_Instructions_Idle() {
 }
 
 
-@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "Instructions – Speaking")
+@Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "Instructions – Speaking")
 @Composable
-private fun Preview_Instructions_Speaking() {
+private fun Preview_Instructions_Horizental() {
     GripStrengthInstructionsScreen(
         state = GripInstructionsUiState(ttsSpeaking = true),
         ttsWarningActive = MutableStateFlow(false),

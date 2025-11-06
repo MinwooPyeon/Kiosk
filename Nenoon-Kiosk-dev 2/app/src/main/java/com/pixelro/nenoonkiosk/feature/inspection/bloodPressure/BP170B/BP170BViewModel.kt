@@ -28,6 +28,7 @@ class BP170BViewModel
         val dataReceived: StateFlow<String?> =
             BP170BManager.dataReceived
         val availableDevices: StateFlow<List<BluetoothDevice>> = BP170BManager.availableDevices
+        val currentDevice: StateFlow<BluetoothDevice?> = BP170BManager.currentDevice
         val isInitialized: StateFlow<Boolean> = BP170BManager.isInitialized
 
         // Add this StateFlow to expose the parsed blood pressure result

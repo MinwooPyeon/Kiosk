@@ -38,11 +38,15 @@ fun BP170BInProgressRoute(
     var screenState by remember { mutableStateOf(BpMeasurementScreenState.Measuring) }
     var isMeasurementInProgress by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isDeviceReady by remember { mutableStateOf(false) }
+    var hasShownStandbyWarning by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         screenState = BpMeasurementScreenState.Measuring
         isMeasurementInProgress = true
         errorMessage = null
+        isDeviceReady = false
+        hasShownStandbyWarning = false
     }
 
     // Timeout: 2 minutes

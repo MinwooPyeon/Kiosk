@@ -69,19 +69,23 @@ fun BloodPressureInspectionEntryPoint(
     val localNavController = rememberNavController()
     val bPBIO320ConnectionState by bpbiO320ViewModel.connectionState.collectAsState()
     val bP170BConnectionState by bP170BViewModel.connectionState.collectAsState()
+    val currentDevice by bP170BViewModel.currentDevice.collectAsState()
     val bloodPressureMonitorType = SharedPreferencesManager.getBloodPressureMonitorType()
 
-    LaunchedEffect(bPBIO320ConnectionState, bP170BConnectionState) {
-        if ((
-                bloodPressureMonitorType == SharedPreferencesManager.BloodPressureMonitorType.BPBIO320 &&
-                    bPBIO320ConnectionState == IB_SDKConst.DISCONNECTED
-            ) ||
-            (
-                bloodPressureMonitorType == SharedPreferencesManager.BloodPressureMonitorType.BP170B &&
-                    bP170BConnectionState == BP170BManager.BluetoothConnectionState.DISCONNECTED
-            )
-        ) {
-            localNavController.popBackStack(BloodPressureInspectionNavRoute.Start.name, false)
+    // Start 화면으로 복귀 조건:
+    // 1. ERROR 발생 시
+    // 2. DISCONNECTED이면서 currentDevice == null (직접 연결 해제)
+    LaunchedEffect(bP170BConnectionState, currentDevice) {
+        if (bloodPressureMonitorType == SharedPreferencesManager.BloodPressureMonitorType.BP170B) {
+            when {
+                bP170BConnectionState is BP170BManager.BluetoothConnectionState.ERROR -> {
+                    localNavController.popBackStack(BloodPressureInspectionNavRoute.Start.name, false)
+                }
+                bP170BConnectionState == BP170BManager.BluetoothConnectionState.DISCONNECTED && currentDevice == null -> {
+                    // 직접 연결 해제 (device == null)
+                    localNavController.popBackStack(BloodPressureInspectionNavRoute.Start.name, false)
+                }
+            }
         }
     }
 
