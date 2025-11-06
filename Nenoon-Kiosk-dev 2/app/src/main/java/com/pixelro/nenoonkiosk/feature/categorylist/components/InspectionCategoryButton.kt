@@ -66,7 +66,7 @@ fun InspectionCategoryButton(
                 fontSize = 40.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                textAlign = TextAlign.End, // 오른쪽 정렬
+                textAlign = TextAlign.End,
             )
         }
     }
