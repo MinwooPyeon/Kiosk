@@ -21,6 +21,7 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceContent
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
+import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartInspectionUiState
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.MChartInspectionResult
 
