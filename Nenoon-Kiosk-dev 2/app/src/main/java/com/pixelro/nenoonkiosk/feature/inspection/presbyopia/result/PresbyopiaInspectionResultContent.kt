@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -41,7 +42,7 @@ fun PresbyopiaInspectionResultContent(
     Column(
         modifier =
             Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .background(White)
                 .padding(40.dp),
         verticalArrangement = Arrangement.Center,

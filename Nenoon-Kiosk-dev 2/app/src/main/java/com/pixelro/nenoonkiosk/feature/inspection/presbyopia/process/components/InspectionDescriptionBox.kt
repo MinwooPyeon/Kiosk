@@ -55,8 +55,7 @@ fun InspectionDescriptionBox(
     Box(
         modifier = modifier
             .padding(start = 40.dp, top = 10.dp, end = 40.dp)
-            .fillMaxWidth()
-            .height(160.dp),
+            .fillMaxWidth(),
         contentAlignment = Alignment.Center,
     ) {
         val fontSize = getFontSize(uiState, savedLanguage)
