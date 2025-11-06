@@ -52,6 +52,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.set
 
 @Composable
 fun AccountManagementScreen(
@@ -83,11 +85,12 @@ fun AccountManagementScreen(
 
                 val width = bitMatrix.width
                 val height = bitMatrix.height
-                val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+                val bitmap = createBitmap(width, height, Bitmap.Config.RGB_565)
 
                 for (x in 0 until width) {
                     for (y in 0 until height) {
-                        bitmap.setPixel(x, y, if (bitMatrix[x, y]) android.graphics.Color.BLACK else android.graphics.Color.WHITE)
+                        bitmap[x, y] =
+                            if (bitMatrix[x, y]) android.graphics.Color.BLACK else android.graphics.Color.WHITE
                     }
                 }
                 localQrCodeBitmap = bitmap

@@ -23,7 +23,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.components.InspectionDivider
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.components.DarkBottomTripleButtons
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.components.LightBottomArea
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.components.LoadingView
-import com.pixelro.nenoonkiosk.feature.screen.TypewriterText
+import com.pixelro.nenoonkiosk.core.ui.TypewriterText
 import com.pixelro.nenoonkiosk.ui.theme.Black
 import com.pixelro.nenoonkiosk.ui.theme.White
 

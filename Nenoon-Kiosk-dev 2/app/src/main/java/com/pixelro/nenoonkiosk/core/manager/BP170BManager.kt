@@ -132,7 +132,7 @@ object BP170BManager {
                 delay(200)
                 if (isScanning) {
                     _availableDevices.value = _availableDevices.value.filter { scanDevice ->
-                        if (BP170BManager.device?.address == scanDevice.address) {
+                        if (device?.address == scanDevice.address) {
                             return@filter false
                         }
                         val state = bluetoothManager?.getConnectionState(scanDevice, BluetoothProfile.GATT) ?: BluetoothProfile.STATE_DISCONNECTED
