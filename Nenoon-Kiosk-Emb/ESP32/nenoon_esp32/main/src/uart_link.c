@@ -35,6 +35,7 @@ static media_index_t s_idx;
 
 static QueueHandle_t s_rxq;
 static frame_parser_t s_fp;
+static volatile bool s_ready = false;
 
 
 static const void* memmem_simple(const void* h, size_t hlen,
@@ -140,7 +141,10 @@ esp_err_t uart_link_init(void)
 
     frame_parser_init(&s_fp);
     s_rxq = xQueueCreate(4, sizeof(frame_t*));
+    if(!s_rxq) return ESP_ERR_NO_MEM;
+    
     xTaskCreate(link_rx_task, "link_rx", 4096, NULL, 5, NULL);
+    s_ready = true;
     ESP_LOGI(TAG, "uart_link ready");
     return ESP_OK;
 }
@@ -149,6 +153,7 @@ esp_err_t uart_link_init(void)
 
 esp_err_t uart_link_lic_mgr_login(const char *id, const char *pw, bool *ok)
 {
+	if (!s_ready || !s_rxq) return ESP_ERR_INVALID_STATE;
     char buf[96];
     int n = snprintf(buf, sizeof(buf), "%s:%s", id, pw);
     frame_t resp;
@@ -163,6 +168,7 @@ esp_err_t uart_link_lic_mgr_login(const char *id, const char *pw, bool *ok)
 
 esp_err_t uart_link_lic_issue(const char *app, const char *to, char *out_lic, size_t out_sz)
 {
+	if (!s_ready || !s_rxq) return ESP_ERR_INVALID_STATE;
     char buf[128];
     int n = snprintf(buf, sizeof(buf), "%s:%s", app, to);
     frame_t resp;
@@ -181,6 +187,7 @@ esp_err_t uart_link_lic_issue(const char *app, const char *to, char *out_lic, si
 
 esp_err_t uart_link_lic_validate(const char *lic, bool *ok)
 {
+	if (!s_ready || !s_rxq) return ESP_ERR_INVALID_STATE;
     frame_t resp;
     esp_err_t er = link_req_resp(FRAME_LIC_VALIDATE,
                             (const uint8_t*)lic, (uint16_t)strlen(lic),
@@ -193,6 +200,7 @@ esp_err_t uart_link_lic_validate(const char *lic, bool *ok)
 
 esp_err_t uart_link_lic_get_jwt(const char *lic, char *out_jwt, size_t out_sz)
 {
+	if (!s_ready || !s_rxq) return ESP_ERR_INVALID_STATE;
     frame_t resp;
     esp_err_t er = link_req_resp(FRAME_LIC_GET_JWT,
                             (const uint8_t*)lic, (uint16_t)strlen(lic),
@@ -212,7 +220,7 @@ esp_err_t uart_link_lic_get_jwt(const char *lic, char *out_jwt, size_t out_sz)
 esp_err_t uart_link_get_index(media_index_t *out)
 {
     if (!out) return ESP_ERR_INVALID_ARG;
-
+	if (!s_ready || !s_rxq) return ESP_ERR_INVALID_STATE;
     frame_t resp;
     esp_err_t er = link_req_resp(FRAME_MEDIA_INDEX_REQ, NULL, 0,
                                  &resp, pdMS_TO_TICKS(1000));
@@ -367,7 +375,7 @@ esp_err_t uart_link_get_index(media_index_t *out)
 
 esp_err_t uart_link_read_chunk(const char *id, uint64_t off, uint32_t len, uint8_t *out, uint32_t *out_len, uint32_t *out_crc){
 	if(!id || !out || !out_len || !out_crc) return ESP_ERR_INVALID_ARG;
-	
+	if(!s_ready || !s_rxq) return ESP_ERR_INVALID_STATE;	
 	uint8_t pl[1 + 64 + 8 + 4];
 	size_t p = 0;
 	size_t idlen = strlen(id);
