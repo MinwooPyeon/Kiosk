@@ -94,20 +94,20 @@
     <string name="test_list_dialog_re_button">Пересдать тест</string>
     <string name="test_list_dialog_cancel_button">Отмена</string>
     <string name="test_predescription_presbyopia_title1">Тест на пресбиопию</string>
-    <string name="test_predescription_presbyopia_title2">\n(Тест на возраст глаз)</string>
+    <string name="test_predescription_presbyopia_title2">(Тест на возраст глаз)</string>
     <string name="test_predescription_short_visual_acuity_title1">Тест на остроту зрения\nна короткие дистанции</string>
-    <string name="test_predescription_short_visual_acuity_title2">\n(Близкое расстояние)</string>
+    <string name="test_predescription_short_visual_acuity_title2">(Близкое расстояние)</string>
     <string name="test_predescription_amsler_title1">Тест сетки Амслера</string>
-    <string name="test_predescription_amsler_title2">\n(Тест на макулодистрофию)</string>
+    <string name="test_predescription_amsler_title2">(Тест на макулодистрофию)</string>
     <string name="test_predescription_mchart_title1">Тест M-CHART</string>
-    <string name="test_predescription_mchart_title2">\n(Тест на макулярную дегенерацию)</string>
+    <string name="test_predescription_mchart_title2">(Тест на макулярную дегенерацию)</string>
     <string name="test_list_screen_warning1">Обследования глаз в этом приложении являются самообследованием и </string>
     <string name="test_list_screen_warning2">не медицинскими данными,</string>
     <string name="test_list_screen_warning3">поэтому, пожалуйста, посетите больницу и проконсультируйтесь с врачом для точного диагноза. Результаты теста могут варьироваться в зависимости от состояния ваших глаз, окружающей среды или устройства</string>
 
     <!-- 목록 박스-->
     <string name="box_time_required">Ожидаемое время</string>
-    <string name="box_approximate">Примерно</string>
+    <string name="box_approximate">&#160;</string>
     <string name="box_minute">Минут</string>
 
     <!-- 설정 화면 -->
