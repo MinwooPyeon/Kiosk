@@ -64,6 +64,8 @@ fun BP170BManagementRoute(
     var previousState by remember { mutableStateOf<BP170BConnectionUiState?>(null) }
     var selectedDevice by remember { mutableStateOf(currentDevice) }  // Manager의 currentDevice로 초기화
     var isAutoReconnecting by remember { mutableStateOf(false) } // 자동 재연결 플래그
+    var reconnectAttempts by remember { mutableStateOf(0) } // 재연결 시도 횟수
+    val maxReconnectAttempts = 3 // 최대 재연결 시도 횟수
 
     // 초기 TTS
     LaunchedEffect(Unit) {
@@ -97,6 +99,7 @@ fun BP170BManagementRoute(
             when (state) {
                 is BP170BManager.BluetoothConnectionState.CONNECTED -> {
                     connecting = false
+                    reconnectAttempts = 0  // 연결 성공 시 시도 횟수 초기화
                     if (isAutoReconnecting) {
                         // 자동 재연결 완료 - 화면 유지, TTS 안내만
                         Log.d("BP170BManagementRoute", "Auto-reconnected successfully, keeping screen state")
@@ -115,30 +118,47 @@ fun BP170BManagementRoute(
                     }
                 }
                 is BP170BManager.BluetoothConnectionState.DISCONNECTED -> {
-                    Log.d("BP170BManagementRoute", "DISCONNECTED - screenState: $screenState, selectedDevice: ${selectedDevice?.name}")
+                    Log.d("BP170BManagementRoute", "DISCONNECTED - screenState: $screenState, selectedDevice: ${selectedDevice?.name}, attempts: $reconnectAttempts")
                     if (screenState != BP170BConnectionUiState.Standby &&
                         screenState != BP170BConnectionUiState.AwaitingStart
                     ) {
-                        // Standby/AwaitingStart가 아니면 자동 재연결 (별도 코루틴으로 실행)
-                        Log.d("BP170BManagementRoute", "Connection lost, scheduling auto-reconnect...")
-                        isAutoReconnecting = true
-                        // 별도 코루틴으로 재연결 시도 (메인 스레드 블로킹 방지)
-                        coroutineScope.launch {
-                            delay(2000) // 2초 대기
-                            selectedDevice?.let { device ->
-                                Log.d("BP170BManagementRoute", "Reconnecting to: ${device.name}")
-                                viewModel.connectToDevice(device)
-                            } ?: run {
-                                // 선택된 기기 없으면 스캔 시작
-                                Log.d("BP170BManagementRoute", "No selected device, starting scan")
-                                isAutoReconnecting = false
-                                screenState = BP170BConnectionUiState.DeviceSelection
+                        // 재연결 시도 횟수 체크
+                        if (reconnectAttempts < maxReconnectAttempts) {
+                            // 3번까지 자동 재연결 시도
+                            reconnectAttempts++
+                            isAutoReconnecting = true
+                            Log.d("BP170BManagementRoute", "Connection lost, auto-reconnect attempt $reconnectAttempts/$maxReconnectAttempts")
+
+                            coroutineScope.launch {
+                                delay(2000) // 2초 대기
+                                selectedDevice?.let { device ->
+                                    Log.d("BP170BManagementRoute", "Reconnecting to: ${device.name}")
+                                    viewModel.connectToDevice(device)
+                                } ?: run {
+                                    // 선택된 기기 없으면 스캔 시작
+                                    Log.d("BP170BManagementRoute", "No selected device, starting scan")
+                                    isAutoReconnecting = false
+                                    reconnectAttempts = 0
+                                    screenState = BP170BConnectionUiState.DeviceSelection
+                                }
                             }
+                        } else {
+                            // 3번 실패 → 에러 화면 표시
+                            Log.e("BP170BManagementRoute", "Auto-reconnect failed after $maxReconnectAttempts attempts")
+                            isAutoReconnecting = false
+                            reconnectAttempts = 0
+                            screenState = BP170BConnectionUiState.ConnectionError
+                            TTS.stopTTS()
+                            TTS.speechTTS(
+                                StringProvider.getString(R.string.tts_bp170b_connection_failed),
+                                TextToSpeech.QUEUE_ADD,
+                            )
                         }
                     } else {
                         // Standby/AwaitingStart에서는 초기화만
                         Log.d("BP170BManagementRoute", "DISCONNECTED in Standby/AwaitingStart state, clearing selectedDevice")
                         selectedDevice = null
+                        reconnectAttempts = 0
                     }
                 }
                 is BP170BManager.BluetoothConnectionState.CONNECTING -> {
@@ -150,22 +170,30 @@ fun BP170BManagementRoute(
                 }
                 is BP170BManager.BluetoothConnectionState.ERROR -> {
                     connecting = false
-                    if (screenState == BP170BConnectionUiState.Connecting) {
-                        screenState = BP170BConnectionUiState.DeviceSelection
-                        TTS.stopTTS()
-                        TTS.speechTTS(
-                            StringProvider.getString(R.string.tts_bp170b_connection_failed),
-                            TextToSpeech.QUEUE_ADD,
-                        )
+                    Log.e("BP170BManagementRoute", "Connection error: ${state.message}, isAutoReconnecting: $isAutoReconnecting, attempts: $reconnectAttempts")
+
+                    if (isAutoReconnecting) {
+                        // 자동 재연결 중 에러 발생 - 조용히 처리 (DISCONNECTED에서 다시 시도)
+                        isAutoReconnecting = false
                     } else {
-                        screenState = BP170BConnectionUiState.ConnectionError
-                        TTS.stopTTS()
-                        TTS.speechTTS(
-                            StringProvider.getString(R.string.tts_bp170b_connection_failed),
-                            TextToSpeech.QUEUE_ADD,
-                        )
+                        // 수동 연결 실패 - 화면 전환
+                        reconnectAttempts = 0  // 수동 연결 실패 시 카운트 초기화
+                        if (screenState == BP170BConnectionUiState.Connecting) {
+                            screenState = BP170BConnectionUiState.DeviceSelection
+                            TTS.stopTTS()
+                            TTS.speechTTS(
+                                StringProvider.getString(R.string.tts_bp170b_connection_failed),
+                                TextToSpeech.QUEUE_ADD,
+                            )
+                        } else {
+                            screenState = BP170BConnectionUiState.ConnectionError
+                            TTS.stopTTS()
+                            TTS.speechTTS(
+                                StringProvider.getString(R.string.tts_bp170b_connection_failed),
+                                TextToSpeech.QUEUE_ADD,
+                            )
+                        }
                     }
-                    Log.e("BP170BManagementRoute", "Connection error: ${state.message}")
                 }
                 else -> Unit
             }
