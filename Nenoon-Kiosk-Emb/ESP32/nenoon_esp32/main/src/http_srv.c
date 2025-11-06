@@ -50,6 +50,24 @@ static esp_err_t send_error(httpd_req_t* r, int code, const char* msg){
     return httpd_resp_sendstr(r, msg ? msg : "");
 }
 
+// ---- CORS helpers ----
+static inline void cors_add_headers(httpd_req_t* r){
+    // 개발/테스트 편의용 설정
+    httpd_resp_set_hdr(r, "Access-Control-Allow-Origin",  "*");
+    httpd_resp_set_hdr(r, "Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    httpd_resp_set_hdr(r, "Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Range");
+    // 브라우저에서 읽게 하고 싶은 응답 헤더 나열 (청크 CRC, 길이 등)
+    httpd_resp_set_hdr(r, "Access-Control-Expose-Headers","X-CRC32, Content-Length, Content-Type");
+}
+
+// 프리플라이트(OPTIONS) 공용 핸들러
+static esp_err_t h_cors_preflight(httpd_req_t* r){
+    cors_add_headers(r);
+    httpd_resp_set_status(r, "204 No Content");
+    httpd_resp_set_type(r, "text/plain");
+    return httpd_resp_sendstr(r, "");
+}
+
 static bool auth_ok(httpd_req_t* r){
     char tok[512];
     if(httpd_req_get_hdr_value_str(r, "Authorization", tok, sizeof(tok))!=ESP_OK) return false;
@@ -80,6 +98,7 @@ static esp_err_t h_lic_login(httpd_req_t* r){
     if(!ok) return send_error(r, 401, "login fail");
 
     httpd_resp_set_type(r, "application/json");
+    cors_add_headers(r);  
     return httpd_resp_sendstr(r, "{\"result\":1}");
 }
 
@@ -102,6 +121,7 @@ static esp_err_t h_lic_issue(httpd_req_t* r){
     char json[160];
     snprintf(json, sizeof(json), "{\"license\":\"%s\"}", lic);
     httpd_resp_set_type(r, "application/json");
+    cors_add_headers(r);  
     return httpd_resp_sendstr(r, json);
 }
 
@@ -120,6 +140,7 @@ static esp_err_t h_lic_validate(httpd_req_t* r){
         return send_error(r, 502, "bridge error");
 
     httpd_resp_set_type(r, "application/json");
+    cors_add_headers(r);  
     if(ok) return httpd_resp_sendstr(r, "{\"valid\":true}");
     else   return httpd_resp_sendstr(r, "{\"valid\":false}");
 }
@@ -141,6 +162,7 @@ static esp_err_t h_lic_jwt(httpd_req_t* r){
     char json[200];
     snprintf(json, sizeof(json), "{\"jwt\":\"%s\"}", jwt);
     httpd_resp_set_type(r, "application/json");
+    cors_add_headers(r);  
     return httpd_resp_sendstr(r, json);
 }
 
@@ -153,6 +175,7 @@ static esp_err_t h_media_index(httpd_req_t* r){
 	if(er != ESP_OK) return send_error(r, 502, "media index bridge error");
 	
 	httpd_resp_set_type(r, "application/json");
+	cors_add_headers(r);  
 	httpd_resp_sendstr(r, "{\"gen\":1,\"files\":[]}");
 	
 	return ESP_OK;
@@ -217,6 +240,7 @@ static esp_err_t h_media_chunk(httpd_req_t* r){
     char h[16];
     snprintf(h, sizeof(h), "%08" PRIx32, crc);
     httpd_resp_set_type(r, "application/octet-stream");
+    cors_add_headers(r);  
     httpd_resp_set_hdr(r, "X-CRC32", h);
 
     esp_err_t ret = httpd_resp_send(r, (const char*)buf, got);
@@ -245,6 +269,7 @@ static esp_err_t h_session_open(httpd_req_t* r){
     char json[320];
     snprintf(json,sizeof(json),"{\"token\":\"%s\",\"ttlMs\":600000}", token);
     httpd_resp_set_type(r,"application/json");
+    cors_add_headers(r);  
     return httpd_resp_sendstr(r, json);
 }
 
@@ -257,13 +282,14 @@ esp_err_t http_srv_start(void){
     cfg.lru_purge_enable = true;
     ESP_ERROR_CHECK(httpd_start(&s_srv, &cfg));
 
-    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/session/open", .method=HTTP_POST, 	.handler=h_session_open	});
-    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/login",    .method=HTTP_POST, 	.handler=h_lic_login    });
-    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/issue",    .method=HTTP_POST, 	.handler=h_lic_issue    });
-    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/validate", .method=HTTP_POST, 	.handler=h_lic_validate });
-    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/jwt",      .method=HTTP_POST, 	.handler=h_lic_jwt      });
-    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/media",      	.method=HTTP_GET, 	.handler=h_media_index	});
-    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/media/chunk",  .method=HTTP_GET, 	.handler=h_media_chunk	});
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/session/open", .method=HTTP_POST, 		.handler=h_session_open	});
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/login",    .method=HTTP_POST, 		.handler=h_lic_login    });
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/issue",    .method=HTTP_POST, 		.handler=h_lic_issue    });
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/validate", .method=HTTP_POST, 		.handler=h_lic_validate });
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/jwt",      .method=HTTP_POST, 		.handler=h_lic_jwt      });
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/media",      	.method=HTTP_GET, 		.handler=h_media_index	});
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/media/chunk",  .method=HTTP_GET, 		.handler=h_media_chunk	});
+    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="*", 				.method=HTTP_OPTIONS, 	.handler=h_cors_preflight });
     ESP_LOGI(TAG, "HTTP server started");
     return ESP_OK;
 }

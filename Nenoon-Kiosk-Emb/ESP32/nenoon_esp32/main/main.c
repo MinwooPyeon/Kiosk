@@ -30,8 +30,8 @@ static void task_session_mgr(void* arg){
 
 static void task_net_http(void* arg){
 	wifi_mgr_config_t wcfg ={
-		.ssid = "SSAFY-3F",
-		.pass = "ssafy123!"
+		.ssid = "5367",
+		.pass = "mwhp9276"
 	};
 	ESP_ERROR_CHECK(wifi_mgr_start(&wcfg));
 	bool got = wifi_mgr_wait_ip(pdMS_TO_TICKS(30000));
