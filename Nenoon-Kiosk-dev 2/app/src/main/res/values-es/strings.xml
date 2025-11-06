@@ -93,21 +93,22 @@
     <string name="test_list_dialog_warning4">\na continuación</string>
     <string name="test_list_dialog_re_button">Repetir examen</string>
     <string name="test_list_dialog_cancel_button">Cancelar</string>
-    <string name="test_predescription_presbyopia_title1">Examen de acomodación por presbicia</string>
-    <string name="test_predescription_presbyopia_title2">\n(Examen de edad ocular)</string>
-    <string name="test_predescription_short_visual_acuity_title1">Examen de agudeza visual</string>
-    <string name="test_predescription_short_visual_acuity_title2">\n(Visión cercana)</string>
-    <string name="test_predescription_amsler_title1">Examen de cuadrícula de Amsler</string>
-    <string name="test_predescription_amsler_title2">\n(Examen de degeneración macular)</string>
-    <string name="test_predescription_mchart_title1">Examen de metamorfopsia M-chart</string>
-    <string name="test_predescription_mchart_title2">\n(Examen de degeneración macular)</string>
+    <string name="test_predescription_presbyopia_title1">Examen de presbicia</string>
+    <string name="test_predescription_presbyopia_title2">(Edad ocular)</string>
+    <string name="test_predescription_short_visual_acuity_title1">Examen visual</string>
+    <string name="test_predescription_short_visual_acuity_title2">(Cerca)</string>
+    <string name="test_predescription_amsler_title1">Cuadrícula de Amsler</string>
+    <string name="test_predescription_amsler_title2">(Degeneración macular)</string>
+    <string name="test_predescription_mchart_title1">Examen M-chart</string>
+    <string name="test_predescription_mchart_title2">(Degeneración macular)</string>
+
     <string name="test_list_screen_warning1">"Todos los exámenes oculares son autodiagnósticos "</string>
     <string name="test_list_screen_warning2">"no son diagnóstico médico "</string>
     <string name="test_list_screen_warning3">por lo que se recomienda visitar un hospital para un diagnóstico preciso. Los resultados del examen pueden variar según el estado de sus ojos, el entorno circundante o el dispositivo</string>
 
     <!-- 목록 박스-->
-    <string name="box_time_required">Tiempo requerido</string>
-    <string name="box_approximate">Aprox.</string>
+    <string name="box_time_required">Tiempo</string>
+    <string name="box_approximate">&#160;</string>
     <string name="box_minute">min</string>
 
     <!-- 설정 화면 -->

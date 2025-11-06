@@ -24,10 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.ui.InspectionCategoryButton
 import com.pixelro.nenoonkiosk.core.ui.Logo
+import com.pixelro.nenoonkiosk.feature.categorylist.components.InspectionCategoryButton
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
@@ -35,16 +36,12 @@ import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 fun CategoryListScreenContent(
     isSignInSkipped: () -> Boolean,
     toEyeTestScreen: () -> Unit,
-    toContact: () -> Unit,
     toDementiaTestScreen: (InspectionType) -> Unit,
     toExternalDeviceTestListScreen: () -> Unit,
     toStrabismusTestListScreen: () -> Unit,
-    toIntroScreen: () -> Unit,
     toPrintScreen: () -> Unit,
     toAccountManagementScreen: () -> Unit,
-    toSettingsScreen: () -> Unit,
 ) {
-    val isPreview = LocalInspectionMode.current
 
     Column(
         modifier = Modifier
@@ -124,4 +121,25 @@ fun CategoryListScreenContent(
             )
         }
     }
+}
+
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFF1D71E1,
+    widthDp = 800,
+    heightDp = 1280,
+    apiLevel = 34,
+    name = "CategoryListScreenContent Preview"
+)
+@Composable
+fun CategoryListScreenContentPreview() {
+    CategoryListScreenContent(
+        isSignInSkipped = { false },
+        toEyeTestScreen = {},
+        toDementiaTestScreen = {},
+        toExternalDeviceTestListScreen = {},
+        toStrabismusTestListScreen = {},
+        toPrintScreen = {},
+        toAccountManagementScreen = {}
+    )
 }

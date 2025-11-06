@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -56,9 +57,9 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.Advertisement
-import com.pixelro.nenoonkiosk.core.ui.InspectionSelectionButton
 import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
+import com.pixelro.nenoonkiosk.core.ui.SimpleInspectionSelectionButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
 import com.pixelro.nenoonkiosk.core.ui.TopBarOrientation
 import com.pixelro.nenoonkiosk.core.util.StringProvider
@@ -205,7 +206,7 @@ private fun PortraitExternalDeviceLayout(
                 .background(color = White),
     ) {
         NenoonTopBar(
-            title = StringProvider.getString(R.string.test_list_tittle),
+            title = stringResource(R.string.test_list_tittle),
             orientation = TopBarOrientation.Vertical,
             showBackButton = true,
             onBackClicked = toIntroScreen,
@@ -246,7 +247,7 @@ private fun PortraitExternalDeviceLayout(
                         Modifier
                             .offset(x = 0.dp, y = shiftVal.dp),
                     text =
-                        StringProvider.getString(
+                        stringResource(
                             R.string.test_list_description,
                         ),
                     fontSize =
@@ -300,7 +301,7 @@ private fun LandscapeExternalDeviceLayout(
                 .background(color = White),
     ) {
         NenoonTopBar(
-            title = StringProvider.getString(R.string.test_list_tittle),
+            title = stringResource(R.string.test_list_tittle),
             orientation = TopBarOrientation.Horizontal,
             showBackButton = true,
             onBackClicked = toIntroScreen,
@@ -380,18 +381,16 @@ private fun LandscapeExternalDeviceLayout(
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 // 혈압 검사
-                InspectionSelectionButton(
+                SimpleInspectionSelectionButton(
                     modifier =
                         Modifier
                             .weight(1f)
                             .fillMaxWidth(),
-                    title1 =
-                        StringProvider.getString(
+                    title =
+                        stringResource(
                             R.string.test_predescription_blood_pressure_title1,
                         ),
-                    title2 =
-                        "",
-                    onClickMethod = {
+                    onClick = {
                         onSelectedTestChange(InspectionType.BloodPressure)
                         if (checkIsTestDone(InspectionType.BloodPressure)) {
                             onDialogShow()
@@ -399,26 +398,21 @@ private fun LandscapeExternalDeviceLayout(
                             toTestScreen(InspectionType.BloodPressure)
                         }
                     },
-                    alignment = Alignment.CenterStart,
                     isDone = isBloodPressureDone,
-                    isSenior = isSeniorValue,
                     time = 2,
-                    large = false,
                 )
 
                 // 악력 검사
-                InspectionSelectionButton(
+                SimpleInspectionSelectionButton(
                     modifier =
                         Modifier
                             .weight(1f)
                             .fillMaxWidth(),
-                    title1 =
-                        StringProvider.getString(
+                    title =
+                        stringResource(
                             R.string.test_predescription_grip_strength_title1,
                         ),
-                    title2 =
-                        "",
-                    onClickMethod = {
+                    onClick = {
                         onSelectedTestChange(InspectionType.GripStrength)
                         if (checkIsTestDone(InspectionType.GripStrength)) {
                             onDialogShow()
@@ -426,11 +420,8 @@ private fun LandscapeExternalDeviceLayout(
                             toTestScreen(InspectionType.GripStrength)
                         }
                     },
-                    alignment = Alignment.CenterStart,
                     isDone = isGripStrengthDone,
-                    isSenior = isSeniorValue,
                     time = 2,
-                    large = false,
                 )
             }
         }
@@ -449,17 +440,15 @@ private fun ExternalDeviceTestListSection(
     onDialogShow: () -> Unit,
 ) {
     Column {
-        val modifier = Modifier.weight(1f)
+        val modifier = Modifier.weight(1f).padding(start = 40.dp, end = 40.dp, bottom = 5.dp)
 
-        InspectionSelectionButton(
+        SimpleInspectionSelectionButton(
             modifier = modifier,
-            title1 =
-                StringProvider.getString(
+            title =
+                stringResource(
                     R.string.test_predescription_blood_pressure_title1,
                 ),
-            title2 =
-                "",
-            onClickMethod = {
+            onClick = {
                 onSelectedTestChange(InspectionType.BloodPressure)
                 if (checkIsTestDone(InspectionType.BloodPressure)) {
                     onDialogShow()
@@ -467,23 +456,18 @@ private fun ExternalDeviceTestListSection(
                     toTestScreen(InspectionType.BloodPressure)
                 }
             },
-            alignment = Alignment.CenterStart,
             isDone = isBloodPressureDone,
-            isSenior = isSeniorValue,
             time = 2,
-            large = true,
         )
         Spacer(modifier = Modifier.height(20.dp))
 
-        InspectionSelectionButton(
+        SimpleInspectionSelectionButton(
             modifier = modifier,
-            title1 =
-                StringProvider.getString(
+            title =
+                stringResource(
                     R.string.test_predescription_grip_strength_title1,
                 ),
-            title2 =
-                "",
-            onClickMethod = {
+            onClick = {
                 onSelectedTestChange(InspectionType.GripStrength)
                 if (checkIsTestDone(InspectionType.GripStrength)) {
                     onDialogShow()
@@ -491,11 +475,8 @@ private fun ExternalDeviceTestListSection(
                     toTestScreen(InspectionType.GripStrength)
                 }
             },
-            alignment = Alignment.CenterStart,
             isDone = isGripStrengthDone,
-            isSenior = isSeniorValue,
             time = 2,
-            large = true,
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -537,7 +518,7 @@ private fun ExternalDeviceWarningBar(warningTextSize: androidx.compose.ui.unit.T
                             ),
                     ) {
                         append(
-                            StringProvider.getString(
+                            stringResource(
                                 R.string.test_list_screen_warning1,
                             ),
                         )
@@ -551,7 +532,7 @@ private fun ExternalDeviceWarningBar(warningTextSize: androidx.compose.ui.unit.T
                             ),
                     ) {
                         append(
-                            StringProvider.getString(
+                            stringResource(
                                 R.string.test_list_screen_warning2,
                             ),
                         )
@@ -564,7 +545,7 @@ private fun ExternalDeviceWarningBar(warningTextSize: androidx.compose.ui.unit.T
                             ),
                     ) {
                         append(
-                            StringProvider.getString(
+                            stringResource(
                                 R.string.test_list_screen_warning3,
                             ),
                         )
@@ -576,7 +557,7 @@ private fun ExternalDeviceWarningBar(warningTextSize: androidx.compose.ui.unit.T
 
 // Preview
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "ExternalDevice - Senior False - Portrait", apiLevel = 34)
+@Preview(showBackground = true, widthDp = 800, heightDp = 1280, name = "ExternalDevice - Senior False - Portrait", apiLevel = 34)
 @Composable
 private fun Preview_ExternalDeviceTestList_SeniorFalse_Portrait() {
     val fakePager = rememberPagerState(
@@ -608,7 +589,7 @@ private fun Preview_ExternalDeviceTestList_SeniorFalse_Portrait() {
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "ExternalDevice - Senior True - Portrait (No Ads)", apiLevel = 34)
+@Preview(showBackground = true, widthDp = 800, heightDp = 1280, name = "ExternalDevice - Senior True - Portrait (No Ads)", apiLevel = 34)
 @Composable
 private fun Preview_ExternalDeviceTestList_SeniorTrue_Portrait() {
     val fakePager = rememberPagerState(
@@ -640,7 +621,7 @@ private fun Preview_ExternalDeviceTestList_SeniorTrue_Portrait() {
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 1422, heightDp = 888, name = "ExternalDevice - Senior False - Landscape", apiLevel = 34)
+@Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "ExternalDevice - Senior False - Landscape", apiLevel = 34)
 @Composable
 private fun Preview_ExternalDeviceTestList_SeniorFalse_Landscape() {
     val fakePager = rememberPagerState(
@@ -670,7 +651,7 @@ private fun Preview_ExternalDeviceTestList_SeniorFalse_Landscape() {
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 1422, heightDp = 888, name = "ExternalDevice - Senior True - Landscape (No Ads)", apiLevel = 34)
+@Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "ExternalDevice - Senior True - Landscape (No Ads)", apiLevel = 34)
 @Composable
 private fun Preview_ExternalDeviceTestList_SeniorTrue_Landscape() {
     val fakePager = rememberPagerState(

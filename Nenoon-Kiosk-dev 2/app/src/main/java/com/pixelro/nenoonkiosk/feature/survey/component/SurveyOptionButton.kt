@@ -24,11 +24,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 import com.pixelro.nenoonkiosk.ui.theme.selectLargeTextStyle
+import com.pixelro.nenoonkiosk.ui.theme.titleTextStyle
 
 /**
  * 설문조사 선택 버튼 컴포넌트
@@ -77,8 +79,9 @@ fun SurveyOptionButton(
     ) {
         Text(
             text = text,
-            style = selectLargeTextStyle,
+            style = titleTextStyle,
             color = textColor,
+            textAlign = TextAlign.Center,
         )
     }
 }
