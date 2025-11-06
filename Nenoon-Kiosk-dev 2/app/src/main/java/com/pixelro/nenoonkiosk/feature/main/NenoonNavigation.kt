@@ -119,7 +119,7 @@ fun nenoonApp(
             Modifier
                 .fillMaxSize(),
         navController = navController,
-        startDestination = NavConstants.ROUTE_CATEGORY_LIST,
+        startDestination = NavConstants.ROUTE_SPLASH,
         contentAlignment = Alignment.TopCenter,
     ) {
         /*

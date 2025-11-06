@@ -274,12 +274,27 @@ object InGripManager {
             }
         }
 
+        // API 33+ callback
         override fun onCharacteristicChanged(
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic,
             value: ByteArray
         ) {
             super.onCharacteristicChanged(gatt, characteristic, value)
+            managerScope.launch {
+                val data = parseInBodyHGSData(value, "change")
+                _dataReceived.value = data
+            }
+        }
+
+        // Legacy callback for API < 33
+        @Deprecated("Deprecated in API 33")
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt?,
+            characteristic: BluetoothGattCharacteristic
+        ) {
+            super.onCharacteristicChanged(gatt, characteristic)
+            val value = characteristic.value
             managerScope.launch {
                 val data = parseInBodyHGSData(value, "change")
                 _dataReceived.value = data

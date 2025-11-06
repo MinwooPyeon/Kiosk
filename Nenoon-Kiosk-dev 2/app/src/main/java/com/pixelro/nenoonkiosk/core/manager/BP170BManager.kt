@@ -620,7 +620,6 @@ object BP170BManager {
                 super.onCharacteristicChanged(gatt, characteristic)
                 managerScope.launch {
                     val rawBytes = characteristic.value
-                    Log.d(TAG, "Characteristic changed - Raw bytes: ${rawBytes?.joinToString(" ") { String.format("%02X", it) }}")
                     val data = parseBP170Data(rawBytes, "change")
                     _dataReceived.value = data
                     Log.d(TAG, "Parsed data: $data")
@@ -767,7 +766,6 @@ object BP170BManager {
      * This command checks the current status of the device (e.g., setting clock, during measurement).
      */
     fun sendDeviceStatusCheckCommand() {
-        Log.d(TAG, "Sending APP Device Status Check command (0xC0)")
         writeCommand(createBP170Command(0xC0.toByte(), 0x00.toByte()))
     }
 
