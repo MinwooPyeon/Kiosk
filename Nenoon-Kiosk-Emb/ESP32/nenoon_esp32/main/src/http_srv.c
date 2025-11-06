@@ -280,6 +280,7 @@ esp_err_t http_srv_start(void){
     httpd_config_t cfg = HTTPD_DEFAULT_CONFIG();
     cfg.server_port = 80;
     cfg.lru_purge_enable = true;
+    cfg.uri_match_fn = httpd_uri_match_wildcard;
     ESP_ERROR_CHECK(httpd_start(&s_srv, &cfg));
 
     httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/session/open", .method=HTTP_POST, 		.handler=h_session_open	});
@@ -289,7 +290,7 @@ esp_err_t http_srv_start(void){
     httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/lic/jwt",      .method=HTTP_POST, 		.handler=h_lic_jwt      });
     httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/media",      	.method=HTTP_GET, 		.handler=h_media_index	});
     httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/media/chunk",  .method=HTTP_GET, 		.handler=h_media_chunk	});
-    httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="*", 				.method=HTTP_OPTIONS, 	.handler=h_cors_preflight });
+	httpd_register_uri_handler(s_srv, &(httpd_uri_t){ .uri="/v1/*", 			.method=HTTP_OPTIONS, 	.handler=h_cors_preflight });
     ESP_LOGI(TAG, "HTTP server started");
     return ESP_OK;
 }
