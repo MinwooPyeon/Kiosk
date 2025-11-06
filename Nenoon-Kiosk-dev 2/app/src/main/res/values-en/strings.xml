@@ -55,8 +55,8 @@
     <string name="intropage_appname">Self-Diagnosis Kiosk</string>
     <string name="intropage_title">(Eyesight, macular degeneration, strabismus, presbyopia adjustment, blood pressure, grip strength, dementia, and lung age)</string>
     <string name="intropage_start_button">START</string>
-    <string name="intropage_description1">NENOON measures corrected vision</string>
-    <string name="intropage_description2">Please proceed with the test under daily conditions</string>
+    <string name="intropage_description1">NENOON measures corrected vision.</string>
+    <string name="intropage_description2">Please proceed with the test under daily conditions.</string>
 
     <!-- 문진표 작성 화면 -->
     <string name="back">Back</string>
