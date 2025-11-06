@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +34,7 @@ import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.components.BP170BConnectionStateContent
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.components.BPBIO320ConnectionStateContent
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.components.InGripConnectionStateContent
+import com.pixelro.nenoonkiosk.ui.theme.White
 
 /**
  * IoT 디바이스 관리 화면 공통 레이아웃
@@ -66,7 +66,7 @@ fun DeviceManagementScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(White)
             .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,

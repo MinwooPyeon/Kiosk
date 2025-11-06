@@ -31,20 +31,20 @@ fun BloodPressureInstructionsScreen(
             Modifier
                 .fillMaxSize()
                 .background(Color.White)
-                .padding(40.dp),
+                .padding(32.dp),
     ) {
         InstructionItem(
             titleText = stringResource(R.string.bpbio320_instructions_step1_title),
             instructionText = stringResource(R.string.bpbio320_instructions_step1_text),
         )
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(24.dp))
         InstructionItem(
             titleText = stringResource(R.string.bpbio320_instructions_step2_title),
             prefix = stringResource(R.string.bpbio320_instructions_step2_prefix),
             accent = stringResource(R.string.bpbio320_instructions_step2_accent),
             suffix = stringResource(R.string.bpbio320_instructions_step2_suffix),
         )
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(24.dp))
         InstructionItem(
             titleText = stringResource(R.string.bpbio320_instructions_step3_title),
             prefix = stringResource(R.string.bpbio320_instructions_step3_prefix),
@@ -58,7 +58,7 @@ fun BloodPressureInstructionsScreen(
                 if (state.ttsSpeaking) {
                     ttsWarningActive.update { true }
                 } else {
-                    toInProgress
+                    toInProgress()
                 }
             },
             text = stringResource(R.string.bpbio320_start_test_button),
@@ -78,7 +78,7 @@ private fun Preview_BP_Instructions_Idle() {
 }
 
 
-@Preview(showBackground = true, widthDp = 888, heightDp = 1422, name = "BP Instructions – Speaking")
+@Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "BP Instructions – Speaking")
 @Composable
 private fun Preview_BP_Instructions_Speaking() {
     BloodPressureInstructionsScreen(
