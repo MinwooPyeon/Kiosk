@@ -11,12 +11,12 @@ import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 @Composable
 fun InstructionItem(
@@ -34,8 +34,8 @@ fun InstructionItem(
             Icon(
                 painter = painterResource(R.drawable.check_circle_filled),
                 contentDescription = null,
-                tint = colorResource(R.color.main),
-                modifier = Modifier.size(64.dp),
+                tint = neNoon_blue,
+                modifier = Modifier.size(48.dp),
             )
             Spacer(modifier = Modifier.width(8.dp))
             StyledText(
@@ -43,9 +43,9 @@ fun InstructionItem(
                 style = TextStyle.Message,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start,
-                modifier = Modifier.padding(bottom = 4.dp),
             )
         }
+        Spacer(modifier = Modifier.size(8.dp))
         if (instructionText != null) {
             StyledText(
                 text = instructionText,
