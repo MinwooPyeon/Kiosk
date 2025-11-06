@@ -100,7 +100,7 @@ fun PhoriaAndAniseikoniaScreen(
     ) {
 
         NenoonTopBar(
-            title =  stringResource(R.string.cross_eye_test),
+            title = stringResource(R.string.test_list_tittle),
             orientation = if(isLandscape()) TopBarOrientation.Horizontal else TopBarOrientation.Vertical,
             showBackButton = true,
             onBackClicked = { onEvent(PhoriaAniseikoniaEvent.BackToIntro) },
