@@ -38,7 +38,6 @@ fun InspectionCategoryButton(
 
 ) {
 
-    Log.d("ddd", title)
     Card(
         modifier = modifier
             .fillMaxWidth()

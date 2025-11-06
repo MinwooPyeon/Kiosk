@@ -34,8 +34,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.ui.theme.Black
 import com.pixelro.nenoonkiosk.ui.theme.LightGray
+import com.pixelro.nenoonkiosk.ui.theme.LightGray3
+import com.pixelro.nenoonkiosk.ui.theme.LightGray4
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
+import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 /**
@@ -57,10 +61,11 @@ fun TwoLineInspectionSelectionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // 그라데이션: isDone일 때만 적용
     val gradientColors = if (isDone) {
-        listOf(Color(0xFFFAFAFA), Color(0xFFF0F0F0))
-    } else {
-        listOf(Color(0xFFFFFFFF), Color(0xFFFFFFFF))
+        listOf(LightGray4, LightGray3)
+    } else { neNoon_blue
+        listOf(White, White)
     }
 
     BoxWithConstraints(
@@ -79,12 +84,12 @@ fun TwoLineInspectionSelectionButton(
                 .shadow(
                     elevation = 3.dp,
                     shape = RoundedCornerShape(8.dp),
-                    ambientColor = Color.Black.copy(alpha = 0.25f),
-                    spotColor = Color.Black.copy(alpha = 0.2f)
+                    ambientColor = Black.copy(alpha = 0.25f),
+                    spotColor = Black.copy(alpha = 0.2f)
                 )
                 .clickable { onClick() },
             shape = RoundedCornerShape(8.dp),
-            backgroundColor = Color.White
+            backgroundColor = White
         ) {
             Row(
                 modifier = Modifier
@@ -130,32 +135,32 @@ fun TwoLineInspectionSelectionButton(
                         Text(
                             text = stringResource(R.string.box_time_required),
                             fontSize = 18.sp,
-                            color = Color.Black
+                            color = Black
                         )
                         Row {
                             Text(
                                 text = stringResource(R.string.box_approximate),
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black
+                                color = Black
                             )
                             Text(
                                 text = " ",
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black
+                                color = Black
                             )
                             Text(
                                 text = time.toString(),
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black
+                                color = Black
                             )
                             Text(
                                 text = stringResource(R.string.box_minute),
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black
+                                color = Black
                             )
                         }
                     }

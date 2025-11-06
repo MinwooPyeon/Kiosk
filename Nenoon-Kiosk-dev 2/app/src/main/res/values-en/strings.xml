@@ -35,7 +35,7 @@
     <!-- 화면 보호기 화면 -->
     <string name="screensaver_description1">Screen&#160;</string>
     <string name="screensaver_description2">Touch the screen</string>
-    <string name="screensaver_description3">\n to start the test"</string>
+    <string name="screensaver_description3">to start the test"</string>
 
     <!-- 권한 확인 화면 -->
     <string name="permission_requirement">Access permission is required to use the application</string>

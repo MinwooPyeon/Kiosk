@@ -42,7 +42,6 @@ fun CategoryListScreenContent(
     toPrintScreen: () -> Unit,
     toAccountManagementScreen: () -> Unit,
 ) {
-    val isPreview = LocalInspectionMode.current
 
     Column(
         modifier = Modifier
@@ -126,7 +125,7 @@ fun CategoryListScreenContent(
 
 @Preview(
     showBackground = true,
-    backgroundColor = 0xFF1D71E1, // neNoon_blue와 비슷한 파란색
+    backgroundColor = 0xFF1D71E1,
     widthDp = 800,
     heightDp = 1280,
     apiLevel = 34,
