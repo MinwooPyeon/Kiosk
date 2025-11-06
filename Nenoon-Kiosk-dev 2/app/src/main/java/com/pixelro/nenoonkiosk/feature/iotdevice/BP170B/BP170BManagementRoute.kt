@@ -1,14 +1,18 @@
 package com.pixelro.nenoonkiosk.feature.iotdevice.BP170B
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -20,8 +24,13 @@ import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BP170B.BP170BViewModel
 import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.components.BP170BConnectionStateContent
 import com.pixelro.nenoonkiosk.feature.iotdevice.common.DeviceManagementScreen
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
+@SuppressLint("MissingPermission")
 @Composable
 fun BP170BManagementRoute(
     navController: NavHostController,
@@ -32,18 +41,29 @@ fun BP170BManagementRoute(
 ) {
     val connectionState by viewModel.connectionState.collectAsState()
     val availableDevices by viewModel.availableDevices.collectAsState()
+    val currentDevice by viewModel.currentDevice.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
-    // 초기 상태를 연결 상태에 따라 설정
-    val initialState = if (connectionState == BP170BManager.BluetoothConnectionState.CONNECTED) {
-        BP170BConnectionUiState.AwaitingStart
-    } else {
-        BP170BConnectionUiState.Standby
+    // 초기 상태를 연결 상태에 따라 동적으로 계산 (derivedStateOf로 동기화)
+    val initialState by remember {
+        derivedStateOf {
+            when {
+                connectionState == BP170BManager.BluetoothConnectionState.CONNECTED ->
+                    BP170BConnectionUiState.AwaitingStart
+                connectionState == BP170BManager.BluetoothConnectionState.CONNECTING ||
+                    (connectionState == BP170BManager.BluetoothConnectionState.DISCONNECTED && currentDevice != null) ->
+                    BP170BConnectionUiState.Connecting  // Manager가 device 유지 중이면 재연결 시도 중
+                else ->
+                    BP170BConnectionUiState.Standby
+            }
+        }
     }
 
     var screenState by remember { mutableStateOf(initialState) }
     var connecting by remember { mutableStateOf(false) }
     var previousState by remember { mutableStateOf<BP170BConnectionUiState?>(null) }
-    var selectedDevice by remember { mutableStateOf<BluetoothDevice?>(null) }
+    var selectedDevice by remember { mutableStateOf(currentDevice) }  // Manager의 currentDevice로 초기화
+    var isAutoReconnecting by remember { mutableStateOf(false) } // 자동 재연결 플래그
 
     // 초기 TTS
     LaunchedEffect(Unit) {
@@ -77,7 +97,11 @@ fun BP170BManagementRoute(
             when (state) {
                 is BP170BManager.BluetoothConnectionState.CONNECTED -> {
                     connecting = false
-                    if (screenState == BP170BConnectionUiState.Connecting ||
+                    if (isAutoReconnecting) {
+                        // 자동 재연결 완료 - 화면 유지, TTS 안내만
+                        Log.d("BP170BManagementRoute", "Auto-reconnected successfully, keeping screen state")
+                        isAutoReconnecting = false
+                    } else if (screenState == BP170BConnectionUiState.Connecting ||
                         screenState == BP170BConnectionUiState.DeviceSelection
                     ) {
                         screenState = BP170BConnectionUiState.AwaitingStart
@@ -91,13 +115,37 @@ fun BP170BManagementRoute(
                     }
                 }
                 is BP170BManager.BluetoothConnectionState.DISCONNECTED -> {
-                    if (screenState != BP170BConnectionUiState.Standby) {
-                        screenState = BP170BConnectionUiState.DeviceSelection
+                    Log.d("BP170BManagementRoute", "DISCONNECTED - screenState: $screenState, selectedDevice: ${selectedDevice?.name}")
+                    if (screenState != BP170BConnectionUiState.Standby &&
+                        screenState != BP170BConnectionUiState.AwaitingStart
+                    ) {
+                        // Standby/AwaitingStart가 아니면 자동 재연결 (별도 코루틴으로 실행)
+                        Log.d("BP170BManagementRoute", "Connection lost, scheduling auto-reconnect...")
+                        isAutoReconnecting = true
+                        // 별도 코루틴으로 재연결 시도 (메인 스레드 블로킹 방지)
+                        coroutineScope.launch {
+                            delay(2000) // 2초 대기
+                            selectedDevice?.let { device ->
+                                Log.d("BP170BManagementRoute", "Reconnecting to: ${device.name}")
+                                viewModel.connectToDevice(device)
+                            } ?: run {
+                                // 선택된 기기 없으면 스캔 시작
+                                Log.d("BP170BManagementRoute", "No selected device, starting scan")
+                                isAutoReconnecting = false
+                                screenState = BP170BConnectionUiState.DeviceSelection
+                            }
+                        }
+                    } else {
+                        // Standby/AwaitingStart에서는 초기화만
+                        Log.d("BP170BManagementRoute", "DISCONNECTED in Standby/AwaitingStart state, clearing selectedDevice")
+                        selectedDevice = null
                     }
-                    selectedDevice = null
                 }
                 is BP170BManager.BluetoothConnectionState.CONNECTING -> {
-                    screenState = BP170BConnectionUiState.Connecting
+                    // 자동 재연결 중이 아닐 때만 화면 상태 변경
+                    if (!isAutoReconnecting) {
+                        screenState = BP170BConnectionUiState.Connecting
+                    }
                     connecting = true
                 }
                 is BP170BManager.BluetoothConnectionState.ERROR -> {
