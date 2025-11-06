@@ -37,6 +37,7 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+
     // 다국어
     androidResources {
         generateLocaleConfig = true
