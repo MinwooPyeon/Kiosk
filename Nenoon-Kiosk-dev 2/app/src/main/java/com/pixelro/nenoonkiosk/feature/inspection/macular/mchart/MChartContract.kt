@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.progress
+package com.pixelro.nenoonkiosk.feature.inspection.macular.mchart
 
 import com.pixelro.nenoonkiosk.R
 
