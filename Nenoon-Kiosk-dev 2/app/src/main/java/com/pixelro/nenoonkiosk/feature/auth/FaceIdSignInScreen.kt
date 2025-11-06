@@ -16,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -23,18 +25,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
@@ -53,9 +55,9 @@ fun FaceIdSignInScreen(
     val isSignedIn by loginViewModel.isUserSignedIn.collectAsState()
 
     var liveFaceDetectionStatus by remember { mutableStateOf("") }
-    var attemptsLeft by remember { mutableStateOf(AppConstants.FACE_ID_MAX_ATTEMPTS) }
+    var attemptsLeft by remember { mutableIntStateOf(AppConstants.FACE_ID_MAX_ATTEMPTS) }
     val coroutineScope = rememberCoroutineScope()
-    var previousAttemptTime by remember { mutableStateOf(System.currentTimeMillis()) }
+    var previousAttemptTime by remember { mutableLongStateOf(System.currentTimeMillis()) }
 
     LaunchedEffect(Unit) {
         coroutineScope.launch(Dispatchers.Main) {
@@ -88,12 +90,13 @@ fun FaceIdSignInScreen(
                 ) {
                     previousAttemptTime = System.currentTimeMillis()
                     coroutineScope.launch(Dispatchers.Main) {
-                        loginViewModel.userSignInWithFace(faceBitmap, updateIsSignedIn).also { success ->
-                            if (success) {
-                                delay(3000)
-                                updateIsSignedIn(true)
+                        loginViewModel.userSignInWithFace(faceBitmap, updateIsSignedIn)
+                            .also { success ->
+                                if (success) {
+                                    delay(3000)
+                                    updateIsSignedIn(true)
+                                }
                             }
-                        }
                     }
                     attemptsLeft--
                 } else {
@@ -120,12 +123,13 @@ fun FaceIdSignInScreen(
                 ) {
                     previousAttemptTime = System.currentTimeMillis()
                     coroutineScope.launch(Dispatchers.Main) {
-                        loginViewModel.userSignInWithFace(faceBitmap, updateIsSignedIn).also { success ->
-                            if (success) {
-                                delay(3000)
-                                updateIsSignedIn(true)
+                        loginViewModel.userSignInWithFace(faceBitmap, updateIsSignedIn)
+                            .also { success ->
+                                if (success) {
+                                    delay(3000)
+                                    updateIsSignedIn(true)
+                                }
                             }
-                        }
                     }
                     attemptsLeft--
                 } else {
@@ -153,6 +157,8 @@ private fun PortraitFaceIdSignInScreen(
     onDetectionStatus: (String) -> Unit,
     onBackClick: () -> Unit
 ) {
+    val isPreview = LocalInspectionMode.current
+
     Column(
         modifier = Modifier
             .padding(40.dp)
@@ -161,7 +167,7 @@ private fun PortraitFaceIdSignInScreen(
         verticalArrangement = Arrangement.Center,
     ) {
         StyledText(
-            StringProvider.getString(R.string.face_id_sign_in_title),
+            stringResource(id = R.string.face_id_sign_in_title),
             style = TextStyle.Title,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -179,11 +185,15 @@ private fun PortraitFaceIdSignInScreen(
                 .clip(RoundedCornerShape(16.dp))
                 .align(Alignment.CenterHorizontally),
         ) {
-            CameraPreview(
-                modifier = Modifier.fillMaxSize(),
-                onFaceDetected = onFaceDetected,
-                onDetectionStatus = onDetectionStatus,
-            )
+            if (isPreview) {
+                StyledText(text = "카메라 프리뷰")
+            } else {
+                CameraPreview(
+                    modifier = Modifier.fillMaxSize(),
+                    onFaceDetected = onFaceDetected,
+                    onDetectionStatus = onDetectionStatus,
+                )
+            }
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -199,13 +209,13 @@ private fun PortraitFaceIdSignInScreen(
                 faceRecognitionStatus + " (${AppConstants.FACE_ID_MAX_ATTEMPTS - attemptsLeft + 1}/${AppConstants.FACE_ID_MAX_ATTEMPTS})",
             )
         } else {
-            StyledText(StringProvider.getString(R.string.signin_vm_face_no_match), TextStyle.Error)
+            StyledText(stringResource(id = R.string.signin_vm_face_no_match), TextStyle.Error)
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
         PrimaryButton(
-            text = StringProvider.getString(R.string.back),
+            text = stringResource(id = R.string.back),
             onClick = onBackClick,
         )
     }
@@ -222,6 +232,8 @@ private fun LandscapeFaceIdSignInScreen(
     onDetectionStatus: (String) -> Unit,
     onBackClick: () -> Unit
 ) {
+    val isPreview = LocalInspectionMode.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -230,7 +242,7 @@ private fun LandscapeFaceIdSignInScreen(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         StyledText(
-            StringProvider.getString(R.string.face_id_sign_in_title),
+            stringResource(id = R.string.face_id_sign_in_title),
             style = TextStyle.Title,
             textAlign = TextAlign.Center,
         )
@@ -238,14 +250,18 @@ private fun LandscapeFaceIdSignInScreen(
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .size(300.dp)
+                .size(400.dp)  // 변경: 300dp → 400dp
                 .clip(RoundedCornerShape(16.dp)),
         ) {
-            CameraPreview(
-                modifier = Modifier.fillMaxSize(),
-                onFaceDetected = onFaceDetected,
-                onDetectionStatus = onDetectionStatus,
-            )
+            if (isPreview) {
+                StyledText(text = "카메라 프리뷰")
+            } else {
+                CameraPreview(
+                    modifier = Modifier.fillMaxSize(),
+                    onFaceDetected = onFaceDetected,
+                    onDetectionStatus = onDetectionStatus,
+                )
+            }
         }
 
         if (attemptsLeft > 0) {
@@ -257,11 +273,11 @@ private fun LandscapeFaceIdSignInScreen(
                 faceRecognitionStatus + " (${AppConstants.FACE_ID_MAX_ATTEMPTS - attemptsLeft + 1}/${AppConstants.FACE_ID_MAX_ATTEMPTS})",
             )
         } else {
-            StyledText(StringProvider.getString(R.string.signin_vm_face_no_match), TextStyle.Error)
+            StyledText(stringResource(id = R.string.signin_vm_face_no_match), TextStyle.Error)
         }
 
         PrimaryButton(
-            text = StringProvider.getString(R.string.back),
+            text = stringResource(id = R.string.back),
             onClick = onBackClick,
             modifier = Modifier.width(250.dp)
         )

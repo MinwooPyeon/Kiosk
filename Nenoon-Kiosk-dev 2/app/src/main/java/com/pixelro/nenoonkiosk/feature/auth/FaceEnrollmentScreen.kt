@@ -23,16 +23,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
@@ -130,6 +130,8 @@ private fun PortraitFaceEnrollmentScreen(
     onEnrollClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
+    val isPreview = LocalInspectionMode.current
+
     Column(
         modifier = Modifier
             .padding(40.dp)
@@ -138,7 +140,7 @@ private fun PortraitFaceEnrollmentScreen(
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         StyledText(
-            text = StringProvider.getString(R.string.user_signup_title),
+            text = stringResource(id = R.string.user_signup_title),
             style = TextStyle.Title,
         )
 
@@ -150,17 +152,28 @@ private fun PortraitFaceEnrollmentScreen(
                 .clip(MaterialTheme.shapes.medium)
                 .align(Alignment.CenterHorizontally),
         ) {
-            CameraPreview(
-                modifier = Modifier.fillMaxSize(),
-                onFaceDetected = onFaceDetected,
-                onDetectionStatus = onDetectionStatus,
-            )
+            if (isPreview) {
+                // Preview: Mock 카메라
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    StyledText(text = "카메라 프리뷰")
+                }
+            } else {
+                // 실제 앱: 카메라
+                CameraPreview(
+                    modifier = Modifier.fillMaxSize(),
+                    onFaceDetected = onFaceDetected,
+                    onDetectionStatus = onDetectionStatus,
+                )
+            }
 
             lastDetectedFaceBitmap?.let { bitmap ->
                 if (!bitmap.isRecycled) {
                     Image(
                         bitmap = bitmap.asImageBitmap(),
-                        contentDescription = StringProvider.getString(R.string.captured_face_image_description),
+                        contentDescription = stringResource(id = R.string.captured_face_image_description),
                         modifier = Modifier
                             .size(150.dp)
                             .align(Alignment.BottomEnd)
@@ -174,7 +187,7 @@ private fun PortraitFaceEnrollmentScreen(
 
         StyledText(
             text = if (isFaceEnrollmentDataReady) {
-                StringProvider.getString(R.string.face_enrollment_success)
+                stringResource(id = R.string.face_enrollment_success)
             } else {
                 faceDetectionStatus
             },
@@ -189,7 +202,7 @@ private fun PortraitFaceEnrollmentScreen(
 
         Column {
             PrimaryButton(
-                text = StringProvider.getString(R.string.user_signup_enroll_face_button),
+                text = stringResource(id = R.string.user_signup_enroll_face_button),
                 enabled = isFaceEnrollmentDataReady,
                 onClick = onEnrollClick,
             )
@@ -197,7 +210,7 @@ private fun PortraitFaceEnrollmentScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             PrimaryButton(
-                text = StringProvider.getString(R.string.back),
+                text = stringResource(id = R.string.back),
                 onClick = onBackClick,
             )
         }
@@ -215,6 +228,8 @@ private fun LandscapeFaceEnrollmentScreen(
     onEnrollClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
+    val isPreview = LocalInspectionMode.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -223,7 +238,7 @@ private fun LandscapeFaceEnrollmentScreen(
         verticalArrangement = Arrangement.Center
     ) {
         StyledText(
-            text = StringProvider.getString(R.string.user_signup_title),
+            text = stringResource(id = R.string.user_signup_title),
             style = TextStyle.Title,
         )
 
@@ -235,17 +250,28 @@ private fun LandscapeFaceEnrollmentScreen(
                 .size(400.dp)
                 .clip(MaterialTheme.shapes.medium),
         ) {
-            CameraPreview(
-                modifier = Modifier.fillMaxSize(),
-                onFaceDetected = onFaceDetected,
-                onDetectionStatus = onDetectionStatus,
-            )
+            if (isPreview) {
+                // Preview: Mock 카메라
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    StyledText(text = "카메라 프리뷰")
+                }
+            } else {
+                // 실제 앱: 카메라
+                CameraPreview(
+                    modifier = Modifier.fillMaxSize(),
+                    onFaceDetected = onFaceDetected,
+                    onDetectionStatus = onDetectionStatus,
+                )
+            }
 
             lastDetectedFaceBitmap?.let { bitmap ->
                 if (!bitmap.isRecycled) {
                     Image(
                         bitmap = bitmap.asImageBitmap(),
-                        contentDescription = StringProvider.getString(R.string.captured_face_image_description),
+                        contentDescription = stringResource(id = R.string.captured_face_image_description),
                         modifier = Modifier
                             .size(120.dp)
                             .align(Alignment.BottomEnd)
@@ -259,7 +285,7 @@ private fun LandscapeFaceEnrollmentScreen(
 
         StyledText(
             text = if (isFaceEnrollmentDataReady) {
-                StringProvider.getString(R.string.face_enrollment_success)
+                stringResource(id = R.string.face_enrollment_success)
             } else {
                 faceDetectionStatus
             },
@@ -277,7 +303,7 @@ private fun LandscapeFaceEnrollmentScreen(
             modifier = Modifier.width(400.dp)
         ) {
             PrimaryButton(
-                text = StringProvider.getString(R.string.user_signup_enroll_face_button),
+                text = stringResource(id = R.string.user_signup_enroll_face_button),
                 enabled = isFaceEnrollmentDataReady,
                 onClick = onEnrollClick,
                 modifier = Modifier.fillMaxWidth()
@@ -286,7 +312,7 @@ private fun LandscapeFaceEnrollmentScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             PrimaryButton(
-                text = StringProvider.getString(R.string.back),
+                text = stringResource(id = R.string.back),
                 onClick = onBackClick,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -296,6 +322,7 @@ private fun LandscapeFaceEnrollmentScreen(
 
 @Preview(
     showBackground = true,
+    backgroundColor = 0xFF000000,
     widthDp = 800,
     heightDp = 1280,
     name = "FaceEnrollment - Portrait"

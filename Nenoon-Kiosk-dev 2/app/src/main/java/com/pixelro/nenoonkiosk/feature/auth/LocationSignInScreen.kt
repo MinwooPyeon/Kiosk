@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -43,7 +44,6 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.ui.theme.NEURAL200
@@ -147,7 +147,7 @@ private fun PortraitLocationSignInScreen(
             Spacer(modifier = Modifier.height(50.dp))
 
             Text(
-                text = StringProvider.getString(R.string.location_signin),
+                text = stringResource(id = R.string.location_signin),
                 color = NEURAL200,
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 32.sp
@@ -165,7 +165,7 @@ private fun PortraitLocationSignInScreen(
             Spacer(modifier = Modifier.height(40.dp))
 
             PrimaryButton(
-                text = StringProvider.getString(R.string.signin),
+                text = stringResource(id = R.string.signin),
                 onClick = {
                     if (!onValidate(id, password)) {
                         return@PrimaryButton
@@ -185,7 +185,7 @@ private fun PortraitLocationSignInScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = StringProvider.getString(R.string.start_without_signin),
+                text = stringResource(id = R.string.start_without_signin),
                 fontSize = 38.sp,
                 color = Color.Black,
                 textDecoration = TextDecoration.Underline,
@@ -217,7 +217,6 @@ private fun LandscapeLocationSignInScreen(
     val coroutineScope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // 설정 버튼
         Image(
             modifier = Modifier
                 .padding(40.dp)
@@ -240,7 +239,6 @@ private fun LandscapeLocationSignInScreen(
             horizontalArrangement = Arrangement.spacedBy(80.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // 왼쪽: 로고 + 기관로그인 텍스트
             Column(
                 modifier = Modifier
                     .weight(0.4f)
@@ -253,14 +251,13 @@ private fun LandscapeLocationSignInScreen(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 Text(
-                    text = StringProvider.getString(R.string.location_signin),
+                    text = stringResource(id = R.string.location_signin),
                     color = Color.Black,
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 32.sp
                 )
             }
 
-            // 오른쪽: 입력 필드 + 버튼
             Column(
                 modifier = Modifier
                     .weight(0.6f)
@@ -279,7 +276,7 @@ private fun LandscapeLocationSignInScreen(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 PrimaryButton(
-                    text = StringProvider.getString(R.string.signin),
+                    text = stringResource(id = R.string.signin),
                     onClick = {
                         if (!onValidate(id, password)) {
                             return@PrimaryButton
@@ -300,7 +297,7 @@ private fun LandscapeLocationSignInScreen(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = StringProvider.getString(R.string.start_without_signin),
+                    text = stringResource(id = R.string.start_without_signin),
                     fontSize = 38.sp,
                     color = Color.Black,
                     textDecoration = TextDecoration.Underline,
@@ -351,7 +348,7 @@ private fun InputFields(
                 ) {
                     if (id.isEmpty()) {
                         Text(
-                            text = StringProvider.getString(R.string.id_input),
+                            text = stringResource(id = R.string.id_input),
                             fontSize = 36.sp,
                             color = Color.LightGray,
                         )
@@ -390,7 +387,7 @@ private fun InputFields(
                 ) {
                     if (password.isEmpty()) {
                         Text(
-                            text = StringProvider.getString(R.string.pw_input),
+                            text = stringResource(id = R.string.pw_input),
                             fontSize = 36.sp,
                             color = Color.LightGray,
                         )

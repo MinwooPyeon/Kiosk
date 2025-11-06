@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.SecondaryButton
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 
 @Composable
 fun ActionButtons(
@@ -28,7 +28,7 @@ fun ActionButtons(
     ) {
         PrimaryButton(
             onClick = onPrintClick,
-            text = StringProvider.getString(R.string.qr_code_print_button),
+            text = stringResource(id = R.string.qr_code_print_button),
             enabled = !isUserSignInSkipped && isQrPrintButtonEnabled,
             modifier = Modifier.fillMaxWidth()
         )
@@ -36,7 +36,7 @@ fun ActionButtons(
 
         PrimaryButton(
             onClick = onFaceEnrollClick,
-            text = StringProvider.getString(R.string.face_enroll_button_text),
+            text = stringResource(id = R.string.face_enroll_button_text),
             enabled = !isUserSignInSkipped,
             modifier = Modifier.fillMaxWidth()
         )
@@ -45,9 +45,9 @@ fun ActionButtons(
         SecondaryButton(
             onClick = onSignOutClick,
             text = if (!isUserSignInSkipped) {
-                StringProvider.getString(R.string.settings_signout)
+                stringResource(id = R.string.settings_signout)
             } else {
-                StringProvider.getString(R.string.signin)
+                stringResource(id = R.string.signin)
             },
             modifier = Modifier.fillMaxWidth()
         )
