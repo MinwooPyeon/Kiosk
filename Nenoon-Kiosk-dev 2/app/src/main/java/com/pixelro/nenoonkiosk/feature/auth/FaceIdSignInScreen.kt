@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,8 +24,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
@@ -31,7 +35,9 @@ import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
+import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -67,11 +73,90 @@ fun FaceIdSignInScreen(
         }
     }
 
+    val isLandscape = isLandscape()
+
+    if (isLandscape) {
+        LandscapeFaceIdSignInScreen(
+            faceRecognitionStatus = faceRecognitionStatus,
+            isProcessingFace = isProcessingFace,
+            isSignedIn = isSignedIn,
+            liveFaceDetectionStatus = liveFaceDetectionStatus,
+            attemptsLeft = attemptsLeft,
+            onFaceDetected = { faceBitmap ->
+                if (!isProcessingFace && !isSignedIn && attemptsLeft > 0 &&
+                    System.currentTimeMillis() - previousAttemptTime > AppConstants.FACE_ID_INTERVAL
+                ) {
+                    previousAttemptTime = System.currentTimeMillis()
+                    coroutineScope.launch(Dispatchers.Main) {
+                        loginViewModel.userSignInWithFace(faceBitmap, updateIsSignedIn).also { success ->
+                            if (success) {
+                                delay(3000)
+                                updateIsSignedIn(true)
+                            }
+                        }
+                    }
+                    attemptsLeft--
+                } else {
+                    faceBitmap.recycle()
+                }
+            },
+            onDetectionStatus = { status ->
+                liveFaceDetectionStatus = status
+            },
+            onBackClick = {
+                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
+            }
+        )
+    } else {
+        PortraitFaceIdSignInScreen(
+            faceRecognitionStatus = faceRecognitionStatus,
+            isProcessingFace = isProcessingFace,
+            isSignedIn = isSignedIn,
+            liveFaceDetectionStatus = liveFaceDetectionStatus,
+            attemptsLeft = attemptsLeft,
+            onFaceDetected = { faceBitmap ->
+                if (!isProcessingFace && !isSignedIn && attemptsLeft > 0 &&
+                    System.currentTimeMillis() - previousAttemptTime > AppConstants.FACE_ID_INTERVAL
+                ) {
+                    previousAttemptTime = System.currentTimeMillis()
+                    coroutineScope.launch(Dispatchers.Main) {
+                        loginViewModel.userSignInWithFace(faceBitmap, updateIsSignedIn).also { success ->
+                            if (success) {
+                                delay(3000)
+                                updateIsSignedIn(true)
+                            }
+                        }
+                    }
+                    attemptsLeft--
+                } else {
+                    faceBitmap.recycle()
+                }
+            },
+            onDetectionStatus = { status ->
+                liveFaceDetectionStatus = status
+            },
+            onBackClick = {
+                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
+            }
+        )
+    }
+}
+
+@Composable
+private fun PortraitFaceIdSignInScreen(
+    faceRecognitionStatus: String,
+    isProcessingFace: Boolean,
+    isSignedIn: Boolean,
+    liveFaceDetectionStatus: String,
+    attemptsLeft: Int,
+    onFaceDetected: (android.graphics.Bitmap) -> Unit,
+    onDetectionStatus: (String) -> Unit,
+    onBackClick: () -> Unit
+) {
     Column(
-        modifier =
-            Modifier
-                .padding(40.dp)
-                .fillMaxSize(),
+        modifier = Modifier
+            .padding(40.dp)
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -79,52 +164,33 @@ fun FaceIdSignInScreen(
             StringProvider.getString(R.string.face_id_sign_in_title),
             style = TextStyle.Title,
             textAlign = TextAlign.Center,
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 40.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 40.dp),
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier =
-                Modifier
-                    .fillMaxWidth(0.7f)
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(16.dp))
-                    .align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(16.dp))
+                .align(Alignment.CenterHorizontally),
         ) {
             CameraPreview(
                 modifier = Modifier.fillMaxSize(),
-                onFaceDetected = { faceBitmap ->
-                    if (!isProcessingFace && !isSignedIn && attemptsLeft > 0 &&
-                        System.currentTimeMillis() - previousAttemptTime > AppConstants.FACE_ID_INTERVAL
-                    ) {
-                        previousAttemptTime = System.currentTimeMillis()
-                        coroutineScope.launch(Dispatchers.Main) {
-                            loginViewModel.userSignInWithFace(faceBitmap, updateIsSignedIn).also { success ->
-                                if (success) {
-                                    delay(3000)
-                                    updateIsSignedIn(true)
-                                }
-                            }
-                        }
-                        attemptsLeft--
-                    } else {
-                        faceBitmap.recycle()
-                    }
-                },
-                onDetectionStatus = { status ->
-                    liveFaceDetectionStatus = status
-                },
+                onFaceDetected = onFaceDetected,
+                onDetectionStatus = onDetectionStatus,
             )
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
-        if (attemptsLeft > 0) StyledText(liveFaceDetectionStatus)
+        if (attemptsLeft > 0) {
+            StyledText(liveFaceDetectionStatus)
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -140,9 +206,130 @@ fun FaceIdSignInScreen(
 
         PrimaryButton(
             text = StringProvider.getString(R.string.back),
-            onClick = {
-                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
-            },
+            onClick = onBackClick,
+        )
+    }
+}
+
+@Composable
+private fun LandscapeFaceIdSignInScreen(
+    faceRecognitionStatus: String,
+    isProcessingFace: Boolean,
+    isSignedIn: Boolean,
+    liveFaceDetectionStatus: String,
+    attemptsLeft: Int,
+    onFaceDetected: (android.graphics.Bitmap) -> Unit,
+    onDetectionStatus: (String) -> Unit,
+    onBackClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(30.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        StyledText(
+            StringProvider.getString(R.string.face_id_sign_in_title),
+            style = TextStyle.Title,
+            textAlign = TextAlign.Center,
+        )
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(300.dp)
+                .clip(RoundedCornerShape(16.dp)),
+        ) {
+            CameraPreview(
+                modifier = Modifier.fillMaxSize(),
+                onFaceDetected = onFaceDetected,
+                onDetectionStatus = onDetectionStatus,
+            )
+        }
+
+        if (attemptsLeft > 0) {
+            StyledText(liveFaceDetectionStatus)
+        }
+
+        if (attemptsLeft > 0) {
+            StyledText(
+                faceRecognitionStatus + " (${AppConstants.FACE_ID_MAX_ATTEMPTS - attemptsLeft + 1}/${AppConstants.FACE_ID_MAX_ATTEMPTS})",
+            )
+        } else {
+            StyledText(StringProvider.getString(R.string.signin_vm_face_no_match), TextStyle.Error)
+        }
+
+        PrimaryButton(
+            text = StringProvider.getString(R.string.back),
+            onClick = onBackClick,
+            modifier = Modifier.width(250.dp)
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 800,
+    heightDp = 1280,
+    name = "FaceIdSignIn - Portrait"
+)
+@Composable
+private fun FaceIdSignInScreen_Preview_Portrait() {
+    NenoonKioskTheme {
+        PortraitFaceIdSignInScreen(
+            faceRecognitionStatus = "얼굴 인식 중...",
+            isProcessingFace = false,
+            isSignedIn = false,
+            liveFaceDetectionStatus = "얼굴을 화면 중앙에 위치시켜주세요",
+            attemptsLeft = 3,
+            onFaceDetected = {},
+            onDetectionStatus = {},
+            onBackClick = {}
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 1422,
+    heightDp = 888,
+    name = "FaceIdSignIn - Landscape"
+)
+@Composable
+private fun FaceIdSignInScreen_Preview_Landscape() {
+    NenoonKioskTheme {
+        LandscapeFaceIdSignInScreen(
+            faceRecognitionStatus = "얼굴 인식 중...",
+            isProcessingFace = false,
+            isSignedIn = false,
+            liveFaceDetectionStatus = "얼굴을 화면 중앙에 위치시켜주세요",
+            attemptsLeft = 3,
+            onFaceDetected = {},
+            onDetectionStatus = {},
+            onBackClick = {}
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 1422,
+    heightDp = 888,
+    name = "FaceIdSignIn - Landscape (Failed)"
+)
+@Composable
+private fun FaceIdSignInScreen_Preview_Landscape_Failed() {
+    NenoonKioskTheme {
+        LandscapeFaceIdSignInScreen(
+            faceRecognitionStatus = "얼굴 인식 실패",
+            isProcessingFace = false,
+            isSignedIn = false,
+            liveFaceDetectionStatus = "",
+            attemptsLeft = 0,
+            onFaceDetected = {},
+            onDetectionStatus = {},
+            onBackClick = {}
         )
     }
 }

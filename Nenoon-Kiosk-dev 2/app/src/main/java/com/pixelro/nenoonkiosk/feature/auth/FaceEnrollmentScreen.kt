@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,15 +23,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
+import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -51,11 +56,84 @@ fun FaceEnrollmentScreen(
         loginViewModel.clearEnrollmentMessage()
     }
 
+    val isLandscape = isLandscape()
+
+    if (isLandscape) {
+        LandscapeFaceEnrollmentScreen(
+            faceDetectionStatus = faceDetectionStatus,
+            isProcessingFace = isProcessingFace,
+            lastDetectedFaceBitmap = lastDetectedFaceBitmap,
+            isFaceEnrollmentDataReady = isFaceEnrollmentDataReady,
+            onFaceDetected = { faceBitmap ->
+                if (!isProcessingFace) {
+                    loginViewModel.processFaceForEmbeddingAndStoreTemporarily(faceBitmap)
+                } else {
+                    faceBitmap.recycle()
+                }
+            },
+            onDetectionStatus = { status ->
+                loginViewModel.updateFaceDetectionStatus(status)
+            },
+            onEnrollClick = {
+                coroutineScope.launch(Dispatchers.Main) {
+                    loginViewModel.updateFace().also { success ->
+                        if (success) {
+                            navController.popBackStack(SignInScreenState.UserSignIn.name, false)
+                        }
+                    }
+                }
+            },
+            onBackClick = {
+                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
+            }
+        )
+    } else {
+        PortraitFaceEnrollmentScreen(
+            faceDetectionStatus = faceDetectionStatus,
+            isProcessingFace = isProcessingFace,
+            lastDetectedFaceBitmap = lastDetectedFaceBitmap,
+            isFaceEnrollmentDataReady = isFaceEnrollmentDataReady,
+            onFaceDetected = { faceBitmap ->
+                if (!isProcessingFace) {
+                    loginViewModel.processFaceForEmbeddingAndStoreTemporarily(faceBitmap)
+                } else {
+                    faceBitmap.recycle()
+                }
+            },
+            onDetectionStatus = { status ->
+                loginViewModel.updateFaceDetectionStatus(status)
+            },
+            onEnrollClick = {
+                coroutineScope.launch(Dispatchers.Main) {
+                    loginViewModel.updateFace().also { success ->
+                        if (success) {
+                            navController.popBackStack(SignInScreenState.UserSignIn.name, false)
+                        }
+                    }
+                }
+            },
+            onBackClick = {
+                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
+            }
+        )
+    }
+}
+
+@Composable
+private fun PortraitFaceEnrollmentScreen(
+    faceDetectionStatus: String,
+    isProcessingFace: Boolean,
+    lastDetectedFaceBitmap: android.graphics.Bitmap?,
+    isFaceEnrollmentDataReady: Boolean,
+    onFaceDetected: (android.graphics.Bitmap) -> Unit,
+    onDetectionStatus: (String) -> Unit,
+    onEnrollClick: () -> Unit,
+    onBackClick: () -> Unit
+) {
     Column(
-        modifier =
-            Modifier
-                .padding(40.dp)
-                .fillMaxSize(),
+        modifier = Modifier
+            .padding(40.dp)
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -66,25 +144,16 @@ fun FaceEnrollmentScreen(
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier =
-                Modifier
-                    .fillMaxWidth(0.7f)
-                    .aspectRatio(1f)
-                    .clip(MaterialTheme.shapes.medium)
-                    .align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .aspectRatio(1f)
+                .clip(MaterialTheme.shapes.medium)
+                .align(Alignment.CenterHorizontally),
         ) {
             CameraPreview(
                 modifier = Modifier.fillMaxSize(),
-                onFaceDetected = { faceBitmap ->
-                    if (!isProcessingFace) {
-                        loginViewModel.processFaceForEmbeddingAndStoreTemporarily(faceBitmap)
-                    } else {
-                        faceBitmap.recycle()
-                    }
-                },
-                onDetectionStatus = { status ->
-                    loginViewModel.updateFaceDetectionStatus(status)
-                },
+                onFaceDetected = onFaceDetected,
+                onDetectionStatus = onDetectionStatus,
             )
 
             lastDetectedFaceBitmap?.let { bitmap ->
@@ -92,30 +161,28 @@ fun FaceEnrollmentScreen(
                     Image(
                         bitmap = bitmap.asImageBitmap(),
                         contentDescription = StringProvider.getString(R.string.captured_face_image_description),
-                        modifier =
-                            Modifier
-                                .size(150.dp)
-                                .align(Alignment.BottomEnd)
-                                .padding(16.dp),
+                        modifier = Modifier
+                            .size(150.dp)
+                            .align(Alignment.BottomEnd)
+                            .padding(16.dp),
                     )
                 }
             }
         }
+
         Spacer(modifier = Modifier.weight(1f))
 
         StyledText(
-            text =
-                if (isFaceEnrollmentDataReady) {
-                    StringProvider.getString(R.string.face_enrollment_success)
-                } else {
-                    faceDetectionStatus
-                },
-            style =
-                if (isFaceEnrollmentDataReady) {
-                    TextStyle.Success
-                } else {
-                    TextStyle.Message
-                },
+            text = if (isFaceEnrollmentDataReady) {
+                StringProvider.getString(R.string.face_enrollment_success)
+            } else {
+                faceDetectionStatus
+            },
+            style = if (isFaceEnrollmentDataReady) {
+                TextStyle.Success
+            } else {
+                TextStyle.Message
+            },
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -124,25 +191,171 @@ fun FaceEnrollmentScreen(
             PrimaryButton(
                 text = StringProvider.getString(R.string.user_signup_enroll_face_button),
                 enabled = isFaceEnrollmentDataReady,
-                onClick = {
-                    coroutineScope.launch(Dispatchers.Main) {
-                        loginViewModel.updateFace().also { success ->
-                            if (success) {
-                                navController.popBackStack(SignInScreenState.UserSignIn.name, false)
-                            }
-                        }
-                    }
-                },
+                onClick = onEnrollClick,
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             PrimaryButton(
                 text = StringProvider.getString(R.string.back),
-                onClick = {
-                    navController.popBackStack(SignInScreenState.UserSignIn.name, false)
-                },
+                onClick = onBackClick,
             )
         }
+    }
+}
+
+@Composable
+private fun LandscapeFaceEnrollmentScreen(
+    faceDetectionStatus: String,
+    isProcessingFace: Boolean,
+    lastDetectedFaceBitmap: android.graphics.Bitmap?,
+    isFaceEnrollmentDataReady: Boolean,
+    onFaceDetected: (android.graphics.Bitmap) -> Unit,
+    onDetectionStatus: (String) -> Unit,
+    onEnrollClick: () -> Unit,
+    onBackClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        StyledText(
+            text = StringProvider.getString(R.string.user_signup_title),
+            style = TextStyle.Title,
+        )
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(400.dp)
+                .clip(MaterialTheme.shapes.medium),
+        ) {
+            CameraPreview(
+                modifier = Modifier.fillMaxSize(),
+                onFaceDetected = onFaceDetected,
+                onDetectionStatus = onDetectionStatus,
+            )
+
+            lastDetectedFaceBitmap?.let { bitmap ->
+                if (!bitmap.isRecycled) {
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = StringProvider.getString(R.string.captured_face_image_description),
+                        modifier = Modifier
+                            .size(120.dp)
+                            .align(Alignment.BottomEnd)
+                            .padding(12.dp),
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        StyledText(
+            text = if (isFaceEnrollmentDataReady) {
+                StringProvider.getString(R.string.face_enrollment_success)
+            } else {
+                faceDetectionStatus
+            },
+            style = if (isFaceEnrollmentDataReady) {
+                TextStyle.Success
+            } else {
+                TextStyle.Message
+            },
+        )
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.width(400.dp)
+        ) {
+            PrimaryButton(
+                text = StringProvider.getString(R.string.user_signup_enroll_face_button),
+                enabled = isFaceEnrollmentDataReady,
+                onClick = onEnrollClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            PrimaryButton(
+                text = StringProvider.getString(R.string.back),
+                onClick = onBackClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 800,
+    heightDp = 1280,
+    name = "FaceEnrollment - Portrait"
+)
+@Composable
+private fun FaceEnrollmentScreen_Preview_Portrait() {
+    NenoonKioskTheme {
+        PortraitFaceEnrollmentScreen(
+            faceDetectionStatus = "얼굴을 화면 중앙에 위치시켜주세요",
+            isProcessingFace = false,
+            lastDetectedFaceBitmap = null,
+            isFaceEnrollmentDataReady = false,
+            onFaceDetected = {},
+            onDetectionStatus = {},
+            onEnrollClick = {},
+            onBackClick = {}
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 1422,
+    heightDp = 888,
+    name = "FaceEnrollment - Landscape"
+)
+@Composable
+private fun FaceEnrollmentScreen_Preview_Landscape() {
+    NenoonKioskTheme {
+        LandscapeFaceEnrollmentScreen(
+            faceDetectionStatus = "얼굴을 화면 중앙에 위치시켜주세요",
+            isProcessingFace = false,
+            lastDetectedFaceBitmap = null,
+            isFaceEnrollmentDataReady = false,
+            onFaceDetected = {},
+            onDetectionStatus = {},
+            onEnrollClick = {},
+            onBackClick = {}
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 1422,
+    heightDp = 888,
+    name = "FaceEnrollment - Landscape (Ready)"
+)
+@Composable
+private fun FaceEnrollmentScreen_Preview_Landscape_Ready() {
+    NenoonKioskTheme {
+        LandscapeFaceEnrollmentScreen(
+            faceDetectionStatus = "얼굴 등록 준비 완료",
+            isProcessingFace = false,
+            lastDetectedFaceBitmap = null,
+            isFaceEnrollmentDataReady = true,
+            onFaceDetected = {},
+            onDetectionStatus = {},
+            onEnrollClick = {},
+            onBackClick = {}
+        )
     }
 }

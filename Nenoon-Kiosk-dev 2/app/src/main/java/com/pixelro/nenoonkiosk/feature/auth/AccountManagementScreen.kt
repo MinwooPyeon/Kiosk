@@ -2,11 +2,8 @@ package com.pixelro.nenoonkiosk.feature.auth
 
 import android.graphics.Bitmap
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,10 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,31 +24,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.set
 import androidx.navigation.NavController
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
-import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
-import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
-import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
-import com.pixelro.nenoonkiosk.core.ui.StyledText
-import com.pixelro.nenoonkiosk.core.ui.TextStyle
-import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
+import com.pixelro.nenoonkiosk.core.ui.TopBarOrientation
+import com.pixelro.nenoonkiosk.core.util.isLandscape
+import com.pixelro.nenoonkiosk.feature.auth.component.ActionButtons
+import com.pixelro.nenoonkiosk.feature.auth.component.QrCodeContent
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
+import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import androidx.core.graphics.createBitmap
-import androidx.core.graphics.set
 
 @Composable
 fun AccountManagementScreen(
@@ -76,12 +69,10 @@ fun AccountManagementScreen(
         coroutineScope.launch {
             try {
                 val qrData = "ID:$userId,PW:$password"
-
                 val writer = QRCodeWriter()
-                val bitMatrix =
-                    withContext(Dispatchers.Default) {
-                        writer.encode(qrData, BarcodeFormat.QR_CODE, 512, 512)
-                    }
+                val bitMatrix = withContext(Dispatchers.Default) {
+                    writer.encode(qrData, BarcodeFormat.QR_CODE, 512, 512)
+                }
 
                 val width = bitMatrix.width
                 val height = bitMatrix.height
@@ -116,195 +107,240 @@ fun AccountManagementScreen(
         }
     }
 
+    val isLandscape = isLandscape()
+
+    AccountManagementContent(
+        isLandscape = isLandscape,
+        showProgressIndicator = showProgressIndicator,
+        isUserSignedIn = isUserSignedIn,
+        isUserSignInSkipped = viewModel.isUserSignInSkipped(),
+        userName = userData?.name,
+        qrCodeBitmap = localQrCodeBitmap,
+        isQrPrintButtonEnabled = isQrPrintButtonEnabled,
+        onBackClick = { navController.popBackStack(NavConstants.ROUTE_CATEGORY_LIST, false) },
+        onPrintClick = {
+            val currentUserId = userData?.id
+            val currentUserPassword = userData?.password
+
+            if (isUserSignedIn) {
+                if (AppConstants.MANAGE_USERS_INTERNALLY && !currentUserId.isNullOrBlank() && !currentUserPassword.isNullOrBlank()) {
+                    viewModel.generateAndPrintQrCode(currentUserId, currentUserPassword)
+                    isQrPrintButtonEnabled = false
+                    coroutineScope.launch {
+                        delay(10000)
+                        isQrPrintButtonEnabled = true
+                    }
+                } else if (!AppConstants.MANAGE_USERS_INTERNALLY && localQrCodeBitmap != null) {
+                    viewModel.printQrCode(localQrCodeBitmap)
+                    isQrPrintButtonEnabled = false
+                    coroutineScope.launch {
+                        delay(10000)
+                        isQrPrintButtonEnabled = true
+                    }
+                }
+            }
+        },
+        onFaceEnrollClick = {
+            Log.d("AccountManagementScreen", "User signed in: $isUserSignedIn, User ID: ${userData?.id}")
+            if (isUserSignedIn && userData?.id != null) {
+                navController.navigate(NavConstants.ROUTE_FACE_UPDATE_TERMS_OF_SERVICE)
+            }
+        },
+        onSignOutClick = {
+            viewModel.userSignOut()
+            showProgressIndicator = true
+            localQrCodeBitmap = null
+            navController.navigate(NavConstants.ROUTE_SIGN_IN) {
+                popUpTo(navController.graph.startDestinationId) { inclusive = false }
+                launchSingleTop = true
+            }
+        }
+    )
+}
+
+@Composable
+private fun AccountManagementContent(
+    isLandscape: Boolean,
+    showProgressIndicator: Boolean,
+    isUserSignedIn: Boolean,
+    isUserSignInSkipped: Boolean,
+    userName: String?,
+    qrCodeBitmap: Bitmap?,
+    isQrPrintButtonEnabled: Boolean,
+    onBackClick: () -> Unit,
+    onPrintClick: () -> Unit,
+    onFaceEnrollClick: () -> Unit,
+    onSignOutClick: () -> Unit
+) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize(),
         ) {
-            Box(
-                modifier =
-                    Modifier
-                        .padding(
-                            start = 40.dp,
-                            top = (GlobalValue.statusBarPadding + 20).dp,
-                            end = 40.dp,
-                            bottom = 20.dp,
-                        )
-                        .fillMaxWidth()
-                        .height(40.dp),
-            ) {
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxSize(),
-                    contentAlignment = Alignment.CenterStart,
-                ) {
-                    Image(
-                        modifier =
-                            Modifier
-                                .width(32.dp)
-                                .clickable { navController.popBackStack(NavConstants.ROUTE_CATEGORY_LIST, false) },
-                        painter = painterResource(id = R.drawable.close_button_black),
-                        contentDescription =
-                            StringProvider.getString(
-                                R.string.close_button_description,
-                            ),
-                    )
-                }
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text =
-                            StringProvider.getString(
-                                R.string.account_management_title,
-                            ),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Medium,
-                    )
-                }
-            }
-
-            Spacer(
-                modifier =
-                    Modifier
-                        .padding(start = 5.dp, end = 5.dp)
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(
-                            color = Color(0xff000000),
-                        ),
+            NenoonTopBar(
+                title = stringResource(id = R.string.account_management_title),
+                orientation = if (isLandscape) TopBarOrientation.Horizontal else TopBarOrientation.Vertical,
+                showBackButton = true,
+                onBackClicked = onBackClick,
+                containerColor = Color.White,
+                contentColor = Color.Black
             )
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(40.dp),
-            ) {
-                Spacer(modifier = Modifier.weight(1f))
+            Spacer(
+                modifier = Modifier
+                    .padding(start = 5.dp, end = 5.dp)
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(color = Color(0xff000000)),
+            )
 
-                if (showProgressIndicator) {
-                    ProgressIndicator()
-                } else if (!viewModel.isUserSignInSkipped() && isUserSignedIn) {
-                    StyledText(
-                        text =
-                            StringProvider.getString(
-                                R.string.qr_code_user_name,
-                                userData?.name ?: StringProvider.getString(R.string.default_user_name),
-                            ),
+            if (isLandscape) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(40.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .weight(0.5f)
+                            .fillMaxSize()
+                    ) {
+                        QrCodeContent(
+                            showProgressIndicator = showProgressIndicator,
+                            isUserSignedIn = isUserSignedIn,
+                            isUserSignInSkipped = isUserSignInSkipped,
+                            userName = userName,
+                            qrCodeBitmap = qrCodeBitmap
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(40.dp))
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .weight(0.5f)
+                            .fillMaxSize()
+                    ) {
+                        ActionButtons(
+                            isUserSignInSkipped = isUserSignInSkipped,
+                            isQrPrintButtonEnabled = isQrPrintButtonEnabled,
+                            onPrintClick = onPrintClick,
+                            onFaceEnrollClick = onFaceEnrollClick,
+                            onSignOutClick = onSignOutClick,
+                            modifier = Modifier.fillMaxWidth(0.7f)
+                        )
+                    }
+                }
+            } else {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(40.dp),
+                ) {
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    QrCodeContent(
+                        showProgressIndicator = showProgressIndicator,
+                        isUserSignedIn = isUserSignedIn,
+                        isUserSignInSkipped = isUserSignInSkipped,
+                        userName = userName,
+                        qrCodeBitmap = qrCodeBitmap
                     )
 
-                    if (localQrCodeBitmap != null) {
-                        Image(
-                            bitmap = localQrCodeBitmap!!.asImageBitmap(),
-                            contentDescription =
-                                StringProvider.getString(
-                                    R.string.qr_code_image_description,
-                                ),
-                            modifier =
-                                Modifier
-                                    .size(400.dp)
-                                    .padding(top = 40.dp),
-                        )
-                    } else {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier =
-                                Modifier
-                                    .size(400.dp),
-                        ) {
-                            ProgressIndicator()
-                        }
-                    }
-                } else {
-                    StyledText(
-                        text =
-                            StringProvider.getString(
-                                R.string.not_signed_in_message,
-                            ),
-                        style = TextStyle.Error,
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    ActionButtons(
+                        isUserSignInSkipped = isUserSignInSkipped,
+                        isQrPrintButtonEnabled = isQrPrintButtonEnabled,
+                        onPrintClick = onPrintClick,
+                        onFaceEnrollClick = onFaceEnrollClick,
+                        onSignOutClick = onSignOutClick
                     )
                 }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                PrimaryButton(
-                    onClick = {
-                        val currentUserId = userData?.id
-                        val currentUserPassword = userData?.password
-
-                        if (isUserSignedIn) {
-                            if (AppConstants.MANAGE_USERS_INTERNALLY && !currentUserId.isNullOrBlank() && !currentUserPassword.isNullOrBlank()) {
-                                viewModel.generateAndPrintQrCode(currentUserId, currentUserPassword)
-
-                                isQrPrintButtonEnabled = false
-                                coroutineScope.launch {
-                                    delay(10000) // 10 seconds
-                                    isQrPrintButtonEnabled = true
-                                }
-                            } else if (!AppConstants.MANAGE_USERS_INTERNALLY && localQrCodeBitmap != null) {
-                                viewModel.printQrCode(localQrCodeBitmap)
-
-                                isQrPrintButtonEnabled = false
-                                coroutineScope.launch {
-                                    delay(10000) // 10 seconds
-                                    isQrPrintButtonEnabled = true
-                                }
-                            }
-                        }
-                    },
-                    text =
-                        StringProvider.getString(
-                            R.string.qr_code_print_button,
-                        ),
-                    enabled = !viewModel.isUserSignInSkipped() && isQrPrintButtonEnabled,
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-
-                PrimaryButton(
-                    onClick = {
-                        Log.d(
-                            "AccountManagementScreen",
-                            "User signed in: $isUserSignedIn, User ID: ${userData?.id}",
-                        )
-                        if (isUserSignedIn && userData?.id != null) {
-                            navController.navigate(NavConstants.ROUTE_FACE_UPDATE_TERMS_OF_SERVICE)
-                        }
-                    },
-                    text =
-                        StringProvider.getString(
-                            R.string.face_enroll_button_text,
-                        ),
-                    enabled = !viewModel.isUserSignInSkipped(),
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-
-                PrimaryButton(
-                    onClick = {
-                        viewModel.userSignOut()
-                        showProgressIndicator = true
-                        localQrCodeBitmap = null
-                        navController.navigate(NavConstants.ROUTE_SIGN_IN) {
-                            popUpTo(navController.graph.startDestinationId) { inclusive = false }
-                            launchSingleTop = true
-                        }
-                    },
-                    text =
-                        if (!viewModel.isUserSignInSkipped()) {
-                            StringProvider.getString(
-                                R.string.settings_signout,
-                            )
-                        } else {
-                            StringProvider.getString(R.string.signin)
-                        },
-                )
             }
         }
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 800,
+    heightDp = 1280,
+    name = "AccountManagement - Portrait"
+)
+@Composable
+private fun AccountManagementScreen_Preview_Portrait() {
+    NenoonKioskTheme {
+        AccountManagementContent(
+            isLandscape = false,
+            showProgressIndicator = false,
+            isUserSignedIn = true,
+            isUserSignInSkipped = false,
+            userName = "홍길동",
+            qrCodeBitmap = null,
+            isQrPrintButtonEnabled = true,
+            onBackClick = {},
+            onPrintClick = {},
+            onFaceEnrollClick = {},
+            onSignOutClick = {}
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 1422,
+    heightDp = 888,
+    name = "AccountManagement - Landscape"
+)
+@Composable
+private fun AccountManagementScreen_Preview_Landscape() {
+    NenoonKioskTheme {
+        AccountManagementContent(
+            isLandscape = true,
+            showProgressIndicator = false,
+            isUserSignedIn = true,
+            isUserSignInSkipped = false,
+            userName = "홍길동",
+            qrCodeBitmap = null,
+            isQrPrintButtonEnabled = true,
+            onBackClick = {},
+            onPrintClick = {},
+            onFaceEnrollClick = {},
+            onSignOutClick = {}
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 800,
+    heightDp = 1280,
+    name = "AccountManagement - Not Signed In"
+)
+@Composable
+private fun AccountManagementScreen_Preview_NotSignedIn() {
+    NenoonKioskTheme {
+        AccountManagementContent(
+            isLandscape = false,
+            showProgressIndicator = false,
+            isUserSignedIn = false,
+            isUserSignInSkipped = true,
+            userName = null,
+            qrCodeBitmap = null,
+            isQrPrintButtonEnabled = false,
+            onBackClick = {},
+            onPrintClick = {},
+            onFaceEnrollClick = {},
+            onSignOutClick = {}
+        )
     }
 }
