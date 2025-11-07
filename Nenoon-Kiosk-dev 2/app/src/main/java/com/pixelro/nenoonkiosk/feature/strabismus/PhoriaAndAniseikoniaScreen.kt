@@ -100,7 +100,7 @@ fun PhoriaAndAniseikoniaScreen(
     ) {
 
         NenoonTopBar(
-            title =  stringResource(R.string.cross_eye_test),
+            title = stringResource(R.string.test_list_tittle),
             orientation = if(isLandscape()) TopBarOrientation.Horizontal else TopBarOrientation.Vertical,
             showBackButton = true,
             onBackClicked = { onEvent(PhoriaAniseikoniaEvent.BackToIntro) },
@@ -136,8 +136,7 @@ fun PhoriaAndAniseikoniaScreen(
                         .weight(1f)
                         .fillMaxHeight()
                 ) {
-                    TestList(
-                        isSenior = ui.isSenior,
+                    InspectionList(
                         isPhoriaDone = ui.isPhoriaDone,
                         isAniseikoniaDone = ui.isAniseikoniaDone,
                         onStartPhoria = { onEvent(PhoriaAniseikoniaEvent.StartTest(InspectionType.Phoria)) },
@@ -157,8 +156,7 @@ fun PhoriaAndAniseikoniaScreen(
                 shiftVal = shiftVal,
                 savedLanguage = ui.savedLanguage
             )
-            TestList(
-                isSenior = ui.isSenior,
+            InspectionList(
                 isPhoriaDone = ui.isPhoriaDone,
                 isAniseikoniaDone = ui.isAniseikoniaDone,
                 onStartPhoria = { onEvent(PhoriaAniseikoniaEvent.StartTest(InspectionType.Phoria)) },
