@@ -22,8 +22,8 @@
 
 #define LINK_UART_PORT		UART_NUM_1
 #define LINK_UART_BAUD		115200
-#define LINK_UART_TX_PIN	17
-#define LINK_UART_RX_PIN	16
+#define LINK_UART_TX_PIN	41
+#define LINK_UART_RX_PIN	40
 
 #define USB_ADVERT_MAX_FILES 10
 
@@ -88,6 +88,7 @@ static void link_rx_task(void* arg){
 				*pf =f;
 				if(xQueueSend(s_rxq, &pf, 0)!= pdTRUE)
 					free(pf);
+				ESP_LOGI(TAG, "frame received");
 			}
 		}
 	}
