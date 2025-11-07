@@ -35,7 +35,7 @@ import com.pixelro.nenoonkiosk.feature.auth.AccountManagementScreen
 import com.pixelro.nenoonkiosk.feature.auth.FaceUpdateScreen
 import com.pixelro.nenoonkiosk.feature.auth.SignInScreen
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
-import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListScreen
+import com.pixelro.nenoonkiosk.feature.categorylist.CategoryListRoute
 import com.pixelro.nenoonkiosk.feature.inspection.ExternalDeviceInspectionListScreen
 import com.pixelro.nenoonkiosk.feature.inspection.EyeTestInspectionRoute
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionScreenRoute
@@ -373,7 +373,7 @@ fun nenoonApp(
                 popEnterTransition = { AnimationProvider.popEnterTransition },
                 popExitTransition = { AnimationProvider.popExitTransition },
             ) {
-                CategoryListScreen(
+                CategoryListRoute(
                     pid = viewModel.locationId.collectAsState().value,
                     isSignInSkipped = {
                         loginViewModel.isUserSignInSkipped()
