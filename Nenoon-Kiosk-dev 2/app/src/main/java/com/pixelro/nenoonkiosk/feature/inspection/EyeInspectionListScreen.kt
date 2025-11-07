@@ -43,7 +43,7 @@ import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
 import com.pixelro.nenoonkiosk.core.ui.TopBarOrientation
 import com.pixelro.nenoonkiosk.core.ui.TwoLineInspectionSelectionButton
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.WarningBar
-import com.pixelro.nenoonkiosk.ui.theme.LightGray
+import com.pixelro.nenoonkiosk.ui.theme.LightGray100
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 
@@ -161,7 +161,7 @@ private fun PortraitLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(color = LightGray)
+                .background(color = LightGray100)
         )
 
         if (!isSenior) {
@@ -245,7 +245,7 @@ private fun LandscapeLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(color = LightGray)
+                .background(color = LightGray100)
         )
 
         Row(
@@ -293,7 +293,7 @@ private fun LandscapeLayout(
                 modifier = Modifier
                     .width(1.dp)
                     .fillMaxHeight()
-                    .background(color = LightGray)
+                    .background(color = LightGray100)
             )
 
             // 오른쪽: 검사 목록 (버튼 간격)

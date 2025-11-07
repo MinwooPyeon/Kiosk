@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.ui.theme.LightBlue
-import com.pixelro.nenoonkiosk.ui.theme.LightGray
+import com.pixelro.nenoonkiosk.ui.theme.LightGray100
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.buttonTextStyle
@@ -81,7 +81,7 @@ fun SecondaryButton(
             ButtonDefaults.buttonColors(
                 containerColor = if (isPressed) primaryColor else LightBlue,
                 contentColor = if (isPressed) White else primaryColor,
-                disabledContainerColor = LightGray,
+                disabledContainerColor = LightGray100,
                 disabledContentColor = White,
             ),
     ) {

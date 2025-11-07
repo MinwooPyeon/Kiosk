@@ -1033,4 +1033,62 @@ jusqu’à ce qu’elle soit centrée dans le cercle.</string>
     <string name="tts_fudo_adjustment">Ajustez les deux demi-cercles jusqu’à ce qu’ils paraissent de même taille, puis appuyez sur « Suivant ».</string>
     <string name="tts_result_screen">Le test est terminé. Appuyez sur le bouton « Imprimer les résultats » pour imprimer le rapport.</string>
 
+    <!-- TTS -->
+    <string name="one">un</string>
+    <string name="two">deux</string>
+    <string name="three">trois</string>
+    <string name="four">quatre</string>
+    <string name="five">cinq</string>
+    <string name="six">six</string>
+    <string name="seven">sept</string>
+    <string name="eight">huit</string>
+    <string name="nine">neuf</string>
+
+    <!-- Variantes -->
+    <string name="two_alt">deux</string>
+    <string name="three_alt">trois</string>
+    <string name="four_alt">quatre</string>
+    <string name="five_alt">cinq</string>
+    <string name="six_alt">six</string>
+    <string name="seven_alt">sept</string>
+
+    <!-- Phrases "Je ne sais pas" -->
+    <string name="dont_know_1">je ne sais pas</string>
+    <string name="dont_know_2">je ne sais</string>
+    <string name="dont_know_3">je sais pas</string>
+    <string name="dont_know_4">je ne vois pas</string>
+    <string name="dont_know_5">je vois pas</string>
+    <string name="dont_know_6">je ne vois rien</string>
+    <string name="dont_know_7">je vois rien</string>
+    <string name="dont_know_8">je ne peux pas voir</string>
+    <string name="dont_know_9">je peux pas voir</string>
+    <string name="dont_know_10">je ne vois plus</string>
+    <string name="dont_know_11">je vois plus</string>
+
+    <!-- Tableau de bord administrateur -->
+    <string name="admin_dashboard">Tableau de bord administrateur</string>
+    <string name="admin_ad_management">Gestion des publicités</string>
+    <string name="admin_password_management">Gestion des mots de passe</string>
+    <string name="admin_exit">Quitter le mode administrateur</string>
+    <string name="admin_exit_confirm_title">Quitter le mode administrateur</string>
+    <string name="admin_exit_confirm_message">Voulez-vous vraiment quitter ?</string>
+    <string name="admin_confirm">Confirmer</string>
+    <string name="admin_cancel">Annuler</string>
+    <string name="admin_ad_image_management">Gestion des images publicitaires</string>
+    <string name="admin_ad_image_description">Gérez et sélectionnez les images à utiliser pour les publicités</string>
+    <string name="admin_select_ad_location">Veuillez sélectionner l’emplacement de la publicité</string>
+    <string name="admin_test_list_screen">Écran de liste des tests</string>
+    <string name="admin_test_list_subtitle">Tension, vision, strabisme, etc.</string>
+    <string name="admin_badge_image">Image</string>
+    <string name="admin_screensaver">Économiseur d’écran</string>
+    <string name="admin_screensaver_subtitle">Touchez l’écran</string>
+    <string name="admin_badge_video">Vidéo</string>
+    <string name="admin_ad_location_preview">Aperçu de l’emplacement des publicités</string>
+    <string name="admin_ad_image_list">Liste des images publicitaires</string>
+    <string name="admin_add">Ajouter</string>
+    <string name="admin_delete">Supprimer</string>
+    <string name="admin_reorder">Changer l’ordre</string>
+    <string name="admin_password_description">Vous pouvez modifier le mot de passe administrateur</string>
+    <string name="admin_password_coming_soon">Écran de gestion des mots de passe (bientôt disponible)</string>
+
 </resources>

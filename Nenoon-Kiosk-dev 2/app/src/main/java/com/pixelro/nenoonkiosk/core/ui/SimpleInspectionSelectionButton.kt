@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,9 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.ui.theme.Black
-import com.pixelro.nenoonkiosk.ui.theme.LightGray
-import com.pixelro.nenoonkiosk.ui.theme.LightGray3
-import com.pixelro.nenoonkiosk.ui.theme.LightGray4
+import com.pixelro.nenoonkiosk.ui.theme.LightGray100
+import com.pixelro.nenoonkiosk.ui.theme.LightGray400
+import com.pixelro.nenoonkiosk.ui.theme.LightGray500
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
@@ -60,7 +59,7 @@ fun SimpleInspectionSelectionButton(
 ) {
     // 그라데이션: isDone일 때만 적용
     val gradientColors = if (isDone) {
-        listOf(LightGray4, LightGray3)
+        listOf(LightGray500, LightGray400)
     } else { neNoon_blue
         listOf(White, White)
     }
@@ -71,7 +70,7 @@ fun SimpleInspectionSelectionButton(
             .fillMaxWidth()
             .height(500.dp)
             .border(
-                border = BorderStroke(1.dp, LightGray),
+                border = BorderStroke(1.dp, LightGray100),
                 shape = RoundedCornerShape(8.dp),
             )
             .shadow(

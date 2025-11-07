@@ -825,7 +825,7 @@
     <string name="start">Comenzar</string>
 
     <string name="tts_bp170b_device_check">Buscando tensiómetro. Por favor, espere un momento.</string>
-    <string name="tts_bp170b_turn_off_device_initialization">Se requiere inicialización del tensiómetro. Presione el botón de inicio/parada del tensiómetro una vez.</string>
+    <string name="tts_bp170b_turn_off_device_initialization">Se requiere inicialización del tensiómetro.\nPresione el botón de inicio/parada del tensiómetro una vez.</string>
     <string name="tts_bp170b_standby_instructions">Use el tensiómetro en su brazo izquierdo. Después de usarlo, presione el botón de inicio/parada del tensiómetro.</string>
     <string name="tts_bp170b_connected_message">El tensiómetro está conectado. Listo para comenzar la medición.</string>
     <string name="tts_bp170b_connection_failed">Fallo en la conexión del tensiómetro. Por favor, inténtelo de nuevo.</string>
@@ -1041,4 +1041,63 @@ en ciertas situaciones, como cuando se cubre un ojo, el ojo se desvía. Esto se 
     <string name="tts_sawi_adjustment">Mueva la cruz visible en la pantalla para que esté en el centro del círculo.</string>
     <string name="tts_fudo_adjustment">Ajuste ambos semicírculos al mismo tamaño y, cuando sean iguales, presione Siguiente.</string>
     <string name="tts_result_screen">El examen se ha completado. Presione el botón Imprimir resultado para imprimir el resultado.</string>
+
+    <!-- TTS Números -->
+    <string name="one">uno</string>
+    <string name="two">dos</string>
+    <string name="three">tres</string>
+    <string name="four">cuatro</string>
+    <string name="five">cinco</string>
+    <string name="six">seis</string>
+    <string name="seven">siete</string>
+    <string name="eight">ocho</string>
+    <string name="nine">nueve</string>
+
+    <!-- Expresiones alternativas -->
+    <string name="two_alt">dos</string>
+    <string name="three_alt">tres</string>
+    <string name="four_alt">cuatro</string>
+    <string name="five_alt">cinco</string>
+    <string name="six_alt">seis</string>
+    <string name="seven_alt">siete</string>
+
+    <!-- Frases "No sé" -->
+    <string name="dont_know_1">no sé</string>
+    <string name="dont_know_2">desconozco</string>
+    <string name="dont_know_3">no sé</string>
+    <string name="dont_know_4">no veo</string>
+    <string name="dont_know_5">no veo</string>
+    <string name="dont_know_6">no visible</string>
+    <string name="dont_know_7">no visible</string>
+    <string name="dont_know_8">no se ve</string>
+    <string name="dont_know_9">no se ve</string>
+    <string name="dont_know_10">no se ve</string>
+    <string name="dont_know_11">no se ve</string>
+
+    <!-- Panel de Administrador -->
+    <string name="admin_dashboard">Panel de Administrador</string>
+    <string name="admin_ad_management">Gestión de Anuncios</string>
+    <string name="admin_password_management">Gestión de Contraseña</string>
+    <string name="admin_exit">Salir de Administrador</string>
+    <string name="admin_exit_confirm_title">Salir de Administrador</string>
+    <string name="admin_exit_confirm_message">¿Está seguro de que desea salir?</string>
+    <string name="admin_confirm">Confirmar</string>
+    <string name="admin_cancel">Cancelar</string>
+    <string name="admin_ad_image_management">Gestión de Imágenes de Anuncios</string>
+    <string name="admin_ad_image_description">Gestione y seleccione imágenes para usar en anuncios</string>
+    <string name="admin_select_ad_location">Por favor seleccione la ubicación del anuncio</string>
+    <string name="admin_test_list_screen">Pantalla de Lista de Pruebas</string>
+    <string name="admin_test_list_subtitle">Presión arterial, Ojos, Estrabismo, etc.</string>
+    <string name="admin_badge_image">Imagen</string>
+    <string name="admin_screensaver">Salvapantallas</string>
+    <string name="admin_screensaver_subtitle">Toque la pantalla</string>
+    <string name="admin_badge_video">Video</string>
+    <string name="admin_ad_location_preview">Vista Previa de Ubicación de Anuncio</string>
+    <string name="admin_ad_image_list">Lista de Imágenes de Anuncios</string>
+    <string name="admin_add">Agregar</string>
+    <string name="admin_delete">Eliminar</string>
+    <string name="admin_reorder">Reordenar</string>
+    <string name="admin_password_description">Puede cambiar la contraseña de administrador</string>
+    <string name="admin_password_coming_soon">Pantalla de Gestión de Contraseña (Próximamente)</string>
+
 </resources>
