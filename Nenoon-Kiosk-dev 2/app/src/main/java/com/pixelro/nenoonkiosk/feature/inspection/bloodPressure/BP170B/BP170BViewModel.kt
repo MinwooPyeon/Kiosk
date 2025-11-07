@@ -82,4 +82,10 @@ class BP170BViewModel
                 BP170BManager.sendSerialNumberRequestCommand()
             }
         }
+
+        fun resetMeasurement() {
+            viewModelScope.launch {
+                BP170BManager.resetMeasurement()
+            }
+        }
     }
