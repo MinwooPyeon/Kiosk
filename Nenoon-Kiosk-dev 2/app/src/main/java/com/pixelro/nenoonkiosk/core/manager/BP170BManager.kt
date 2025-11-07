@@ -360,23 +360,10 @@ object BP170BManager {
                     return null
                 }
                 
-                // Handle very short data (4 bytes) - might be direct measurement result
+                // 4바이트 짧은 데이터 무시 - 중간 상태 데이터이며 유효한 측정 결과가 아님
                 if (receivedBytes.size == 4) {
-                    Log.d(TAG, "Received short data (4 bytes): ${receivedBytes.joinToString(" ") { String.format("%02X", it) }}")
-                    // Try to parse as direct measurement result: systolic, diastolic, pulse, checksum
-                    val systolic = receivedBytes[0].toUByte().toInt()
-                    val diastolic = receivedBytes[1].toUByte().toInt()
-                    val pulse = receivedBytes[2].toUByte().toInt()
-                    val checksum = receivedBytes[3].toUByte().toInt()
-                    
-                    if (systolic in 0..300 && diastolic in 0..300 && pulse in 0..250) {
-                        _bloodPressureResult.value = BloodPressureInspectionResult(systolic, diastolic, pulse)
-                        Log.d(TAG, "Parsed short data as BP result: SBP=$systolic, DBP=$diastolic, Pulse=$pulse")
-                        return "Short Data BP Result: SBP=$systolic, DBP=$diastolic, Pulse=$pulse"
-                    } else {
-                        Log.w(TAG, "Short data values out of range: SBP=$systolic, DBP=$diastolic, Pulse=$pulse")
-                        return "Short Data: Invalid values. SBP=$systolic, DBP=$diastolic, Pulse=$pulse"
-                    }
+                    Log.d(TAG, "⚠️ Ignoring short data (4 bytes): ${receivedBytes.joinToString(" ") { String.format("%02X", it) }} - not a valid measurement result")
+                    return null
                 }
                 
                 // Minimum frame size: STX(1) + ID(1) + BOD0(1) + BOD1(1) + CMD0(1) + CMD1(1) + CheckSum(1) + ETX(1) = 8 bytes.
@@ -470,9 +457,9 @@ object BP170BManager {
                     0xB2 -> { // Response for APP Device Time Setup (command 0xC2)
                         "Time Setup Response: ${if (dataBytes.firstOrNull()?.toUByte()?.toInt() == 0x00) "Success" else "Failed"}" // Assuming 0x00 indicates success.
                     }
-                    0xB4 -> { // Response for APP Device Check Last measured data (command 0xC4)
-                        // Data structure for 0xB4: Year(1), Month(1), Day(1), Hour(1), Minute(1), Second(1)
-                        // Systolic BP (2 bytes), Diastolic BP (2 bytes), Pulse Rate (2 bytes), Measurement Result Code (1 byte)
+                    0xB4 -> { // 0xB4: 마지막 측정 데이터 조회 응답 (command 0xC4에 대한 응답)
+                        // 데이터 구조: 날짜/시간(6바이트) + 수축기혈압(2바이트) + 이완기혈압(2바이트) + 맥박(2바이트) + 결과코드(1바이트)
+                        // Year(1), Month(1), Day(1), Hour(1), Minute(1), Second(1), SBP(2), DBP(2), Pulse(2), ResultCode(1)
                         if (dataBytes.size >= 13) { // 6 bytes for time + 2*3 bytes for BP/Pulse + 1 byte for result code = 13 bytes
                             val systolicLE = dataBytes[6].toUByte().toInt() or (dataBytes[7].toUByte().toInt() shl 8)
                             val diastolicLE = dataBytes[8].toUByte().toInt() or (dataBytes[9].toUByte().toInt() shl 8)
@@ -507,10 +494,10 @@ object BP170BManager {
                     0xB5 -> { // Response for APP Device Serial Number Request (command 0xC5)
                         "Serial Number: $responseDataString"
                     }
-                    0xBA -> { // New: Response when cmd0 is 0xBA (assuming it means test is over AND carries data)
-                        Log.d(TAG, "Received CMD0 0xBA. Attempting to decode data as single bytes with offset.")
-                        // User specified: 7th byte (index 6) is systolic, 8th (index 7) is diastolic, 9th (index 8) is pulse.
-                        // Each value should be subtracted by 10 after converting to decimal.
+                    0xBA -> { // 0xBA: 측정 완료 신호 (Test Over) - 측정이 끝났음을 알림
+                        Log.d(TAG, "Received CMD0 0xBA (측정 완료). Attempting to decode data as single bytes with offset.")
+                        // 데이터 구조: 7번째 바이트(index 6)=수축기혈압, 8번째(index 7)=이완기혈압, 9번째(index 8)=맥박
+                        // 각 값은 10을 빼서 실제 측정값으로 변환
                         if (dataBytes.size >= 9) { // At least 6 bytes for time + 3 bytes for SBP, DBP, Pulse
                             val systolicRaw = dataBytes[6].toUByte().toInt()
                             val diastolicRaw = dataBytes[7].toUByte().toInt()
@@ -623,6 +610,7 @@ object BP170BManager {
                     val data = parseBP170Data(rawBytes, "change")
                     _dataReceived.value = data
                     Log.d(TAG, "Parsed data: $data")
+                    Log.d(TAG, "Current bloodPressureResult: ${_bloodPressureResult.value}")
                 }
             }
 
@@ -759,6 +747,16 @@ object BP170BManager {
         bluetoothGatt = null
         writeCharacteristic = null
         readCharacteristic = null
+    }
+
+    /**
+     * 새로운 측정을 위해 측정 데이터를 초기화합니다.
+     * 이전 혈압 측정 결과와 트리거를 초기화합니다.
+     */
+    fun resetMeasurement() {
+        _bloodPressureResult.value = null
+        _testCompletionTrigger.value = false
+        _dataReceived.value = null
     }
 
     /**
