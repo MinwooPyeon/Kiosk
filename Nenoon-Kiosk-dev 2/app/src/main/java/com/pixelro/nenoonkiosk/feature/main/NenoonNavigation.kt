@@ -20,6 +20,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -947,7 +948,14 @@ fun nenoonApp(
             composable(
                 route = NavConstants.ROUTE_ADMIN_DASHBOARD_PAGE
             ){
-                AdminDashboardScreen()
+                AdminDashboardScreen(
+                    isOutClick = {
+                        navController.popBackStack(
+                            NavConstants.ROUTE_ADMIN_DASHBOARD_PAGE,
+                            inclusive = true
+                        )
+                    }
+                )
             }
         }
 
@@ -956,7 +964,8 @@ fun nenoonApp(
             onSecretActivated = {
                 navController.navigate(NavConstants.ROUTE_ADMIN_DASHBOARD_PAGE)
             },
-            modifier = Modifier.align(Alignment.TopEnd)
+            tapAreaSize = 50.dp,
+            modifier = Modifier.align(Alignment.TopStart)
         )
     }
 }

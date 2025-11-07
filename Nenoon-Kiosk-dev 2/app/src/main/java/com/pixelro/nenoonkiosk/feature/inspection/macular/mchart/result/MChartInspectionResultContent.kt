@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.result.components.EyeResultColumn
-import com.pixelro.nenoonkiosk.ui.theme.LightGray2
+import com.pixelro.nenoonkiosk.ui.theme.LightGray200
 import com.pixelro.nenoonkiosk.ui.theme.Yellow
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
@@ -52,7 +52,7 @@ fun MChartInspectionResultContent(
                 horizontalValue = testResult.leftEyeHorizontal,
                 verticalColor = neNoon_blue,
                 horizontalColor = Yellow,
-                backgroundColor = LightGray2
+                backgroundColor = LightGray200
             )
 
             Spacer(modifier = Modifier.width(20.dp))
@@ -66,7 +66,7 @@ fun MChartInspectionResultContent(
                 horizontalValue = testResult.rightEyeHorizontal,
                 verticalColor = neNoon_blue,
                 horizontalColor = Yellow,
-                backgroundColor = LightGray2
+                backgroundColor = LightGray200
             )
         }
     }

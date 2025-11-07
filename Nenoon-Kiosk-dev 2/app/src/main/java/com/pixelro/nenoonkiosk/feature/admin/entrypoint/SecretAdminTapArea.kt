@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-// SecretAdminTapArea.kt
+// 관리자 대시보드로 들어가는 좌상단 비밂영역
 @Composable
 fun SecretAdminTapArea(
     onSecretActivated: () -> Unit,

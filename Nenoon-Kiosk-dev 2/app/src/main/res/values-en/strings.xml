@@ -822,7 +822,7 @@
     <string name="start">Start</string>
 
     <string name="tts_bp170b_device_check">Searching for blood pressure monitor. Please wait a moment.</string>
-    <string name="tts_bp170b_turn_off_device_initialization">Blood pressure monitor initialization is required. Please press the start/stop button once.</string>
+    <string name="tts_bp170b_turn_off_device_initialization">Blood pressure monitor initialization is required.\nPlease press the start/stop button once.</string>
     <string name="tts_bp170b_standby_instructions">Please put the blood pressure monitor on your left arm. After wearing, press the start/stop button on the monitor.</string>
     <string name="tts_bp170b_connected_message">The blood pressure measurement has started. Please do not move or speak..</string>
     <string name="tts_bp170b_connection_failed">Failed to connect to the blood pressure monitor. Please try again.</string>
@@ -1040,4 +1040,63 @@ to the center of the circle.</string>
     <string name="tts_sawi_adjustment">Please move the cross on the screen to the center of the circle.</string>
     <string name="tts_fudo_adjustment">After adjusting the size of the two semicircles to be equal, press next when they are the same size.</string>
     <string name="tts_result_screen">The test is complete. Please press the print result button to print your results.</string>
+
+    <!-- TTS Numbers -->
+    <string name="one">one</string>
+    <string name="two">two</string>
+    <string name="three">three</string>
+    <string name="four">four</string>
+    <string name="five">five</string>
+    <string name="six">six</string>
+    <string name="seven">seven</string>
+    <string name="eight">eight</string>
+    <string name="nine">nine</string>
+
+    <!-- Alternative expressions -->
+    <string name="two_alt">two</string>
+    <string name="three_alt">three</string>
+    <string name="four_alt">four</string>
+    <string name="five_alt">five</string>
+    <string name="six_alt">six</string>
+    <string name="seven_alt">seven</string>
+
+    <!-- "Don't know" phrases -->
+    <string name="dont_know_1">don\'t know</string>
+    <string name="dont_know_2">unknown</string>
+    <string name="dont_know_3">don\'t know</string>
+    <string name="dont_know_4">can\'t see</string>
+    <string name="dont_know_5">can\'t see</string>
+    <string name="dont_know_6">not visible</string>
+    <string name="dont_know_7">not visible</string>
+    <string name="dont_know_8">can\'t see it</string>
+    <string name="dont_know_9">can\'t see it</string>
+    <string name="dont_know_10">not visible</string>
+    <string name="dont_know_11">not visible</string>
+
+    <!-- Admin Dashboard -->
+    <string name="admin_dashboard">Admin Dashboard</string>
+    <string name="admin_ad_management">Ad Management</string>
+    <string name="admin_password_management">Password Management</string>
+    <string name="admin_exit">Exit Admin</string>
+    <string name="admin_exit_confirm_title">Exit Admin</string>
+    <string name="admin_exit_confirm_message">Are you sure you want to exit?</string>
+    <string name="admin_confirm">Confirm</string>
+    <string name="admin_cancel">Cancel</string>
+    <string name="admin_ad_image_management">Ad Image Management</string>
+    <string name="admin_ad_image_description">Manage and select images to use for advertisements</string>
+    <string name="admin_select_ad_location">Please select ad location</string>
+    <string name="admin_test_list_screen">Test List Screen</string>
+    <string name="admin_test_list_subtitle">Blood Pressure, Eye, Strabismus, etc.</string>
+    <string name="admin_badge_image">Image</string>
+    <string name="admin_screensaver">Screensaver</string>
+    <string name="admin_screensaver_subtitle">Touch screen</string>
+    <string name="admin_badge_video">Video</string>
+    <string name="admin_ad_location_preview">Ad Location Preview</string>
+    <string name="admin_ad_image_list">Ad Image List</string>
+    <string name="admin_add">Add</string>
+    <string name="admin_delete">Delete</string>
+    <string name="admin_reorder">Reorder</string>
+    <string name="admin_password_description">You can change the administrator password</string>
+    <string name="admin_password_coming_soon">Password Management Screen (Coming Soon)</string>
+
 </resources>

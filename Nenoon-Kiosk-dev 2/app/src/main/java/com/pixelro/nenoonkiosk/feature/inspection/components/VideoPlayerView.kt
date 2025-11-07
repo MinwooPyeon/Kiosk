@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
-import com.pixelro.nenoonkiosk.ui.theme.LightGray
+import com.pixelro.nenoonkiosk.ui.theme.LightGray100
 import com.pixelro.nenoonkiosk.ui.theme.titleTextStyle
 
 /**
@@ -51,7 +51,7 @@ fun VideoPlayerView(
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .background(LightGray),
+                .background(LightGray100),
             contentAlignment = Alignment.Center,
         ) {
             Text(

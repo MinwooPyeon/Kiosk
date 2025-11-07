@@ -13,10 +13,13 @@ val Yellow = Color(0xffffb800)
 val Yellow200 = Color(0xFFFFA000)
 val LightYellow = Color(0xFFFFF9C4)
 
-val LightGray = Color(0xFFD9D9D9)
-val LightGray2 = Color(0xFFF7F9F9)
-val LightGray3 = Color(0xFFF0F0F0)
-val LightGray4 = Color(0xFFFAFAFA)
+val LightGray100 = Color(0xFFD9D9D9)
+
+val LightGray200 = Color(0xFFF8F8F8)
+
+val LightGray300 = Color(0xFFE0E0E0)
+val LightGray400 = Color(0xFFF0F0F0)
+val LightGray500 = Color(0xFFFAFAFA)
 
 val Red = Color(0xFFFF1111)
 val LightBlue = Color(0xFFE0EFFF)

@@ -815,7 +815,7 @@
     <string name="start">スタート</string>
 
     <string name="tts_bp170b_device_check">血圧計を探索中です。しばらくお待ちください。</string>
-    <string name="tts_bp170b_turn_off_device_initialization">血圧計の初期化が必要です。血圧計の開始/停止ボタンを一度だけ押してください。</string>
+    <string name="tts_bp170b_turn_off_device_initialization">血圧計の初期化が必要です。\n血圧計の開始/停止ボタンを一度だけ押してください。</string>
     <string name="tts_bp170b_standby_instructions">血圧計を左腕に装着してください。装着後、血圧計の開始/停止ボタンを押してください。</string>
     <string name="tts_bp170b_connected_message">血圧計が接続されました。測定を開始する準備ができました。</string>
     <string name="tts_bp170b_connection_failed">血圧計の接続に失敗しました。再度お試しください。</string>
@@ -1032,4 +1032,63 @@
     <string name="tts_sawi_adjustment">画面に表示される十字を円の中心に来るように移動してください。</string>
     <string name="tts_fudo_adjustment">両側の半円のサイズを同じに調整した後、サイズが同じになったら次へを押してください。</string>
     <string name="tts_result_screen">検査が完了しました。結果印刷ボタンを押して結果を印刷してください。</string>
+
+    <!-- TTS 数字 -->
+    <string name="one">いち</string>
+    <string name="two">に</string>
+    <string name="three">さん</string>
+    <string name="four">よん</string>
+    <string name="five">ご</string>
+    <string name="six">ろく</string>
+    <string name="seven">なな</string>
+    <string name="eight">はち</string>
+    <string name="nine">きゅう</string>
+
+    <!-- 変形表現 -->
+    <string name="two_alt">ふたつ</string>
+    <string name="three_alt">みっつ</string>
+    <string name="four_alt">よっつ</string>
+    <string name="five_alt">いつつ</string>
+    <string name="six_alt">むっつ</string>
+    <string name="seven_alt">ななつ</string>
+
+    <!-- 「分からない」フレーズ -->
+    <string name="dont_know_1">わからない</string>
+    <string name="dont_know_2">わからない</string>
+    <string name="dont_know_3">わからない</string>
+    <string name="dont_know_4">見えない</string>
+    <string name="dont_know_5">見えない</string>
+    <string name="dont_know_6">見えない</string>
+    <string name="dont_know_7">見えない</string>
+    <string name="dont_know_8">見えません</string>
+    <string name="dont_know_9">見えません</string>
+    <string name="dont_know_10">見えません</string>
+    <string name="dont_know_11">見えません</string>
+
+    <!-- 管理者ダッシュボード -->
+    <string name="admin_dashboard">管理者ダッシュボード</string>
+    <string name="admin_ad_management">広告管理</string>
+    <string name="admin_password_management">パスワード管理</string>
+    <string name="admin_exit">管理者を終了</string>
+    <string name="admin_exit_confirm_title">管理者を終了</string>
+    <string name="admin_exit_confirm_message">本当に終了しますか？</string>
+    <string name="admin_confirm">確認</string>
+    <string name="admin_cancel">キャンセル</string>
+    <string name="admin_ad_image_management">広告画像管理</string>
+    <string name="admin_ad_image_description">広告に使用する画像を管理および選択してください</string>
+    <string name="admin_select_ad_location">広告の位置を選択してください</string>
+    <string name="admin_test_list_screen">検査リスト画面</string>
+    <string name="admin_test_list_subtitle">血圧、目、斜視など</string>
+    <string name="admin_badge_image">画像</string>
+    <string name="admin_screensaver">スクリーンセーバー</string>
+    <string name="admin_screensaver_subtitle">画面をタッチ</string>
+    <string name="admin_badge_video">動画</string>
+    <string name="admin_ad_location_preview">広告位置プレビュー</string>
+    <string name="admin_ad_image_list">広告画像リスト</string>
+    <string name="admin_add">追加</string>
+    <string name="admin_delete">削除</string>
+    <string name="admin_reorder">順序変更</string>
+    <string name="admin_password_description">管理者パスワードを変更できます</string>
+    <string name="admin_password_coming_soon">パスワード管理画面（実装予定）</string>
+
 </resources>
