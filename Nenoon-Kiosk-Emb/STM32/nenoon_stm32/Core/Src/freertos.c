@@ -26,6 +26,7 @@
 #include "task_uart.h"
 #include "task_usb.h"
 #include "task_scan.h"
+#include "task_verify.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -114,8 +115,9 @@ void vApplicationMallocFailedHook(void)
 void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN*/
 	task_uart_start(2048, osPriorityHigh);
-	task_usb_start(2048, osPriorityNormal);
-	task_scan_start(2048, osPriorityNormal);
+	//task_usb_start(2048, osPriorityNormal);
+	//task_scan_start(2048, osPriorityNormal);
+	task_verify_start();
   /* USER CODE END Init */
 
   /* USER CODE BEGIN RTOS_MUTEX */

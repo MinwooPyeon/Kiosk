@@ -426,6 +426,11 @@ uint8_t STLINK_UART_GetChar(uint32_t timeout_ms){
 	return 0xFF;
 }
 
+HAL_StatusTypeDef STLINK_UART_SendBytes(const uint8_t* buf, uint16_t len) {
+    // VCP로 보내기 전에 터미널에 응답 출력
+    return HAL_UART_Transmit(&huart3, (uint8_t*)buf, len, 100);
+}
+
 /*UART6 - ESP32*/
 HAL_StatusTypeDef UART6_SendString(const char* s){
 	return HAL_UART_Transmit(&huart6, (uint8_t*)s, (uint16_t)strlen(s), 100);
@@ -436,4 +441,7 @@ HAL_StatusTypeDef UART6_SendBytes(const uint8_t* buf, uint16_t len){
 HAL_StatusTypeDef UART6_RecvBytes(uint8_t* buf, uint16_t len, uint32_t to_ms){
 	return HAL_UART_Receive(&huart6, buf, len, to_ms);
 }
+
+
+
 /* USER CODE END 1 */

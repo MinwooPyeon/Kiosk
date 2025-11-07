@@ -18,6 +18,7 @@
 "./Core/Src/task_scan.o"
 "./Core/Src/task_uart.o"
 "./Core/Src/task_usb.o"
+"./Core/Src/task_verify.o"
 "./Core/Src/uart_link.o"
 "./Core/Src/usart.o"
 "./Core/Src/usb_advert.o"

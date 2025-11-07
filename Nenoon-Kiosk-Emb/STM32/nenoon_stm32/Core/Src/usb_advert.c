@@ -159,10 +159,10 @@ usb_advert_err_t USB_Advert_ReadByName(const char* filename)
             break;
 
         buf[br] = '\0';
-        STLINK_UART_Print(buf);
+        //STLINK_UART_Print(buf);
     }
 
-    STLINK_UART_Println("\r\n[EOF]");
+    //STLINK_UART_Println("\r\n[EOF]");
     f_close(&file);
     return USB_ADVERT_OK;
 }

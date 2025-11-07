@@ -1,2 +1,3 @@
-../Core/Src/task_scan.c:14:13:vTaskScan	3
-../Core/Src/task_scan.c:29:6:task_scan_start	1
+../Core/Src/task_scan.c:14:20:usb_ready	1
+../Core/Src/task_scan.c:18:13:vTaskScan	5
+../Core/Src/task_scan.c:44:6:task_scan_start	1

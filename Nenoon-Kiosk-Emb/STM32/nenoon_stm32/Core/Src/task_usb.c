@@ -20,7 +20,7 @@ static void vTaskUsb(void* arg){
 
 	for(;;){
 		USBH_Process(&hUsbHostFS);
-		osDelay(5);
+		osDelay(5000);
 	}
 }
 

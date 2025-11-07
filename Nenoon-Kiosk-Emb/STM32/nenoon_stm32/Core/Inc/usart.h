@@ -58,6 +58,7 @@ HAL_StatusTypeDef STLINK_UART_PutChar(uint8_t ch);
 HAL_StatusTypeDef STLINK_UART_Print(const char* s);
 HAL_StatusTypeDef STLINK_UART_Println(const char* s);
 uint8_t STLINK_UART_GetChar(uint32_t timeout_ms);
+HAL_StatusTypeDef STLINK_UART_SendBytes(const uint8_t* buf, uint16_t len);
 //UART6 - ESP32
 HAL_StatusTypeDef UART6_SendString(const char* s);
 HAL_StatusTypeDef UART6_SendBytes(const uint8_t* buf, uint16_t len);
