@@ -46,6 +46,11 @@ fun BloodPressureInstructionsRoute(
     }
 
     LaunchedEffect(Unit) {
+        // BP170B: 화면 진입 시 측정 데이터 초기화
+        if (bloodPressureMonitorType == SharedPreferencesManager.BloodPressureMonitorType.BP170B) {
+            bp170BViewModel.resetMeasurement()
+        }
+
         TTS.stopTTS()
         val ttsMessage = when (bloodPressureMonitorType) {
             SharedPreferencesManager.BloodPressureMonitorType.BP170B ->

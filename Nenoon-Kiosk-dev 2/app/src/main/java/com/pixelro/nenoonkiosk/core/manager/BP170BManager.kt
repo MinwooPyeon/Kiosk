@@ -29,7 +29,7 @@ import java.util.UUID
 object BP170BManager {
     private const val TAG = "com.pixelro.nenoonkiosk.bTManager.BP170B.BP170BManager"
     const val SCAN_DURATION = 60000 // In milliseconds
-    private const val STATUS_POLLING_INTERVAL_MS: Long = 1000 // Poll every 1 second
+    private const val STATUS_POLLING_INTERVAL_MS: Long = 2000 // Poll every 2 seconds
 
     private val managerScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -362,7 +362,6 @@ object BP170BManager {
                 
                 // 4바이트 짧은 데이터 무시 - 중간 상태 데이터이며 유효한 측정 결과가 아님
                 if (receivedBytes.size == 4) {
-                    Log.d(TAG, "⚠️ Ignoring short data (4 bytes): ${receivedBytes.joinToString(" ") { String.format("%02X", it) }} - not a valid measurement result")
                     return null
                 }
                 
@@ -433,23 +432,32 @@ object BP170BManager {
                 // Interpret the response based on CMD0.
                 return when (cmd0) {
                     0xB0 -> { // Response for APP Device Status check (command 0xC0)
-                        when (dataBytes.firstOrNull()?.toUByte()?.toInt()) {
+                        val statusCode = dataBytes.firstOrNull()?.toUByte()?.toInt()
+                        val statusMessage = when (statusCode) {
                             0x00 -> "Status: Setting clock"
                             0x01 -> "Status: Checking data stored in M1 (first check)"
                             0x02 -> "Status: Checking data stored in M1 (second check)"
                             0x03 -> "Status: Checking last measured data"
                             0x04 -> "Status: During measurement" // This is the status for "during measurement"
-                            0x05 -> "Status: Measurement complete"
-                            0x0E -> "Status: Device ready" 
-                            0x0F -> "Status: Standby mode" 
+                            0x05 -> {
+                                // 측정 완료 상태 감지 - 0xBA notification을 못 받은 경우 백업용
+                                Log.d(TAG, " Measurement complete status (0x05) detected - triggering 0xC4 command")
+                                managerScope.launch {
+                                    _testCompletionTrigger.value = true
+                                }
+                                "Status: Measurement complete"
+                            }
+                            0x0E -> "Status: Device ready"
+                            0x0F -> "Status: Standby mode"
                             0x10 -> "Status: Error state"
                             0x11 -> "Status: Calibration mode"
                             0x12 -> "Status: Test mode"
                             0x13 -> "Status: Maintenance mode"
                             0x14 -> "Status: Low battery"
                             0x15 -> "Status: High battery"
-                            else -> "Status: Unknown (0x${dataBytes.firstOrNull()?.toUByte()?.toInt()?.toString(16)?.uppercase()})"
-                        } + if (responseDataString.isNotEmpty()) ", Raw Data: $responseDataString" else ""
+                            else -> "Status: Unknown (0x${statusCode?.toString(16)?.uppercase()})"
+                        }
+                        statusMessage + if (responseDataString.isNotEmpty()) ", Raw Data: $responseDataString" else ""
                     }
                     0xB1 -> { // Response for APP Device Error Code Check (command 0xC1)
                         "Error Code: $responseDataString"
@@ -607,10 +615,14 @@ object BP170BManager {
                 super.onCharacteristicChanged(gatt, characteristic)
                 managerScope.launch {
                     val rawBytes = characteristic.value
+                    //Log.d(TAG, "onCharacteristicChanged - Raw bytes: ${rawBytes?.joinToString(" ") { String.format("%02X", it) }}")
                     val data = parseBP170Data(rawBytes, "change")
-                    _dataReceived.value = data
-                    Log.d(TAG, "Parsed data: $data")
-                    Log.d(TAG, "Current bloodPressureResult: ${_bloodPressureResult.value}")
+                    // null이 아닐 때만 업데이트 (4바이트 중간 데이터 무시)
+                    if (data != null) {
+                        _dataReceived.value = data
+                        Log.d(TAG, "Parsed data: $data")
+                        Log.d(TAG, "Current bloodPressureResult: ${_bloodPressureResult.value}")
+                    }
                 }
             }
 
@@ -622,13 +634,18 @@ object BP170BManager {
                 super.onDescriptorWrite(gatt, descriptor, status)
                 managerScope.launch {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
-                        Log.d(TAG, "Notifications enabled successfully, starting polling")
+                        Log.d(TAG, "✅ Notifications enabled successfully, starting polling and testCompletionJob")
+
+                        // BLE 안정화를 위한 딜레이 (notification 활성화 직후 데이터 수신 안정화)
+                        delay(500)
+
                         _connectionState.value = BluetoothConnectionState.CONNECTED
 
                         // Notification 활성화 완료 후 폴링 시작
                         pollingJob?.cancel()
                         pollingJob =
                             managerScope.launch {
+                                Log.d(TAG, "✅ Polling job started")
                                 while (isActive && connectionState.value == BluetoothConnectionState.CONNECTED) {
                                     sendDeviceStatusCheckCommand()
                                     delay(STATUS_POLLING_INTERVAL_MS)
@@ -639,14 +656,15 @@ object BP170BManager {
                         testCompletionJob?.cancel()
                         testCompletionJob =
                             managerScope.launch {
+                                Log.d(TAG, "✅ testCompletionJob started - waiting for 0xBA trigger")
                                 _testCompletionTrigger.filter { it }.collect {
-                                    Log.d(TAG, "0xBA command received. Sending command to fetch last measured data (0xC4).")
+                                    Log.d(TAG, "🔔 0xBA trigger activated. Sending command to fetch last measured data (0xC4).")
                                     sendLastMeasuredDataCommand()
                                     _testCompletionTrigger.value = false
                                 }
                             }
                     } else {
-                        Log.e(TAG, "Descriptor write failed, status: $status")
+                        Log.e(TAG, "❌ Descriptor write failed, status: $status")
                         _connectionState.value =
                             BluetoothConnectionState.ERROR("Descriptor write failed, status: $status")
                     }
@@ -752,11 +770,17 @@ object BP170BManager {
     /**
      * 새로운 측정을 위해 측정 데이터를 초기화합니다.
      * 이전 혈압 측정 결과와 트리거를 초기화합니다.
+     * StateFlow 업데이트를 보장하기 위해 임시 값을 거쳐 null로 설정합니다.
      */
     fun resetMeasurement() {
+        // StateFlow의 null → null 업데이트 문제 방지: 임시 더미 값 → null
+        if (_bloodPressureResult.value == null) {
+            _bloodPressureResult.value = BloodPressureInspectionResult(0, 0, 0)
+        }
         _bloodPressureResult.value = null
         _testCompletionTrigger.value = false
-        _dataReceived.value = null
+        // _dataReceived는 장치 상태 메시지(Device ready, During measurement 등)를 담고 있으므로
+        // 화면 전환 로직에 필요하여 초기화하지 않음
     }
 
     /**
