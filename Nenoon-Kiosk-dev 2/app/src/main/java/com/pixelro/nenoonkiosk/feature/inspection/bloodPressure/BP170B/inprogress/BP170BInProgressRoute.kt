@@ -42,7 +42,7 @@ fun BP170BInProgressRoute(
     var hasShownStandbyWarning by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        viewModel.resetMeasurement()
+        // Instructions 화면에서 이미 초기화했으므로 여기서는 초기화하지 않음
         screenState = BpMeasurementScreenState.Measuring
         isMeasurementInProgress = true
         errorMessage = null
