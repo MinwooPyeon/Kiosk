@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
@@ -38,10 +39,11 @@ fun AdImageItem(
     fileName: String,
     imageUri: String? = null,
     onDelete: () -> Unit,
-    onReorder: () -> Unit
+    dragModifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .border(1.dp, LightGray300, RoundedCornerShape(8.dp))
             .padding(16.dp),
@@ -103,16 +105,34 @@ fun AdImageItem(
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        // 순서 변경 버튼 (오른쪽)
-        IconButton(
-            onClick = onReorder,
-            modifier = Modifier.size(40.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Menu,
-                contentDescription = stringResource(R.string.admin_reorder),
-                tint = Color.Gray
-            )
-        }
+        // 순서 변경 핸들 (오른쪽) - 드래그해서 순서 변경
+        Icon(
+            imageVector = Icons.Default.Menu,
+            contentDescription = stringResource(R.string.admin_reorder),
+            tint = Color.Gray,
+            modifier = dragModifier
+                .size(40.dp)
+                .padding(8.dp)
+        )
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFFF8F8F8, widthDp = 400)
+@Composable
+private fun AdImageItemPreview() {
+    AdImageItem(
+        fileName = "advertisement_banner_2024.jpg",
+        imageUri = null,
+        onDelete = {}
+    )
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFFF8F8F8, widthDp = 400)
+@Composable
+private fun AdImageItemWithLongNamePreview() {
+    AdImageItem(
+        fileName = "very_long_advertisement_banner_with_special_promotion_2024_final_v2.jpg",
+        imageUri = null,
+        onDelete = {}
+    )
 }

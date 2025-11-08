@@ -83,7 +83,8 @@ fun AdminDashboardScreen(
                             uiState = uiState,
                             onSelectLocation = viewModel::selectAdLocation,
                             onDeleteImage = viewModel::deleteAdImage,
-                            onAddImage = viewModel::addAdImage
+                            onAddImage = viewModel::addAdImage,
+                            onSaveOrder = viewModel::saveAdImagesOrder
                         )
 
                         AdminTab.PASSWORD_MANAGEMENT -> PasswordManagementContent()
@@ -113,7 +114,8 @@ fun AdminDashboardScreen(
                             uiState = uiState,
                             onSelectLocation = viewModel::selectAdLocation,
                             onDeleteImage = viewModel::deleteAdImage,
-                            onAddImage = viewModel::addAdImage
+                            onAddImage = viewModel::addAdImage,
+                            onSaveOrder = viewModel::saveAdImagesOrder
                         )
 
                         AdminTab.PASSWORD_MANAGEMENT -> PasswordManagementContent()

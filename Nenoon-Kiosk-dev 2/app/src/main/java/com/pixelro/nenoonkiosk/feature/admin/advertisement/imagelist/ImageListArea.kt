@@ -10,12 +10,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -29,6 +33,8 @@ import com.pixelro.nenoonkiosk.feature.admin.advertisement.imagelist.AdImageItem
 import com.pixelro.nenoonkiosk.ui.theme.LightGray300
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
+import com.pixelro.nenoonkiosk.util.dragHandle
+import com.pixelro.nenoonkiosk.util.rememberReorderableState
 
 
 @Composable
@@ -36,6 +42,7 @@ fun ImageListArea(
     images: List<AdImageData>,
     onDeleteImage: (String) -> Unit,
     onAddImage: (String, String?) -> Unit,
+    onSaveOrder: (List<AdImageData>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -67,16 +74,48 @@ fun ImageListArea(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 이미지 목록
+        // 이미지 목록 - 로컬 상태로 관리
+        val localImages = remember { mutableStateListOf<AdImageData>() }
+
+        // images가 변경되면 localImages 동기화
+        LaunchedEffect(images) {
+            if (localImages != images) {
+                localImages.clear()
+                localImages.addAll(images)
+            }
+        }
+
+        val lazyListState = rememberLazyListState()
+        val reorderableState = rememberReorderableState(
+            list = localImages,
+            getKey = { it.id },
+            onMove = { fromIndex, toIndex ->
+                // 드래그 중에는 아무것도 하지 않음 (localImages는 ReorderableState가 자동으로 업데이트)
+            },
+            lazyListState = lazyListState
+        )
+
         LazyColumn(
+            state = lazyListState,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(images) { image ->
+            itemsIndexed(
+                items = localImages,
+                key = { _, item -> item.id }
+            ) { index, image ->
                 AdImageItem(
                     fileName = image.fileName,
                     imageUri = image.imageUri,
                     onDelete = { onDeleteImage(image.id) },
-                    onReorder = { /* TODO: 순서 변경 로직 */ }
+                    dragModifier = Modifier.dragHandle(
+                        state = reorderableState,
+                        key = image.id,
+                        onDragEnd = {
+                            // 드래그 종료 시 현재 localImages 순서를 DB에 저장
+                            onSaveOrder(localImages.toList())
+                        }
+                    ),
+                    modifier = reorderableState.getItemModifier(index)
                 )
             }
         }
@@ -110,6 +149,7 @@ private fun ImageListAreaWithImagesPreview() {
             )
         ),
         onDeleteImage = {},
-        onAddImage = { _, _ -> }
+        onAddImage = { _, _ -> },
+        onSaveOrder = {}
     )
 }

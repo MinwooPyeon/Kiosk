@@ -29,7 +29,14 @@ fun AdminTab.getTitle(): String {
 
 enum class AdLocation {
     TEST_LIST_SCREEN,
-    SCREENSAVER
+    SCREENSAVER;
+
+    fun toLocationId(): Int {
+        return when (this) {
+            TEST_LIST_SCREEN -> 1
+            SCREENSAVER -> 2
+        }
+    }
 }
 
 data class AdImageData(
