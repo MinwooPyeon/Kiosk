@@ -94,13 +94,13 @@
     <string name="test_list_dialog_re_button">重新检查</string>
     <string name="test_list_dialog_cancel_button">取消</string>
     <string name="test_predescription_presbyopia_title1">老花眼检测</string>
-    <string name="test_predescription_presbyopia_title2">\n(眼球年龄检测)</string>
+    <string name="test_predescription_presbyopia_title2">(眼球年龄检测)</string>
     <string name="test_predescription_short_visual_acuity_title1">视力检测</string>
-    <string name="test_predescription_short_visual_acuity_title2">\n(近距离)</string>
+    <string name="test_predescription_short_visual_acuity_title2">(近距离)</string>
     <string name="test_predescription_amsler_title1">阿姆斯勒方格表检测</string>
-    <string name="test_predescription_amsler_title2">\n(黄斑变性检测)</string>
+    <string name="test_predescription_amsler_title2">(黄斑变性检测)</string>
     <string name="test_predescription_mchart_title1">M-charts检测</string>
-    <string name="test_predescription_mchart_title2">\n(黄斑变性测试)</string>
+    <string name="test_predescription_mchart_title2">(黄斑变性测试)</string>
     <string name="test_list_screen_warning1">NENOON软件的所有眼部检查均为自我检测,</string>
     <string name="test_list_screen_warning2">并非医学意见,</string>
     <string name="test_list_screen_warning3">如需准确诊断,建议前往医院接受进一步检查眼睛状态、周围环境或设备因素可能会影响检查结果</string>
@@ -817,7 +817,7 @@
     <string name="start">开始</string>
 
     <string name="tts_bp170b_device_check">正在搜索血压计。请稍候。</string>
-    <string name="tts_bp170b_turn_off_device_initialization">需要初始化血压计。请只按一次血压计的开始/停止按钮。</string>
+    <string name="tts_bp170b_turn_off_device_initialization">需要初始化血压计。\n请只按一次血压计的开始/停止按钮。</string>
     <string name="tts_bp170b_standby_instructions">请将血压计佩戴在左臂上。佩戴后请按血压计的开始/停止按钮。</string>
     <string name="tts_bp170b_connected_message">血压计已连接。准备开始测量。</string>
     <string name="tts_bp170b_connection_failed">血压计连接失败。请重试。</string>
@@ -1032,4 +1032,63 @@
     <string name="tts_sawi_adjustment">请将屏幕上显示的十字移动到圆的中心。</string>
     <string name="tts_fudo_adjustment">请将两侧半圆调整为相同大小,大小相同后请按下一步。</string>
     <string name="tts_result_screen">检查已完成。请按打印结果按钮打印结果。</string>
+
+    <!-- TTS 数字 -->
+    <string name="one">一</string>
+    <string name="two">二</string>
+    <string name="three">三</string>
+    <string name="four">四</string>
+    <string name="five">五</string>
+    <string name="six">六</string>
+    <string name="seven">七</string>
+    <string name="eight">八</string>
+    <string name="nine">九</string>
+
+    <!-- 替代表达 -->
+    <string name="two_alt">两</string>
+    <string name="three_alt">三</string>
+    <string name="four_alt">四</string>
+    <string name="five_alt">五</string>
+    <string name="six_alt">六</string>
+    <string name="seven_alt">七</string>
+
+    <!-- "不知道"短语 -->
+    <string name="dont_know_1">不知道</string>
+    <string name="dont_know_2">不清楚</string>
+    <string name="dont_know_3">不知道</string>
+    <string name="dont_know_4">看不见</string>
+    <string name="dont_know_5">看不见</string>
+    <string name="dont_know_6">看不到</string>
+    <string name="dont_know_7">看不到</string>
+    <string name="dont_know_8">看不见</string>
+    <string name="dont_know_9">看不见</string>
+    <string name="dont_know_10">看不见</string>
+    <string name="dont_know_11">看不见</string>
+
+    <!-- 管理员仪表板 -->
+    <string name="admin_dashboard">管理员仪表板</string>
+    <string name="admin_ad_management">广告管理</string>
+    <string name="admin_password_management">密码管理</string>
+    <string name="admin_exit">退出管理员</string>
+    <string name="admin_exit_confirm_title">退出管理员</string>
+    <string name="admin_exit_confirm_message">您确定要退出吗?</string>
+    <string name="admin_confirm">确认</string>
+    <string name="admin_cancel">取消</string>
+    <string name="admin_ad_image_management">广告图片管理</string>
+    <string name="admin_ad_image_description">管理和选择用于广告的图片</string>
+    <string name="admin_select_ad_location">请选择广告位置</string>
+    <string name="admin_test_list_screen">测试列表屏幕</string>
+    <string name="admin_test_list_subtitle">血压、眼睛、斜视等</string>
+    <string name="admin_badge_image">图片</string>
+    <string name="admin_screensaver">屏幕保护程序</string>
+    <string name="admin_screensaver_subtitle">触摸屏幕</string>
+    <string name="admin_badge_video">视频</string>
+    <string name="admin_ad_location_preview">广告位置预览</string>
+    <string name="admin_ad_image_list">广告图片列表</string>
+    <string name="admin_add">添加</string>
+    <string name="admin_delete">删除</string>
+    <string name="admin_reorder">重新排序</string>
+    <string name="admin_password_description">您可以更改管理员密码</string>
+    <string name="admin_password_coming_soon">密码管理屏幕（即将推出）</string>
+
 </resources>

@@ -29,7 +29,7 @@ import java.util.UUID
 object BP170BManager {
     private const val TAG = "com.pixelro.nenoonkiosk.bTManager.BP170B.BP170BManager"
     const val SCAN_DURATION = 60000 // In milliseconds
-    private const val STATUS_POLLING_INTERVAL_MS: Long = 1000 // Poll every 1 second
+    private const val STATUS_POLLING_INTERVAL_MS: Long = 2000 // Poll every 2 seconds
 
     private val managerScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -360,23 +360,9 @@ object BP170BManager {
                     return null
                 }
                 
-                // Handle very short data (4 bytes) - might be direct measurement result
+                // 4바이트 짧은 데이터 무시 - 중간 상태 데이터이며 유효한 측정 결과가 아님
                 if (receivedBytes.size == 4) {
-                    Log.d(TAG, "Received short data (4 bytes): ${receivedBytes.joinToString(" ") { String.format("%02X", it) }}")
-                    // Try to parse as direct measurement result: systolic, diastolic, pulse, checksum
-                    val systolic = receivedBytes[0].toUByte().toInt()
-                    val diastolic = receivedBytes[1].toUByte().toInt()
-                    val pulse = receivedBytes[2].toUByte().toInt()
-                    val checksum = receivedBytes[3].toUByte().toInt()
-                    
-                    if (systolic in 0..300 && diastolic in 0..300 && pulse in 0..250) {
-                        _bloodPressureResult.value = BloodPressureInspectionResult(systolic, diastolic, pulse)
-                        Log.d(TAG, "Parsed short data as BP result: SBP=$systolic, DBP=$diastolic, Pulse=$pulse")
-                        return "Short Data BP Result: SBP=$systolic, DBP=$diastolic, Pulse=$pulse"
-                    } else {
-                        Log.w(TAG, "Short data values out of range: SBP=$systolic, DBP=$diastolic, Pulse=$pulse")
-                        return "Short Data: Invalid values. SBP=$systolic, DBP=$diastolic, Pulse=$pulse"
-                    }
+                    return null
                 }
                 
                 // Minimum frame size: STX(1) + ID(1) + BOD0(1) + BOD1(1) + CMD0(1) + CMD1(1) + CheckSum(1) + ETX(1) = 8 bytes.
@@ -446,23 +432,32 @@ object BP170BManager {
                 // Interpret the response based on CMD0.
                 return when (cmd0) {
                     0xB0 -> { // Response for APP Device Status check (command 0xC0)
-                        when (dataBytes.firstOrNull()?.toUByte()?.toInt()) {
+                        val statusCode = dataBytes.firstOrNull()?.toUByte()?.toInt()
+                        val statusMessage = when (statusCode) {
                             0x00 -> "Status: Setting clock"
                             0x01 -> "Status: Checking data stored in M1 (first check)"
                             0x02 -> "Status: Checking data stored in M1 (second check)"
                             0x03 -> "Status: Checking last measured data"
                             0x04 -> "Status: During measurement" // This is the status for "during measurement"
-                            0x05 -> "Status: Measurement complete"
-                            0x0E -> "Status: Device ready" 
-                            0x0F -> "Status: Standby mode" 
+                            0x05 -> {
+                                // 측정 완료 상태 감지 - 0xBA notification을 못 받은 경우 백업용
+                                Log.d(TAG, " Measurement complete status (0x05) detected - triggering 0xC4 command")
+                                managerScope.launch {
+                                    _testCompletionTrigger.value = true
+                                }
+                                "Status: Measurement complete"
+                            }
+                            0x0E -> "Status: Device ready"
+                            0x0F -> "Status: Standby mode"
                             0x10 -> "Status: Error state"
                             0x11 -> "Status: Calibration mode"
                             0x12 -> "Status: Test mode"
                             0x13 -> "Status: Maintenance mode"
                             0x14 -> "Status: Low battery"
                             0x15 -> "Status: High battery"
-                            else -> "Status: Unknown (0x${dataBytes.firstOrNull()?.toUByte()?.toInt()?.toString(16)?.uppercase()})"
-                        } + if (responseDataString.isNotEmpty()) ", Raw Data: $responseDataString" else ""
+                            else -> "Status: Unknown (0x${statusCode?.toString(16)?.uppercase()})"
+                        }
+                        statusMessage + if (responseDataString.isNotEmpty()) ", Raw Data: $responseDataString" else ""
                     }
                     0xB1 -> { // Response for APP Device Error Code Check (command 0xC1)
                         "Error Code: $responseDataString"
@@ -470,9 +465,9 @@ object BP170BManager {
                     0xB2 -> { // Response for APP Device Time Setup (command 0xC2)
                         "Time Setup Response: ${if (dataBytes.firstOrNull()?.toUByte()?.toInt() == 0x00) "Success" else "Failed"}" // Assuming 0x00 indicates success.
                     }
-                    0xB4 -> { // Response for APP Device Check Last measured data (command 0xC4)
-                        // Data structure for 0xB4: Year(1), Month(1), Day(1), Hour(1), Minute(1), Second(1)
-                        // Systolic BP (2 bytes), Diastolic BP (2 bytes), Pulse Rate (2 bytes), Measurement Result Code (1 byte)
+                    0xB4 -> { // 0xB4: 마지막 측정 데이터 조회 응답 (command 0xC4에 대한 응답)
+                        // 데이터 구조: 날짜/시간(6바이트) + 수축기혈압(2바이트) + 이완기혈압(2바이트) + 맥박(2바이트) + 결과코드(1바이트)
+                        // Year(1), Month(1), Day(1), Hour(1), Minute(1), Second(1), SBP(2), DBP(2), Pulse(2), ResultCode(1)
                         if (dataBytes.size >= 13) { // 6 bytes for time + 2*3 bytes for BP/Pulse + 1 byte for result code = 13 bytes
                             val systolicLE = dataBytes[6].toUByte().toInt() or (dataBytes[7].toUByte().toInt() shl 8)
                             val diastolicLE = dataBytes[8].toUByte().toInt() or (dataBytes[9].toUByte().toInt() shl 8)
@@ -507,10 +502,10 @@ object BP170BManager {
                     0xB5 -> { // Response for APP Device Serial Number Request (command 0xC5)
                         "Serial Number: $responseDataString"
                     }
-                    0xBA -> { // New: Response when cmd0 is 0xBA (assuming it means test is over AND carries data)
-                        Log.d(TAG, "Received CMD0 0xBA. Attempting to decode data as single bytes with offset.")
-                        // User specified: 7th byte (index 6) is systolic, 8th (index 7) is diastolic, 9th (index 8) is pulse.
-                        // Each value should be subtracted by 10 after converting to decimal.
+                    0xBA -> { // 0xBA: 측정 완료 신호 (Test Over) - 측정이 끝났음을 알림
+                        Log.d(TAG, "Received CMD0 0xBA (측정 완료). Attempting to decode data as single bytes with offset.")
+                        // 데이터 구조: 7번째 바이트(index 6)=수축기혈압, 8번째(index 7)=이완기혈압, 9번째(index 8)=맥박
+                        // 각 값은 10을 빼서 실제 측정값으로 변환
                         if (dataBytes.size >= 9) { // At least 6 bytes for time + 3 bytes for SBP, DBP, Pulse
                             val systolicRaw = dataBytes[6].toUByte().toInt()
                             val diastolicRaw = dataBytes[7].toUByte().toInt()
@@ -620,10 +615,14 @@ object BP170BManager {
                 super.onCharacteristicChanged(gatt, characteristic)
                 managerScope.launch {
                     val rawBytes = characteristic.value
-                    Log.d(TAG, "Characteristic changed - Raw bytes: ${rawBytes?.joinToString(" ") { String.format("%02X", it) }}")
+                    //Log.d(TAG, "onCharacteristicChanged - Raw bytes: ${rawBytes?.joinToString(" ") { String.format("%02X", it) }}")
                     val data = parseBP170Data(rawBytes, "change")
-                    _dataReceived.value = data
-                    Log.d(TAG, "Parsed data: $data")
+                    // null이 아닐 때만 업데이트 (4바이트 중간 데이터 무시)
+                    if (data != null) {
+                        _dataReceived.value = data
+                        Log.d(TAG, "Parsed data: $data")
+                        Log.d(TAG, "Current bloodPressureResult: ${_bloodPressureResult.value}")
+                    }
                 }
             }
 
@@ -635,13 +634,18 @@ object BP170BManager {
                 super.onDescriptorWrite(gatt, descriptor, status)
                 managerScope.launch {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
-                        Log.d(TAG, "Notifications enabled successfully, starting polling")
+                        Log.d(TAG, "✅ Notifications enabled successfully, starting polling and testCompletionJob")
+
+                        // BLE 안정화를 위한 딜레이 (notification 활성화 직후 데이터 수신 안정화)
+                        delay(500)
+
                         _connectionState.value = BluetoothConnectionState.CONNECTED
 
                         // Notification 활성화 완료 후 폴링 시작
                         pollingJob?.cancel()
                         pollingJob =
                             managerScope.launch {
+                                Log.d(TAG, "✅ Polling job started")
                                 while (isActive && connectionState.value == BluetoothConnectionState.CONNECTED) {
                                     sendDeviceStatusCheckCommand()
                                     delay(STATUS_POLLING_INTERVAL_MS)
@@ -652,14 +656,15 @@ object BP170BManager {
                         testCompletionJob?.cancel()
                         testCompletionJob =
                             managerScope.launch {
+                                Log.d(TAG, "✅ testCompletionJob started - waiting for 0xBA trigger")
                                 _testCompletionTrigger.filter { it }.collect {
-                                    Log.d(TAG, "0xBA command received. Sending command to fetch last measured data (0xC4).")
+                                    Log.d(TAG, "🔔 0xBA trigger activated. Sending command to fetch last measured data (0xC4).")
                                     sendLastMeasuredDataCommand()
                                     _testCompletionTrigger.value = false
                                 }
                             }
                     } else {
-                        Log.e(TAG, "Descriptor write failed, status: $status")
+                        Log.e(TAG, "❌ Descriptor write failed, status: $status")
                         _connectionState.value =
                             BluetoothConnectionState.ERROR("Descriptor write failed, status: $status")
                     }
@@ -763,11 +768,26 @@ object BP170BManager {
     }
 
     /**
+     * 새로운 측정을 위해 측정 데이터를 초기화합니다.
+     * 이전 혈압 측정 결과와 트리거를 초기화합니다.
+     * StateFlow 업데이트를 보장하기 위해 임시 값을 거쳐 null로 설정합니다.
+     */
+    fun resetMeasurement() {
+        // StateFlow의 null → null 업데이트 문제 방지: 임시 더미 값 → null
+        if (_bloodPressureResult.value == null) {
+            _bloodPressureResult.value = BloodPressureInspectionResult(0, 0, 0)
+        }
+        _bloodPressureResult.value = null
+        _testCompletionTrigger.value = false
+        // _dataReceived는 장치 상태 메시지(Device ready, During measurement 등)를 담고 있으므로
+        // 화면 전환 로직에 필요하여 초기화하지 않음
+    }
+
+    /**
      * Sends the APP Device Status Check command (CMD0: 0xC0, CMD1: 0x00).
      * This command checks the current status of the device (e.g., setting clock, during measurement).
      */
     fun sendDeviceStatusCheckCommand() {
-        Log.d(TAG, "Sending APP Device Status Check command (0xC0)")
         writeCommand(createBP170Command(0xC0.toByte(), 0x00.toByte()))
     }
 

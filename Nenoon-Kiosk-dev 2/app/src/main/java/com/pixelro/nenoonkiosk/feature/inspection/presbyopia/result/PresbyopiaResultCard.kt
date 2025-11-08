@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pixelro.nenoonkiosk.ui.theme.LightGray
+import com.pixelro.nenoonkiosk.ui.theme.LightGray100
 import com.pixelro.nenoonkiosk.ui.theme.inputTextStyle
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
@@ -44,7 +44,7 @@ fun PresbyopiaResultCard(
             Modifier
                 .fillMaxWidth()
                 .background(
-                    color = LightGray,
+                    color = LightGray100,
                     shape = RoundedCornerShape(8.dp),
                 )
                 .padding(40.dp),

@@ -2,7 +2,8 @@ package com.pixelro.nenoonkiosk.core.ui
 
 import android.content.Context
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -24,7 +25,9 @@ fun Logo(
         sharedPreferences.getString("language", "defaultLanguage")
 
     Image(
-        modifier = modifier.width(600.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 40.dp),
         painter =
             painterResource(
                 id =

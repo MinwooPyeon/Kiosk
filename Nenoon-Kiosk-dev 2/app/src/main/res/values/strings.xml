@@ -94,13 +94,13 @@
     <string name="test_list_dialog_re_button">검사 다시하기</string>
     <string name="test_list_dialog_cancel_button">취소</string>
     <string name="test_predescription_presbyopia_title1">노안 조절력 검사</string>
-    <string name="test_predescription_presbyopia_title2">\n(안구 나이 검사)</string>
+    <string name="test_predescription_presbyopia_title2">(안구 나이 검사)</string>
     <string name="test_predescription_short_visual_acuity_title1">시력 검사</string>
-    <string name="test_predescription_short_visual_acuity_title2">\n(근거리)</string>
+    <string name="test_predescription_short_visual_acuity_title2">(근거리)</string>
     <string name="test_predescription_amsler_title1">암슬러 차트 검사</string>
-    <string name="test_predescription_amsler_title2">\n(황반 변성 검사)</string>
+    <string name="test_predescription_amsler_title2">(황반 변성 검사)</string>
     <string name="test_predescription_mchart_title1">엠식 변형시 검사</string>
-    <string name="test_predescription_mchart_title2">\n(황반 변성 검사)</string>
+    <string name="test_predescription_mchart_title2">(황반 변성 검사)</string>
     <string name="test_list_screen_warning1">"모든 눈 검사는 자가 검사로 "</string>
     <string name="test_list_screen_warning2">"의학적 소견이 아니기에 "</string>
     <string name="test_list_screen_warning3">정확한 진단은 병원을 방문하시길 바랍니다. 눈의 상태와 주변 환경 또는 기기에 따라 검사 결과가 달라질 수 있습니다.</string>
@@ -824,7 +824,7 @@
     <string name="start">시작하기</string>
 
     <string name="tts_bp170b_device_check">혈압계를 탐색 중입니다. 잠시만 기다려주세요.</string>
-    <string name="tts_bp170b_turn_off_device_initialization">혈압계 초기화가 필요합니다. 혈압계의 시작/정지 버튼을 한번만 눌러주세요.</string>
+    <string name="tts_bp170b_turn_off_device_initialization">혈압계 초기화가 필요합니다.\n혈압계의 시작/정지 버튼을 한번만 눌러주세요.</string>
     <string name="tts_bp170b_standby_instructions">혈압계를 왼팔에 착용해주세요. 착용 후 혈압계의 시작/정지 버튼을 눌러주세요.</string>
     <string name="tts_bp170b_connected_message">혈압계가 연결되었습니다. 측정을 시작할 준비가 되었습니다.</string>
     <string name="tts_bp170b_connection_failed">혈압계 연결에 실패하였습니다. 다시 시도해 주세요.</string>
@@ -1073,5 +1073,31 @@
     <string name="dont_know_9">안 보입니다</string>
     <string name="dont_know_10">안보인다</string>
     <string name="dont_know_11">안 보인다</string>
+
+    <!-- 관리자 대시보드 -->
+    <string name="admin_dashboard">관리자 대시보드</string>
+    <string name="admin_ad_management">광고 관리</string>
+    <string name="admin_password_management">비밀번호 관리</string>
+    <string name="admin_exit">관리자 나가기</string>
+    <string name="admin_exit_confirm_title">관리자 나가기</string>
+    <string name="admin_exit_confirm_message">정말 나가시겠습니까?</string>
+    <string name="admin_confirm">확인</string>
+    <string name="admin_cancel">취소</string>
+    <string name="admin_ad_image_management">광고 이미지 관리</string>
+    <string name="admin_ad_image_description">광고에 사용할 이미지를 관리하고 선택하세요</string>
+    <string name="admin_select_ad_location">광고 위치를 선택해주세요</string>
+    <string name="admin_test_list_screen">검사리스트 화면</string>
+    <string name="admin_test_list_subtitle">혈압, 눈, 사시 등</string>
+    <string name="admin_badge_image">이미지</string>
+    <string name="admin_screensaver">스크린세이버</string>
+    <string name="admin_screensaver_subtitle">터치하세요 화면</string>
+    <string name="admin_badge_video">동영상</string>
+    <string name="admin_ad_location_preview">광고 위치 미리보기</string>
+    <string name="admin_ad_image_list">광고 이미지 목록</string>
+    <string name="admin_add">추가</string>
+    <string name="admin_delete">삭제</string>
+    <string name="admin_reorder">순서 변경</string>
+    <string name="admin_password_description">관리자 비밀번호를 변경할 수 있습니다</string>
+    <string name="admin_password_coming_soon">비밀번호 관리 화면 (구현 예정)</string>
 
 </resources>

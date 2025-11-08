@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pixelro.nenoonkiosk.ui.theme.LightGray
+import com.pixelro.nenoonkiosk.ui.theme.LightGray100
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 import com.pixelro.nenoonkiosk.ui.theme.inputTextStyle
@@ -41,7 +41,7 @@ fun ResultCard(
 ) {
     Card(
         modifier = modifier.height(240.dp),
-        colors = CardDefaults.cardColors(containerColor = LightGray),
+        colors = CardDefaults.cardColors(containerColor = LightGray100),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Column(

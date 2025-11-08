@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.pixelro.nenoonkiosk.ui.theme.LightGray100
 
 @Composable
 fun InspectionDivider() {
@@ -17,6 +18,6 @@ fun InspectionDivider() {
             .padding(bottom = 5.dp, start = 5.dp, end = 5.dp)
             .fillMaxWidth()
             .height(1.dp)
-            .background(Color(0xFF000000))
+            .background(LightGray100)
     )
 }

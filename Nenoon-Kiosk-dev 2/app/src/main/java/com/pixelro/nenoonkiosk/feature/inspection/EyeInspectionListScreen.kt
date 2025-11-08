@@ -7,6 +7,7 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -35,13 +37,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.Advertisement
-import com.pixelro.nenoonkiosk.core.ui.InspectionSelectionButton
 import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
 import com.pixelro.nenoonkiosk.core.ui.TopBarOrientation
+import com.pixelro.nenoonkiosk.core.ui.TwoLineInspectionSelectionButton
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.WarningBar
-import com.pixelro.nenoonkiosk.ui.theme.LightGray
+import com.pixelro.nenoonkiosk.ui.theme.LightGray100
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 
@@ -159,7 +161,7 @@ private fun PortraitLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(color = LightGray)
+                .background(color = LightGray100)
         )
 
         if (!isSenior) {
@@ -243,7 +245,7 @@ private fun LandscapeLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(color = LightGray)
+                .background(color = LightGray100)
         )
 
         Row(
@@ -257,7 +259,7 @@ private fun LandscapeLayout(
                     .weight(0.45f)
                     .fillMaxHeight()
                     .padding(end = 20.dp),
-                verticalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 // 광고 (위에 꽉)
                 Box(
@@ -268,15 +270,9 @@ private fun LandscapeLayout(
                 ) {
                     if (!isSenior) {
                         HorizontalPager(
-                            contentPadding = PaddingValues(
-                                start = 0.dp,
-                                top = 0.dp,
-                                end = 0.dp,
-                                bottom = 0.dp
-                            ),
-                            pageSpacing = 20.dp,
+                            contentPadding = PaddingValues(0.dp),
+//                            pageSpacing = 20.dp,
                             state = pagerState,
-                            modifier = Modifier.fillMaxSize()
                         ) { page ->
                             Advertisement(page)
                         }
@@ -297,7 +293,7 @@ private fun LandscapeLayout(
                 modifier = Modifier
                     .width(1.dp)
                     .fillMaxHeight()
-                    .background(color = LightGray)
+                    .background(color = LightGray100)
             )
 
             // 오른쪽: 검사 목록 (버튼 간격)
@@ -308,60 +304,54 @@ private fun LandscapeLayout(
                     .padding(top = 12.dp, start = 20.dp, end = 8.dp, bottom = 8.dp),
                 verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)
             ) {
+                val itemModifier = Modifier.weight(1f)
+
                 // 단거리 시력
-                InspectionSelectionButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
+                TwoLineInspectionSelectionButton(
+                    modifier = itemModifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
                     title1 = stringResource(R.string.test_predescription_short_visual_acuity_title1),
                     title2 = stringResource(R.string.test_predescription_short_visual_acuity_title2),
-                    alignment = Alignment.CenterStart,
                     isDone = isShortVisualAcuityDone,
-                    isSenior = isSenior,
                     time = 2,
-                    onClickMethod = { onOpenTest(InspectionType.ShortDistanceVisualAcuity) }
+                    onClick = { onOpenTest(InspectionType.ShortDistanceVisualAcuity) }
                 )
 
                 // 노안(안구 나이)
-                InspectionSelectionButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
+                TwoLineInspectionSelectionButton(
+                    modifier = itemModifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
                     title1 = stringResource(R.string.test_predescription_presbyopia_title1),
                     title2 = stringResource(R.string.test_predescription_presbyopia_title2),
-                    alignment = Alignment.CenterStart,
                     isDone = isPresbyopiaDone,
-                    isSenior = isSenior,
                     time = 3,
-                    onClickMethod = { onOpenTest(InspectionType.Presbyopia) }
+                    onClick = { onOpenTest(InspectionType.Presbyopia) }
                 )
 
                 // 암슬러
-                InspectionSelectionButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
+                TwoLineInspectionSelectionButton(
+                    modifier = itemModifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
                     title1 = stringResource(R.string.test_predescription_amsler_title1),
                     title2 = stringResource(R.string.test_predescription_amsler_title2),
-                    alignment = Alignment.CenterStart,
                     isDone = isAmslerGridDone,
-                    isSenior = isSenior,
                     time = 2,
-                    onClickMethod = { onOpenTest(InspectionType.AmslerGrid) }
+                    onClick = { onOpenTest(InspectionType.AmslerGrid) }
                 )
 
                 // M-Chart
-                InspectionSelectionButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
+                TwoLineInspectionSelectionButton(
+                    modifier = itemModifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
                     title1 = stringResource(R.string.test_predescription_mchart_title1),
                     title2 = stringResource(R.string.test_predescription_mchart_title2),
-                    alignment = Alignment.CenterStart,
                     isDone = isMChartDone,
-                    isSenior = isSenior,
                     time = 2,
-                    onClickMethod = { onOpenTest(InspectionType.MChart) }
+                    onClick = { onOpenTest(InspectionType.MChart) }
                 )
             }
         }
@@ -378,59 +368,49 @@ private fun TestListSection(
     onOpenTest: (InspectionType) -> Unit
 ) {
     Column {
-        val itemModifier = Modifier.weight(1f)
+        val itemModifier = Modifier.weight(1f).padding(start = 20.dp, top = 5.dp, end = 20.dp, bottom = 5.dp)
 
-        InspectionSelectionButton(
+        TwoLineInspectionSelectionButton(
             modifier = itemModifier,
             title1 = stringResource(R.string.test_predescription_short_visual_acuity_title1),
             title2 = stringResource(R.string.test_predescription_short_visual_acuity_title2),
-            alignment = Alignment.CenterStart,
             isDone = isShortVisualAcuityDone,
-            isSenior = isSenior,
             time = 2,
-            onClickMethod = { onOpenTest(InspectionType.ShortDistanceVisualAcuity) }
+            onClick = { onOpenTest(InspectionType.ShortDistanceVisualAcuity) }
         )
 
-        Spacer(Modifier.height(20.dp))
 
-        InspectionSelectionButton(
-            modifier = itemModifier,
+        TwoLineInspectionSelectionButton(
+            modifier = itemModifier
+                .wrapContentHeight(),
             title1 = stringResource(R.string.test_predescription_presbyopia_title1),
             title2 = stringResource(R.string.test_predescription_presbyopia_title2),
-            alignment = Alignment.CenterStart,
             isDone = isPresbyopiaDone,
-            isSenior = isSenior,
             time = 3,
-            onClickMethod = { onOpenTest(InspectionType.Presbyopia) }
+            onClick = { onOpenTest(InspectionType.Presbyopia) }
         )
 
-        Spacer(Modifier.height(20.dp))
 
-        InspectionSelectionButton(
-            modifier = itemModifier,
+        TwoLineInspectionSelectionButton(
+            modifier = itemModifier
+                .wrapContentHeight(),
             title1 = stringResource(R.string.test_predescription_amsler_title1),
             title2 = stringResource(R.string.test_predescription_amsler_title2),
-            alignment = Alignment.CenterStart,
             isDone = isAmslerGridDone,
-            isSenior = isSenior,
             time = 2,
-            onClickMethod = { onOpenTest(InspectionType.AmslerGrid) }
+            onClick = { onOpenTest(InspectionType.AmslerGrid) }
         )
 
-        Spacer(Modifier.height(20.dp))
-
-        InspectionSelectionButton(
-            modifier = itemModifier,
+        TwoLineInspectionSelectionButton(
+            modifier = itemModifier
+                .wrapContentHeight(),
             title1 = stringResource(R.string.test_predescription_mchart_title1),
             title2 = stringResource(R.string.test_predescription_mchart_title2),
-            alignment = Alignment.CenterStart,
             isDone = isMChartDone,
-            isSenior = isSenior,
             time = 2,
-            onClickMethod = { onOpenTest(InspectionType.MChart) }
+            onClick = { onOpenTest(InspectionType.MChart) }
         )
-
-        Spacer(Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(40.dp))
     }
 }
 

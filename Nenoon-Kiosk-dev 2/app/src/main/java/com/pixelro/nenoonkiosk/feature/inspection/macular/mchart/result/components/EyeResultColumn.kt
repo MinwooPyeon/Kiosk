@@ -11,8 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pixelro.nenoonkiosk.feature.main.nenoonApp
-import com.pixelro.nenoonkiosk.ui.theme.LightGray2
+import com.pixelro.nenoonkiosk.ui.theme.LightGray200
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.ui.theme.Yellow
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
@@ -63,7 +62,7 @@ fun EyeResultColumnPreview() {
                 horizontalValue = 25,
                 verticalColor = neNoon_blue,
                 horizontalColor = Yellow,
-                backgroundColor = LightGray2
+                backgroundColor = LightGray200
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -76,7 +75,7 @@ fun EyeResultColumnPreview() {
                 horizontalValue = 20,
                 verticalColor = neNoon_blue,
                 horizontalColor = Yellow,
-                backgroundColor = LightGray2
+                backgroundColor = LightGray200
             )
         }
     }

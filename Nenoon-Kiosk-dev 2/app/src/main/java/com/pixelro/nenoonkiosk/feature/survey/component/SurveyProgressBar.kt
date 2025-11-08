@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.pixelro.nenoonkiosk.ui.theme.LightGray
+import com.pixelro.nenoonkiosk.ui.theme.LightGray100
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 /**
@@ -39,7 +39,7 @@ fun SurveyProgressBar(
                 Modifier
                     .height(20.dp)
                     .fillMaxWidth(0.66f)
-                    .background(LightGray, RoundedCornerShape(8.dp)),
+                    .background(LightGray100, RoundedCornerShape(8.dp)),
         ) {
             Box(
                 modifier =

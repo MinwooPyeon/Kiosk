@@ -94,20 +94,20 @@
     <string name="test_list_dialog_re_button">Retester</string>
     <string name="test_list_dialog_cancel_button">Annuler</string>
     <string name="test_predescription_presbyopia_title1">Test de la\npresbytie</string>
-    <string name="test_predescription_presbyopia_title2">"\\n(Test d'âge des yeux) "</string>
+    <string name="test_predescription_presbyopia_title2">"(Test d'âge des yeux) "</string>
     <string name="test_predescription_short_visual_acuity_title1">Test d\'acuité\nvisuelle de près</string>
-    <string name="test_predescription_short_visual_acuity_title2">"\\n(Vision de près) "</string>
+    <string name="test_predescription_short_visual_acuity_title2">"(Vision de près) "</string>
     <string name="test_predescription_amsler_title1">Test de la grille\nd\'Amsler</string>
-    <string name="test_predescription_amsler_title2">"\\n(Test de dégénérescence maculaire) "</string>
+    <string name="test_predescription_amsler_title2">"(Test de dégénérescence maculaire) "</string>
     <string name="test_predescription_mchart_title1">Test M-CHART</string>
-    <string name="test_predescription_mchart_title2">"\\n(Test de dégénérescence maculaire) "</string>
+    <string name="test_predescription_mchart_title2">"(Test de dégénérescence maculaire) "</string>
     <string name="test_list_screen_warning1">Les examens oculaires dans cette application sont des autotests et</string>
     <string name="test_list_screen_warning2">\nne constituent pas des conclusions médicales.</string>
     <string name="test_list_screen_warning3">" Veuillez consulter un hôpital et un médecin pour un diagnostic précis. Les résultats des tests peuvent varier en fonction de l'état de vos yeux, de l'environnement environnant ou de l'appareil"</string>
 
     <!-- 목록 박스-->
     <string name="box_time_required">Temps estimé</string>
-    <string name="box_approximate">Environ</string>
+    <string name="box_approximate">&#160;</string>
     <string name="box_minute">Min</string>
 
     <!-- 설정 화면 -->
@@ -1032,5 +1032,63 @@ jusqu’à ce qu’elle soit centrée dans le cercle.</string>
     <string name="tts_sawi_adjustment">Déplacez la croix affichée à l’écran jusqu’à ce qu’elle soit centrée dans le cercle.</string>
     <string name="tts_fudo_adjustment">Ajustez les deux demi-cercles jusqu’à ce qu’ils paraissent de même taille, puis appuyez sur « Suivant ».</string>
     <string name="tts_result_screen">Le test est terminé. Appuyez sur le bouton « Imprimer les résultats » pour imprimer le rapport.</string>
+
+    <!-- TTS -->
+    <string name="one">un</string>
+    <string name="two">deux</string>
+    <string name="three">trois</string>
+    <string name="four">quatre</string>
+    <string name="five">cinq</string>
+    <string name="six">six</string>
+    <string name="seven">sept</string>
+    <string name="eight">huit</string>
+    <string name="nine">neuf</string>
+
+    <!-- Variantes -->
+    <string name="two_alt">deux</string>
+    <string name="three_alt">trois</string>
+    <string name="four_alt">quatre</string>
+    <string name="five_alt">cinq</string>
+    <string name="six_alt">six</string>
+    <string name="seven_alt">sept</string>
+
+    <!-- Phrases "Je ne sais pas" -->
+    <string name="dont_know_1">je ne sais pas</string>
+    <string name="dont_know_2">je ne sais</string>
+    <string name="dont_know_3">je sais pas</string>
+    <string name="dont_know_4">je ne vois pas</string>
+    <string name="dont_know_5">je vois pas</string>
+    <string name="dont_know_6">je ne vois rien</string>
+    <string name="dont_know_7">je vois rien</string>
+    <string name="dont_know_8">je ne peux pas voir</string>
+    <string name="dont_know_9">je peux pas voir</string>
+    <string name="dont_know_10">je ne vois plus</string>
+    <string name="dont_know_11">je vois plus</string>
+
+    <!-- Tableau de bord administrateur -->
+    <string name="admin_dashboard">Tableau de bord administrateur</string>
+    <string name="admin_ad_management">Gestion des publicités</string>
+    <string name="admin_password_management">Gestion des mots de passe</string>
+    <string name="admin_exit">Quitter le mode administrateur</string>
+    <string name="admin_exit_confirm_title">Quitter le mode administrateur</string>
+    <string name="admin_exit_confirm_message">Voulez-vous vraiment quitter ?</string>
+    <string name="admin_confirm">Confirmer</string>
+    <string name="admin_cancel">Annuler</string>
+    <string name="admin_ad_image_management">Gestion des images publicitaires</string>
+    <string name="admin_ad_image_description">Gérez et sélectionnez les images à utiliser pour les publicités</string>
+    <string name="admin_select_ad_location">Veuillez sélectionner l’emplacement de la publicité</string>
+    <string name="admin_test_list_screen">Écran de liste des tests</string>
+    <string name="admin_test_list_subtitle">Tension, vision, strabisme, etc.</string>
+    <string name="admin_badge_image">Image</string>
+    <string name="admin_screensaver">Économiseur d’écran</string>
+    <string name="admin_screensaver_subtitle">Touchez l’écran</string>
+    <string name="admin_badge_video">Vidéo</string>
+    <string name="admin_ad_location_preview">Aperçu de l’emplacement des publicités</string>
+    <string name="admin_ad_image_list">Liste des images publicitaires</string>
+    <string name="admin_add">Ajouter</string>
+    <string name="admin_delete">Supprimer</string>
+    <string name="admin_reorder">Changer l’ordre</string>
+    <string name="admin_password_description">Vous pouvez modifier le mot de passe administrateur</string>
+    <string name="admin_password_coming_soon">Écran de gestion des mots de passe (bientôt disponible)</string>
 
 </resources>

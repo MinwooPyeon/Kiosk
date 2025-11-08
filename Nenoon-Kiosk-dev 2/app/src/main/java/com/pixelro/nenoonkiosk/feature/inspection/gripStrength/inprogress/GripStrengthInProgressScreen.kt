@@ -59,12 +59,12 @@ fun GripStrengthInProgressScreen(
 
         when (state.testState) {
             GripStrengthInspectionState.LeftHandReady -> AccentedText(
-                prefix = stringResource(R.string.grip_strength_left_hand_ready_text1),
+                prefix = "",
                 accent = stringResource(R.string.grip_strength_left_hand_ready_text2),
                 suffix = stringResource(R.string.grip_strength_left_hand_ready_text3),
             )
             GripStrengthInspectionState.RightHandReady -> AccentedText(
-                prefix = stringResource(R.string.grip_strength_right_hand_ready_text1),
+                prefix = "",
                 accent = stringResource(R.string.grip_strength_right_hand_ready_text2),
                 suffix = stringResource(R.string.grip_strength_right_hand_ready_text3),
             )

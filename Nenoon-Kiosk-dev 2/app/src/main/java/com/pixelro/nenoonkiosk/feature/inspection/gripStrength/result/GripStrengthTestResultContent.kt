@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 @Composable
 fun GripStrengthInspectionResultContent(
@@ -49,7 +50,7 @@ fun GripStrengthInspectionResultContent(
             Text(
                 text = "${testResult.leftGrip}kg",
                 fontSize = 32.sp,
-                color = colorResource(R.color.main),
+                color = neNoon_blue,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
             )
@@ -70,7 +71,7 @@ fun GripStrengthInspectionResultContent(
             Text(
                 text = "${testResult.rightGrip}kg",
                 fontSize = 32.sp,
-                color = colorResource(R.color.main),
+                color = neNoon_blue,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
             )

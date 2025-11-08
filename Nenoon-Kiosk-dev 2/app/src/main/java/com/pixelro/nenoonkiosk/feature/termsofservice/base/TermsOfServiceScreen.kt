@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
+import com.pixelro.nenoonkiosk.core.ui.SecondaryButton
 import com.pixelro.nenoonkiosk.feature.termsofservice.components.ConsentRow
 import com.pixelro.nenoonkiosk.feature.termsofservice.components.TermsTable
 import com.pixelro.nenoonkiosk.feature.termsofservice.components.TosDescription
@@ -130,9 +131,10 @@ fun TermsOfServiceScreen(
                     }
                 )
                 Spacer(Modifier.height(20.dp))
-                PrimaryButton(
+                SecondaryButton(
                     onClick = onClickBack,
                     text = stringResource(R.string.back),
+                    iconDrawable = R.drawable.icon_back_black,
                 )
             }
         }
