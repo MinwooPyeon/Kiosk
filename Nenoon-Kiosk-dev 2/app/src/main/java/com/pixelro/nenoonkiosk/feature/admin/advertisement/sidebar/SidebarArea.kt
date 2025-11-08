@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -157,11 +160,13 @@ private fun PortraitLayout(
                 fontWeight = FontWeight.Bold
             )
 
-            // 탭 버튼들 (가로로)
-            Row(
+            LazyRow(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 28.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                AdminTab.values().forEach { tab ->
+                items(AdminTab.values()) { tab ->
                     Button(
                         onClick = { onTabSelected(tab) },
                         colors = ButtonDefaults.buttonColors(
@@ -237,30 +242,33 @@ private fun LandscapeLayout(
         )
 
         // 탭 버튼
-        AdminTab.values().forEach { tab ->
-            Button(
-                onClick = { onTabSelected(tab) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (selectedTab == tab) neNoon_blue else Color.Transparent,
-                    contentColor = if (selectedTab == tab) White else Gray
-                ),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Row(
+        LazyColumn(
+            modifier = Modifier.weight(1f), // 필요시 높이 조절
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            items(AdminTab.values()) { tab ->
+                Button(
+                    onClick = { onTabSelected(tab) },
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (selectedTab == tab) neNoon_blue else Color.Transparent,
+                        contentColor = if (selectedTab == tab) White else Gray
+                    ),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
-                    Icon(
-                        imageVector = tab.icon,
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = tab.getTitle(), fontWeight = FontWeight.Bold)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = tab.icon,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = tab.getTitle(), fontWeight = FontWeight.Bold)
+                    }
                 }
             }
         }

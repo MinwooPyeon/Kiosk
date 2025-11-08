@@ -1,8 +1,11 @@
 package com.pixelro.nenoonkiosk.feature.admin
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -16,7 +19,8 @@ data class AdminDashboardUiState(
 
 enum class AdminTab(val icon: ImageVector) {
     AD_MANAGEMENT(Icons.Default.Image),
-    PASSWORD_MANAGEMENT(Icons.Default.Lock)
+    PASSWORD_MANAGEMENT(Icons.Default.Lock),
+
 }
 
 @Composable
