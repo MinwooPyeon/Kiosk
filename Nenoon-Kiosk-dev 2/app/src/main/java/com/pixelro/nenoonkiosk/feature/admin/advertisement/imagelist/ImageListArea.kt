@@ -1,5 +1,9 @@
 package com.pixelro.nenoonkiosk.feature.admin.advertisement.area.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -18,8 +22,13 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -35,6 +44,8 @@ import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 import com.pixelro.nenoonkiosk.util.dragHandle
 import com.pixelro.nenoonkiosk.util.rememberReorderableState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -77,11 +88,21 @@ fun ImageListArea(
         // 이미지 목록 - 로컬 상태로 관리
         val localImages = remember { mutableStateListOf<AdImageData>() }
 
+        // 각 아이템의 visible 상태 추적 (삭제 애니메이션용)
+        val visibleItems = remember { mutableStateMapOf<String, Boolean>() }
+        val coroutineScope = rememberCoroutineScope()
+
         // images가 변경되면 localImages 동기화
         LaunchedEffect(images) {
             if (localImages != images) {
                 localImages.clear()
                 localImages.addAll(images)
+                // 새로운 아이템들은 모두 visible 상태로 초기화
+                images.forEach { image ->
+                    if (!visibleItems.containsKey(image.id)) {
+                        visibleItems[image.id] = true
+                    }
+                }
             }
         }
 
@@ -103,20 +124,39 @@ fun ImageListArea(
                 items = localImages,
                 key = { _, item -> item.id }
             ) { index, image ->
-                AdImageItem(
-                    fileName = image.fileName,
-                    imageUri = image.imageUri,
-                    onDelete = { onDeleteImage(image.id) },
-                    dragModifier = Modifier.dragHandle(
-                        state = reorderableState,
-                        key = image.id,
-                        onDragEnd = {
-                            // 드래그 종료 시 현재 localImages 순서를 DB에 저장
-                            onSaveOrder(localImages.toList())
-                        }
-                    ),
-                    modifier = reorderableState.getItemModifier(index)
-                )
+                // AnimatedVisibility로 감싸서 삭제 시 애니메이션 적용
+                AnimatedVisibility(
+                    visible = visibleItems[image.id] ?: true,
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { -it }, // 왼쪽으로 슬라이드 아웃
+                        animationSpec = tween(durationMillis = 300)
+                    ) + fadeOut(
+                        animationSpec = tween(durationMillis = 300)
+                    )
+                ) {
+                    AdImageItem(
+                        fileName = image.fileName,
+                        imageUri = image.imageUri,
+                        onDelete = {
+                            // 애니메이션 먼저 실행
+                            visibleItems[image.id] = false
+                            // 애니메이션이 끝난 후 실제 삭제
+                            coroutineScope.launch {
+                                delay(300) // 애니메이션 duration과 동일
+                                onDeleteImage(image.id)
+                            }
+                        },
+                        dragModifier = Modifier.dragHandle(
+                            state = reorderableState,
+                            key = image.id,
+                            onDragEnd = {
+                                // 드래그 종료 시 현재 localImages 순서를 DB에 저장
+                                onSaveOrder(localImages.toList())
+                            }
+                        ),
+                        modifier = reorderableState.getItemModifier(index)
+                    )
+                }
             }
         }
     }
