@@ -314,6 +314,7 @@
     <string name="dementia_result_wording4">お近くの保健所や認知症安心センターで、より正確な認知症検診を受けてください</string>
     <string name="dementia_result_selection1">認知症予防のための心得3.3.3を詳しく見る</string>
     <string name="dementia_result_selection2">韓国中央認知症センターのホームページ</string>
+    <string name="dementia_result_caution_needed">要注意</string>
     <string name="eye_test">AI目の健康自己診断</string>
     <string name="dementia_test">認知症の自己診断</string>
     <string name="call">家族との接続</string>

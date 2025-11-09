@@ -10,17 +10,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaViewModel
-import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.AnswerRow
 import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.QuestionBox
+import com.pixelro.nenoonkiosk.feature.survey.component.SurveyTwoOptionsQuestion
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
+import com.pixelro.nenoonkiosk.ui.theme.White
 
 
 @Composable
@@ -35,21 +35,35 @@ fun DementiaInspectionContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFFFFF))
+            .background(White)
             .padding(40.dp),
         verticalArrangement = Arrangement.Center
     ) {
             QuestionBox(
                 currentIndex = currentIndex,
                 totalQuestions = totalQuestions,
-                questionText = StringProvider.getStringComposable(questionResId),
+                questionText = stringResource(questionResId),
                 questionTextSize = questionTextSize
             )
         Spacer(Modifier.height(52.dp))
-        AnswerRow(
-            selected = selectedAnswer,
-            onClickYes = { onAnswer(DementiaViewModel.DementiaAnswer.Yes) },
-            onClickNo = { onAnswer(DementiaViewModel.DementiaAnswer.No) }
+
+        val selectedOption = when (selectedAnswer) {
+            DementiaViewModel.DementiaAnswer.Yes -> 1
+            DementiaViewModel.DementiaAnswer.No -> 2
+            else -> 0
+        }
+
+        SurveyTwoOptionsQuestion(
+            questionText = "",
+            option1Text = stringResource(R.string.yes),
+            option2Text = stringResource(R.string.no),
+            selectedOption = selectedOption,
+            onOptionSelected = { option ->
+                when (option) {
+                    1 -> onAnswer(DementiaViewModel.DementiaAnswer.Yes)
+                    2 -> onAnswer(DementiaViewModel.DementiaAnswer.No)
+                }
+            }
         )
         Spacer(Modifier.height(24.dp))
     }

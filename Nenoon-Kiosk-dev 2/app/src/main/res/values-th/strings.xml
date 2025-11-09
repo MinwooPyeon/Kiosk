@@ -321,6 +321,7 @@
     <string name="dementia_result_wording4">โปรดไปที่สถานีอนามัยใกล้บ้านหรือศูนย์ดูแลโรคสมองเสื่อมเพื่อรับการตรวจวินิจฉัยที่ละเอียดมากขึ้น</string>
     <string name="dementia_result_selection1">ดูรายละเอียดหลักการป้องกันสมองเสื่อม 3-3-3</string>
     <string name="dementia_result_selection2">เว็บไซต์ศูนย์โรคสมองเสื่อมแห่งชาติ</string>
+    <string name="dementia_result_caution_needed">ต้องระวัง</string>
     <string name="eye_test">การตรวจสุขภาพดวงตาด้วย AI</string>
     <string name="dementia_test">แบบทดสอบคัดกรองภาวะสมองเสื่อม</string>
     <string name="call">ติดต่อครอบครัว</string>

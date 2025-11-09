@@ -319,8 +319,9 @@
     <string name="dementia_result_wording2"></string>
     <string name="dementia_result_wording3">Prevent dementia by maintaining exercise and social activities, and practicing the Dementia Prevention Guidelines 333</string>
     <string name="dementia_result_wording4">It is recommended that you visit a nearby health center or dementia relief center for a more accurate dementia checkup</string>
-    <string name="dementia_result_selection1">Read more the Dementia Prevention Guidelines 333</string>
+    <string name="dementia_result_selection1">Read more the Dementia Prevention Guidelines</string>
     <string name="dementia_result_selection2">Korean National Institute of Dementia website</string>
+    <string name="dementia_result_caution_needed">Attention required</string>
     <string name="eye_test">AI Eye Health Test</string>
     <string name="dementia_test">Dementia Self-Diagnosis</string>
     <string name="call">Videotelephony</string>

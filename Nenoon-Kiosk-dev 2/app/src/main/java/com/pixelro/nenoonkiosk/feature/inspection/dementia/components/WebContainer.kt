@@ -12,16 +12,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.ui.theme.White
+import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 @Composable
 fun WebContainer(
@@ -31,7 +32,7 @@ fun WebContainer(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xff144AAE)),
+            .background(color = neNoon_blue),
     ) {
         Box(
             modifier = Modifier
@@ -53,9 +54,9 @@ fun WebContainer(
                     contentDescription = "",
                 )
                 Text(
-                    text = StringProvider.getStringComposable(R.string.back),
+                    text = stringResource(R.string.back),
                     fontSize = 24.sp,
-                    color = Color(0xffffffff),
+                    color = White,
                 )
             }
         }

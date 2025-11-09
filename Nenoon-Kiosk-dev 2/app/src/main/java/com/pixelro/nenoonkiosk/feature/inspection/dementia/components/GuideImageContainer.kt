@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import com.pixelro.nenoonkiosk.ui.theme.White
 
 @Composable
 fun GuideImageContainer(
@@ -20,7 +20,7 @@ fun GuideImageContainer(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xffffffff)),
+            .background(color = White),
     ) {
         Box(
             modifier = Modifier
