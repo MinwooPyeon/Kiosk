@@ -1,19 +1,25 @@
 package com.pixelro.nenoonkiosk.core.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.harang.data.db.entity.AdImageEntity
 import com.pixelro.nenoonkiosk.ui.theme.LightGray400
 import com.pixelro.nenoonkiosk.ui.theme.White
@@ -39,17 +45,33 @@ fun Advertisement(adImage: AdImageEntity?) {
         Box(
             modifier =
                 Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .background(White),
             contentAlignment = Alignment.Center,
         ) {
-            adImage?.let {
-                AsyncImage(
-                    model = it.url,
+            if (adImage != null) {
+                SubcomposeAsyncImage(
+                    model = adImage.url,
                     contentDescription = "광고",
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(shape = RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.FillWidth
+                    contentScale = ContentScale.FillWidth,
+                    error = {
+                        Icon(
+                            imageVector = Icons.Default.Image,
+                            contentDescription = "이미지 로드 실패",
+                            modifier = Modifier.size(80.dp),
+                            tint = Color.Gray
+                        )
+                    }
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.Image,
+                    contentDescription = "광고 없음",
+                    modifier = Modifier.size(80.dp),
+                    tint = Color.Gray
                 )
             }
         }

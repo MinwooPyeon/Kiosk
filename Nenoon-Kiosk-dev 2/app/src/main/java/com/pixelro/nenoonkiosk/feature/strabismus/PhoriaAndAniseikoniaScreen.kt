@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.harang.data.db.entity.AdImageEntity
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.AdCarousel
 import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
@@ -204,7 +205,7 @@ private fun fakeUi(
     showSurveyDialog = showSurvey,
     showFilterDialog = false, // Preview에서는 TTS 문제로 다이얼로그 비활성화
     adImages = listOf(
-        com.harang.data.db.entity.AdImageEntity(
+        AdImageEntity(
             id = 1,
             locationId = 1,
             name = "ad_lens",
@@ -212,7 +213,7 @@ private fun fakeUi(
             order = 1,
             language = "ko"
         ),
-        com.harang.data.db.entity.AdImageEntity(
+        AdImageEntity(
             id = 2,
             locationId = 1,
             name = "ad_hades",
