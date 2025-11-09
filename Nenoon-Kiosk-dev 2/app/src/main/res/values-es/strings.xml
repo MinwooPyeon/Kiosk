@@ -323,6 +323,7 @@
     <string name="dementia_result_wording4">Visite un centro de salud o centro de atención de demencia cercano para recibir un examen de demencia más preciso.</string>
     <string name="dementia_result_selection1">Ver en detalle la regla de prevención de demencia 333</string>
     <string name="dementia_result_selection2">Sitio web del Centro Nacional de Demencia</string>
+    <string name="dementia_result_caution_needed">Se requiere atención</string>
     <string name="eye_test">Autodiagnóstico de salud ocular AI</string>
     <string name="dementia_test">Autodiagnóstico de demencia</string>
     <string name="call">Conectar con familia</string>
