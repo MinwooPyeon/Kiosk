@@ -34,7 +34,7 @@ fun AdManagementContent(
     uiState: AdManagementUiState,
     onSelectLocation: (AdLocation) -> Unit,
     onDeleteImage: (String) -> Unit,
-    onAddImage: (String, String?) -> Unit,
+    onAddImage: () -> Unit,
     onSaveOrder: (List<AdImageData>) -> Unit
 ) {
     BoxWithConstraints(
@@ -100,7 +100,7 @@ private fun PortraitLayout(
     uiState: AdManagementUiState,
     onSelectLocation: (AdLocation) -> Unit,
     onDeleteImage: (String) -> Unit,
-    onAddImage: (String, String?) -> Unit,
+    onAddImage: () -> Unit,
     onSaveOrder: (List<AdImageData>) -> Unit
 ) {
     // 세로 모드: 위에 광고 위치 선택, 아래에 미리보기와 목록
@@ -143,7 +143,7 @@ private fun LandscapeLayout(
     uiState: AdManagementUiState,
     onSelectLocation: (AdLocation) -> Unit,
     onDeleteImage: (String) -> Unit,
-    onAddImage: (String, String?) -> Unit,
+    onAddImage: () -> Unit,
     onSaveOrder: (List<AdImageData>) -> Unit
 ) {
     // 가로 모드: 좌측에 광고 위치 선택과 미리보기, 우측에 목록
@@ -214,7 +214,7 @@ private fun AdManagementContentLandscapePreview() {
         uiState = sampleUiState,
         onSelectLocation = {},
         onDeleteImage = {},
-        onAddImage = { _, _ -> },
+        onAddImage = {},
         onSaveOrder = {}
     )
 }
@@ -248,7 +248,7 @@ private fun AdManagementContentPortraitPreview() {
         uiState = sampleUiState,
         onSelectLocation = {},
         onDeleteImage = {},
-        onAddImage = { _, _ -> },
+        onAddImage = {},
         onSaveOrder = {}
     )
 }

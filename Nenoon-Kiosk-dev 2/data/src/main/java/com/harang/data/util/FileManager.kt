@@ -3,6 +3,7 @@ package com.harang.data.util
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream
@@ -90,6 +91,28 @@ class FileManager @Inject constructor(
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
             }
             file.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    /**
+     * Uri로부터 이미지를 읽어 내부 저장소에 저장하고 파일 경로를 반환합니다.
+     * @param uri 갤러리 등에서 선택한 이미지의 Uri
+     * @param childPath 저장할 하위 폴더 이름 (예: "ad_images")
+     * @param fileName 저장할 파일 이름 (확장자 제외)
+     * @return 저장된 파일의 절대 경로. 실패 시 null을 반환합니다.
+     */
+    fun saveUriToInternalStorage(uri: Uri, childPath: String, fileName: String): String? {
+        return try {
+            // Uri에서 InputStream을 열어 Bitmap으로 변환
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream?.close()
+
+            // Bitmap을 내부 저장소에 저장
+            saveBitmapToInternalStorage(bitmap, childPath, fileName)
         } catch (e: Exception) {
             e.printStackTrace()
             null

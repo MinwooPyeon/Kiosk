@@ -1,5 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.admin.advertisement
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.harang.data.db.entity.AdImageEntity
@@ -72,16 +73,25 @@ class AdManagementViewModel @Inject constructor(
         }
     }
 
-    fun addAdImage(fileName: String, imageUri: String?) {
-        val newImage = AdImageData(
-            id = "image_${System.currentTimeMillis()}",
-            fileName = fileName,
-            imageUri = imageUri
-        )
-        _uiState.update { currentState ->
-            currentState.copy(
-                adImages = currentState.adImages + newImage
-            )
+    /**
+     * 갤러리에서 선택한 이미지를 광고 이미지로 추가합니다.
+     * @param uri 갤러리에서 선택한 이미지 Uri
+     */
+    fun addAdImageFromUri(uri: Uri) {
+        viewModelScope.launch {
+            val selectedLocation = _uiState.value.selectedAdLocation ?: return@launch
+            val locationId = selectedLocation.toLocationId()
+
+            // 현재 해당 location의 이미지 개수를 가져와서 order 값 설정
+            val currentImages = _uiState.value.adImages
+            val nextOrder = currentImages.size + 1
+
+            // 파일명 생성 (timestamp 기반)
+            val fileName = "ad_image_${System.currentTimeMillis()}"
+
+            // Repository를 통해 DB에 저장
+            adImageRepository.insertAdImageFromUri(uri, locationId, nextOrder, fileName)
+            // Flow가 자동으로 UI 업데이트
         }
     }
 

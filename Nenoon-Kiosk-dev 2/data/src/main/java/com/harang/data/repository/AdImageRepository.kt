@@ -1,6 +1,7 @@
 package com.harang.data.repository
 
 import android.graphics.Bitmap
+import android.net.Uri
 import com.harang.data.db.dao.AdImageDao
 import com.harang.data.db.entity.AdImageEntity
 import com.harang.data.util.FileManager
@@ -63,6 +64,30 @@ class AdImageRepository @Inject constructor(
     suspend fun insertAdImage(bitmap: Bitmap, locationId: Int, order: Int, fileName: String) {
         // 1. 이미지를 내부 저장소에 저장하고 경로를 가져옵니다.
         val imagePath = fileManager.saveBitmapToInternalStorage(bitmap, "ad_images", fileName)
+
+        // 2. 경로가 성공적으로 생성되었을 경우에만 DB에 저장합니다.
+        imagePath?.let { path ->
+            val adImage = AdImageEntity(
+                url = path, // DB에는 파일 경로(URL)를 저장
+                name = fileName,
+                locationId = locationId,
+                order = order
+            )
+            adImageDao.insertAdImage(adImage)
+        }
+    }
+
+    /**
+     * 갤러리에서 선택한 이미지를 광고 이미지로 추가합니다.
+     * Uri를 내부 저장소에 저장하고, DB에는 파일 경로를 저장합니다.
+     * @param uri 갤러리에서 선택한 이미지 Uri
+     * @param locationId 위치 ID
+     * @param order 순서
+     * @param fileName 파일 이름
+     */
+    suspend fun insertAdImageFromUri(uri: Uri, locationId: Int, order: Int, fileName: String) {
+        // 1. Uri의 이미지를 내부 저장소에 저장하고 경로를 가져옵니다.
+        val imagePath = fileManager.saveUriToInternalStorage(uri, "ad_images", fileName)
 
         // 2. 경로가 성공적으로 생성되었을 경우에만 DB에 저장합니다.
         imagePath?.let { path ->

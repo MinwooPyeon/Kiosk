@@ -1,5 +1,8 @@
 package com.pixelro.nenoonkiosk.feature.admin
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -32,13 +35,25 @@ fun AdminDashboardScreen(
     val dashboardUiState by viewModel.uiState.collectAsState()
     val adManagementUiState by adManagementViewModel.uiState.collectAsState()
 
+    // 갤러리 이미지 선택 launcher
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            uri?.let { adManagementViewModel.addAdImageFromUri(it) }
+        }
+    )
+
     AdminDashboardContent(
         dashboardUiState = dashboardUiState,
         adManagementUiState = adManagementUiState,
         onTabSelected = viewModel::selectTab,
         onSelectLocation = adManagementViewModel::selectAdLocation,
         onDeleteImage = adManagementViewModel::deleteAdImage,
-        onAddImage = adManagementViewModel::addAdImage,
+        onAddImage = {
+            imagePickerLauncher.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            )
+        },
         onSaveOrder = adManagementViewModel::saveAdImagesOrder,
         isOutClick = isOutClick
     )
@@ -51,7 +66,7 @@ private fun AdminDashboardContent(
     onTabSelected: (AdminTab) -> Unit,
     onSelectLocation: (AdLocation) -> Unit,
     onDeleteImage: (String) -> Unit,
-    onAddImage: (String, String?) -> Unit,
+    onAddImage: () -> Unit,
     onSaveOrder: (List<AdImageData>) -> Unit,
     isOutClick: () -> Unit
 ) {
@@ -157,7 +172,7 @@ fun AdminDashboardContentPreview() {
         onTabSelected = {},
         onSelectLocation = {},
         onDeleteImage = {},
-        onAddImage = { _, _ -> },
+        onAddImage = {},
         onSaveOrder = {},
         isOutClick = {}
     )
@@ -186,7 +201,7 @@ fun AdminDashboardContentPortraitPreview() {
         onTabSelected = {},
         onSelectLocation = {},
         onDeleteImage = {},
-        onAddImage = { _, _ -> },
+        onAddImage = {},
         onSaveOrder = {},
         isOutClick = {}
     )
