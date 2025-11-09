@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.admin.advertisement.area.components
+package com.pixelro.nenoonkiosk.feature.admin.advertisement.sidebar
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

@@ -73,10 +73,9 @@ fun AdImageItem(
             modifier = Modifier.weight(1f)
         ) {
             // 이미지 썸네일
-            Box(
+             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(LightGray300),
                 contentAlignment = Alignment.Center
@@ -85,8 +84,8 @@ fun AdImageItem(
                     AsyncImage(
                         model = imageUri,
                         contentDescription = fileName,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.FillWidth
                     )
                 } else {
                     Icon(
