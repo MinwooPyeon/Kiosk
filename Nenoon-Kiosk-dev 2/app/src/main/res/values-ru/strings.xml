@@ -320,6 +320,7 @@
     <string name="dementia_result_wording4">Рекомендуется посетить ближайший медицинский центр или центр помощи при деменции для более точной диагностики деменции</string>
     <string name="dementia_result_selection1">Читать больше Руководство по предотвращению деменции 333</string>
     <string name="dementia_result_selection2">Веб-сайт Корейского национального института деменции</string>
+    <string name="dementia_result_caution_needed">Требуется внимание</string>
     <string name="eye_test">Тест на здоровье глаз с ИИ</string>
     <string name="dementia_test">Самодиагностика деменции</string>
     <string name="call">Видеотелефония</string>

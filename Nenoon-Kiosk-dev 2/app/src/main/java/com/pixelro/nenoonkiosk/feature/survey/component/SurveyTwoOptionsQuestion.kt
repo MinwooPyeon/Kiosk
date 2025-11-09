@@ -35,6 +35,7 @@ fun SurveyTwoOptionsQuestion(
     onOptionSelected: (Int) -> Unit,
 ) {
     Column(
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
