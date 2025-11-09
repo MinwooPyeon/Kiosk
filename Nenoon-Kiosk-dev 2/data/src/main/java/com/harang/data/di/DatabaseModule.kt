@@ -2,8 +2,6 @@ package com.harang.data.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.harang.data.db.AppDatabase
 import com.harang.data.db.DatabaseCallback
 import com.harang.data.db.dao.AdImageDao
@@ -22,20 +20,15 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideAppDatabase(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        callback: DatabaseCallback
     ): AppDatabase {
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
             "nenoon_kiosk_database"
-        ).addCallback(object : RoomDatabase.Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-            }
-        }).build().also { database ->
-            // 데이터베이스가 생성된 직후 초기 데이터 삽입
-            DatabaseCallback.prepopulateDatabase(database)
-        }
+        ).addCallback(callback)
+        .build()
     }
 
     @Provides

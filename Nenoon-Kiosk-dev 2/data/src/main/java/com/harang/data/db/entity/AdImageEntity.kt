@@ -23,5 +23,6 @@ data class AdImageEntity(
     val locationId: Int,
     val name: String,
     val url: String,
-    val order: Int
+    val order: Int,
+    val language: String? = null // null: 모든 언어, "ko": 한국어 전용, "en": 영어 전용 등등
 )

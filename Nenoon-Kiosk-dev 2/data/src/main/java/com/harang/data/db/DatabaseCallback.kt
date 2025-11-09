@@ -1,88 +1,97 @@
 package com.harang.data.db
 
+import android.content.Context
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.harang.data.db.entity.AdImageEntity
 import com.harang.data.db.entity.LocationEntity
+import com.harang.data.util.FileManager
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import java.io.File
+import javax.inject.Inject
+import javax.inject.Provider
+import javax.inject.Singleton
 
-class
-DatabaseCallback : RoomDatabase.Callback() {
+@Singleton
+class DatabaseCallback @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val fileManager: FileManager,
+    private val databaseProvider: Provider<AppDatabase>
+) : RoomDatabase.Callback() {
+
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onCreate(db: SupportSQLiteDatabase) {
         super.onCreate(db)
-        // 초기 데이터 삽입은 DatabaseModule에서 처리
+        // 데이터베이스가 생성된 직후 초기 데이터 삽입
+        prepopulateDatabase()
     }
 
-    companion object {
-        fun prepopulateDatabase(database: AppDatabase) {
+    private fun prepopulateDatabase() {
+        applicationScope.launch {
+            val database = databaseProvider.get()
             val locationDao = database.locationDao()
             val adImageDao = database.adImageDao()
 
-            CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
-                // Location 초기 데이터 삽입
-                val locations = listOf(
-                    LocationEntity(id = 1, name = "TEST_LIST_SCREEN"),
-                    LocationEntity(id = 2, name = "SCREENSAVER")
-                )
-                locationDao.insertLocations(locations)
+            // Location 초기 데이터 삽입
+            val locations = listOf(
+                LocationEntity(id = 1, name = "TEST_LIST_SCREEN"),
+                LocationEntity(id = 2, name = "SCREENSAVER")
+            )
+            locationDao.insertLocations(locations)
 
-                // AdImage 더미 데이터 삽입
-                val adImages = listOf(
-                    // TEST_LIST_SCREEN용 이미지
+            // assets 폴더의 이미지를 내부 저장소로 복사
+            val adLensPath = fileManager.copyAssetToInternalStorage("ad_lens.png", "ad_images", "ad_lens")
+            val adHadesPath = fileManager.copyAssetToInternalStorage("ad_hades.png", "ad_images", "ad_hades")
+            val adHadesEnPath = fileManager.copyAssetToInternalStorage("ad_hades_en.png", "ad_images", "ad_hades_en")
+
+            // AdImage 초기 데이터 삽입
+            val adImages = mutableListOf<AdImageEntity>()
+
+            // ad_lens를 TEST_LIST_SCREEN에 추가 (모든 언어)
+            adLensPath?.let { path ->
+                adImages.add(
                     AdImageEntity(
                         locationId = 1,
-                        name = "테스트 목록 이미지 1",
-                        url = "https://example.com/test1.jpg",
-                        order = 1
-                    ),
-                    AdImageEntity(
-                        locationId = 1,
-                        name = "테스트 목록 이미지 2",
-                        url = "https://example.com/test2.jpg",
-                        order = 2
-                    ),
-                    AdImageEntity(
-                        locationId = 1,
-                        name = "테스트 목록 이미지 3",
-                        url = "https://example.com/test3.jpg",
-                        order = 3
-                    ), AdImageEntity(
-                        locationId = 1,
-                        name = "테스트 목록 이미지 4",
-                        url = "https://example.com/test4.jpg",
-                        order = 4
-                    ),
-                    AdImageEntity(
-                        locationId = 1,
-                        name = "테스트 목록 이미지 5",
-                        url = "https://example.com/test5.jpg",
-                        order = 5
-                    ),
-                    // SCREENSAVER용 이미지
-                    AdImageEntity(
-                        locationId = 2,
-                        name = "스크린세이버 이미지 1",
-                        url = "https://example.com/screensaver1.jpg",
-                        order = 1
-                    ),
-                    AdImageEntity(
-                        locationId = 2,
-                        name = "스크린세이버 이미지 2",
-                        url = "https://example.com/screensaver2.jpg",
-                        order = 2
-                    ),
-                    AdImageEntity(
-                        locationId = 2,
-                        name = "스크린세이버 이미지 3",
-                        url = "https://example.com/screensaver3.jpg",
-                        order = 3
+                        name = File(path).name,
+                        url = path,
+                        order = 1,
+                        language = "ko" // 모든 언어에 표시
                     )
                 )
+            }
+
+            // ad_hades를 TEST_LIST_SCREEN에 추가 (한국어 전용)
+            adHadesPath?.let { path ->
+                adImages.add(
+                    AdImageEntity(
+                        locationId = 1,
+                        name = File(path).name,
+                        url = path,
+                        order = 2,
+                        language = "ko" // 한국어 전용
+                    )
+                )
+            }
+
+            // ad_hades_en을 TEST_LIST_SCREEN에 추가 (영어 전용)
+            adHadesEnPath?.let { path ->
+                adImages.add(
+                    AdImageEntity(
+                        locationId = 1,
+                        name = File(path).name,
+                        url = path,
+                        order = 3,
+                        language = "en" // 영어 전용
+                    )
+                )
+            }
+
+            if (adImages.isNotEmpty()) {
                 adImageDao.insertAdImages(adImages)
             }
         }

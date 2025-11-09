@@ -17,6 +17,9 @@ interface AdImageDao {
     @Query("SELECT * FROM ad_image WHERE locationId = :locationId ORDER BY `order` ASC")
     fun getAdImagesByLocation(locationId: Int): Flow<List<AdImageEntity>>
 
+    @Query("SELECT * FROM ad_image WHERE locationId = :locationId AND (language = :language OR language IS NULL) ORDER BY `order` ASC")
+    fun getAdImagesByLocationAndLanguage(locationId: Int, language: String): Flow<List<AdImageEntity>>
+
     @Query("SELECT * FROM ad_image WHERE id = :id")
     suspend fun getAdImageById(id: Int): AdImageEntity?
 
@@ -37,4 +40,10 @@ interface AdImageDao {
 
     @Query("DELETE FROM ad_image")
     suspend fun deleteAllAdImages()
+    /**
+     * 선택된 location에 해당하는 이미지를 order 오름차순으로 한번만 가져옵니다. (List 반환)
+     */
+    @Query("SELECT * FROM ad_image WHERE locationId = :locationId ORDER BY `order` ASC")
+    suspend fun getAdImagesByLocationOnce(locationId: Int): List<AdImageEntity>
+
 }
