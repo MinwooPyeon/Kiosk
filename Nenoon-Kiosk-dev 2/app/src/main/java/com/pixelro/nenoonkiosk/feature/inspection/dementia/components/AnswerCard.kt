@@ -14,38 +14,37 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.text.font.FontWeight.Companion.ExtraBold
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.core.util.isLandscape
+import com.pixelro.nenoonkiosk.ui.theme.White
+import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 @Composable
 fun AnswerCard(
     text: String,
     selected: Boolean,
     onClick: () -> Unit,
-    biasPaddingStart: Dp
 ) {
     val shape = RoundedCornerShape(8.dp)
-    val blue = Color(0xFF1D71E1)
+    val blue = neNoon_blue
 
     Box(
         modifier = Modifier
-            .padding(start = biasPaddingStart)
             .clip(shape)
             .width(if(isLandscape())255.dp else 355.dp)
             .heightIn(min = if(isLandscape())140.dp else 180.dp)
             .border(BorderStroke(4.dp, blue), shape)
-            .background(if (selected) blue else Color.White, shape)
+            .background(if (selected) blue else White, shape)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
             fontSize = 60.sp,
-            color = if (selected) Color.White else blue,
-            fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold
+            color = if (selected) White else blue,
+            fontWeight = ExtraBold
         )
     }
 }

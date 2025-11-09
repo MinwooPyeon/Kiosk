@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import com.pixelro.nenoonkiosk.ui.theme.White
+import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 @Composable
 fun QuestionBox(
@@ -40,14 +42,14 @@ fun QuestionBox(
                 modifier = Modifier
                     .height(20.dp)
                     .fillMaxWidth(0.66f)
-                    .background(Color(0xFFDDDDDD), RoundedCornerShape(8.dp))
+                    .background(White, RoundedCornerShape(8.dp))
             ) {
                 val progress = (currentIndex + 1).toFloat() / totalQuestions.toFloat()
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
                         .fillMaxWidth(progress.coerceIn(0f, 1f))
-                        .background(Color(0xFF1D71E1), RoundedCornerShape(8.dp))
+                        .background(neNoon_blue, RoundedCornerShape(8.dp))
                 )
             }
         }

@@ -147,6 +147,7 @@ fun InspectionResultRoute(
                 InspectionType.Dementia -> {
                     DementiaInspectionResultRoute(
                         testResult = testResult as com.pixelro.nenoonkiosk.feature.inspection.dementia.DementiaInspectionResult,
+                        savedLanguage = savedLanguage,
                     )
                 }
                 InspectionType.Presbyopia_Glasses -> {

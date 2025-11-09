@@ -316,6 +316,7 @@
     <string name="dementia_result_wording4">Visitez un centre de santé local ou un centre de sûreté contre la démence pour un examen plus précis de la démence</string>
     <string name="dementia_result_selection1">Voir les règles de prévention de la démence 333 en détail</string>
     <string name="dementia_result_selection2">Site web du Centre national de la démence</string>
+    <string name="dementia_result_caution_needed">Attention requise</string>
     <string name="eye_test">Auto-diagnostic de la santé oculaire par IA</string>
     <string name="dementia_test">Auto-évaluation de la démence</string>
     <string name="call">Connexion familiale</string>
