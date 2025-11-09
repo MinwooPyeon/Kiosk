@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,7 +31,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.harang.data.db.entity.AdImageEntity
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.core.ui.AdCarousel
 import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.RedGreenFilterGlassDialog
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
@@ -44,7 +45,6 @@ import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.*
 import com.pixelro.nenoonkiosk.feature.survey.model.SurveyGlass
 import com.pixelro.nenoonkiosk.ui.theme.White
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -53,29 +53,11 @@ fun PhoriaAndAniseikoniaScreen(
     checkIsTestDone: (InspectionType) -> Boolean,
     onEvent: (PhoriaAniseikoniaEvent) -> Unit,
 ) {
-    val pagerState = rememberPagerState(
-        initialPage = Int.MAX_VALUE / 2,
-        initialPageOffsetFraction = 0f,
-        pageCount = { Int.MAX_VALUE }
-    )
-
     var showDescription by remember { mutableStateOf(true) }
+
     LaunchedEffect(Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT) {
             TTS.tts.stop()
-        }
-        while (true) {
-            delay(5000)
-            pagerState.animateScrollToPage(
-                page = pagerState.currentPage + 1,
-                animationSpec = tween(1000)
-            )
-            repeat(3) {
-                showDescription = false
-                delay(250)
-                showDescription = true
-                delay(250)
-            }
         }
     }
 
@@ -124,10 +106,14 @@ fun PhoriaAndAniseikoniaScreen(
                         .weight(1f)
                         .fillMaxHeight()
                 ) {
-                    AdsCarousel(
-                        isSenior = ui.isSenior,
-                        pagerState = pagerState
-                    )
+                    if (!ui.isSenior) {
+                        AdCarousel(
+                            adImages = ui.adImages,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 40.dp, top = 20.dp, end = 40.dp, bottom = 20.dp)
+                        )
+                    }
                     Spacer(Modifier.weight(1F))
                     WarningNotice(warningTextSize = warningTextSize)
                 }
@@ -147,10 +133,14 @@ fun PhoriaAndAniseikoniaScreen(
 
             }
         } else {
-            AdsCarousel(
-                isSenior = ui.isSenior,
-                pagerState = pagerState
-            )
+            if (!ui.isSenior) {
+                AdCarousel(
+                    adImages = ui.adImages,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 40.dp, top = 20.dp, end = 40.dp, bottom = 20.dp)
+                )
+            }
             DescriptionTicker(
                 visible = showDescription,
                 shiftVal = shiftVal,
@@ -213,11 +203,29 @@ private fun fakeUi(
     isAniseikoniaDone = aniseikoniaDone,
     surveyGlass = surveyGlass,
     showSurveyDialog = showSurvey,
-    showFilterDialog = showFilter
+    showFilterDialog = false, // Preview에서는 TTS 문제로 다이얼로그 비활성화
+    adImages = listOf(
+        AdImageEntity(
+            id = 1,
+            locationId = 1,
+            name = "ad_lens",
+            url = "file:///android_asset/ad_lens.png",
+            order = 1,
+            language = "ko"
+        ),
+        AdImageEntity(
+            id = 2,
+            locationId = 1,
+            name = "ad_hades",
+            url = "file:///android_asset/ad_hades.png",
+            order = 2,
+            language = "ko"
+        )
+    )
 )
 
 @Preview(
-    showBackground = true, widthDp = 888, heightDp = 1422, name = "Portrait – Adult"
+    showBackground = true, widthDp = 800, heightDp = 1280, name = "Portrait – Adult"
 )
 @Composable
 private fun Preview_Portrait_Adult() {
@@ -229,7 +237,7 @@ private fun Preview_Portrait_Adult() {
 }
 
 @Preview(
-    showBackground = true, widthDp = 1422, heightDp = 888, name = "Landscape – Adult"
+    showBackground = true, widthDp = 1280, heightDp = 800, name = "Landscape – Adult"
 )
 @Composable
 private fun Preview_Landscape_Adult() {
@@ -241,7 +249,7 @@ private fun Preview_Landscape_Adult() {
 }
 
 @Preview(
-    showBackground = true, widthDp = 888, heightDp = 1422, name = "Portrait – Senior"
+    showBackground = true, widthDp = 800, heightDp = 1280, name = "Portrait – Senior"
 )
 @Composable
 private fun Preview_Portrait_Senior() {
@@ -253,7 +261,7 @@ private fun Preview_Portrait_Senior() {
 }
 
 @Preview(
-    showBackground = true, widthDp = 1422, heightDp = 888, name = "Landscape – Senior + Survey"
+    showBackground = true, widthDp = 1280, heightDp = 800, name = "Landscape – Senior + Survey"
 )
 @Composable
 private fun Preview_Landscape_Senior_Survey() {

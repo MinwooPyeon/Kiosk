@@ -24,22 +24,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.feature.admin.AdImageData
-import com.pixelro.nenoonkiosk.feature.admin.AdLocation
-import com.pixelro.nenoonkiosk.feature.admin.AdminDashboardScreen
-import com.pixelro.nenoonkiosk.feature.admin.AdminDashboardUiState
-import com.pixelro.nenoonkiosk.feature.admin.AdminTab
-import com.pixelro.nenoonkiosk.feature.admin.advertisement.area.components.ImageListArea
-import com.pixelro.nenoonkiosk.feature.admin.advertisement.area.components.LocationOptionArea
-import com.pixelro.nenoonkiosk.feature.admin.advertisement.area.components.AdLocationPreview
+import com.pixelro.nenoonkiosk.feature.admin.advertisement.imagelist.ImageListArea
+import com.pixelro.nenoonkiosk.feature.admin.advertisement.location.LocationOptionArea
+import com.pixelro.nenoonkiosk.feature.admin.advertisement.display.AdLocationPreview
 
 
 @Composable
 fun AdManagementContent(
-    uiState: AdminDashboardUiState,
+    uiState: AdManagementUiState,
     onSelectLocation: (AdLocation) -> Unit,
     onDeleteImage: (String) -> Unit,
-    onAddImage: (String, String?) -> Unit
+    onAddImage: (String, String?) -> Unit,
+    onSaveOrder: (List<AdImageData>) -> Unit
 ) {
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
@@ -83,14 +79,16 @@ fun AdManagementContent(
                     uiState = uiState,
                     onSelectLocation = onSelectLocation,
                     onDeleteImage = onDeleteImage,
-                    onAddImage = onAddImage
+                    onAddImage = onAddImage,
+                    onSaveOrder = onSaveOrder
                 )
             } else {
                 LandscapeLayout(
                     uiState = uiState,
                     onSelectLocation = onSelectLocation,
                     onDeleteImage = onDeleteImage,
-                    onAddImage = onAddImage
+                    onAddImage = onAddImage,
+                    onSaveOrder = onSaveOrder
                 )
             }
         }
@@ -99,10 +97,11 @@ fun AdManagementContent(
 
 @Composable
 private fun PortraitLayout(
-    uiState: AdminDashboardUiState,
+    uiState: AdManagementUiState,
     onSelectLocation: (AdLocation) -> Unit,
     onDeleteImage: (String) -> Unit,
-    onAddImage: (String, String?) -> Unit
+    onAddImage: (String, String?) -> Unit,
+    onSaveOrder: (List<AdImageData>) -> Unit
 ) {
     // 세로 모드: 위에 광고 위치 선택, 아래에 미리보기와 목록
     Column(
@@ -130,6 +129,7 @@ private fun PortraitLayout(
                 images = uiState.adImages,
                 onDeleteImage = onDeleteImage,
                 onAddImage = onAddImage,
+                onSaveOrder = onSaveOrder,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight()
@@ -140,10 +140,11 @@ private fun PortraitLayout(
 
 @Composable
 private fun LandscapeLayout(
-    uiState: AdminDashboardUiState,
+    uiState: AdManagementUiState,
     onSelectLocation: (AdLocation) -> Unit,
     onDeleteImage: (String) -> Unit,
-    onAddImage: (String, String?) -> Unit
+    onAddImage: (String, String?) -> Unit,
+    onSaveOrder: (List<AdImageData>) -> Unit
 ) {
     // 가로 모드: 좌측에 광고 위치 선택과 미리보기, 우측에 목록
     Row(
@@ -172,6 +173,7 @@ private fun LandscapeLayout(
             images = uiState.adImages,
             onDeleteImage = onDeleteImage,
             onAddImage = onAddImage,
+            onSaveOrder = onSaveOrder,
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
@@ -182,8 +184,7 @@ private fun LandscapeLayout(
 @Preview(showBackground = true, backgroundColor = 0xFFF8F8F8, widthDp = 1280, heightDp = 800)
 @Composable
 private fun AdManagementContentLandscapePreview() {
-    val sampleUiState = AdminDashboardUiState(
-        selectedTab = AdminTab.AD_MANAGEMENT,
+    val sampleUiState = AdManagementUiState(
         selectedAdLocation = AdLocation.SCREENSAVER,
         adImages = listOf(
             AdImageData(
@@ -213,7 +214,8 @@ private fun AdManagementContentLandscapePreview() {
         uiState = sampleUiState,
         onSelectLocation = {},
         onDeleteImage = {},
-        onAddImage = { _, _ -> }
+        onAddImage = { _, _ -> },
+        onSaveOrder = {}
     )
 }
 
@@ -221,8 +223,7 @@ private fun AdManagementContentLandscapePreview() {
 @Preview(showBackground = true, backgroundColor = 0xFFF8F8F8, widthDp = 800, heightDp = 1280)
 @Composable
 private fun AdManagementContentPortraitPreview() {
-    val sampleUiState = AdminDashboardUiState(
-        selectedTab = AdminTab.AD_MANAGEMENT,
+    val sampleUiState = AdManagementUiState(
         selectedAdLocation = AdLocation.TEST_LIST_SCREEN,
         adImages = listOf(
             AdImageData(
@@ -247,6 +248,7 @@ private fun AdManagementContentPortraitPreview() {
         uiState = sampleUiState,
         onSelectLocation = {},
         onDeleteImage = {},
-        onAddImage = { _, _ -> }
+        onAddImage = { _, _ -> },
+        onSaveOrder = {}
     )
 }

@@ -1,58 +1,60 @@
 package com.pixelro.nenoonkiosk.feature.admin
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.RemoveCircleOutline
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdImageData
+import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdLocation
 import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdManagementContent
-import com.pixelro.nenoonkiosk.feature.admin.advertisement.area.components.SidebarArea
+import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdManagementUiState
+import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdManagementViewModel
+import com.pixelro.nenoonkiosk.feature.admin.advertisement.sidebar.SidebarArea
 import com.pixelro.nenoonkiosk.feature.admin.password.PasswordManagementContent
-import com.pixelro.nenoonkiosk.ui.theme.Gray
 import com.pixelro.nenoonkiosk.ui.theme.LightGray200
-import com.pixelro.nenoonkiosk.ui.theme.LightGray300
 import com.pixelro.nenoonkiosk.ui.theme.White
-
 
 
 @Composable
 fun AdminDashboardScreen(
     isOutClick: () -> Unit,
-    viewModel: AdminDashboardViewModel = hiltViewModel()
+    viewModel: AdminDashboardViewModel = hiltViewModel(),
+    adManagementViewModel: AdManagementViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val dashboardUiState by viewModel.uiState.collectAsState()
+    val adManagementUiState by adManagementViewModel.uiState.collectAsState()
 
+    AdminDashboardContent(
+        dashboardUiState = dashboardUiState,
+        adManagementUiState = adManagementUiState,
+        onTabSelected = viewModel::selectTab,
+        onSelectLocation = adManagementViewModel::selectAdLocation,
+        onDeleteImage = adManagementViewModel::deleteAdImage,
+        onAddImage = adManagementViewModel::addAdImage,
+        onSaveOrder = adManagementViewModel::saveAdImagesOrder,
+        isOutClick = isOutClick
+    )
+}
+
+@Composable
+private fun AdminDashboardContent(
+    dashboardUiState: AdminDashboardUiState,
+    adManagementUiState: AdManagementUiState,
+    onTabSelected: (AdminTab) -> Unit,
+    onSelectLocation: (AdLocation) -> Unit,
+    onDeleteImage: (String) -> Unit,
+    onAddImage: (String, String?) -> Unit,
+    onSaveOrder: (List<AdImageData>) -> Unit,
+    isOutClick: () -> Unit
+) {
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -67,8 +69,8 @@ fun AdminDashboardScreen(
             ) {
                 // 상단 바
                 SidebarArea(
-                    selectedTab = uiState.selectedTab,
-                    onTabSelected = viewModel::selectTab,
+                    selectedTab = dashboardUiState.selectedTab,
+                    onTabSelected = onTabSelected,
                     isOutClick = isOutClick
                 )
 
@@ -78,12 +80,13 @@ fun AdminDashboardScreen(
                         .fillMaxSize()
                         .background(LightGray200)
                 ) {
-                    when (uiState.selectedTab) {
+                    when (dashboardUiState.selectedTab) {
                         AdminTab.AD_MANAGEMENT -> AdManagementContent(
-                            uiState = uiState,
-                            onSelectLocation = viewModel::selectAdLocation,
-                            onDeleteImage = viewModel::deleteAdImage,
-                            onAddImage = viewModel::addAdImage
+                            uiState = adManagementUiState,
+                            onSelectLocation = onSelectLocation,
+                            onDeleteImage = onDeleteImage,
+                            onAddImage = onAddImage,
+                            onSaveOrder = onSaveOrder
                         )
 
                         AdminTab.PASSWORD_MANAGEMENT -> PasswordManagementContent()
@@ -97,8 +100,8 @@ fun AdminDashboardScreen(
             ) {
                 // 좌측 사이드바
                 SidebarArea(
-                    selectedTab = uiState.selectedTab,
-                    onTabSelected = viewModel::selectTab,
+                    selectedTab = dashboardUiState.selectedTab,
+                    onTabSelected = onTabSelected,
                     isOutClick = isOutClick
                 )
 
@@ -108,12 +111,13 @@ fun AdminDashboardScreen(
                         .fillMaxSize()
                         .background(LightGray200)
                 ) {
-                    when (uiState.selectedTab) {
+                    when (dashboardUiState.selectedTab) {
                         AdminTab.AD_MANAGEMENT -> AdManagementContent(
-                            uiState = uiState,
-                            onSelectLocation = viewModel::selectAdLocation,
-                            onDeleteImage = viewModel::deleteAdImage,
-                            onAddImage = viewModel::addAdImage
+                            uiState = adManagementUiState,
+                            onSelectLocation = onSelectLocation,
+                            onDeleteImage = onDeleteImage,
+                            onAddImage = onAddImage,
+                            onSaveOrder = onSaveOrder
                         )
 
                         AdminTab.PASSWORD_MANAGEMENT -> PasswordManagementContent()
@@ -127,16 +131,63 @@ fun AdminDashboardScreen(
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800, apiLevel = 34)
 @Composable
-fun AdminDashboardScreenPreview() {
-    AdminDashboardScreen(
-        isOutClick = {},
+fun AdminDashboardContentPreview() {
+    AdminDashboardContent(
+        dashboardUiState = AdminDashboardUiState(selectedTab = AdminTab.AD_MANAGEMENT),
+        adManagementUiState = AdManagementUiState(
+            selectedAdLocation = AdLocation.TEST_LIST_SCREEN,
+            adImages = listOf(
+                AdImageData(
+                    id = "1",
+                    fileName = "ad_lens.jpg",
+                    imageUri = null
+                ),
+                AdImageData(
+                    id = "2",
+                    fileName = "ad_hades.jpg",
+                    imageUri = null
+                ),
+                AdImageData(
+                    id = "3",
+                    fileName = "ad_hades_en.jpg",
+                    imageUri = null
+                )
+            )
+        ),
+        onTabSelected = {},
+        onSelectLocation = {},
+        onDeleteImage = {},
+        onAddImage = { _, _ -> },
+        onSaveOrder = {},
+        isOutClick = {}
     )
 }
 
 @Preview(showBackground = true, widthDp = 800, heightDp = 1280)
 @Composable
-fun AdminDashboardScreenPortraitPreview() {
-    AdminDashboardScreen(
-        isOutClick = {},
+fun AdminDashboardContentPortraitPreview() {
+    AdminDashboardContent(
+        dashboardUiState = AdminDashboardUiState(selectedTab = AdminTab.AD_MANAGEMENT),
+        adManagementUiState = AdManagementUiState(
+            selectedAdLocation = AdLocation.SCREENSAVER,
+            adImages = listOf(
+                AdImageData(
+                    id = "1",
+                    fileName = "ad_sample_1.jpg",
+                    imageUri = null
+                ),
+                AdImageData(
+                    id = "2",
+                    fileName = "ad_sample_2.jpg",
+                    imageUri = null
+                )
+            )
+        ),
+        onTabSelected = {},
+        onSelectLocation = {},
+        onDeleteImage = {},
+        onAddImage = { _, _ -> },
+        onSaveOrder = {},
+        isOutClick = {}
     )
 }
