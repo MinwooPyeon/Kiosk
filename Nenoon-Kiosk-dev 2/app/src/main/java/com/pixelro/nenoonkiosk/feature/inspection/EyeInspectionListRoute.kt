@@ -4,10 +4,9 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,7 +18,9 @@ import androidx.compose.ui.platform.LocalContext
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
@@ -51,32 +52,26 @@ fun EyeTestInspectionRoute(
     // 외부 StateFlow 수집 (한 번)
     val isSenior by viewModel.isSenior.collectAsState()
 
-    // 광고 페이저
-    val pagerState = rememberPagerState(
-        initialPage = Int.MAX_VALUE / 2,
-        initialPageOffsetFraction = 0f,
-        pageCount = { Int.MAX_VALUE }
-    )
-
-    // TTS 중단 + 광고 오토슬라이드 + 안내문 깜빡임
+    // TTS 중단
     LaunchedEffect(Unit) {
         TTS.tts.stop()
-        while (true) {
-            delay(5000)
-            pagerState.animateScrollToPage(
-                page = pagerState.currentPage + 1,
-                animationSpec = tween(1000)
-            )
-            repeat(3) {
-                isDescriptionShowing = false
-                delay(250)
-                isDescriptionShowing = true
-                delay(250)
-            }
-        }
     }
 
+    // CoroutineScope for blinking
+    val coroutineScope = rememberCoroutineScope()
+
+    // 광고 리스트 가져오기 (Hilt EntryPoint)
+    val adImageRepository = remember {
+        EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            AdImageRepositoryEntryPoint::class.java
+        ).adImageRepository()
+    }
+    val adImages by adImageRepository.getAdImagesByLocationAndLanguage(1, savedLanguage ?: "ko")
+        .collectAsState(initial = emptyList())
+
     EyeTestInspectionScreen(
+        adImages = adImages,
         savedLanguage = savedLanguage,
         isSenior = isSenior,
         isDialogShowing = isDialogShowing,
@@ -86,7 +81,16 @@ fun EyeTestInspectionRoute(
         isAmslerGridDone = isAmslerGridDone,
         isMChartDone = isMChartDone,
         isDescriptionShowing = isDescriptionShowing,
-        pagerState = pagerState,
+        onAdPageChange = {
+            coroutineScope.launch {
+                repeat(3) {
+                    isDescriptionShowing = false
+                    delay(250)
+                    isDescriptionShowing = true
+                    delay(250)
+                }
+            }
+        },
         // 콜백들
         onBackToIntro = toIntroScreen,
         onOpenSettings = toSettingsScreen,

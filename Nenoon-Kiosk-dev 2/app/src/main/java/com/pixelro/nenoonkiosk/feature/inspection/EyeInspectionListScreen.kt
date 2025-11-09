@@ -1,16 +1,15 @@
 package com.pixelro.nenoonkiosk.feature.inspection
 
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,22 +20,21 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.harang.data.db.entity.AdImageEntity
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.ui.Advertisement
+import com.pixelro.nenoonkiosk.core.ui.AdCarousel
 import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
@@ -47,9 +45,9 @@ import com.pixelro.nenoonkiosk.ui.theme.LightGray100
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EyeTestInspectionScreen(
+    adImages: List<AdImageEntity> = emptyList(),
     savedLanguage: String?,
     isSenior: Boolean,
     isDialogShowing: Boolean,
@@ -59,7 +57,7 @@ fun EyeTestInspectionScreen(
     isAmslerGridDone: Boolean,
     isMChartDone: Boolean,
     isDescriptionShowing: Boolean,
-    pagerState: PagerState,
+    onAdPageChange: () -> Unit,
     onBackToIntro: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenTest: (InspectionType) -> Unit,
@@ -68,8 +66,8 @@ fun EyeTestInspectionScreen(
 ) {
     val warningTextSize = if (savedLanguage == "ru") 10.sp else 16.sp
     val isLandscapeMode = run {
-        val config = androidx.compose.ui.platform.LocalConfiguration.current
-        config.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        val config = LocalConfiguration.current
+        config.orientation == ORIENTATION_LANDSCAPE
     }
 
     val transition = rememberInfiniteTransition(label = "descShift")
@@ -94,7 +92,7 @@ fun EyeTestInspectionScreen(
 
     if (isLandscapeMode) {
         LandscapeLayout(
-            savedLanguage = savedLanguage,
+            adImages = adImages,
             isSenior = isSenior,
             isShortVisualAcuityDone = isShortVisualAcuityDone,
             isPresbyopiaDone = isPresbyopiaDone,
@@ -103,12 +101,12 @@ fun EyeTestInspectionScreen(
             onBackToIntro = onBackToIntro,
             onOpenSettings = onOpenSettings,
             onOpenTest = onOpenTest,
-            warningTextSize = warningTextSize,
-            pagerState = pagerState
+            onAdPageChange = onAdPageChange,
+            warningTextSize = warningTextSize
         )
     } else {
         PortraitLayout(
-            savedLanguage = savedLanguage,
+            adImages = adImages,
             isSenior = isSenior,
             isDescriptionShowing = isDescriptionShowing,
             shiftVal = shiftVal,
@@ -119,16 +117,15 @@ fun EyeTestInspectionScreen(
             onBackToIntro = onBackToIntro,
             onOpenSettings = onOpenSettings,
             onOpenTest = onOpenTest,
-            warningTextSize = warningTextSize,
-            pagerState = pagerState
+            onAdPageChange = onAdPageChange,
+            warningTextSize = warningTextSize
         )
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PortraitLayout(
-    savedLanguage: String?,
+    adImages: List<AdImageEntity>,
     isSenior: Boolean,
     isDescriptionShowing: Boolean,
     shiftVal: Float,
@@ -139,8 +136,8 @@ private fun PortraitLayout(
     onBackToIntro: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenTest: (InspectionType) -> Unit,
+    onAdPageChange: () -> Unit,
     warningTextSize: androidx.compose.ui.unit.TextUnit,
-    pagerState: PagerState,
 ) {
     Column(
         modifier = Modifier
@@ -165,18 +162,13 @@ private fun PortraitLayout(
         )
 
         if (!isSenior) {
-            HorizontalPager(
-                contentPadding = PaddingValues(
-                    start = 40.dp,
-                    top = 20.dp,
-                    end = 40.dp,
-                    bottom = 20.dp
-                ),
-                pageSpacing = 40.dp,
-                state = pagerState
-            ) { page ->
-                Advertisement(page)
-            }
+            AdCarousel(
+                adImages = adImages,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 40.dp, top = 20.dp, end = 40.dp, bottom = 20.dp),
+                onPageChange = onAdPageChange
+            )
         }
 
         Box(
@@ -211,10 +203,9 @@ private fun PortraitLayout(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LandscapeLayout(
-    savedLanguage: String?,
+    adImages: List<AdImageEntity>,
     isSenior: Boolean,
     isShortVisualAcuityDone: Boolean,
     isPresbyopiaDone: Boolean,
@@ -223,8 +214,8 @@ private fun LandscapeLayout(
     onBackToIntro: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenTest: (InspectionType) -> Unit,
+    onAdPageChange: () -> Unit,
     warningTextSize: androidx.compose.ui.unit.TextUnit,
-    pagerState: PagerState,
 ) {
     Column(
         modifier = Modifier
@@ -261,7 +252,7 @@ private fun LandscapeLayout(
                     .padding(end = 20.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                // 광고 (위에 꽉)
+                // 광고
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -269,15 +260,15 @@ private fun LandscapeLayout(
                     contentAlignment = Alignment.TopCenter
                 ) {
                     if (!isSenior) {
-                        HorizontalPager(
-                            contentPadding = PaddingValues(0.dp),
-//                            pageSpacing = 20.dp,
-                            state = pagerState,
-                        ) { page ->
-                            Advertisement(page)
-                        }
+                        AdCarousel(
+                            adImages = adImages,
+                            modifier = Modifier.fillMaxSize(),
+                            onPageChange = onAdPageChange
+                        )
                     }
                 }
+
+                Spacer(modifier = Modifier.weight(1f))
 
                 // 경고 (아래)
                 Box(
@@ -415,7 +406,6 @@ private fun TestListSection(
 }
 
 // Preview
-@OptIn(ExperimentalFoundationApi::class)
 @Preview(
     showBackground = true,
     widthDp = 888,
@@ -425,11 +415,27 @@ private fun TestListSection(
 )
 @Composable
 private fun Preview_EyeTestList_SeniorFalse_Portrait() {
-    val fakePager = rememberPagerState(
-        initialPage = Int.MAX_VALUE / 2,
-        pageCount = { Int.MAX_VALUE }
+    val dummyAdImages = listOf(
+        AdImageEntity(
+            id = 1,
+            locationId = 1,
+            name = "ad_lens",
+            url = "file:///android_asset/ad_lens.png",
+            order = 1,
+            language = "ko"
+        ),
+        AdImageEntity(
+            id = 2,
+            locationId = 1,
+            name = "ad_hades",
+            url = "file:///android_asset/ad_hades.png",
+            order = 2,
+            language = "ko"
+        )
     )
+
     EyeTestInspectionScreen(
+        adImages = dummyAdImages,
         savedLanguage = "ko",
         isSenior = false,
         isDialogShowing = false,
@@ -439,7 +445,7 @@ private fun Preview_EyeTestList_SeniorFalse_Portrait() {
         isAmslerGridDone = false,
         isMChartDone = true,
         isDescriptionShowing = true,
-        pagerState = fakePager,
+        onAdPageChange = {},
         onBackToIntro = {},
         onOpenSettings = {},
         onOpenTest = {},
@@ -448,7 +454,6 @@ private fun Preview_EyeTestList_SeniorFalse_Portrait() {
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Preview(
     showBackground = true,
     widthDp = 888,
@@ -458,10 +463,6 @@ private fun Preview_EyeTestList_SeniorFalse_Portrait() {
 )
 @Composable
 private fun Preview_EyeTestList_SeniorTrue_Portrait() {
-    val fakePager = rememberPagerState(
-        initialPage = Int.MAX_VALUE / 2,
-        pageCount = { Int.MAX_VALUE }
-    )
     EyeTestInspectionScreen(
         savedLanguage = "es",
         isSenior = true,
@@ -472,7 +473,7 @@ private fun Preview_EyeTestList_SeniorTrue_Portrait() {
         isAmslerGridDone = false,
         isMChartDone = false,
         isDescriptionShowing = true,
-        pagerState = fakePager,
+        onAdPageChange = {},
         onBackToIntro = {},
         onOpenSettings = {},
         onOpenTest = {},
@@ -481,7 +482,6 @@ private fun Preview_EyeTestList_SeniorTrue_Portrait() {
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Preview(
     showBackground = true,
     widthDp = 1422,
@@ -491,11 +491,27 @@ private fun Preview_EyeTestList_SeniorTrue_Portrait() {
 )
 @Composable
 private fun Preview_EyeTestList_SeniorFalse_Landscape() {
-    val fakePager = rememberPagerState(
-        initialPage = Int.MAX_VALUE / 2,
-        pageCount = { Int.MAX_VALUE }
+    val dummyAdImages = listOf(
+        AdImageEntity(
+            id = 1,
+            locationId = 1,
+            name = "ad_lens",
+            url = "file:///android_asset/ad_lens.png",
+            order = 1,
+            language = "ko"
+        ),
+        AdImageEntity(
+            id = 2,
+            locationId = 1,
+            name = "ad_hades",
+            url = "file:///android_asset/ad_hades.png",
+            order = 2,
+            language = "ko"
+        )
     )
+
     EyeTestInspectionScreen(
+        adImages = dummyAdImages,
         savedLanguage = "ko",
         isSenior = false,
         isDialogShowing = false,
@@ -505,7 +521,7 @@ private fun Preview_EyeTestList_SeniorFalse_Landscape() {
         isAmslerGridDone = false,
         isMChartDone = true,
         isDescriptionShowing = true,
-        pagerState = fakePager,
+        onAdPageChange = {},
         onBackToIntro = {},
         onOpenSettings = {},
         onOpenTest = {},
@@ -514,7 +530,6 @@ private fun Preview_EyeTestList_SeniorFalse_Landscape() {
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Preview(
     showBackground = true,
     widthDp = 1422,
@@ -524,10 +539,6 @@ private fun Preview_EyeTestList_SeniorFalse_Landscape() {
 )
 @Composable
 private fun Preview_EyeTestList_SeniorTrue_Landscape() {
-    val fakePager = rememberPagerState(
-        initialPage = Int.MAX_VALUE / 2,
-        pageCount = { Int.MAX_VALUE }
-    )
     EyeTestInspectionScreen(
         savedLanguage = "ko",
         isSenior = true,
@@ -538,7 +549,7 @@ private fun Preview_EyeTestList_SeniorTrue_Landscape() {
         isAmslerGridDone = false,
         isMChartDone = false,
         isDescriptionShowing = true,
-        pagerState = fakePager,
+        onAdPageChange = {},
         onBackToIntro = {},
         onOpenSettings = {},
         onOpenTest = {},

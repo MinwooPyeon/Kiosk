@@ -1,6 +1,5 @@
 package com.pixelro.nenoonkiosk.core.ui
 
-import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,43 +8,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.harang.data.repository.AdImageRepository
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
-import dagger.hilt.android.EntryPointAccessors
+import com.harang.data.db.entity.AdImageEntity
+import com.pixelro.nenoonkiosk.ui.theme.LightGray400
+import com.pixelro.nenoonkiosk.ui.theme.White
 
 /**
  * 광고 내용
+ * @param adImage 표시할 광고 이미지 엔티티
  */
 @Composable
-fun Advertisement(idx: Int) {
-    val context = LocalContext.current
-    val sharedPreferences =
-        remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
-    val savedLanguage =
-        sharedPreferences.getString("language", "ko") ?: "ko"
-
-    // Hilt EntryPoint를 통해 Repository 가져오기
-    val repository = remember {
-        EntryPointAccessors.fromApplication(
-            context.applicationContext,
-            AdImageRepositoryEntryPoint::class.java
-        ).adImageRepository()
-    }
-
-    // locationId 1 = TEST_LIST_SCREEN
-    val adImages by repository.getAdImagesByLocationAndLanguage(1, savedLanguage).collectAsState(initial = emptyList())
-
+fun Advertisement(adImage: AdImageEntity?) {
     Card(
         modifier =
             Modifier
@@ -54,7 +32,7 @@ fun Advertisement(idx: Int) {
         elevation = CardDefaults.cardElevation(0.dp),
         colors =
             CardDefaults.cardColors(
-                containerColor = Color(0xffffffff),
+                containerColor = White,
             ),
         shape = RoundedCornerShape(8.dp),
     ) {
@@ -64,10 +42,9 @@ fun Advertisement(idx: Int) {
                     .fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
-            if (adImages.isNotEmpty()) {
-                val imageUrl = adImages[idx % adImages.size].url
+            adImage?.let {
                 AsyncImage(
-                    model = imageUrl,
+                    model = it.url,
                     contentDescription = "광고",
                     modifier = Modifier
                         .fillMaxWidth()
@@ -77,10 +54,4 @@ fun Advertisement(idx: Int) {
             }
         }
     }
-}
-
-@dagger.hilt.EntryPoint
-@dagger.hilt.InstallIn(dagger.hilt.components.SingletonComponent::class)
-interface AdImageRepositoryEntryPoint {
-    fun adImageRepository(): AdImageRepository
 }

@@ -125,6 +125,7 @@ fun PhoriaAndAniseikoniaScreen(
                         .fillMaxHeight()
                 ) {
                     AdsCarousel(
+                        adImages = ui.adImages,
                         isSenior = ui.isSenior,
                         pagerState = pagerState
                     )
@@ -148,6 +149,7 @@ fun PhoriaAndAniseikoniaScreen(
             }
         } else {
             AdsCarousel(
+                adImages = ui.adImages,
                 isSenior = ui.isSenior,
                 pagerState = pagerState
             )
