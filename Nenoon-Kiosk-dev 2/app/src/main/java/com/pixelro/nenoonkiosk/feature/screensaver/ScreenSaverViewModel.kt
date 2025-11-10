@@ -27,25 +27,18 @@ class ScreenSaverViewModel
             exoPlayer: ExoPlayer,
         ) {
             viewModelScope.launch(Dispatchers.Main) {
-                Log.d("ScreenSaverViewModel", "setMediaItem 호출됨 - isSignedIn: $isSignedIn")
                 exoPlayer.clearMediaItems()
 
                 // 데이터베이스에서 스크린세이버 광고 가져오기
                 val ads = screenSaverRepository.getScreenSaverAds()
-                Log.d("ScreenSaverViewModel", "광고 개수: ${ads.size}")
-                ads.forEachIndexed { index, ad ->
-                    Log.d("ScreenSaverViewModel", "광고 $index - ID: ${ad.id}, URL: ${ad.url}, Order: ${ad.order}, Language: ${ad.language}")
-                }
 
                 // 로그인 상태와 관계없이 DB 광고 사용
                 if (ads.isNotEmpty()) {
-                    Log.d("ScreenSaverViewModel", "DB 광고 사용")
                     ads.forEach { ad ->
                         exoPlayer.addMediaItem(MediaItem.fromUri(ad.url))
                     }
                 } else {
                     // 광고가 없으면 기본 영상 사용
-                    Log.d("ScreenSaverViewModel", "광고 없음 - 기본 영상 사용")
                     exoPlayer.setMediaItem(MediaItem.fromUri(RawResourceDataSource.buildRawResourceUri(R.raw.ad_sub)))
                 }
 
