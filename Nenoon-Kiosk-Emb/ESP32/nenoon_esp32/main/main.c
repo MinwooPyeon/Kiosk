@@ -58,7 +58,7 @@ void app_main(void) {
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     
     xTaskCreate(task_uart_link, "t_uart", 4096, NULL, 8, NULL);
-    //xTaskCreate(task_session_mgr, "t_session", 4096, NULL, 7, NULL);
-    //xTaskCreate(task_net_http, "t_http", 4096, NULL, 6, NULL);
+    xTaskCreate(task_session_mgr, "t_session", 4096, NULL, 7, NULL);
+    xTaskCreate(task_net_http, "t_http", 4096, NULL, 6, NULL);
     //xTaskCreate(task_metrics, "t_metrics", 4096, NULL, 3, NULL);
 }

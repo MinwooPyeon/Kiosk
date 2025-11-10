@@ -174,7 +174,7 @@ static void link_rx_task(void* arg)
             }
             feed_bytes_and_emit(buf, (size_t)n);
         }
-        if (xTaskGetTickCount() - last >= pdMS_TO_TICKS(1000)) {
+        if (xTaskGetTickCount() - last >= pdMS_TO_TICKS(10000)) {
             UBaseType_t wm = uxTaskGetStackHighWaterMark(NULL);
             ESP_LOGI(TAG, "rx stack watermark=%u words", (unsigned)wm);
             last = xTaskGetTickCount();
