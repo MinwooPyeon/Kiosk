@@ -423,6 +423,10 @@
     <string name="default_sign_in_sign_up">회원가입</string>
     <string name="id_pw_sign_in">비밀번호\n로그인</string>
 
+    <string name="password_login_button">비밀번호\n로그인</string>
+    <string name="qr_login_button">QR\n로그인</string>
+    <string name="face_login_button">얼굴인식\n로그인</string>
+
     <string name="qr_sign_in_title">QR 로그인</string>
     <string name="qr_sign_in_scan_instruction">로그인용 QR 코드를 보여주세요.</string>
     <string name="qr_sign_in_scanned_success">QR 코드를 스캔했습니다. 로그인 버튼을 누르세요.</string>

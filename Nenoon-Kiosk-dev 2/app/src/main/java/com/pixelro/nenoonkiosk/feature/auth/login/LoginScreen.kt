@@ -230,9 +230,9 @@ private fun LoginButtonsArea(
     modifier: Modifier = Modifier
 ) {
     val userSignIn = stringResource(R.string.user_sign_in)
-    val idPwSignIn = stringResource(R.string.id_pw_sign_in)
-    val qrLogin = stringResource(R.string.default_sign_in_qr_login)
-    val faceRecognition = stringResource(R.string.default_sign_in_face_recognition)
+    val idPwSignIn = stringResource(R.string.password_login_button)
+    val qrLogin = stringResource(R.string.qr_login_button)
+    val faceRecognition = stringResource(R.string.face_login_button)
     val startWithoutSignIn = stringResource(R.string.start_without_signin)
     val signUp = stringResource(R.string.default_sign_in_sign_up)
 

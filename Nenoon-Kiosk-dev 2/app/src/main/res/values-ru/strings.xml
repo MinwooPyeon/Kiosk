@@ -22,6 +22,10 @@
     <string name="not_allow_camera">Разрешение на использование камеры не предоставлено</string>
     <string name="not_exist_print">Принтер не подключен</string>
 
+    <string name="password_login_button">Пароль\nВход</string>
+    <string name="qr_login_button">QR\nВход</string>
+    <string name="face_login_button">Распознавание\nлица</string>
+
     <!-- 로그인 화면 -->
     <string name="id_input">Введите ваш ID</string>
     <string name="pw_input">Введите пароль</string>
