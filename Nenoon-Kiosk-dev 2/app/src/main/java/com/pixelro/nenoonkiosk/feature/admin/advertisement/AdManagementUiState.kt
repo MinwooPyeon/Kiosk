@@ -1,5 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.admin.advertisement
 
+import com.harang.data.db.entity.AdImageEntity
 import com.harang.data.db.entity.LocationEntity
 
 data class AdManagementUiState(
@@ -13,3 +14,20 @@ data class AdImageData(
     val fileName: String,
     val imageUri: String? = null
 )
+
+/**
+ * AdImageData를 AdImageEntity로 변환
+ * @param locationId 현재 선택된 location의 ID
+ */
+fun AdImageData.toAdImageEntity(locationId: Int): AdImageEntity? {
+    val imageUrl = this.imageUri ?: return null
+    val numericId = this.id.toIntOrNull() ?: return null
+
+    return AdImageEntity(
+        id = numericId,
+        locationId = locationId,
+        url = imageUrl,
+        order = 0,
+        language = null
+    )
+}

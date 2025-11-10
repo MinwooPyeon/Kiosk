@@ -125,7 +125,9 @@ private fun PortraitLayout(
             AdLocationDisplay(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxHeight()
+                    .fillMaxHeight(),
+                adImages = uiState.adImages.mapNotNull { it.toAdImageEntity(uiState.selectedLocation?.id ?: 1) },
+                locationId = uiState.selectedLocation?.id ?: 1
             )
 
             ImageListArea(
@@ -169,7 +171,10 @@ private fun LandscapeLayout(
             )
 
             // 광고 위치 미리보기 섹션
-            AdLocationDisplay()
+            AdLocationDisplay(
+                adImages = uiState.adImages.mapNotNull { it.toAdImageEntity(uiState.selectedLocation?.id ?: 1) },
+                locationId = uiState.selectedLocation?.id ?: 1
+            )
         }
 
         // 우측: 광고 이미지 목록
