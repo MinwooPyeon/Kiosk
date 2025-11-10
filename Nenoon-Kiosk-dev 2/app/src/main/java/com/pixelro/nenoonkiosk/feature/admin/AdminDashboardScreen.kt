@@ -1,5 +1,8 @@
 package com.pixelro.nenoonkiosk.feature.admin
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -12,8 +15,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.harang.data.db.entity.LocationEntity
+import com.harang.data.db.entity.MediaType
 import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdImageData
-import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdLocation
 import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdManagementContent
 import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdManagementUiState
 import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdManagementViewModel
@@ -32,13 +36,29 @@ fun AdminDashboardScreen(
     val dashboardUiState by viewModel.uiState.collectAsState()
     val adManagementUiState by adManagementViewModel.uiState.collectAsState()
 
+    // 갤러리 미디어 선택 launcher
+    val mediaPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            uri?.let { adManagementViewModel.addAdImageFromUri(it) }
+        }
+    )
+
     AdminDashboardContent(
         dashboardUiState = dashboardUiState,
         adManagementUiState = adManagementUiState,
         onTabSelected = viewModel::selectTab,
         onSelectLocation = adManagementViewModel::selectAdLocation,
         onDeleteImage = adManagementViewModel::deleteAdImage,
-        onAddImage = adManagementViewModel::addAdImage,
+        onAddImage = {
+            // 선택된 location의 mediaType에 따라 이미지 또는 동영상만 선택
+            val mediaType = when (adManagementUiState.selectedLocation?.mediaType) {
+                MediaType.IMAGE -> ActivityResultContracts.PickVisualMedia.ImageOnly
+                MediaType.VIDEO -> ActivityResultContracts.PickVisualMedia.VideoOnly
+                else -> ActivityResultContracts.PickVisualMedia.ImageOnly // 기본값
+            }
+            mediaPickerLauncher.launch(PickVisualMediaRequest(mediaType))
+        },
         onSaveOrder = adManagementViewModel::saveAdImagesOrder,
         isOutClick = isOutClick
     )
@@ -49,9 +69,9 @@ private fun AdminDashboardContent(
     dashboardUiState: AdminDashboardUiState,
     adManagementUiState: AdManagementUiState,
     onTabSelected: (AdminTab) -> Unit,
-    onSelectLocation: (AdLocation) -> Unit,
+    onSelectLocation: (LocationEntity) -> Unit,
     onDeleteImage: (String) -> Unit,
-    onAddImage: (String, String?) -> Unit,
+    onAddImage: () -> Unit,
     onSaveOrder: (List<AdImageData>) -> Unit,
     isOutClick: () -> Unit
 ) {
@@ -135,7 +155,11 @@ fun AdminDashboardContentPreview() {
     AdminDashboardContent(
         dashboardUiState = AdminDashboardUiState(selectedTab = AdminTab.AD_MANAGEMENT),
         adManagementUiState = AdManagementUiState(
-            selectedAdLocation = AdLocation.TEST_LIST_SCREEN,
+            availableLocations = listOf(
+                LocationEntity(id = 1, name = "TEST_LIST_SCREEN", mediaType = MediaType.IMAGE),
+                LocationEntity(id = 2, name = "SCREENSAVER", mediaType = MediaType.VIDEO)
+            ),
+            selectedLocation = LocationEntity(id = 1, name = "TEST_LIST_SCREEN", mediaType = MediaType.IMAGE),
             adImages = listOf(
                 AdImageData(
                     id = "1",
@@ -157,7 +181,7 @@ fun AdminDashboardContentPreview() {
         onTabSelected = {},
         onSelectLocation = {},
         onDeleteImage = {},
-        onAddImage = { _, _ -> },
+        onAddImage = {},
         onSaveOrder = {},
         isOutClick = {}
     )
@@ -169,7 +193,11 @@ fun AdminDashboardContentPortraitPreview() {
     AdminDashboardContent(
         dashboardUiState = AdminDashboardUiState(selectedTab = AdminTab.AD_MANAGEMENT),
         adManagementUiState = AdManagementUiState(
-            selectedAdLocation = AdLocation.SCREENSAVER,
+            availableLocations = listOf(
+                LocationEntity(id = 1, name = "TEST_LIST_SCREEN", mediaType = MediaType.IMAGE),
+                LocationEntity(id = 2, name = "SCREENSAVER", mediaType = MediaType.VIDEO)
+            ),
+            selectedLocation = LocationEntity(id = 2, name = "SCREENSAVER", mediaType = MediaType.VIDEO),
             adImages = listOf(
                 AdImageData(
                     id = "1",
@@ -186,7 +214,7 @@ fun AdminDashboardContentPortraitPreview() {
         onTabSelected = {},
         onSelectLocation = {},
         onDeleteImage = {},
-        onAddImage = { _, _ -> },
+        onAddImage = {},
         onSaveOrder = {},
         isOutClick = {}
     )
