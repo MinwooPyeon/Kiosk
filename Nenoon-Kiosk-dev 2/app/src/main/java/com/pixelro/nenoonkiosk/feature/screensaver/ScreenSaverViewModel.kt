@@ -1,5 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.screensaver
 
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,13 +27,21 @@ class ScreenSaverViewModel
             exoPlayer: ExoPlayer,
         ) {
             viewModelScope.launch(Dispatchers.Main) {
-                if (isSignedIn) {
-                    val videoURI = screenSaverRepository.getScreenSaverVideoURI()
-                    exoPlayer.setMediaItem(MediaItem.fromUri(videoURI))
+                exoPlayer.clearMediaItems()
+
+                // 데이터베이스에서 스크린세이버 광고 가져오기
+                val ads = screenSaverRepository.getScreenSaverAds()
+
+                // 로그인 상태와 관계없이 DB 광고 사용
+                if (ads.isNotEmpty()) {
+                    ads.forEach { ad ->
+                        exoPlayer.addMediaItem(MediaItem.fromUri(ad.url))
+                    }
                 } else {
-                    // 화면 보호기 기본 영상 변경
+                    // 광고가 없으면 기본 영상 사용
                     exoPlayer.setMediaItem(MediaItem.fromUri(RawResourceDataSource.buildRawResourceUri(R.raw.ad_sub)))
                 }
+
                 exoPlayer.prepare()
                 exoPlayer.playWhenReady = true
             }
