@@ -12,8 +12,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
+import com.pixelro.nenoonkiosk.feature.inspection.AdImageRepositoryEntryPoint
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
+import dagger.hilt.android.EntryPointAccessors
 
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalFoundationApi::class)
@@ -36,6 +38,16 @@ fun PhoriaAndAniseikoniaRoute(
     val isSenior by viewModel.isSenior.collectAsState()
     val surveyGlass by viewModel.surveyGlass.collectAsState()
 
+    // 광고 리스트 가져오기 (Hilt EntryPoint)
+    val adImageRepository = remember {
+        EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            AdImageRepositoryEntryPoint::class.java
+        ).adImageRepository()
+    }
+    val adImages by adImageRepository.getAdImagesByLocationAndLanguage(1, savedLanguage)
+        .collectAsState(initial = emptyList())
+
     // 다이얼로그 상태는 Route에서 소유
     var showSurveyDialog by remember { mutableStateOf(false) }
     var showFilterDialog by remember { mutableStateOf(false) }
@@ -47,7 +59,8 @@ fun PhoriaAndAniseikoniaRoute(
         isAniseikoniaDone = isAniseikoniaDone,
         surveyGlass = surveyGlass,
         showSurveyDialog = showSurveyDialog,
-        showFilterDialog = showFilterDialog
+        showFilterDialog = showFilterDialog,
+        adImages = adImages
     )
 
     PhoriaAndAniseikoniaScreen(

@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.admin.advertisement.area.components
+package com.pixelro.nenoonkiosk.feature.admin.advertisement.location
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.feature.admin.AdLocation
+import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdLocation
 import com.pixelro.nenoonkiosk.ui.theme.Green
 import com.pixelro.nenoonkiosk.ui.theme.LightGray300
 import com.pixelro.nenoonkiosk.ui.theme.LightGreen

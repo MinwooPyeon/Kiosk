@@ -30,6 +30,7 @@ import com.pixelro.nenoonkiosk.core.manager.StrabismusPrintHelper
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.SecondaryButton
 import com.pixelro.nenoonkiosk.feature.inspection.components.InspectionDivider
+import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.components.LightBottomArea
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.DualButtonBottomBar
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.ResultCard
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.WarningNotice
@@ -53,6 +54,7 @@ fun AniseikoniaResultScreen(
     difference: Float?,
     onPrintClicked: () -> Unit,
     onBackToMainClicked: () -> Unit,
+    onLogout: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         TTS.speechTTS(StringProvider.getString(R.string.tts_result_screen), TextToSpeech.QUEUE_FLUSH)
@@ -84,6 +86,8 @@ fun AniseikoniaResultScreen(
     var userHorizontalDescription = ""
     var userVerticalResult = ""
     var userVerticalDescription = ""
+    var isLeftNormal = true
+    var isRightNormal = true
 
     when (answer) {
             1 -> {
@@ -112,6 +116,11 @@ fun AniseikoniaResultScreen(
                 }
 
                 userRightTitle = StringProvider.getStringComposable(R.string.fudo_result_clinical_opinion)
+
+                // 정상 여부 판단
+                isLeftNormal = true  // 망막 상 크기 차이는 측정값만 표시하므로 항상 정상색
+                isRightNormal = abs(differenceValue) <= 2f  // 임상 의견: 2% 이하면 정상
+
                 val (result, description) =
                     when {
                         abs(differenceValue) < 0.5f -> StringProvider.getStringComposable(R.string.sawi_result_normal) to StringProvider.getStringComposable(R.string.fudo_result_normal_desc)
@@ -137,6 +146,8 @@ fun AniseikoniaResultScreen(
                 userHorizontalDescription = StringProvider.getStringComposable(R.string.sawi_result_normal_status)
                 userVerticalResult = StringProvider.getStringComposable(R.string.sawi_result_suppression_suspicion)
                 userVerticalDescription = StringProvider.getStringComposable(R.string.sawi_result_desc_suppression_right)
+                isLeftNormal = true
+                isRightNormal = false
             }
             3 -> {
                 normalCaseVisible = true
@@ -153,6 +164,8 @@ fun AniseikoniaResultScreen(
                 userHorizontalDescription = StringProvider.getStringComposable(R.string.sawi_result_desc_suppression_left)
                 userVerticalResult = StringProvider.getStringComposable(R.string.sawi_result_normal)
                 userVerticalDescription = StringProvider.getStringComposable(R.string.sawi_result_normal_status)
+                isLeftNormal = false
+                isRightNormal = true
             }
             4 -> {
                 normalCaseVisible = true
@@ -170,6 +183,8 @@ fun AniseikoniaResultScreen(
                 userHorizontalDescription = StringProvider.getStringComposable(R.string.sawi_result_desc_suppression_left)
                 userVerticalResult = StringProvider.getStringComposable(R.string.sawi_result_suppression_suspicion)
                 userVerticalDescription = StringProvider.getStringComposable(R.string.sawi_result_desc_suppression_right)
+                isLeftNormal = false
+                isRightNormal = false
             }
             else -> {
                 normalCaseVisible = false
@@ -179,6 +194,8 @@ fun AniseikoniaResultScreen(
                 userHorizontalDescription = ""
                 userVerticalResult = ""
                 userVerticalDescription = ""
+                isLeftNormal = false
+                isRightNormal = false
             }
         }
 
@@ -188,6 +205,7 @@ fun AniseikoniaResultScreen(
             modifier =
                 Modifier
                     .fillMaxSize()
+                    .background(Color.White)
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -200,31 +218,32 @@ fun AniseikoniaResultScreen(
             )
             InspectionDivider()
             if(!isLandscape()) {
-                if (normalCaseVisible) {
-                    Spacer(modifier = Modifier.height(36.dp))
-                    Text(
-                        text = normalExampleText,
-                        style = buttonTextStyle,
-                        color = Color.Black,
-                        modifier = Modifier.padding(bottom = 16.dp),
-                    )
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        ResultCard(
-                            modifier = Modifier.weight(1f),
-                            title = normalLeftTitle,
-                            result = normalLeftResult,
-                            description = normalLeftDescription,
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        ResultCard(
-                            modifier = Modifier.weight(1f),
-                            title = normalRightTitle,
-                            result = normalRightResult,
-                            description = normalRightDescription,
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
+//                if (normalCaseVisible) {
+//                    Spacer(modifier = Modifier.height(36.dp))
+//                    Text(
+//                        text = normalExampleText,
+//                        style = buttonTextStyle,
+//                        color = Color.Black,
+//                        modifier = Modifier.padding(bottom = 16.dp),
+//                    )
+//                    Row(modifier = Modifier.fillMaxWidth()) {
+//                        ResultCard(
+//                            modifier = Modifier.weight(1f),
+//                            title = normalLeftTitle,
+//                            result = normalLeftResult,
+//                            description = normalLeftDescription,
+//                        )
+//                        Spacer(modifier = Modifier.width(16.dp))
+//                        ResultCard(
+//                            modifier = Modifier.weight(1f),
+//                            title = normalRightTitle,
+//                            result = normalRightResult,
+//                            description = normalRightDescription,
+//                        )
+//                    }
+//
+//                }
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
                     text = myResultText,
@@ -232,44 +251,33 @@ fun AniseikoniaResultScreen(
                     color = Color.Black,
                     modifier = Modifier.padding(bottom = 16.dp),
                 )
-                Row(modifier = Modifier.fillMaxWidth()) {
+                Row(modifier = Modifier.fillMaxWidth().padding(40.dp)) {
                     ResultCard(
                         modifier = Modifier.weight(1f),
                         title = userLeftTitle,
                         result = userHorizontalResult,
                         description = userHorizontalDescription,
+                        isNormal = isLeftNormal,
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(24.dp))
                     ResultCard(
                         modifier = Modifier.weight(1f),
                         title = userRightTitle,
                         result = userVerticalResult,
                         description = userVerticalDescription,
+                        isNormal = isRightNormal,
                     )
                 }
+                Spacer(modifier = Modifier.height(24.dp))
                 Spacer(modifier = Modifier.weight(1F))
-                DualButtonBottomBar(
-                    primaryButtonText = printButtonText,
-                    onPrimaryButtonClick = {
+                WarningNotice(16.sp)
+                LightBottomArea(
+                    printEnabled = true,
+                    onPrint = {
                         TTS.speechTTS(StringProvider.getString(R.string.printing_in_progress), TextToSpeech.QUEUE_FLUSH)
-                        val differenceValue = difference ?: 0f
-                        val formattedResult =
-                            when {
-                                differenceValue > 0 -> {
-                                    StringProvider.getString(R.string.fudo_result_right_eye_larger_format, differenceValue)
-                                }
-                                differenceValue < 0 -> {
-                                    StringProvider.getString(R.string.fudo_result_left_eye_larger_format, abs(differenceValue))
-                                }
-                                else -> {
-                                    userHorizontalResult
-                                }
-                            }
-
                         StrabismusPrintHelper.printAniseikoniaResult(
                             context = context,
                             retinalTitle = userLeftTitle,
-//                        retinalResult = formattedResult,
                             opinionTitle = userRightTitle,
                             opinionResult = userVerticalResult,
                             retinalDescription = userHorizontalDescription,
@@ -277,18 +285,17 @@ fun AniseikoniaResultScreen(
                         )
                         onPrintClicked()
                     },
-                    secondaryButtonText = backButtonText,
-                    onSecondaryButtonClick = onBackToMainClicked
+                    onBack = onBackToMainClicked,
+                    onLogout = onLogout
                 )
-                WarningNotice(14.sp)
             }else {
                 Row(modifier = Modifier.fillMaxSize().weight(1F), verticalAlignment = Alignment.CenterVertically) {
-                    Column(modifier = Modifier.fillMaxSize().weight(2F), verticalArrangement = Arrangement.Center) {
+                    Column(modifier = Modifier.fillMaxSize().weight(2F).padding(40.dp), verticalArrangement = Arrangement.Center) {
                         Text(
                             text = myResultText,
                             style = buttonTextStyle,
                             color = Color.Black,
-                            modifier = Modifier.padding(bottom = 16.dp),
+                            modifier = Modifier.padding(bottom = 24.dp),
                         )
                         Row(modifier = Modifier.fillMaxWidth()) {
                             ResultCard(
@@ -296,48 +303,45 @@ fun AniseikoniaResultScreen(
                                 title = userLeftTitle,
                                 result = userHorizontalResult,
                                 description = userHorizontalDescription,
+                                isNormal = isLeftNormal,
                             )
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(24.dp))
                             ResultCard(
                                 modifier = Modifier.weight(1f),
                                 title = userRightTitle,
                                 result = userVerticalResult,
                                 description = userVerticalDescription,
+                                isNormal = isRightNormal,
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.width(36.dp))
+                    Spacer(modifier = Modifier.width(28.dp))
                     Column(
                         modifier =
                             Modifier
                                 .weight(1.2F)
-                                .background(Color.White)
-                                .padding(16.dp),
+                                .background(Color.White),
                         verticalArrangement = Arrangement.Center
                     ) {
-                        PrimaryButton(
-                            onClick = {
+                        LightBottomArea(
+                            printEnabled = true,
+                            onPrint = {
                                 TTS.speechTTS(
                                     StringProvider.getString(R.string.printing_in_progress),
                                     TextToSpeech.QUEUE_FLUSH
                                 )
-                                StrabismusPrintHelper.printPhoriaResult(
+                                StrabismusPrintHelper.printAniseikoniaResult(
                                     context = context,
-                                    hTitle = userLeftTitle,
-                                    hResult = userHorizontalResult,
-                                    hDesc = userHorizontalDescription,
-                                    vTitle = userRightTitle,
-                                    vResult = userVerticalResult,
-                                    vDesc = userVerticalDescription,
+                                    retinalTitle = userLeftTitle,
+                                    opinionTitle = userRightTitle,
+                                    opinionResult = userVerticalResult,
+                                    retinalDescription = userHorizontalDescription,
+                                    opinionDescription = userVerticalDescription,
                                 )
                                 onPrintClicked()
                             },
-                            text = printButtonText,
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        SecondaryButton(
-                            onClick = onBackToMainClicked,
-                            text = backButtonText,
+                            onBack = onBackToMainClicked,
+                            onLogout = onLogout
                         )
                     }
                 }
@@ -357,6 +361,7 @@ private fun AniseikoniaResultScreenHorizontalPreview() {
             difference = 1.5f,
             onPrintClicked = {},
             onBackToMainClicked = {},
+            onLogout = {},
         )
     }
 }
@@ -370,6 +375,7 @@ private fun AniseikoniaResultScreenVerticalPreview() {
             difference = 1.5f,
             onPrintClicked = {},
             onBackToMainClicked = {},
+            onLogout = {},
         )
     }
 }
