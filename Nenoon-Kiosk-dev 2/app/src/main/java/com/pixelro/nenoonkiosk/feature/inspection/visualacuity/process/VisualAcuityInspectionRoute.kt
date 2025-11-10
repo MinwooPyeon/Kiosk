@@ -14,6 +14,7 @@ import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetectionViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuityViewModel
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuitySttState
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.shortdistance.ShortVisualAcuityInspectionContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.VisualAcuityInspectionResult
 
@@ -51,6 +52,8 @@ fun VisualAcuityInspectionRoute(
     val randomList = visualAcuityViewModel.randomList.collectAsState().value
     val ansNum = visualAcuityViewModel.ansNum.collectAsState().value
     val sightLevel = visualAcuityViewModel.sightLevel.collectAsState().value
+    val sttState = visualAcuityViewModel.sttState.collectAsState().value
+    val sttSessionActive = visualAcuityViewModel.sttSessionActive.collectAsState().value
 
     // FaceDetection 상태 구독
     val faceDetectionState by faceDetectionViewModel.container.stateFlow.collectAsState()
@@ -110,6 +113,14 @@ fun VisualAcuityInspectionRoute(
                 },
                 getInspectionResult = { visualAcuityViewModel.getVisualAcuityInspectionResult() },
                 toResultScreen = toResultScreen,
+                sttState = sttState,
+                sttActive = sttSessionActive,
+                onStartVoiceRecognition = { callback ->
+                    visualAcuityViewModel.startVoiceRecognition(callback)
+                },
+                onCancelVoiceRecognition = {
+                    visualAcuityViewModel.cancelVoiceRecognition()
+                },
             )
         }
 
@@ -138,6 +149,14 @@ fun VisualAcuityInspectionRoute(
                 },
                 getInspectionResult = { visualAcuityViewModel.getVisualAcuityInspectionResult() },
                 toResultScreen = toResultScreen,
+                sttState = sttState,
+                sttActive = sttSessionActive,
+                onStartVoiceRecognition = { callback ->
+                    visualAcuityViewModel.startVoiceRecognition(callback)
+                },
+                onCancelVoiceRecognition = {
+                    visualAcuityViewModel.cancelVoiceRecognition()
+                },
             )
         }
     }
