@@ -290,23 +290,34 @@ constructor(
     }
 
     private fun updateRandomList() {
-        val candidates = buildList {
-            val used = mutableSetOf<Int>()
-            repeat(3) {
-                var value: Int
-                do {
-                    value = (2..7).random()
-                } while (!used.add(value))
-                add(value)
-            }
-        }
+        val previous = _randomList.value
+        var attempts = 0
+        var candidates: List<Int>
+        do {
+            candidates =
+                buildList {
+                    val used = mutableSetOf<Int>()
+                    repeat(3) {
+                        var value: Int
+                        do {
+                            value = (2..7).random()
+                        } while (!used.add(value))
+                        add(value)
+                    }
+                }
+            attempts++
+        } while (candidates == previous && attempts < 10)
         _randomList.value = candidates
 
         val prevNum = _ansNum.value
         var newNum = candidates.random()
         if (candidates.size > 1) {
-            while (newNum == prevNum) {
-                newNum = candidates.random()
+            val iterator = candidates.iterator()
+            while (newNum == prevNum && iterator.hasNext()) {
+                newNum = iterator.next()
+            }
+            if (newNum == prevNum) {
+                newNum = candidates.first()
             }
         }
         _ansNum.value = newNum
