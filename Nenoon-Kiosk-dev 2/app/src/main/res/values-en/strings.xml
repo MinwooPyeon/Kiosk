@@ -1092,7 +1092,7 @@ to the center of the circle.</string>
     <string name="admin_screensaver">Screensaver</string>
     <string name="admin_screensaver_subtitle">Touch screen</string>
     <string name="admin_badge_video">Video</string>
-    <string name="admin_ad_location_preview">Ad Location Preview</string>
+    <string name="admin_ad_location_preview">Ad Display Area</string>
     <string name="admin_ad_image_list">Ad Image List</string>
     <string name="admin_add">Add</string>
     <string name="admin_delete">Delete</string>

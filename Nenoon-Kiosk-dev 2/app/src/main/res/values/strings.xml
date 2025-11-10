@@ -1093,7 +1093,7 @@
     <string name="admin_screensaver">스크린세이버</string>
     <string name="admin_screensaver_subtitle">터치하세요 화면</string>
     <string name="admin_badge_video">동영상</string>
-    <string name="admin_ad_location_preview">광고 위치 미리보기</string>
+    <string name="admin_ad_location_preview">광고 표시영역</string>
     <string name="admin_ad_image_list">광고 이미지 목록</string>
     <string name="admin_add">추가</string>
     <string name="admin_delete">삭제</string>

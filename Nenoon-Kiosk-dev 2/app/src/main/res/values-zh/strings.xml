@@ -1084,7 +1084,7 @@
     <string name="admin_screensaver">屏幕保护程序</string>
     <string name="admin_screensaver_subtitle">触摸屏幕</string>
     <string name="admin_badge_video">视频</string>
-    <string name="admin_ad_location_preview">广告位置预览</string>
+    <string name="admin_ad_location_preview">广告显示区域</string>
     <string name="admin_ad_image_list">广告图片列表</string>
     <string name="admin_add">添加</string>
     <string name="admin_delete">删除</string>

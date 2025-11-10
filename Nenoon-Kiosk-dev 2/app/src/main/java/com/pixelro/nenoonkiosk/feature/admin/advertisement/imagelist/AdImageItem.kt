@@ -2,6 +2,7 @@ package com.pixelro.nenoonkiosk.feature.admin.advertisement.imagelist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -56,6 +57,8 @@ fun AdImageItem(
     fileName: String,
     imageUri: String? = null,
     onDelete: () -> Unit,
+    onClick: () -> Unit = {},
+    isSelected: Boolean = false,
     dragModifier: Modifier = Modifier,
     modifier: Modifier = Modifier
 ) {
@@ -69,8 +72,13 @@ fun AdImageItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .border(1.dp, LightGray300, RoundedCornerShape(8.dp))
+            .border(
+                width = if (isSelected) 2.dp else 1.dp,
+                color = if (isSelected) Red.copy(alpha = 0.6f) else LightGray300,
+                shape = RoundedCornerShape(8.dp)
+            )
             .background(White)
+            .clickable(onClick = onClick)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

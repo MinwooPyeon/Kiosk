@@ -6,7 +6,8 @@ import com.harang.data.db.entity.LocationEntity
 data class AdManagementUiState(
     val availableLocations: List<LocationEntity> = emptyList(), // DB에서 가져온 location 목록
     val selectedLocation: LocationEntity? = null, // 현재 선택된 location
-    val adImages: List<AdImageData> = emptyList()
+    val adImages: List<AdImageData> = emptyList(),
+    val selectedPreviewImagesByLocation: Map<Int, AdImageData> = emptyMap() // location별 선택된 미리보기 이미지
 )
 
 data class AdImageData(

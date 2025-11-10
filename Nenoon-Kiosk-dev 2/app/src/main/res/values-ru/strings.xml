@@ -1088,7 +1088,7 @@
     <string name="admin_screensaver">Скринсейвер</string>
     <string name="admin_screensaver_subtitle">Коснитесь экрана</string>
     <string name="admin_badge_video">Видео</string>
-    <string name="admin_ad_location_preview">Предпросмотр расположения рекламы</string>
+    <string name="admin_ad_location_preview">Область отображения рекламы</string>
     <string name="admin_ad_image_list">Список рекламных изображений</string>
     <string name="admin_add">Добавить</string>
     <string name="admin_delete">Удалить</string>

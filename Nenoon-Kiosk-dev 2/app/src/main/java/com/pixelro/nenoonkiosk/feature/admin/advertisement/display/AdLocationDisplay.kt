@@ -21,13 +21,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.harang.data.db.entity.AdImageEntity
+import java.io.File
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.ui.theme.LightGray300
 import com.pixelro.nenoonkiosk.ui.theme.Red
@@ -38,7 +42,8 @@ import com.pixelro.nenoonkiosk.ui.theme.White
 fun AdLocationDisplay(
     modifier: Modifier = Modifier,
     adImages: List<AdImageEntity> = emptyList(),
-    locationId: Int = 1
+    locationId: Int = 1,
+    selectedImageUri: String? = null
 ) {
     Column(
         modifier = modifier
@@ -73,14 +78,15 @@ fun AdLocationDisplay(
 
             // 이미지와 오버레이 표시
             Box(
-                modifier = Modifier.border(1.dp, Color.Gray)
+
             ) {
                 val painter = painterResource(id = imageRes)
 
                 Image(
                     painter = painter,
                     contentDescription = "광고 위치 미리보기",
-                    contentScale = ContentScale.Fit
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.border(1.dp, Color.Gray)
                 )
 
                 // 광고 위치 오버레이 - location과 방향에 따라 다른 영역 표시
@@ -110,7 +116,7 @@ fun AdLocationDisplay(
                             Modifier
                                 .fillMaxWidth()
                                 .fillMaxHeight(0.9f)
-                                .offset(y = imageHeight * 0.105f)
+                                .offset(y = imageHeight * 0.11f)
                         } else {
                             // Location 2 세로: 중앙 텍스트 광고 (20-40%)
                             Modifier
@@ -122,11 +128,34 @@ fun AdLocationDisplay(
                     }
 
                     Box(
-                        modifier = overlayModifier
-                            .background(Red.copy(alpha = 0.3f))
-                            .border(2.dp, Color.Red),
+                        modifier = overlayModifier,
                         contentAlignment = Alignment.Center
-                    ){}
+                    ){
+                        // 선택된 광고 이미지 표시 (빨간 오버레이 뒤에)
+                        if (selectedImageUri != null) {
+                            val context = LocalContext.current
+                            val imageRequest = remember(selectedImageUri) {
+                                ImageRequest.Builder(context)
+                                    .data(File(selectedImageUri))
+                                    .build()
+                            }
+
+                            AsyncImage(
+                                model = imageRequest,
+                                contentDescription = "선택된 광고 이미지",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        // 빨간 오버레이 (이미지 위에)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Red.copy(alpha = 0.3f))
+                                .border(2.dp, Color.Red)
+                        )
+                    }
                 }
             }
         }
