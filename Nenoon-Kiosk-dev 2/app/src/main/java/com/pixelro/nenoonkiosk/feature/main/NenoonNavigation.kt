@@ -101,7 +101,7 @@ fun nenoonApp(
     LaunchedEffect(isScreenSaving) {
         bloodPressureMonitorViewModel.initializeBluetoothSDK()
         if (isScreenSaving) {
-            if (navController.currentBackStackEntry?.destination?.route != NavConstants.ROUTE_SIGN_IN) {
+            if (navController.currentBackStackEntry?.destination?.route != NavConstants.ROUTE_SIGN_IN && navController.currentBackStackEntry?.destination?.route != NavConstants.ROUTE_ADMIN_DASHBOARD_PAGE) {
                 navController.popBackStack(
                     if (viewModel.isSignedIn.value) {
                         NavConstants.ROUTE_CATEGORY_LIST

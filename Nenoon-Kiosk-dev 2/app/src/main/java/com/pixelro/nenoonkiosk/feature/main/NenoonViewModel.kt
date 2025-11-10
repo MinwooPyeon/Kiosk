@@ -473,7 +473,7 @@ class NenoonViewModel
         init {
             checkBackgroundStatus()
             exoPlayer = ExoPlayer.Builder(getApplication()).build()
-            exoPlayer.repeatMode = Player.REPEAT_MODE_ONE
+            exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
             exoPlayer.volume = 0f
         }
 
