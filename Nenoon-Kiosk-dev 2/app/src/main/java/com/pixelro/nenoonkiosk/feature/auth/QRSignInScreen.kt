@@ -291,6 +291,9 @@ private fun QRSignInLayout(
         PrimaryButton(
             text = backButton,
             onClick = onBackClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(70.dp)
         )
 
         Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.8f else 1f))
@@ -404,6 +407,7 @@ private fun CameraPreviewArea(
 @Preview(
     name = "Tablet Portrait",
     showBackground = true,
+    backgroundColor = 0xFFFFFFFF,
     widthDp = 800,
     heightDp = 1280
 )
@@ -431,6 +435,7 @@ fun PreviewPortrait() {
 @Preview(
     name = "Tablet Landscape",
     showBackground = true,
+    backgroundColor = 0xFFFFFFFF,
     widthDp = 1280,
     heightDp = 800
 )

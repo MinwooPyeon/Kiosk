@@ -1,3 +1,4 @@
+// FaceIdSignInScreen.kt
 package com.pixelro.nenoonkiosk.feature.auth
 
 import androidx.compose.foundation.layout.Arrangement
@@ -234,6 +235,9 @@ private fun FaceIdSignInLayout(
         PrimaryButton(
             text = backButtonText,
             onClick = onBackClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(70.dp)
         )
 
         Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.6f else 1f))
