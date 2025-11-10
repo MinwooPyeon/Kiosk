@@ -15,13 +15,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
-import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,14 +37,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
-import com.pixelro.nenoonkiosk.core.util.AutoStartSTT
 import com.pixelro.nenoonkiosk.core.util.isLandscape
+import com.pixelro.nenoonkiosk.core.util.stt.SttConfig
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.components.CantSeeButton
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.components.DirectionSelectionButton
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.components.VisualAcuityChartBox
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.VisualAcuityInspectionResult
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
+import kotlinx.coroutines.delay
 
 private val STRING_VISUAL_ACUITY_DESCRIPTION = R.string.visual_acuity_description
 
@@ -56,6 +60,10 @@ fun VisualAcuityInspectionCommonContent(
     onAnswerSelected: (Int, (Float) -> Unit, () -> Unit) -> Unit,
     getInspectionResult: () -> VisualAcuityInspectionResult,
     toResultScreen: (VisualAcuityInspectionResult) -> Unit,
+    sttEnabled: Boolean = true,
+    sttActive: Boolean = false,
+    onStartVoiceRecognition: ((String) -> Unit) -> Unit,
+    onCancelVoiceRecognition: () -> Unit,
 ) {
     AnimatedVisibility(
         visibleState = visualAcuityInspectionCommonContentVisibleState,
@@ -71,6 +79,10 @@ fun VisualAcuityInspectionCommonContent(
             onAnswerSelected = onAnswerSelected,
             getInspectionResult = getInspectionResult,
             toResultScreen = toResultScreen,
+            sttEnabled = sttEnabled,
+            sttActive = sttActive,
+            onStartVoiceRecognition = onStartVoiceRecognition,
+            onCancelVoiceRecognition = onCancelVoiceRecognition,
         )
     }
 }
@@ -85,27 +97,49 @@ fun VisualAcuityInspectionContent(
     onAnswerSelected: (Int, (Float) -> Unit, () -> Unit) -> Unit,
     getInspectionResult: () -> VisualAcuityInspectionResult,
     toResultScreen: (VisualAcuityInspectionResult) -> Unit,
+    sttEnabled: Boolean = true,
+    sttActive: Boolean = false,
+    onStartVoiceRecognition: ((String) -> Unit) -> Unit,
+    onCancelVoiceRecognition: () -> Unit,
 ) {
     var progress by remember { mutableFloatStateOf(0.1f) }
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
     )
-
-    AutoStartSTT(
-        onResult = { result ->
+    val latestOnStartRecognition = rememberUpdatedState(onStartVoiceRecognition)
+    val latestOnCancelRecognition = rememberUpdatedState(onCancelVoiceRecognition)
+    val voiceHandler: (String) -> Unit = remember(randomList, ansNum, getInspectionResult, onAnswerSelected) {
+        { recognized: String ->
             handleVoiceAnswer(
-                result = result,
+                result = recognized,
                 randomList = randomList,
                 currentProgress = progress,
                 onAnswerSelected = onAnswerSelected,
                 updateProgress = { newProgress -> progress = newProgress },
                 onComplete = { toResultScreen(getInspectionResult()) }
             )
-        },
-        enabled = true,
-        onError = { }
-    )
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            latestOnCancelRecognition.value.invoke()
+        }
+    }
+
+    LaunchedEffect(sttEnabled, sttActive, voiceHandler) {
+        if (sttEnabled) {
+            if (!sttActive) {
+                delay(SttConfig.Recognition.AUTO_RESTART_DELAY_MS)
+                if (sttEnabled && !sttActive) {
+                    latestOnStartRecognition.value.invoke(voiceHandler)
+                }
+            }
+        } else if (sttActive) {
+            latestOnCancelRecognition.value.invoke()
+        }
+    }
 
     val isLandscape = isLandscape()
 
@@ -120,7 +154,9 @@ fun VisualAcuityInspectionContent(
             onAnswerSelected = onAnswerSelected,
             getInspectionResult = getInspectionResult,
             toResultScreen = toResultScreen,
-            updateProgress = { progress = it }
+            updateProgress = { progress = it },
+            sttEnabled = sttEnabled,
+            sttActive = sttActive,
         )
     } else {
         PortraitVisualAcuityContent(
@@ -133,7 +169,9 @@ fun VisualAcuityInspectionContent(
             onAnswerSelected = onAnswerSelected,
             getInspectionResult = getInspectionResult,
             toResultScreen = toResultScreen,
-            updateProgress = { progress = it }
+            updateProgress = { progress = it },
+            sttEnabled = sttEnabled,
+            sttActive = sttActive,
         )
     }
 }
@@ -150,6 +188,8 @@ private fun PortraitVisualAcuityContent(
     getInspectionResult: () -> VisualAcuityInspectionResult,
     toResultScreen: (VisualAcuityInspectionResult) -> Unit,
     updateProgress: (Float) -> Unit,
+    sttEnabled: Boolean,
+    sttActive: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -199,6 +239,13 @@ private fun PortraitVisualAcuityContent(
                     .height(20.dp),
                 progress = animatedProgress,
                 color = neNoon_blue,
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            VoiceRecognitionIndicator(
+                sttActive = sttActive,
+                sttEnabled = sttEnabled,
             )
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -257,6 +304,8 @@ private fun LandscapeVisualAcuityContent(
     getInspectionResult: () -> VisualAcuityInspectionResult,
     toResultScreen: (VisualAcuityInspectionResult) -> Unit,
     updateProgress: (Float) -> Unit,
+    sttEnabled: Boolean,
+    sttActive: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -301,6 +350,13 @@ private fun LandscapeVisualAcuityContent(
                 .height(16.dp),
             progress = animatedProgress,
             color = neNoon_blue,
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        VoiceRecognitionIndicator(
+            sttActive = sttActive,
+            sttEnabled = sttEnabled,
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -354,6 +410,37 @@ private fun LandscapeVisualAcuityContent(
     }
 }
 
+@Composable
+private fun VoiceRecognitionIndicator(
+    sttActive: Boolean,
+    sttEnabled: Boolean,
+) {
+    val statusText = when {
+        !sttEnabled -> "음성 인식 준비 중"
+        sttActive -> "음성을 인식하고 있습니다"
+        else -> "음성 입력을 기다리는 중입니다"
+    }
+    val statusColor = when {
+        !sttEnabled -> Color.Gray
+        sttActive -> neNoon_blue
+        else -> White
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = statusText,
+            color = statusColor,
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
 // Preview
 @Preview(
     showBackground = true,
@@ -378,7 +465,9 @@ private fun PreviewVisualAcuityInspectionContent_Portrait() {
             onAnswerSelected = { _, _, _ -> },
             getInspectionResult = { VisualAcuityInspectionResult(leftEye = 10, rightEye = 10) },
             toResultScreen = {},
-            updateProgress = {}
+            updateProgress = {},
+            sttEnabled = true,
+            sttActive = false,
         )
     }
 }
@@ -406,7 +495,9 @@ private fun PreviewVisualAcuityInspectionContent_Landscape() {
             onAnswerSelected = { _, _, _ -> },
             getInspectionResult = { VisualAcuityInspectionResult(leftEye = 5, rightEye = 5) },
             toResultScreen = {},
-            updateProgress = {}
+            updateProgress = {},
+            sttEnabled = true,
+            sttActive = false,
         )
     }
 }

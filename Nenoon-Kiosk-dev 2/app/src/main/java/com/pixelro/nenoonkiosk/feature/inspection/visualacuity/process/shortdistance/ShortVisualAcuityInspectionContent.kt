@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceContent
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuitySttState
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.VisualAcuityInspectionCommonContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.VisualAcuityInspectionUiState
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.VisualAcuityInspectionResult
@@ -64,7 +65,13 @@ fun ShortVisualAcuityInspectionContent(
     onAnswerSelected: (Int, (Float) -> Unit, () -> Unit) -> Unit,
     getInspectionResult: () -> VisualAcuityInspectionResult,
     toResultScreen: (VisualAcuityInspectionResult) -> Unit,
+    sttState: VisualAcuitySttState,
+    sttActive: Boolean,
+    onStartVoiceRecognition: ((String) -> Unit) -> Unit,
+    onCancelVoiceRecognition: () -> Unit,
 ) {
+    val sttEnabled = sttState == VisualAcuitySttState.ShortDigit
+
     Column(
         modifier =
             Modifier
@@ -102,6 +109,10 @@ fun ShortVisualAcuityInspectionContent(
                 onAnswerSelected = onAnswerSelected,
                 getInspectionResult = getInspectionResult,
                 toResultScreen = toResultScreen,
+                sttEnabled = sttEnabled,
+                sttActive = sttActive,
+                onStartVoiceRecognition = onStartVoiceRecognition,
+                onCancelVoiceRecognition = onCancelVoiceRecognition,
             )
         }
     }
@@ -127,7 +138,11 @@ private fun PreviewShortDistanceVisualAcuityInspection_MeasuringDistance() {
         onNextFromDistance = {},
         onAnswerSelected = { _, _, _ -> },
         getInspectionResult = { VisualAcuityInspectionResult(leftEye = 10, rightEye = 10) },
-        toResultScreen = {}
+        toResultScreen = {},
+        sttState = VisualAcuitySttState.ShortDigit,
+        sttActive = false,
+        onStartVoiceRecognition = {},
+        onCancelVoiceRecognition = {},
     )
 }
 
@@ -151,6 +166,10 @@ private fun PreviewShortDistanceVisualAcuityInspection_VisualAcuityTest() {
         onNextFromDistance = {},
         onAnswerSelected = { _, _, _ -> },
         getInspectionResult = { VisualAcuityInspectionResult(leftEye = 5, rightEye = 5) },
-        toResultScreen = {}
+        toResultScreen = {},
+        sttState = VisualAcuitySttState.ShortDigit,
+        sttActive = false,
+        onStartVoiceRecognition = {},
+        onCancelVoiceRecognition = {},
     )
 }
