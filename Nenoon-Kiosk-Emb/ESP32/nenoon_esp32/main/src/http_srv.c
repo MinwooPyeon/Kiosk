@@ -400,6 +400,7 @@ esp_err_t http_srv_start(void){
     cfg.lru_purge_enable = true;
     cfg.uri_match_fn     = httpd_uri_match_wildcard;
     cfg.stack_size       = 8192; // 요청 처리 중 스택 여유 확보
+    cfg.max_uri_handlers = 16;
 
     ESP_ERROR_CHECK(httpd_start(&s_srv, &cfg));
 
