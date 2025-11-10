@@ -68,11 +68,12 @@ fun SettingsScreen(
                 items = listOf(
                     "ko" to "한국어",
                     "en" to "English",
-                    "zh" to "汉语",
-                    "ja" to "日本語",
+                    "es" to "Español",
                     "fr" to "Français",
+                    "ja" to "日本語",
                     "ru" to "Русский",
-                    "es" to "Español"
+                    "th" to "ภาษาไทย",
+                    "zh" to "汉语",
                 ),
                 onItemSelected = { langCode ->
                     applyNewLanguage(langCode)
