@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
@@ -34,6 +35,7 @@ fun StyledText(
     style: TextStyle = TextStyle.Message,
     textAlign: TextAlign = TextAlign.Center,
     fontWeight: FontWeight? = null,
+    textDecoration: TextDecoration? = null,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -70,6 +72,7 @@ fun StyledText(
                 TextStyle.Error, TextStyle.InputError -> Red
                 else -> Black
             },
+        textDecoration = textDecoration,
         modifier =
             modifier
                 .padding(

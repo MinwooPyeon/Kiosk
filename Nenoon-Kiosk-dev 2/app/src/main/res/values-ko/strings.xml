@@ -647,7 +647,7 @@
     <string name="qr_print_fail">QR 코드 인쇄 실패</string>
     <string name="qr_generation_fail">QR 코드 생성 실패</string>
     <string name="qr_not_signed_in">로그인된 사용자가 없습니다. QR 코드를 발급할 수 없습니다.</string>
-    <string name="id_pw_sign_in">아이디 / 패스워드 로그인</string>
+    <string name="id_pw_sign_in">비밀번호 로그인</string>
 
     <string name="admin_page">관리자 페이지</string>
 
@@ -661,6 +661,10 @@
     <string name="personal_info_table_column3">1년</string>
     <string name="personal_info_checkbox_description">※\t위의 개인정보 수집·이용에 대한 동의를 거부할 권리가 있습니다.\n\t\t그러나, 동의를 거부할 경우 회원가입 서비스 이용에 제한을 받을 수 있습니다.</string>
     <string name="personal_info_checkbox_question">⇨\t위와 같이 개인정보를 수집·이용하는데 동의하십니까?</string>
+
+    <string name="password_login_button">비밀번호\n로그인</string>
+    <string name="qr_login_button">QR\n로그인</string>
+    <string name="face_login_button">얼굴인식\n로그인</string>
 
     <string name="sensitive_info_table_label">▶ 민감정보 수집·이용 내역</string>
     <string name="sensitive_info_table_column1">눈건강, 폐나이, 혈압, 악력</string>
