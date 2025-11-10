@@ -20,8 +20,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.harang.data.db.entity.LocationEntity
+import com.harang.data.db.entity.MediaType
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdLocation
+import com.pixelro.nenoonkiosk.feature.admin.advertisement.getSubtitleRes
+import com.pixelro.nenoonkiosk.feature.admin.advertisement.getTitleRes
 import com.pixelro.nenoonkiosk.ui.theme.Green
 import com.pixelro.nenoonkiosk.ui.theme.LightGray300
 import com.pixelro.nenoonkiosk.ui.theme.LightGreen
@@ -29,39 +32,13 @@ import com.pixelro.nenoonkiosk.ui.theme.LightYellow
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.Yellow200
 
-data class LocationOptionConfig(
-    val location: AdLocation,
-    val titleRes: Int,
-    val subtitleRes: Int,
-    val badgeRes: Int,
-    val badgeColor: Color,
-    val badgeTextColor: Color
-)
-
 
 @Composable
 fun LocationOptionArea(
-    selectedLocation: AdLocation?,
-    onSelectLocation: (AdLocation) -> Unit
+    availableLocations: List<LocationEntity>,
+    selectedLocation: LocationEntity?,
+    onSelectLocation: (LocationEntity) -> Unit
 ) {
-    val locationOptions = listOf(
-        LocationOptionConfig(
-            location = AdLocation.TEST_LIST_SCREEN,
-            titleRes = R.string.admin_test_list_screen,
-            subtitleRes = R.string.admin_test_list_subtitle,
-            badgeRes = R.string.admin_badge_image,
-            badgeColor = LightGreen,
-            badgeTextColor = Green
-        ),
-        LocationOptionConfig(
-            location = AdLocation.SCREENSAVER,
-            titleRes = R.string.admin_screensaver,
-            subtitleRes = R.string.admin_screensaver_subtitle,
-            badgeRes = R.string.admin_badge_video,
-            badgeColor = LightYellow,
-            badgeTextColor = Yellow200
-        )
-    )
 
     Column(
         modifier = Modifier
@@ -83,20 +60,26 @@ fun LocationOptionArea(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        locationOptions.forEachIndexed { index, config ->
+        availableLocations.forEachIndexed { index, location ->
             if (index > 0) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
+            // MediaType에 따라 배지 설정
+            val (badgeRes, badgeColor, badgeTextColor) = when (location.mediaType) {
+                MediaType.IMAGE -> Triple(R.string.admin_badge_image, LightGreen, Green)
+                MediaType.VIDEO -> Triple(R.string.admin_badge_video, LightYellow, Yellow200)
+            }
+
             LocationOption(
-                location = config.location,
-                title = stringResource(config.titleRes),
-                subtitle = stringResource(config.subtitleRes),
-                badge = stringResource(config.badgeRes),
-                badgeColor = config.badgeColor,
-                badgeTextColor = config.badgeTextColor,
-                isSelected = selectedLocation == config.location,
-                onSelect = { onSelectLocation(config.location) }
+                location = location,
+                title = stringResource(location.getTitleRes()), // name 기반 다국어 제목
+                subtitle = stringResource(location.getSubtitleRes()), // name 기반 다국어 부제목
+                badge = stringResource(badgeRes),
+                badgeColor = badgeColor,
+                badgeTextColor = badgeTextColor,
+                isSelected = selectedLocation?.id == location.id,
+                onSelect = { onSelectLocation(location) }
             )
         }
     }
@@ -106,7 +89,11 @@ fun LocationOptionArea(
 @Composable
 private fun LocationOptionAreaPreview() {
     LocationOptionArea(
-        selectedLocation = AdLocation.TEST_LIST_SCREEN,
+        availableLocations = listOf(
+            LocationEntity(id = 1, name = "TEST_LIST_SCREEN", mediaType = MediaType.IMAGE),
+            LocationEntity(id = 2, name = "SCREENSAVER", mediaType = MediaType.VIDEO)
+        ),
+        selectedLocation = null,
         onSelectLocation = {}
     )
 }

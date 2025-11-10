@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.harang.data.db.entity.AdImageEntity
 import com.harang.data.db.entity.LocationEntity
+import com.harang.data.db.entity.MediaType
 import com.harang.data.util.FileManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -39,8 +40,8 @@ class DatabaseCallback @Inject constructor(
 
             // Location 초기 데이터 삽입
             val locations = listOf(
-                LocationEntity(id = 1, name = "TEST_LIST_SCREEN"),
-                LocationEntity(id = 2, name = "SCREENSAVER")
+                LocationEntity(id = 1, name = "TEST_LIST_SCREEN", mediaType = MediaType.IMAGE),
+                LocationEntity(id = 2, name = "SCREENSAVER", mediaType = MediaType.VIDEO)
             )
             locationDao.insertLocations(locations)
 
@@ -57,7 +58,6 @@ class DatabaseCallback @Inject constructor(
                 adImages.add(
                     AdImageEntity(
                         locationId = 1,
-                        name = File(path).name,
                         url = path,
                         order = 1,
                         language = "ko" // 모든 언어에 표시
@@ -70,7 +70,6 @@ class DatabaseCallback @Inject constructor(
                 adImages.add(
                     AdImageEntity(
                         locationId = 1,
-                        name = File(path).name,
                         url = path,
                         order = 2,
                         language = "ko" // 한국어 전용
@@ -83,7 +82,6 @@ class DatabaseCallback @Inject constructor(
                 adImages.add(
                     AdImageEntity(
                         locationId = 1,
-                        name = File(path).name,
                         url = path,
                         order = 3,
                         language = "en" // 영어 전용

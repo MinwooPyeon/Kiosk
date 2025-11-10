@@ -1,21 +1,12 @@
 package com.pixelro.nenoonkiosk.feature.admin.advertisement
 
+import com.harang.data.db.entity.LocationEntity
+
 data class AdManagementUiState(
-    val selectedAdLocation: AdLocation? = AdLocation.TEST_LIST_SCREEN,
+    val availableLocations: List<LocationEntity> = emptyList(), // DB에서 가져온 location 목록
+    val selectedLocation: LocationEntity? = null, // 현재 선택된 location
     val adImages: List<AdImageData> = emptyList()
 )
-
-enum class AdLocation {
-    TEST_LIST_SCREEN,
-    SCREENSAVER;
-
-    fun toLocationId(): Int {
-        return when (this) {
-            TEST_LIST_SCREEN -> 1
-            SCREENSAVER -> 2
-        }
-    }
-}
 
 data class AdImageData(
     val id: String,

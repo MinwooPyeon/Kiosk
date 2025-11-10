@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class LocationEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val name: String
+    val name: String, // 예: "TEST_LIST_SCREEN", "SCREENSAVER"
+    val mediaType: MediaType // IMAGE 또는 VIDEO
 )
