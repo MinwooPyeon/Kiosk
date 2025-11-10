@@ -50,6 +50,9 @@ class DatabaseCallback @Inject constructor(
             val adHadesPath = fileManager.copyAssetToInternalStorage("ad_hades.png", "ad_images", "ad_hades")
             val adHadesEnPath = fileManager.copyAssetToInternalStorage("ad_hades_en.png", "ad_images", "ad_hades_en")
 
+            // raw 폴더의 비디오를 내부 저장소로 복사
+            val adSubPath = fileManager.copyRawResourceToInternalStorage("ad_sub", "ad_videos", "ad_sub.mp4")
+
             // AdImage 초기 데이터 삽입
             val adImages = mutableListOf<AdImageEntity>()
 
@@ -85,6 +88,18 @@ class DatabaseCallback @Inject constructor(
                         url = path,
                         order = 3,
                         language = "en" // 영어 전용
+                    )
+                )
+            }
+
+            // ad_sub를 SCREENSAVER에 추가 (모든 언어)
+            adSubPath?.let { path ->
+                adImages.add(
+                    AdImageEntity(
+                        locationId = 2,
+                        url = path,
+                        order = 1,
+                        language = null // 모든 언어에 표시
                     )
                 )
             }

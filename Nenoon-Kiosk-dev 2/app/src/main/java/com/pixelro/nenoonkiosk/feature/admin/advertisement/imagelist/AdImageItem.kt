@@ -42,6 +42,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.painterResource
 import com.pixelro.nenoonkiosk.R
 import java.io.File
 import com.pixelro.nenoonkiosk.ui.theme.Gray
@@ -132,10 +133,10 @@ fun AdImageItem(
                 // 동영상일 때 Play 아이콘 오버레이 (성공 시에만)
                 else if (isVideo && imageState is AsyncImagePainter.State.Success) {
                     Icon(
-                        imageVector = Icons.Default.PlayCircleOutline,
+                        painter = painterResource(id = R.drawable.icon_play),
                         contentDescription = "Video",
                         modifier = Modifier.size(48.dp),
-                        tint = Gray
+                        tint = Color.Unspecified
                     )
                 }
             } else {

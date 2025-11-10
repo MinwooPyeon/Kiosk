@@ -4,6 +4,7 @@ import com.harang.data.datasource.SharedPreferencesDataSource
 import com.harang.data.datasource.SignInRemoteDataSource
 import com.harang.data.datasource.SurveyRemoteDataSource
 import com.harang.data.datasource.TestResultRemoteDataSource
+import com.harang.data.db.dao.AdImageDao
 import com.harang.data.repository.ScreenSaverRepository
 import com.harang.data.repository.SignInRepository
 import com.harang.data.repository.SurveyRepository
@@ -28,9 +29,13 @@ object RepositoryModule {
     }
 
     @Provides
-    fun provideScreenSaverRepository(sharedPreferencesDataSource: SharedPreferencesDataSource): ScreenSaverRepository {
+    fun provideScreenSaverRepository(
+        sharedPreferencesDataSource: SharedPreferencesDataSource,
+        adImageDao: AdImageDao,
+    ): ScreenSaverRepository {
         return ScreenSaverRepository(
             sharedPreferencesDataSource = sharedPreferencesDataSource,
+            adImageDao = adImageDao,
         )
     }
 

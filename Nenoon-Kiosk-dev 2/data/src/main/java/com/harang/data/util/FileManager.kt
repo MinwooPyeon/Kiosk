@@ -76,6 +76,69 @@ class FileManager @Inject constructor(
     }
 
     /**
+     * assets 폴더의 비디오를 앱 내부 저장소로 복사하고 파일 경로를 반환합니다.
+     * @param assetFileName assets 폴더의 파일 이름 (예: "ad_sub.mp4")
+     * @param childPath 저장할 하위 폴더 이름 (예: "ad_videos")
+     * @param outputFileName 저장할 파일 이름 (확장자 포함)
+     * @return 저장된 파일의 절대 경로. 실패 시 null을 반환합니다.
+     */
+    fun copyAssetVideoToInternalStorage(assetFileName: String, childPath: String, outputFileName: String): String? {
+        return try {
+            val inputStream = context.assets.open(assetFileName)
+
+            val directory = context.getDir(childPath, Context.MODE_PRIVATE)
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+
+            val file = File(directory, outputFileName)
+            FileOutputStream(file).use { fos ->
+                inputStream.copyTo(fos)
+            }
+            inputStream.close()
+
+            file.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    /**
+     * raw 폴더의 리소스를 앱 내부 저장소로 복사하고 파일 경로를 반환합니다.
+     * @param rawResourceName raw 리소스 이름 (예: "ad_sub")
+     * @param childPath 저장할 하위 폴더 이름 (예: "ad_videos")
+     * @param outputFileName 저장할 파일 이름 (확장자 포함)
+     * @return 저장된 파일의 절대 경로. 실패 시 null을 반환합니다.
+     */
+    fun copyRawResourceToInternalStorage(rawResourceName: String, childPath: String, outputFileName: String): String? {
+        return try {
+            val resourceId = context.resources.getIdentifier(rawResourceName, "raw", context.packageName)
+            if (resourceId == 0) {
+                return null
+            }
+
+            val inputStream = context.resources.openRawResource(resourceId)
+
+            val directory = context.getDir(childPath, Context.MODE_PRIVATE)
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+
+            val file = File(directory, outputFileName)
+            FileOutputStream(file).use { fos ->
+                inputStream.copyTo(fos)
+            }
+            inputStream.close()
+
+            file.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    /**
      * MIME 타입에 따라 timestamp 기반의 고유한 파일명을 생성합니다.
      * @param mimeType MIME 타입 (예: "image/jpeg", "video/mp4")
      * @return timestamp 기반 파일명
