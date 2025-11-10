@@ -322,7 +322,7 @@ private fun LandscapeFaceEnrollmentScreen(
 
 @Preview(
     showBackground = true,
-    backgroundColor = 0xFF000000,
+    backgroundColor = 0xFFFFFFFF,
     widthDp = 800,
     heightDp = 1280,
     name = "FaceEnrollment - Portrait"
@@ -347,6 +347,7 @@ private fun FaceEnrollmentScreen_Preview_Portrait() {
     showBackground = true,
     widthDp = 1422,
     heightDp = 888,
+    backgroundColor = 0xFFFFFFFF,
     name = "FaceEnrollment - Landscape"
 )
 @Composable
@@ -369,6 +370,7 @@ private fun FaceEnrollmentScreen_Preview_Landscape() {
     showBackground = true,
     widthDp = 1422,
     heightDp = 888,
+    backgroundColor = 0xFFFFFFFF,
     name = "FaceEnrollment - Landscape (Ready)"
 )
 @Composable

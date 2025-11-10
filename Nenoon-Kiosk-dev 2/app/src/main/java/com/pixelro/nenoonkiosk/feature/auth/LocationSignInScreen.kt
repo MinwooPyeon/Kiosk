@@ -406,6 +406,7 @@ private fun InputFields(
     showBackground = true,
     widthDp = 800,
     heightDp = 1280,
+    backgroundColor = 0xFFFFFFFF,
     name = "LocationSignIn - Portrait"
 )
 @Composable
@@ -419,6 +420,7 @@ private fun LocationSignInScreen_Preview_Portrait() {
     showBackground = true,
     widthDp = 1422,
     heightDp = 888,
+    backgroundColor = 0xFFFFFFFF,
     name = "LocationSignIn - Landscape"
 )
 @Composable

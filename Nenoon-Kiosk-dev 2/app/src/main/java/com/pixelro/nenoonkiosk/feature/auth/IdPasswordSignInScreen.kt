@@ -363,6 +363,7 @@ private fun InputTextField(
     showBackground = true,
     widthDp = 800,
     heightDp = 1280,
+    backgroundColor = 0xFFFFFFFF,
     name = "IdPasswordSignIn - Portrait"
 )
 @Composable
@@ -387,6 +388,7 @@ private fun IdPasswordSignInScreen_Preview_Portrait() {
     showBackground = true,
     widthDp = 1422,
     heightDp = 888,
+    backgroundColor = 0xFFFFFFFF,
     name = "IdPasswordSignIn - Landscape"
 )
 @Composable
@@ -411,6 +413,7 @@ private fun IdPasswordSignInScreen_Preview_Landscape() {
     showBackground = true,
     widthDp = 1422,
     heightDp = 888,
+    backgroundColor = 0xFFFFFFFF,
     name = "IdPasswordSignIn - Landscape (Error)"
 )
 @Composable

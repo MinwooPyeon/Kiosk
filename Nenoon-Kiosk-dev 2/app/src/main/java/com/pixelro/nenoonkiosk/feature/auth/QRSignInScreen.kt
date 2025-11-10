@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -196,7 +195,7 @@ private fun QRSignInContent(
                 isLandscapeMode = true,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 40.dp, vertical = 20.dp)
+                    .padding(horizontal = 40.dp, vertical = 16.dp)
             )
         }
     } else {
@@ -245,7 +244,8 @@ private fun QRSignInLayout(
 
     val title = stringResource(R.string.qr_sign_in_title)
     val defaultUserName = stringResource(R.string.default_user_name)
-    val loginSuccess = stringResource(R.string.qr_sign_in_login_success, userName ?: defaultUserName)
+    val loginSuccess =
+        stringResource(R.string.qr_sign_in_login_success, userName ?: defaultUserName)
     val backButton = stringResource(R.string.button_back)
 
     Column(
@@ -253,11 +253,11 @@ private fun QRSignInLayout(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.3f else 1f))
+        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.8f else 1f))
 
         StyledText(title, TextStyle.Title)
 
-        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.3f else 1f))
+        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.6f else 1f))
 
         if (isScanning || signInFailed) {
             CameraPreviewArea(
@@ -277,7 +277,7 @@ private fun QRSignInLayout(
             ProgressIndicator()
         }
 
-        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.3f else 1f))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 32.dp else 20.dp))
 
         StyledText(
             text = if (!(isUserSignedIn && userName?.isNotEmpty() == true && !signInFailed)) signInMessage else "",
@@ -286,14 +286,14 @@ private fun QRSignInLayout(
             modifier = Modifier.fillMaxWidth(),
         )
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 16.dp else 40.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 32.dp else 40.dp))
 
         PrimaryButton(
             text = backButton,
             onClick = onBackClick,
         )
 
-        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.3f else 1f))
+        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.8f else 1f))
     }
 }
 
@@ -408,7 +408,7 @@ private fun CameraPreviewArea(
     heightDp = 1280
 )
 @Composable
-private fun PreviewPortrait() {
+fun PreviewPortrait() {
     val scanInstruction = stringResource(R.string.qr_sign_in_scan_instruction)
 
     QRSignInContent(
@@ -435,7 +435,7 @@ private fun PreviewPortrait() {
     heightDp = 800
 )
 @Composable
-private fun PreviewLandscape() {
+fun PreviewLandscape() {
     val scanInstruction = stringResource(R.string.qr_sign_in_scan_instruction)
 
     QRSignInContent(

@@ -530,6 +530,7 @@ private fun InputTextField(
     name = "Tablet Portrait",
     showBackground = true,
     widthDp = 800,
+    backgroundColor = 0xFFFFFFFF,
     heightDp = 1280
 )
 @Composable
@@ -567,6 +568,7 @@ private fun PreviewUserSignUpPortrait() {
     name = "Tablet Landscape",
     showBackground = true,
     widthDp = 1280,
+    backgroundColor = 0xFFFFFFFF,
     heightDp = 800
 )
 @Composable

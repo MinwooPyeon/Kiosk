@@ -400,6 +400,7 @@ private fun LandscapeFaceUpdateScreen(
     showBackground = true,
     widthDp = 800,
     heightDp = 1280,
+    backgroundColor = 0xFFFFFFFF,
     name = "FaceUpdate - Portrait"
 )
 @Composable
@@ -426,6 +427,7 @@ private fun FaceUpdateScreen_Preview_Portrait() {
     showBackground = true,
     widthDp = 1422,
     heightDp = 888,
+    backgroundColor = 0xFFFFFFFF,
     name = "FaceUpdate - Landscape"
 )
 @Composable
@@ -452,6 +454,7 @@ private fun FaceUpdateScreen_Preview_Landscape() {
     showBackground = true,
     widthDp = 1422,
     heightDp = 888,
+    backgroundColor = 0xFFFFFFFF,
     name = "FaceUpdate - Landscape (Ready)"
 )
 @Composable
