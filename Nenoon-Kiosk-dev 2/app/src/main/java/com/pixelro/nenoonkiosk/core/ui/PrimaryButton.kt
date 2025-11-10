@@ -5,19 +5,28 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
@@ -33,6 +42,8 @@ import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
  * @param modifier Modifier
  * @param enabled 활성화 여부
  * @param text 버튼에 표시될 텍스트
+ * @param icon 버튼에 표시될 아이콘 (ImageVector, optional)
+ * @param iconDrawable 버튼에 표시될 아이콘 (Drawable 리소스 ID, optional)
  */
 @Composable
 fun PrimaryButton(
@@ -40,6 +51,8 @@ fun PrimaryButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     text: String,
+    icon: ImageVector? = null,
+    iconDrawable: Int? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -48,7 +61,6 @@ fun PrimaryButton(
 
     val context = LocalContext.current
     val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
-    val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
 
     Button(
         onClick = onClick,
@@ -61,7 +73,7 @@ fun PrimaryButton(
                     shape = RoundedCornerShape(10.dp),
                 )
                 .fillMaxWidth()
-                .height(100.dp),
+                .height(if (icon != null || iconDrawable != null) 380.dp else 100.dp),
         shape = RoundedCornerShape(10.dp),
         colors =
             ButtonDefaults.buttonColors(
@@ -71,12 +83,50 @@ fun PrimaryButton(
                 disabledContentColor = if (!isPressed) Color.White else disabledColor,
             ),
     ) {
-        Text(
-            text = text,
-            style = buttonTextStyle,
-            color = if (!isPressed) Color.White else primaryColor,
-            textAlign = TextAlign.Center,
-        )
+        if (icon != null || iconDrawable != null) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .padding(vertical = 24.dp, horizontal = 12.dp)
+                    .fillMaxWidth()
+            ) {
+                when {
+                    icon != null -> {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = if (!isPressed) Color.White else primaryColor,
+                            modifier = Modifier.size(100.dp),
+                        )
+                    }
+                    iconDrawable != null -> {
+                        Icon(
+                            painter = painterResource(id = iconDrawable),
+                            contentDescription = null,
+                            tint = if (!isPressed) Color.White else primaryColor,
+                            modifier = Modifier.size(100.dp),
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = text,
+                    style = buttonTextStyle,
+                    color = if (!isPressed) Color.White else primaryColor,
+                    textAlign = TextAlign.Center,
+                    maxLines = 3,
+                    overflow = TextOverflow.Visible,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        } else {
+            Text(
+                text = text,
+                style = buttonTextStyle,
+                color = if (!isPressed) Color.White else primaryColor,
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 }
 

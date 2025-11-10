@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -46,7 +47,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.google.common.util.concurrent.ListenableFuture
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
+import com.pixelro.nenoonkiosk.core.ui.BackButtonHorizontal
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
@@ -246,7 +247,6 @@ private fun QRSignInLayout(
     val defaultUserName = stringResource(R.string.default_user_name)
     val loginSuccess =
         stringResource(R.string.qr_sign_in_login_success, userName ?: defaultUserName)
-    val backButton = stringResource(R.string.button_back)
 
     Column(
         modifier = modifier,
@@ -288,12 +288,14 @@ private fun QRSignInLayout(
 
         Spacer(modifier = Modifier.height(if (isLandscapeMode) 32.dp else 40.dp))
 
-        PrimaryButton(
-            text = backButton,
+        BackButtonHorizontal(
             onClick = onBackClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(70.dp)
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(10.dp)
+                )
         )
 
         Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.8f else 1f))

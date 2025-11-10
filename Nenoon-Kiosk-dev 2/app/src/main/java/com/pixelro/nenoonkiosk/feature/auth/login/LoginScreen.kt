@@ -14,13 +14,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -29,6 +32,7 @@ import com.pixelro.nenoonkiosk.core.constants.DebugConstants
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
+import com.pixelro.nenoonkiosk.core.ui.SecondaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.isLandscape
@@ -103,23 +107,31 @@ private fun LoginContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier.weight(1f),
-                    contentAlignment = Alignment.Center
+                Column(
+                    modifier = Modifier.weight(0.8f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
                     Logo()
+                    Spacer(modifier = Modifier.height(30.dp))
+                    StyledText(
+                        text = stringResource(R.string.user_sign_in),
+                        style = TextStyle.Message,
+                        fontWeight = FontWeight.SemiBold,
+                    )
                 }
 
                 Spacer(modifier = Modifier.width(40.dp))
 
-                LoginButtonsColumn(
+                LoginButtonsArea(
                     onIdPasswordSignInClick = onIdPasswordSignInClick,
                     onQrSignInClick = onQrSignInClick,
                     onFaceRecognitionClick = onFaceRecognitionClick,
                     onStartWithoutSignInClick = onStartWithoutSignInClick,
                     onSignUpClick = onSignUpClick,
                     isLandscapeMode = true,
-                    modifier = Modifier.weight(1f)
+                    showTitle = false,
+                    modifier = Modifier.weight(1.2f)
                 )
             }
         } else {
@@ -132,19 +144,32 @@ private fun LoginContent(
             ) {
                 Spacer(modifier = Modifier.weight(1f))
 
-                Logo()
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Logo()
+                    Spacer(modifier = Modifier.height(30.dp))
+                    StyledText(
+                        text = stringResource(R.string.user_sign_in),
+                        style = TextStyle.Message,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                LoginButtonsColumn(
+                LoginButtonsArea(
                     onIdPasswordSignInClick = onIdPasswordSignInClick,
                     onQrSignInClick = onQrSignInClick,
                     onFaceRecognitionClick = onFaceRecognitionClick,
                     onStartWithoutSignInClick = onStartWithoutSignInClick,
                     onSignUpClick = onSignUpClick,
                     isLandscapeMode = false,
+                    showTitle = false,
                     modifier = Modifier.fillMaxWidth()
                 )
+
+                Spacer(modifier = Modifier.weight(0.3f))
             }
         }
     }
@@ -176,23 +201,6 @@ private fun TopIconBar(
             contentDescription = ""
         )
 
-        if (showAdminPage) {
-            Spacer(modifier = Modifier.width(40.dp))
-
-            Image(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
-                    ) {
-                        onAdminPageClick()
-                    },
-                painter = painterResource(id = R.drawable.data_icon),
-                contentDescription = ""
-            )
-        }
-
         Spacer(modifier = Modifier.width(40.dp))
 
         Image(
@@ -211,13 +219,14 @@ private fun TopIconBar(
 }
 
 @Composable
-private fun LoginButtonsColumn(
+private fun LoginButtonsArea(
     onIdPasswordSignInClick: () -> Unit,
     onQrSignInClick: () -> Unit,
     onFaceRecognitionClick: () -> Unit,
     onStartWithoutSignInClick: () -> Unit,
     onSignUpClick: () -> Unit,
     isLandscapeMode: Boolean,
+    showTitle: Boolean,
     modifier: Modifier = Modifier
 ) {
     val userSignIn = stringResource(R.string.user_sign_in)
@@ -230,58 +239,88 @@ private fun LoginButtonsColumn(
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 12.dp else 20.dp),
+        verticalArrangement = Arrangement.Center
     ) {
-        if (!isLandscapeMode) {
-            Spacer(modifier = Modifier.weight(0.3f))
+        if (showTitle) {
+            StyledText(
+                text = userSignIn,
+                style = TextStyle.Message,
+                fontWeight = FontWeight.SemiBold,
+            )
+
+            Spacer(modifier = Modifier.height(if (isLandscapeMode) 20.dp else 30.dp))
         }
 
-        StyledText(
-            text = userSignIn,
-            style = TextStyle.Message,
-            fontWeight = FontWeight.SemiBold,
-        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 16.dp else 20.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            PrimaryButton(
+                text = idPwSignIn,
+                onClick = onIdPasswordSignInClick,
+                iconDrawable = R.drawable.password_logo,
+                modifier = Modifier
+                    .weight(1f)
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+            )
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 8.dp else 20.dp))
+            PrimaryButton(
+                text = qrLogin,
+                onClick = onQrSignInClick,
+                iconDrawable = R.drawable.qr_logo,
+                modifier = Modifier
+                    .weight(1f)
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+            )
 
-        PrimaryButton(
-            text = idPwSignIn,
-            onClick = onIdPasswordSignInClick,
-        )
-
-        PrimaryButton(
-            text = qrLogin,
-            onClick = onQrSignInClick,
-        )
-
-        PrimaryButton(
-            text = faceRecognition,
-            onClick = onFaceRecognitionClick,
-        )
-
-        PrimaryButton(
-            text = startWithoutSignIn,
-            onClick = onStartWithoutSignInClick,
-        )
-
-        if (!isLandscapeMode) {
-            Spacer(modifier = Modifier.weight(0.3f))
-        } else {
-            Spacer(modifier = Modifier.height(8.dp))
+            PrimaryButton(
+                text = faceRecognition,
+                onClick = onFaceRecognitionClick,
+                iconDrawable = R.drawable.face_logo,
+                modifier = Modifier
+                    .weight(1f)
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+            )
         }
 
-        PrimaryButton(
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 20.dp else 30.dp))
+
+        SecondaryButton(
             text = signUp,
             onClick = onSignUpClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(10.dp)
+                )
         )
 
-        if (!isLandscapeMode) {
-            Spacer(modifier = Modifier.weight(0.3f))
-        }
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 16.dp else 20.dp))
+
+        StyledText(
+            text = startWithoutSignIn,
+            style = TextStyle.Message,
+            textDecoration = TextDecoration.Underline,
+            modifier = Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                onStartWithoutSignInClick()
+            }
+        )
     }
 }
 
-// Preview 함수는 private이 아니어야 함
 @Preview(
     name = "Tablet Portrait",
     showBackground = true,

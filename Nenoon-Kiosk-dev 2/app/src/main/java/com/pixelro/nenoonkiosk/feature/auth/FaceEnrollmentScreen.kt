@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +22,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -29,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.core.ui.BackButtonHorizontal
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
@@ -153,7 +156,6 @@ private fun PortraitFaceEnrollmentScreen(
                 .align(Alignment.CenterHorizontally),
         ) {
             if (isPreview) {
-                // Preview: Mock 카메라
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -161,7 +163,6 @@ private fun PortraitFaceEnrollmentScreen(
                     StyledText(text = "카메라 프리뷰")
                 }
             } else {
-                // 실제 앱: 카메라
                 CameraPreview(
                     modifier = Modifier.fillMaxSize(),
                     onFaceDetected = onFaceDetected,
@@ -200,20 +201,27 @@ private fun PortraitFaceEnrollmentScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Column {
-            PrimaryButton(
-                text = stringResource(id = R.string.user_signup_enroll_face_button),
-                enabled = isFaceEnrollmentDataReady,
-                onClick = onEnrollClick,
+        PrimaryButton(
+            text = stringResource(id = R.string.user_signup_enroll_face_button),
+            enabled = isFaceEnrollmentDataReady,
+            onClick = onEnrollClick,
+            modifier = Modifier.shadow(
+                elevation = 8.dp,
+                shape = RoundedCornerShape(10.dp)
             )
+        )
 
-            Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-            PrimaryButton(
-                text = stringResource(id = R.string.back),
-                onClick = onBackClick,
-            )
-        }
+        BackButtonHorizontal(
+            onClick = onBackClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(10.dp)
+                )
+        )
     }
 }
 
@@ -235,23 +243,20 @@ private fun LandscapeFaceEnrollmentScreen(
             .fillMaxSize()
             .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         StyledText(
             text = stringResource(id = R.string.user_signup_title),
             style = TextStyle.Title,
         )
 
-        Spacer(modifier = Modifier.height(30.dp))
-
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .size(400.dp)
+                .size(350.dp)
                 .clip(MaterialTheme.shapes.medium),
         ) {
             if (isPreview) {
-                // Preview: Mock 카메라
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -259,7 +264,6 @@ private fun LandscapeFaceEnrollmentScreen(
                     StyledText(text = "카메라 프리뷰")
                 }
             } else {
-                // 실제 앱: 카메라
                 CameraPreview(
                     modifier = Modifier.fillMaxSize(),
                     onFaceDetected = onFaceDetected,
@@ -273,15 +277,13 @@ private fun LandscapeFaceEnrollmentScreen(
                         bitmap = bitmap.asImageBitmap(),
                         contentDescription = stringResource(id = R.string.captured_face_image_description),
                         modifier = Modifier
-                            .size(120.dp)
+                            .size(100.dp)
                             .align(Alignment.BottomEnd)
-                            .padding(12.dp),
+                            .padding(8.dp),
                     )
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(30.dp))
 
         StyledText(
             text = if (isFaceEnrollmentDataReady) {
@@ -296,29 +298,36 @@ private fun LandscapeFaceEnrollmentScreen(
             },
         )
 
-        Spacer(modifier = Modifier.height(30.dp))
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(400.dp)
+            modifier = Modifier.fillMaxWidth(0.6f),
+            verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             PrimaryButton(
                 text = stringResource(id = R.string.user_signup_enroll_face_button),
                 enabled = isFaceEnrollmentDataReady,
                 onClick = onEnrollClick,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(10.dp)
+                    )
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
-
-            PrimaryButton(
-                text = stringResource(id = R.string.back),
+            BackButtonHorizontal(
                 onClick = onBackClick,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(10.dp)
+                    )
             )
         }
     }
 }
+
 
 @Preview(
     showBackground = true,

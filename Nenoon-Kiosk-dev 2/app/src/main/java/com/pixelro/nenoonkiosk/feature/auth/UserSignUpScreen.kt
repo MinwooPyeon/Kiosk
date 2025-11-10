@@ -30,6 +30,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -44,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.core.ui.BackButtonHorizontal
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
@@ -52,7 +54,6 @@ import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import android.graphics.Bitmap
-import androidx.lifecycle.compose.LocalLifecycleOwner
 
 @Composable
 fun UserSignUpScreen(
@@ -216,11 +217,20 @@ private fun UserSignUpContent(
                             text = stringResource(R.string.user_signup_face_enrollment_button),
                             onClick = onFaceEnrollmentClick,
                             enabled = !isFaceEnrollmentDataReady,
+                            modifier = Modifier.shadow(
+                                elevation = 8.dp,
+                                shape = RoundedCornerShape(10.dp)
+                            )
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        PrimaryButton(
-                            text = stringResource(R.string.user_signup_back_button),
+                        BackButtonHorizontal(
                             onClick = onBackClick,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .shadow(
+                                    elevation = 8.dp,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
                         )
                     }
                 }
@@ -328,7 +338,6 @@ private fun UserSignUpForm(
     val confirmPasswordHint = stringResource(R.string.user_signup_input_confirm_password_hint)
     val signUpButton = stringResource(R.string.user_signup_signup_and_qr_button)
     val faceEnrollmentButton = stringResource(R.string.user_signup_face_enrollment_button)
-    val backButton = stringResource(R.string.user_signup_back_button)
     val passwordShowCd = stringResource(R.string.user_signup_password_show_cd)
     val passwordHideCd = stringResource(R.string.user_signup_password_hide_cd)
 
@@ -445,6 +454,10 @@ private fun UserSignUpForm(
                         passwordError == null &&
                         confirmPasswordError == null &&
                         (email.isBlank() || emailError == null),
+                modifier = Modifier.shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(10.dp)
+                )
             )
             Spacer(modifier = Modifier.height(if (isLandscapeMode) 12.dp else 20.dp))
         }
@@ -454,13 +467,22 @@ private fun UserSignUpForm(
                 text = faceEnrollmentButton,
                 onClick = onFaceEnrollmentClick,
                 enabled = !isFaceEnrollmentDataReady,
+                modifier = Modifier.shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(10.dp)
+                )
             )
             Spacer(modifier = Modifier.height(if (isLandscapeMode) 12.dp else 20.dp))
         }
 
-        PrimaryButton(
-            text = backButton,
+        BackButtonHorizontal(
             onClick = onBackClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(10.dp)
+                )
         )
 
         if (!isLandscapeMode) {

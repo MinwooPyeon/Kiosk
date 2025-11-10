@@ -25,6 +25,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.core.ui.BackButtonHorizontal
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
@@ -63,10 +65,6 @@ fun IdPasswordSignInScreen(
     var passwordVisible by remember { mutableStateOf(false) }
     var signInError by remember { mutableStateOf(false) }
     var signingIn by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        // 초기화
-    }
 
     val isLandscape = isLandscape()
 
@@ -193,13 +191,22 @@ private fun PortraitIdPasswordSignInScreen(
             text = stringResource(id = R.string.id_pw_sign_in_button),
             onClick = onSignInClick,
             enabled = id.isNotBlank() && password.isNotBlank(),
+            modifier = Modifier.shadow(
+                elevation = 8.dp,
+                shape = RoundedCornerShape(10.dp)
+            )
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        PrimaryButton(
-            text = stringResource(id = R.string.button_back),
+        BackButtonHorizontal(
             onClick = onBackClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(10.dp)
+                )
         )
     }
 }
@@ -231,7 +238,7 @@ private fun LandscapeIdPasswordSignInScreen(
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        Column(  // 변경: Row → Column
+        Column(
             modifier = Modifier.fillMaxWidth(0.6f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp)
@@ -281,21 +288,29 @@ private fun LandscapeIdPasswordSignInScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Row(
+        Column(
             modifier = Modifier.fillMaxWidth(0.6f),
-            horizontalArrangement = Arrangement.spacedBy(15.dp)
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             PrimaryButton(
                 text = stringResource(id = R.string.id_pw_sign_in_button),
                 onClick = onSignInClick,
                 enabled = id.isNotBlank() && password.isNotBlank(),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(10.dp)
+                )
             )
 
-            PrimaryButton(
-                text = stringResource(id = R.string.button_back),
+            BackButtonHorizontal(
                 onClick = onBackClick,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(10.dp)
+                    )
             )
         }
     }

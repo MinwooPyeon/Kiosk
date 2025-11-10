@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -32,8 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
+import com.pixelro.nenoonkiosk.core.ui.BackButtonHorizontal
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
-import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.isLandscape
@@ -175,7 +176,6 @@ private fun FaceIdSignInLayout(
     val isPreview = LocalInspectionMode.current
 
     val title = stringResource(id = R.string.default_sign_in_face_recognition)
-    val backButtonText = stringResource(id = R.string.back)
     val noMatchText = stringResource(id = R.string.signin_vm_face_no_match)
 
     val cameraWidthFraction = if (isLandscapeMode) 0.3f else 0.7f
@@ -232,12 +232,14 @@ private fun FaceIdSignInLayout(
 
         Spacer(modifier = Modifier.height(if (isLandscapeMode) 20.dp else 40.dp))
 
-        PrimaryButton(
-            text = backButtonText,
+        BackButtonHorizontal(
             onClick = onBackClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(70.dp)
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(10.dp)
+                )
         )
 
         Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.6f else 1f))
