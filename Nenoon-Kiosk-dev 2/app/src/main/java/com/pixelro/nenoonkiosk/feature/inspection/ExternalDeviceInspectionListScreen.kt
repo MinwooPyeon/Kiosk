@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,10 +52,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.harang.data.db.entity.AdImageEntity
+import com.harang.data.repository.AdImageRepository
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
-import com.pixelro.nenoonkiosk.core.ui.Advertisement
+import com.pixelro.nenoonkiosk.core.ui.AdCarousel
 import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.ui.SimpleInspectionSelectionButton
@@ -69,6 +70,7 @@ import com.pixelro.nenoonkiosk.ui.theme.DarkRed
 import com.pixelro.nenoonkiosk.ui.theme.DividerGray
 import com.pixelro.nenoonkiosk.ui.theme.Gray999
 import com.pixelro.nenoonkiosk.ui.theme.White
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.delay
 
 // 원하는 검사 항목 선택하는 뷰
@@ -85,10 +87,26 @@ fun ExternalDeviceInspectionListScreen(
     viewModel: NenoonViewModel,
 ) {
     val context = LocalContext.current
-    val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
+    val sharedPreferences = remember {
+        context.getSharedPreferences(
+            NavConstants.PREFERENCE_NAME,
+            Context.MODE_PRIVATE
+        )
+    }
     val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
     val warningTextSize = if (savedLanguage == "ru") 10.sp else 16.sp
-    val isLandscapeMode = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val isLandscapeMode =
+        LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    // 광고 리스트 가져오기 (Hilt EntryPoint)
+    val adImageRepository = remember {
+        EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            AdImageRepositoryEntryPoint::class.java
+        ).adImageRepository()
+    }
+    val adImages by adImageRepository.getAdImagesByLocationAndLanguage(1, savedLanguage ?: "ko")
+        .collectAsState(initial = emptyList())
 
     val pagerState =
         rememberPagerState(
@@ -145,6 +163,7 @@ fun ExternalDeviceInspectionListScreen(
 
     if (isLandscapeMode) {
         LandscapeExternalDeviceLayout(
+            adImages = adImages,
             savedLanguage = savedLanguage,
             isSeniorValue = isSeniorValue,
             toIntroScreen = toIntroScreen,
@@ -161,6 +180,7 @@ fun ExternalDeviceInspectionListScreen(
         )
     } else {
         PortraitExternalDeviceLayout(
+            adImages = adImages,
             savedLanguage = savedLanguage,
             isSeniorValue = isSeniorValue,
             toIntroScreen = toIntroScreen,
@@ -183,6 +203,7 @@ fun ExternalDeviceInspectionListScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PortraitExternalDeviceLayout(
+    adImages: List<AdImageEntity>,
     savedLanguage: String?,
     isSeniorValue: Boolean,
     toIntroScreen: () -> Unit,
@@ -224,13 +245,12 @@ private fun PortraitExternalDeviceLayout(
         )
 
         if (!isSeniorValue) {
-            HorizontalPager(
-                contentPadding = PaddingValues(start = 40.dp, top = 20.dp, end = 40.dp, bottom = 20.dp),
-                pageSpacing = 40.dp,
-                state = pagerState,
-            ) {
-                Advertisement(it)
-            }
+            AdCarousel(
+                adImages = adImages,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 40.dp, top = 20.dp, end = 40.dp, bottom = 20.dp)
+            )
         }
 
         Box(
@@ -280,6 +300,7 @@ private fun PortraitExternalDeviceLayout(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LandscapeExternalDeviceLayout(
+    adImages: List<AdImageEntity>,
     savedLanguage: String?,
     isSeniorValue: Boolean,
     toIntroScreen: () -> Unit,
@@ -342,14 +363,10 @@ private fun LandscapeExternalDeviceLayout(
                     contentAlignment = Alignment.TopCenter,
                 ) {
                     if (!isSeniorValue) {
-                        HorizontalPager(
-                            contentPadding = PaddingValues(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-                            pageSpacing = 20.dp,
-                            state = pagerState,
-                            modifier = Modifier.fillMaxSize(),
-                        ) { page ->
-                            Advertisement(page)
-                        }
+                        AdCarousel(
+                            adImages = adImages,
+                            modifier = Modifier.fillMaxSize()
+                        )
                     }
                 }
 
@@ -440,7 +457,9 @@ private fun ExternalDeviceTestListSection(
     onDialogShow: () -> Unit,
 ) {
     Column {
-        val modifier = Modifier.weight(1f).padding(start = 40.dp, end = 40.dp, bottom = 5.dp)
+        val modifier = Modifier
+            .weight(1f)
+            .padding(start = 40.dp, end = 40.dp, bottom = 5.dp)
 
         SimpleInspectionSelectionButton(
             modifier = modifier,
@@ -557,18 +576,43 @@ private fun ExternalDeviceWarningBar(warningTextSize: androidx.compose.ui.unit.T
 
 // Preview
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 800, heightDp = 1280, name = "ExternalDevice - Senior False - Portrait", apiLevel = 34)
+@Preview(
+    showBackground = true,
+    widthDp = 800,
+    heightDp = 1280,
+    name = "ExternalDevice - Senior False - Portrait",
+    apiLevel = 34
+)
 @Composable
 private fun Preview_ExternalDeviceTestList_SeniorFalse_Portrait() {
     val fakePager = rememberPagerState(
         initialPage = Int.MAX_VALUE / 2,
         pageCount = { Int.MAX_VALUE }
     )
+    val dummyAdImages = listOf(
+        AdImageEntity(
+            id = 1,
+            locationId = 1,
+            name = "ad_lens",
+            url = "file:///android_asset/ad_lens.png",
+            order = 1,
+            language = "ko"
+        ),
+        AdImageEntity(
+            id = 2,
+            locationId = 1,
+            name = "ad_hades",
+            url = "file:///android_asset/ad_hades.png",
+            order = 2,
+            language = "ko"
+        )
+    )
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         PortraitExternalDeviceLayout(
+            adImages = dummyAdImages,
             savedLanguage = "ko",
             isSeniorValue = false,
             toIntroScreen = {},
@@ -589,7 +633,13 @@ private fun Preview_ExternalDeviceTestList_SeniorFalse_Portrait() {
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 800, heightDp = 1280, name = "ExternalDevice - Senior True - Portrait (No Ads)", apiLevel = 34)
+@Preview(
+    showBackground = true,
+    widthDp = 800,
+    heightDp = 1280,
+    name = "ExternalDevice - Senior True - Portrait (No Ads)",
+    apiLevel = 34
+)
 @Composable
 private fun Preview_ExternalDeviceTestList_SeniorTrue_Portrait() {
     val fakePager = rememberPagerState(
@@ -601,6 +651,7 @@ private fun Preview_ExternalDeviceTestList_SeniorTrue_Portrait() {
         contentAlignment = Alignment.Center
     ) {
         PortraitExternalDeviceLayout(
+            adImages = emptyList(),
             savedLanguage = "ko",
             isSeniorValue = true,
             toIntroScreen = {},
@@ -621,18 +672,43 @@ private fun Preview_ExternalDeviceTestList_SeniorTrue_Portrait() {
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "ExternalDevice - Senior False - Landscape", apiLevel = 34)
+@Preview(
+    showBackground = true,
+    widthDp = 1280,
+    heightDp = 800,
+    name = "ExternalDevice - Senior False - Landscape",
+    apiLevel = 34
+)
 @Composable
 private fun Preview_ExternalDeviceTestList_SeniorFalse_Landscape() {
     val fakePager = rememberPagerState(
         initialPage = Int.MAX_VALUE / 2,
         pageCount = { Int.MAX_VALUE }
     )
+    val dummyAdImages = listOf(
+        AdImageEntity(
+            id = 1,
+            locationId = 1,
+            name = "ad_lens",
+            url = "file:///android_asset/ad_lens.png",
+            order = 1,
+            language = "ko"
+        ),
+        AdImageEntity(
+            id = 2,
+            locationId = 1,
+            name = "ad_hades",
+            url = "file:///android_asset/ad_hades.png",
+            order = 2,
+            language = "ko"
+        )
+    )
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         LandscapeExternalDeviceLayout(
+            adImages = dummyAdImages,
             savedLanguage = "ko",
             isSeniorValue = false,
             toIntroScreen = {},
@@ -651,7 +727,13 @@ private fun Preview_ExternalDeviceTestList_SeniorFalse_Landscape() {
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "ExternalDevice - Senior True - Landscape (No Ads)", apiLevel = 34)
+@Preview(
+    showBackground = true,
+    widthDp = 1280,
+    heightDp = 800,
+    name = "ExternalDevice - Senior True - Landscape (No Ads)",
+    apiLevel = 34
+)
 @Composable
 private fun Preview_ExternalDeviceTestList_SeniorTrue_Landscape() {
     val fakePager = rememberPagerState(
@@ -663,6 +745,7 @@ private fun Preview_ExternalDeviceTestList_SeniorTrue_Landscape() {
         contentAlignment = Alignment.Center
     ) {
         LandscapeExternalDeviceLayout(
+            adImages = emptyList(),
             savedLanguage = "ko",
             isSeniorValue = true,
             toIntroScreen = {},
@@ -678,4 +761,10 @@ private fun Preview_ExternalDeviceTestList_SeniorTrue_Landscape() {
             warningTextSize = 16.sp
         )
     }
+}
+
+@dagger.hilt.EntryPoint
+@dagger.hilt.InstallIn(dagger.hilt.components.SingletonComponent::class)
+interface AdImageRepositoryEntryPoint {
+    fun adImageRepository(): AdImageRepository
 }

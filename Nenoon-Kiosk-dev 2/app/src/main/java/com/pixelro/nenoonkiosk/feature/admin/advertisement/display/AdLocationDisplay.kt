@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.admin.advertisement.area.components
+package com.pixelro.nenoonkiosk.feature.admin.advertisement.display
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

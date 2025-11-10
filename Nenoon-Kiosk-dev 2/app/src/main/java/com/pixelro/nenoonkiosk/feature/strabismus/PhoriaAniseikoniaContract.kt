@@ -1,5 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.strabismus
 
+import com.harang.data.db.entity.AdImageEntity
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.survey.model.SurveyGlass
 
@@ -10,7 +11,8 @@ data class PhoriaAniseikoniaUiState(
     val isAniseikoniaDone: Boolean,
     val surveyGlass: SurveyGlass,
     val showSurveyDialog: Boolean,
-    val showFilterDialog: Boolean
+    val showFilterDialog: Boolean,
+    val adImages: List<AdImageEntity> = emptyList()
 )
 
 sealed interface PhoriaAniseikoniaEvent {
