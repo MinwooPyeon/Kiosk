@@ -227,7 +227,7 @@ void frame_parser_init(frame_parser_t* p){
     if(!p) return;
     p->fill = 0;
     p->scan = 0;
-    ESP_LOGD(TAG, "parser_init");
+    ESP_LOGI(TAG, "parser_init");
 }
 
 const char* frame_status_str(frame_parse_status_t st){
@@ -246,6 +246,7 @@ const char* frame_status_str(frame_parse_status_t st){
 
 frame_parse_status_t frame_parser_feed(frame_parser_t* p, const uint8_t* data, size_t n, frame_t* out, size_t* consumed)
 {
+	ESP_LOGI(TAG, "Frame Entered");
     if(consumed) *consumed = 0;
     if(!p || (!data && n) || !out){
         ESP_LOGE(TAG, "feed: invalid args (p=%p data=%p n=%u out=%p)", (void*)p, data, (unsigned)n, (void*)out);

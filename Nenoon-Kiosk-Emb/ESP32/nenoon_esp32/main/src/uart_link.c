@@ -1,5 +1,5 @@
 /*
- * uart_link.c  (refactored)
+ * uart_link.c  (refactored + hardened)
  *
  *  Created on: 2025. 10. 26.
  *  Author: SSAFY
@@ -21,7 +21,7 @@
 #include <inttypes.h>
 
 /* ===================== Config ===================== */
-#define LINK_UART_PORT    UART_NUM_1
+#define LINK_UART_PORT    UART_NUM_1        // (선택) DevKitC 관례: UART_NUM_2 + TX17/RX16
 #define LINK_UART_BAUD    115200
 #define LINK_UART_TX_PIN  17
 #define LINK_UART_RX_PIN  16
@@ -38,6 +38,10 @@ static const char* TAG = "uart_link";
 static QueueHandle_t   s_rxq;         // queue of frame_t*
 static frame_parser_t  s_fp;
 static volatile bool   s_ready = false;
+
+/* 옵션: 원시 바이트 스니프(디버깅용) */
+static bool s_sniff = false;
+void uart_link_set_sniff(bool on){ s_sniff = on; } // ← uart_link.h에 프로토타입 추가 권장
 
 /* ===================== Small helpers ===================== */
 static inline const void* memmem_simple(const void* h, size_t hlen,
@@ -77,7 +81,16 @@ static esp_err_t uart_hw_init(void)
     ESP_ERROR_CHECK(uart_param_config(LINK_UART_PORT, &cfg));
     ESP_ERROR_CHECK(uart_set_pin(LINK_UART_PORT, LINK_UART_TX_PIN, LINK_UART_RX_PIN,
                                  UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
+
+    // RX-only 드라이버 설치 (TX 링버퍼 불필요)
     ESP_ERROR_CHECK(uart_driver_install(LINK_UART_PORT, RX_BUF_BYTES, 0, 0, NULL, 0));
+
+    // 부팅/접속 직후 잔여 바이트 제거 (노이즈/부트로그 정리)
+    ESP_ERROR_CHECK(uart_flush_input(LINK_UART_PORT));
+
+    // 수신 인터벌이 애매한 스트림에서 파편화 지연 완화(문턱: 약 2문자 시간)
+    ESP_ERROR_CHECK(uart_set_rx_timeout(LINK_UART_PORT, 2));
+
     return ESP_OK;
 }
 
@@ -135,11 +148,15 @@ static void feed_bytes_and_emit(const uint8_t* data, size_t n)
 
         if (st == FP_EMIT){
             (void)enqueue_frame_copy(&f);
-        } else if (st == FP_MORE){
-            break; // 더 필요
-        } else {
-            if (consumed == 0) break; // 진행 없음 → 탈출
+            continue;
         }
+        if (st == FP_MORE){
+            // 더 입력 필요: 다음 uart_read_bytes()까지 대기
+            break;
+        }
+        // RESYNC_* 등: 아직 남은 입력이 있으면 한 번 더 시도하여 진행성 확보
+        if (off < n) continue;
+        break;
     }
 }
 
@@ -149,7 +166,15 @@ static void link_rx_task(void* arg)
     uint8_t buf[256];
     for(;;){
         int n = uart_read_bytes(LINK_UART_PORT, buf, sizeof(buf), pdMS_TO_TICKS(50));
-        if (n > 0) feed_bytes_and_emit(buf, (size_t)n);
+        if (n > 0) {
+            if (s_sniff){
+                // 원시 바이트 스니프 (디버깅용)
+                for (int i = 0; i < n; ++i) ESP_LOGI(TAG, "RX %02X", buf[i]);
+            }
+            feed_bytes_and_emit(buf, (size_t)n);
+        }
+        // 낮은 우선순위 태스크에 양보(쓸모 없는 바쁜 대기 방지)
+        taskYIELD();
     }
 }
 
