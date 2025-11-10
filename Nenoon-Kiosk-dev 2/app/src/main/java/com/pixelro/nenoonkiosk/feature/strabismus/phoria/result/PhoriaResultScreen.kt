@@ -18,24 +18,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.core.manager.StrabismusPrintHelper
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.manager.StrabismusPrintHelper
-import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
-import com.pixelro.nenoonkiosk.core.ui.SecondaryButton
 import com.pixelro.nenoonkiosk.feature.inspection.components.InspectionDivider
-import com.pixelro.nenoonkiosk.feature.strabismus.common.component.DualButtonBottomBar
+import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.components.LightBottomArea
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.ResultCard
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.WarningNotice
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.isLandscape
+import com.pixelro.nenoonkiosk.ui.theme.Black
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 import com.pixelro.nenoonkiosk.ui.theme.buttonTextStyle
-import com.pixelro.nenoonkiosk.ui.theme.inputTextStyle
 import kotlin.math.abs
 
 /**
@@ -60,6 +59,7 @@ fun PhoriaResultScreen(
     circleY: Float?,
     onPrintClicked: () -> Unit,
     onBackToMainClicked: () -> Unit,
+    onLogout: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         TTS.speechTTS(
@@ -137,6 +137,8 @@ fun PhoriaResultScreen(
     var userHorizontalDescription = ""
     var userVerticalResult = ""
     var userVerticalDescription = ""
+    var isHorizontalNormal = true
+    var isVerticalNormal = true
 
     when (answer) {
         1 -> {
@@ -146,6 +148,8 @@ fun PhoriaResultScreen(
             userVerticalResult = StringProvider.getStringComposable(R.string.sawi_result_normal)
             userVerticalDescription =
                 StringProvider.getStringComposable(R.string.sawi_result_normal_status)
+            isHorizontalNormal = true
+            isVerticalNormal = true
         }
 
         2 -> {
@@ -155,6 +159,16 @@ fun PhoriaResultScreen(
             val pixelDiffY = (crossY ?: 0f) - (circleY ?: 0f)
             val vDev = (pixelDiffY / dpi * 25.4f) / 4f
 
+            // 수평 편위 판단
+            isHorizontalNormal = when {
+                hDev > 0 -> abs(hDev) <= 2.5f
+                hDev < 0 -> abs(hDev) <= 6.5f
+                else -> true
+            }
+
+            // 수직 편위 판단
+            isVerticalNormal = abs(vDev) <= 0.75f
+
             val (hResult, hDesc) =
                 when {
                     hDev > 0 ->
@@ -163,7 +177,7 @@ fun PhoriaResultScreen(
                                 R.string.sawi_result_desc_normal_eso
                             )
 
-                            abs(hDev) <= 5.5f -> StringProvider.getString(R.string.sawi_result_mild_esophoria) to StringProvider.getStringComposable(
+                            abs(hDev) <= 5.5f -> stringResource(R.string.sawi_result_mild_esophoria) to StringProvider.getStringComposable(
                                 R.string.sawi_result_desc_mild_eso
                             )
 
@@ -194,19 +208,19 @@ fun PhoriaResultScreen(
 
             val (vResult, vDesc) =
                 when {
-                    abs(vDev) <= 0f -> StringProvider.getString(R.string.sawi_result_normal) to StringProvider.getStringComposable(
+                    abs(vDev) <= 0f -> stringResource(R.string.sawi_result_normal) to StringProvider.getStringComposable(
                         R.string.sawi_result_no_vertical_phoria
                     )
 
-                    abs(vDev) <= 0.75f -> StringProvider.getString(R.string.sawi_result_normal_range) to StringProvider.getStringComposable(
+                    abs(vDev) <= 0.75f -> stringResource(R.string.sawi_result_normal_range) to StringProvider.getStringComposable(
                         R.string.sawi_result_no_vertical_phoria
                     )
 
-                    abs(vDev) <= 1.75f -> StringProvider.getStringComposable(R.string.sawi_result_mild_vertical_phoria) to StringProvider.getStringComposable(
+                    abs(vDev) <= 1.75f -> stringResource(R.string.sawi_result_mild_vertical_phoria) to StringProvider.getStringComposable(
                         R.string.sawi_result_desc_mild_vertical
                     )
 
-                    else -> StringProvider.getStringComposable(R.string.sawi_result_severe_vertical_phoria) to StringProvider.getStringComposable(
+                    else -> stringResource(R.string.sawi_result_severe_vertical_phoria) to StringProvider.getStringComposable(
                         R.string.sawi_result_desc_severe_vertical
                     )
                 }
@@ -228,6 +242,8 @@ fun PhoriaResultScreen(
                 StringProvider.getStringComposable(R.string.sawi_result_suppression_suspicion)
             userVerticalDescription =
                 StringProvider.getStringComposable(R.string.sawi_result_desc_suppression_right)
+            isHorizontalNormal = true
+            isVerticalNormal = false
         }
 
         4 -> {
@@ -238,6 +254,8 @@ fun PhoriaResultScreen(
             userVerticalResult = StringProvider.getStringComposable(R.string.sawi_result_normal)
             userVerticalDescription =
                 StringProvider.getStringComposable(R.string.sawi_result_normal_status)
+            isHorizontalNormal = false
+            isVerticalNormal = true
         }
 
         else -> {
@@ -246,6 +264,8 @@ fun PhoriaResultScreen(
                 StringProvider.getStringComposable(R.string.sawi_result_error_desc)
             userVerticalResult = "-"
             userVerticalDescription = ""
+            isHorizontalNormal = false
+            isVerticalNormal = false
         }
     }
 
@@ -253,6 +273,7 @@ fun PhoriaResultScreen(
         modifier =
             Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -264,37 +285,37 @@ fun PhoriaResultScreen(
         )
         InspectionDivider()
         if (!isLandscape()) {
-            Text(
-                text = normalCaseInfo,
-                style = inputTextStyle,
-                color = Color.DarkGray,
-                modifier = Modifier.padding(bottom = 32.dp),
-            )
-
-            Text(
-                text = normalExampleText,
-                style = buttonTextStyle,
-                color = Color.Black,
-                modifier = Modifier.padding(bottom = 16.dp),
-            )
-
-            Row(modifier = Modifier.fillMaxWidth()) {
-                ResultCard(
-                    modifier = Modifier.weight(1f),
-                    title = normalLeftTitle,
-                    result = normalLeftResult,
-                    description = normalLeftDescription,
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                ResultCard(
-                    modifier = Modifier.weight(1f),
-                    title = normalRightTitle,
-                    result = normalRightResult,
-                    description = normalRightDescription,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
+//            Text(
+//                text = normalCaseInfo,
+//                style = inputTextStyle,
+//                color = Color.DarkGray,
+//                modifier = Modifier.padding(bottom = 32.dp),
+//            )
+//
+//            Text(
+//                text = normalExampleText,
+//                style = buttonTextStyle,
+//                color = Color.Black,
+//                modifier = Modifier.padding(bottom = 16.dp),
+//            )
+//
+//            Row(modifier = Modifier.fillMaxWidth()) {
+//                ResultCard(
+//                    modifier = Modifier.weight(1f),
+//                    title = normalLeftTitle,
+//                    result = normalLeftResult,
+//                    description = normalLeftDescription,
+//                )
+//                Spacer(modifier = Modifier.width(16.dp))
+//                ResultCard(
+//                    modifier = Modifier.weight(1f),
+//                    title = normalRightTitle,
+//                    result = normalRightResult,
+//                    description = normalRightDescription,
+//                )
+//            }
+//
+           Spacer(modifier = Modifier.height(24.dp))
 
             Text(
                 text = myResultText,
@@ -302,27 +323,29 @@ fun PhoriaResultScreen(
                 color = Color.Black,
                 modifier = Modifier.padding(bottom = 16.dp),
             )
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth().padding(40.dp)) {
                 ResultCard(
                     modifier = Modifier.weight(1f),
                     title = userLeftTitle,
                     result = userHorizontalResult,
                     description = userHorizontalDescription,
+                    isNormal = isHorizontalNormal,
                 )
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(24.dp))
                 ResultCard(
                     modifier = Modifier.weight(1f),
                     title = userRightTitle,
                     result = userVerticalResult,
                     description = userVerticalDescription,
+                    isNormal = isVerticalNormal,
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))
             Spacer(modifier = Modifier.weight(1F))
             WarningNotice(16.sp)
-            DualButtonBottomBar(
-                primaryButtonText = printButtonText,
-                onPrimaryButtonClick = {
+            LightBottomArea(
+                printEnabled = true,
+                onPrint = {
                     TTS.speechTTS(
                         StringProvider.getString(R.string.printing_in_progress),
                         TextToSpeech.QUEUE_FLUSH
@@ -338,17 +361,17 @@ fun PhoriaResultScreen(
                     )
                     onPrintClicked()
                 },
-                secondaryButtonText = backButtonText,
-                onSecondaryButtonClick = onBackToMainClicked
+                onBack = onBackToMainClicked,
+                onLogout = onLogout
             )
         } else {
             Row(modifier = Modifier.fillMaxSize().weight(1F), verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.fillMaxSize().weight(2F), verticalArrangement = Arrangement.Center) {
+                Column(modifier = Modifier.fillMaxSize().weight(2F).padding(40.dp), verticalArrangement = Arrangement.Center, ) {
                     Text(
                         text = myResultText,
                         style = buttonTextStyle,
-                        color = Color.Black,
-                        modifier = Modifier.padding(bottom = 16.dp),
+                        color = Black,
+                        modifier = Modifier.padding(bottom = 24.dp),
                     )
                     Row(modifier = Modifier.fillMaxWidth()) {
                         ResultCard(
@@ -356,27 +379,29 @@ fun PhoriaResultScreen(
                             title = userLeftTitle,
                             result = userHorizontalResult,
                             description = userHorizontalDescription,
+                            isNormal = isHorizontalNormal,
                         )
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(24.dp))
                         ResultCard(
                             modifier = Modifier.weight(1f),
                             title = userRightTitle,
                             result = userVerticalResult,
                             description = userVerticalDescription,
+                            isNormal = isVerticalNormal,
                         )
                     }
                 }
-                Spacer(modifier = Modifier.width(36.dp))
+                Spacer(modifier = Modifier.width(28.dp))
                 Column(
                     modifier =
                         Modifier
                             .weight(1.2F)
-                            .background(Color.White)
-                            .padding(16.dp),
+                            .background(Color.White),
                     verticalArrangement = Arrangement.Center
                 ) {
-                    PrimaryButton(
-                        onClick = {
+                    LightBottomArea(
+                        printEnabled = true,
+                        onPrint = {
                             TTS.speechTTS(
                                 StringProvider.getString(R.string.printing_in_progress),
                                 TextToSpeech.QUEUE_FLUSH
@@ -392,12 +417,8 @@ fun PhoriaResultScreen(
                             )
                             onPrintClicked()
                         },
-                        text = printButtonText,
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    SecondaryButton(
-                        onClick = onBackToMainClicked,
-                        text = backButtonText,
+                        onBack = onBackToMainClicked,
+                        onLogout = onLogout
                     )
                 }
             }
@@ -412,7 +433,7 @@ fun PhoriaResultScreen(
 @Composable
 private fun PhoriaResultScreenHorizontalPreview() {
     NenoonKioskTheme {
-        PhoriaResultScreen(1, false, null, null, null, null, {}, {})
+        PhoriaResultScreen(4, false, null, null, null, null, {}, {}, {})
     }
 }
 
@@ -420,6 +441,41 @@ private fun PhoriaResultScreenHorizontalPreview() {
 @Composable
 private fun PhoriaResultScreenVerticalPreview() {
     NenoonKioskTheme {
-        PhoriaResultScreen(1, false, null, null, null, null, {}, {})
+        PhoriaResultScreen(1, false, null, null, null, null, {}, {}, {})
+    }
+}
+
+@Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
+@Composable
+private fun PhoriaResultScreenAdjustedHorizontalPreview() {
+    NenoonKioskTheme {
+        PhoriaResultScreen(2, true, 100f, 50f, 120f, 60f, {}, {}, {})
+    }
+}
+
+@Preview(showBackground = true, device = "spec:width=800dp,height=1280dp,dpi=240")
+@Composable
+private fun PhoriaResultScreenAdjustedVerticalPreview() {
+    NenoonKioskTheme {
+        PhoriaResultScreen(2, true, 100f, 50f, 120f, 60f, {}, {}, {})
+    }
+}
+
+// 조정 모드 비정상 결과 프리뷰 (수평/수직 모두 비정상)
+@Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
+@Composable
+private fun PhoriaResultScreenAdjustedAbnormalHorizontalPreview() {
+    NenoonKioskTheme {
+        // crossX=100, circleX=400 -> 수평 비정상, crossY=50, circleY=80 -> 수직 비정상
+        PhoriaResultScreen(2, true, 100f, 50f, 400f, 80f, {}, {}, {})
+    }
+}
+
+@Preview(showBackground = true, device = "spec:width=800dp,height=1280dp,dpi=240")
+@Composable
+private fun PhoriaResultScreenAdjustedAbnormalVerticalPreview() {
+    NenoonKioskTheme {
+        // crossX=100, circleX=400 -> 수평 비정상, crossY=50, circleY=80 -> 수직 비정상
+        PhoriaResultScreen(2, true, 100f, 50f, 400f, 80f, {}, {}, {})
     }
 }

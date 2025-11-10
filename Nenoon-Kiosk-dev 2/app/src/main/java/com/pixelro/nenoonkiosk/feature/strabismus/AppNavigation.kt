@@ -127,6 +127,12 @@ fun AppNavigation(
                         false
                     )
                 },
+                onLogout = {
+                    parentNavController.popBackStack(
+                        NavConstants.ROUTE_CATEGORY_LIST,
+                        false
+                    )
+                },
             )
         }
         composable("fudo_result/{answer}/{difference}") { backStackEntry ->
@@ -135,6 +141,12 @@ fun AppNavigation(
                 difference = backStackEntry.arguments?.getString("difference")?.toFloatOrNull(),
                 onPrintClicked = { /* TODO */ },
                 onBackToMainClicked = {
+                    parentNavController.popBackStack(
+                        NavConstants.ROUTE_CATEGORY_LIST,
+                        false
+                    )
+                },
+                onLogout = {
                     parentNavController.popBackStack(
                         NavConstants.ROUTE_CATEGORY_LIST,
                         false
