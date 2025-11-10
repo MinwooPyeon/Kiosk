@@ -203,7 +203,7 @@ fun InspectionResultRoute(
     )
 }
 
-private fun doPrint(
+fun doPrint(
     context: Context,
     testType: InspectionType,
     testResult: Any?,

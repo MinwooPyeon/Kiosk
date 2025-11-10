@@ -24,11 +24,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.manager.StrabismusPrintHelper
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.SecondaryButton
+import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.inspection.components.InspectionDivider
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.DualButtonBottomBar
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.ResultCard
@@ -321,14 +321,14 @@ fun AniseikoniaResultScreen(
                                     StringProvider.getString(R.string.printing_in_progress),
                                     TextToSpeech.QUEUE_FLUSH
                                 )
-                                StrabismusPrintHelper.printPhoriaResult(
+                                StrabismusPrintHelper.printAniseikoniaResult(
                                     context = context,
-                                    hTitle = userLeftTitle,
-                                    hResult = userHorizontalResult,
-                                    hDesc = userHorizontalDescription,
-                                    vTitle = userRightTitle,
-                                    vResult = userVerticalResult,
-                                    vDesc = userVerticalDescription,
+                                    retinalTitle = userLeftTitle,
+//                        retinalResult = formattedResult,
+                                    opinionTitle = userRightTitle,
+                                    opinionResult = userVerticalResult,
+                                    retinalDescription = userHorizontalDescription,
+                                    opinionDescription = userVerticalDescription,
                                 )
                                 onPrintClicked()
                             },
