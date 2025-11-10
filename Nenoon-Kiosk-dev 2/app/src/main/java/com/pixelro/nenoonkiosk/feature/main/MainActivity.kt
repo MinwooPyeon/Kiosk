@@ -67,9 +67,12 @@ import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.constants.DebugConstants
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
+import com.pixelro.nenoonkiosk.core.manager.LicenseManager
 import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.core.receiver.NenoonDeviceAdminReceiver
+import com.pixelro.nenoonkiosk.feature.license.LicenseScreen
+import javax.inject.Inject
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
@@ -81,6 +84,9 @@ class MainActivity : AppCompatActivity() {
     val viewModel: NenoonViewModel by lazy {
         ViewModelProvider(this)[NenoonViewModel::class.java]
     }
+
+    @Inject
+    lateinit var licenseManager: LicenseManager
 
     private lateinit var dpm: DevicePolicyManager
     private lateinit var adminComponentName: ComponentName
@@ -246,7 +252,31 @@ class MainActivity : AppCompatActivity() {
                             MODE_PRIVATE,
                         )
 
-                    nenoonApp()
+                    // 라이선스 검증 (앱 복제 방지)
+                    var isLicenseValid by remember { mutableStateOf(licenseManager.isLicenseValid()) }
+
+                    // Device ID 불일치 Toast (앱 복제 감지)
+                    LaunchedEffect(Unit) {
+                        if (!isLicenseValid && licenseManager.wasDeviceCloned()) {
+                            Toast.makeText(
+                                context,
+                                "다른 기기에서 실행되었습니다. 인증키를 다시 입력해주세요.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+
+                    if (!isLicenseValid) {
+                        // 라이선스 미인증 시 인증 화면 표시
+                        LicenseScreen(
+                            onLicenseActivated = {
+                                isLicenseValid = true
+                            }
+                        )
+                    } else {
+                        // 라이선스 인증 완료 시 메인 앱 실행
+                        nenoonApp()
+                    }
 
                     if (showPasswordDialog) {
                         PasswordDialog(
