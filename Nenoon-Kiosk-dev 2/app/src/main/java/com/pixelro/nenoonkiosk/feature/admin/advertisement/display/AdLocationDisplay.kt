@@ -24,7 +24,7 @@ import com.pixelro.nenoonkiosk.ui.theme.White
 
 
 @Composable
-fun AdLocationPreview(modifier: Modifier = Modifier) {
+fun AdLocationDisplay(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .border(1.dp, LightGray300, RoundedCornerShape(12.dp))

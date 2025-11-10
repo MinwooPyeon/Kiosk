@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 fun ImageListArea(
     images: List<AdImageData>,
     onDeleteImage: (String) -> Unit,
-    onAddImage: (String, String?) -> Unit,
+    onAddImage: () -> Unit,
     onSaveOrder: (List<AdImageData>) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -69,7 +69,7 @@ fun ImageListArea(
                 fontWeight = FontWeight.Bold
             )
             Button(
-                onClick = { onAddImage("새_이미지.jpg", null) },
+                onClick = onAddImage,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = neNoon_blue
                 ),
@@ -185,7 +185,7 @@ private fun ImageListAreaWithImagesPreview() {
             )
         ),
         onDeleteImage = {},
-        onAddImage = { _, _ -> },
+        onAddImage = {},
         onSaveOrder = {}
     )
 }

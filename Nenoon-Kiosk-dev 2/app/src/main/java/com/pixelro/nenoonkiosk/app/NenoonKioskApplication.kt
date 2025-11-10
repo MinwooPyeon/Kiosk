@@ -2,15 +2,27 @@ package com.pixelro.nenoonkiosk.app
 
 import android.app.Application
 import android.content.Context
+import coil.ImageLoader
+import coil.ImageLoaderFactory
+import coil.decode.VideoFrameDecoder
 import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class NenoonKioskApplication : Application() {
+class NenoonKioskApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
         // Initialize the PrinterManager when the app starts
         PrinterManager.initialize(this)
+    }
+
+    // Coil ImageLoader 설정 - 동영상 썸네일 지원
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(this)
+            .components {
+                add(VideoFrameDecoder.Factory())
+            }
+            .build()
     }
 
     override fun onTerminate() {

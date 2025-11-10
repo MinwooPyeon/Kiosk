@@ -1,8 +1,12 @@
 package com.harang.data.util
 
 import android.content.Context
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
+import android.provider.MediaStore
+import android.provider.OpenableColumns
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream
@@ -41,31 +45,6 @@ class FileManager @Inject constructor(
         }
     }
 
-    /**
-     * drawable 리소스를 앱 내부 저장소로 복사하고 파일 경로를 반환합니다.
-     * @param resourceId drawable 리소스 ID
-     * @param childPath 저장할 하위 폴더 이름 (예: "ad_images")
-     * @param fileName 저장할 파일 이름 (확장자 제외)
-     * @return 저장된 파일의 절대 경로. 실패 시 null을 반환합니다.
-     */
-    fun copyDrawableToInternalStorage(resourceId: Int, childPath: String, fileName: String): String? {
-        return try {
-            val bitmap = BitmapFactory.decodeResource(context.resources, resourceId)
-            val directory = context.getDir(childPath, Context.MODE_PRIVATE)
-            if (!directory.exists()) {
-                directory.mkdirs()
-            }
-
-            val file = File(directory, "$fileName.jpg")
-            FileOutputStream(file).use { fos ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-            }
-            file.absolutePath
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
 
     /**
      * assets 폴더의 이미지를 앱 내부 저장소로 복사하고 파일 경로를 반환합니다.
@@ -90,6 +69,86 @@ class FileManager @Inject constructor(
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
             }
             file.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    /**
+     * MIME 타입에 따라 timestamp 기반의 고유한 파일명을 생성합니다.
+     * @param mimeType MIME 타입 (예: "image/jpeg", "video/mp4")
+     * @return timestamp 기반 파일명
+     */
+    private fun generateUniqueFileName(mimeType: String?): String {
+        val extension = when {
+            mimeType?.startsWith("image/") == true -> when {
+                mimeType.contains("png") -> "png"
+                mimeType.contains("jpeg") || mimeType.contains("jpg") -> "jpg"
+                else -> "jpg"
+            }
+            mimeType?.startsWith("video/") == true -> when {
+                mimeType.contains("mp4") -> "mp4"
+                mimeType.contains("3gp") -> "3gp"
+                mimeType.contains("avi") -> "avi"
+                else -> "mp4"
+            }
+            else -> "dat"
+        }
+        return "${System.currentTimeMillis()}.$extension"
+    }
+
+    /**
+     * Uri로부터 미디어(이미지 또는 동영상)를 읽어 내부 저장소에 저장하고 파일 경로를 반환합니다.
+     * 파일명은 timestamp 기반으로 자동 생성되어 중복을 방지합니다.
+     * @param uri 갤러리 등에서 선택한 미디어의 Uri
+     * @param childPath 저장할 하위 폴더 이름 (예: "ad_images")
+     * @return Pair<파일 경로, 파일명>. 실패 시 null을 반환합니다.
+     */
+    fun saveUriToInternalStorage(uri: Uri, childPath: String): Pair<String, String>? {
+        return try {
+            val mimeType = context.contentResolver.getType(uri)
+            val fileName = generateUniqueFileName(mimeType)
+
+            when {
+                // 이미지인 경우: Bitmap으로 변환 후 저장
+                mimeType?.startsWith("image/") == true -> {
+                    val inputStream = context.contentResolver.openInputStream(uri)
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    inputStream?.close()
+
+                    val directory = context.getDir(childPath, Context.MODE_PRIVATE)
+                    if (!directory.exists()) {
+                        directory.mkdirs()
+                    }
+
+                    val file = File(directory, fileName)
+
+                    FileOutputStream(file).use { fos ->
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                    }
+
+                    Pair(file.absolutePath, fileName)
+                }
+                // 동영상인 경우: 파일 스트림으로 직접 복사
+                mimeType?.startsWith("video/") == true -> {
+                    val directory = context.getDir(childPath, Context.MODE_PRIVATE)
+                    if (!directory.exists()) {
+                        directory.mkdirs()
+                    }
+
+                    val file = File(directory, fileName)
+
+                    context.contentResolver.openInputStream(uri)?.use { input ->
+                        FileOutputStream(file).use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+
+                    Pair(file.absolutePath, fileName)
+                }
+                else -> null
+            }
         } catch (e: Exception) {
             e.printStackTrace()
             null

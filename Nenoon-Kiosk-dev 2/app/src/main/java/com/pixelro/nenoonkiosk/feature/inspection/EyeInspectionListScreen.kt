@@ -419,7 +419,6 @@ private fun Preview_EyeTestList_SeniorFalse_Portrait() {
         AdImageEntity(
             id = 1,
             locationId = 1,
-            name = "ad_lens",
             url = "file:///android_asset/ad_lens.png",
             order = 1,
             language = "ko"
@@ -427,7 +426,6 @@ private fun Preview_EyeTestList_SeniorFalse_Portrait() {
         AdImageEntity(
             id = 2,
             locationId = 1,
-            name = "ad_hades",
             url = "file:///android_asset/ad_hades.png",
             order = 2,
             language = "ko"
@@ -495,7 +493,6 @@ private fun Preview_EyeTestList_SeniorFalse_Landscape() {
         AdImageEntity(
             id = 1,
             locationId = 1,
-            name = "ad_lens",
             url = "file:///android_asset/ad_lens.png",
             order = 1,
             language = "ko"
@@ -503,7 +500,6 @@ private fun Preview_EyeTestList_SeniorFalse_Landscape() {
         AdImageEntity(
             id = 2,
             locationId = 1,
-            name = "ad_hades",
             url = "file:///android_asset/ad_hades.png",
             order = 2,
             language = "ko"
