@@ -27,13 +27,8 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.manager.StrabismusPrintHelper
-import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
-import com.pixelro.nenoonkiosk.core.ui.SecondaryButton
-import com.pixelro.nenoonkiosk.core.util.StringProvider
-import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.inspection.components.InspectionDivider
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.components.LightBottomArea
-import com.pixelro.nenoonkiosk.feature.strabismus.common.component.DualButtonBottomBar
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.ResultCard
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.WarningNotice
 import com.pixelro.nenoonkiosk.feature.strabismus.common.component.isLandscape
