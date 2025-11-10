@@ -125,6 +125,7 @@ dependencies {
 
     // Coil for AsyncImage
     implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("io.coil-kt:coil-video:2.7.0") // 동영상 썸네일 자동 추출
 
     // material3
     implementation("androidx.compose.material3:material3")

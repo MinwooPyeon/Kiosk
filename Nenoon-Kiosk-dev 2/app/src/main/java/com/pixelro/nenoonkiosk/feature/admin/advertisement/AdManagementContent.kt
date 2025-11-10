@@ -23,18 +23,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.harang.data.db.entity.LocationEntity
+import com.harang.data.db.entity.MediaType
 import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.feature.admin.advertisement.display.AdLocationDisplay
 import com.pixelro.nenoonkiosk.feature.admin.advertisement.imagelist.ImageListArea
 import com.pixelro.nenoonkiosk.feature.admin.advertisement.location.LocationOptionArea
-import com.pixelro.nenoonkiosk.feature.admin.advertisement.display.AdLocationPreview
 
 
 @Composable
 fun AdManagementContent(
     uiState: AdManagementUiState,
-    onSelectLocation: (AdLocation) -> Unit,
+    onSelectLocation: (LocationEntity) -> Unit,
     onDeleteImage: (String) -> Unit,
-    onAddImage: (String, String?) -> Unit,
+    onAddImage: () -> Unit,
     onSaveOrder: (List<AdImageData>) -> Unit
 ) {
     BoxWithConstraints(
@@ -98,9 +100,9 @@ fun AdManagementContent(
 @Composable
 private fun PortraitLayout(
     uiState: AdManagementUiState,
-    onSelectLocation: (AdLocation) -> Unit,
+    onSelectLocation: (LocationEntity) -> Unit,
     onDeleteImage: (String) -> Unit,
-    onAddImage: (String, String?) -> Unit,
+    onAddImage: () -> Unit,
     onSaveOrder: (List<AdImageData>) -> Unit
 ) {
     // 세로 모드: 위에 광고 위치 선택, 아래에 미리보기와 목록
@@ -110,7 +112,8 @@ private fun PortraitLayout(
     ) {
         // 광고 위치 선택
         LocationOptionArea(
-            selectedLocation = uiState.selectedAdLocation,
+            availableLocations = uiState.availableLocations,
+            selectedLocation = uiState.selectedLocation,
             onSelectLocation = onSelectLocation
         )
 
@@ -119,7 +122,7 @@ private fun PortraitLayout(
             modifier = Modifier.weight(1f),
             horizontalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            AdLocationPreview(
+            AdLocationDisplay(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight()
@@ -141,9 +144,9 @@ private fun PortraitLayout(
 @Composable
 private fun LandscapeLayout(
     uiState: AdManagementUiState,
-    onSelectLocation: (AdLocation) -> Unit,
+    onSelectLocation: (LocationEntity) -> Unit,
     onDeleteImage: (String) -> Unit,
-    onAddImage: (String, String?) -> Unit,
+    onAddImage: () -> Unit,
     onSaveOrder: (List<AdImageData>) -> Unit
 ) {
     // 가로 모드: 좌측에 광고 위치 선택과 미리보기, 우측에 목록
@@ -160,12 +163,13 @@ private fun LandscapeLayout(
         ) {
             // 광고 위치 선택 섹션
             LocationOptionArea(
-                selectedLocation = uiState.selectedAdLocation,
+                availableLocations = uiState.availableLocations,
+                selectedLocation = uiState.selectedLocation,
                 onSelectLocation = onSelectLocation
             )
 
             // 광고 위치 미리보기 섹션
-            AdLocationPreview()
+            AdLocationDisplay()
         }
 
         // 우측: 광고 이미지 목록
@@ -185,7 +189,11 @@ private fun LandscapeLayout(
 @Composable
 private fun AdManagementContentLandscapePreview() {
     val sampleUiState = AdManagementUiState(
-        selectedAdLocation = AdLocation.SCREENSAVER,
+        availableLocations = listOf(
+            LocationEntity(id = 1, name = "TEST_LIST_SCREEN", mediaType = MediaType.IMAGE),
+            LocationEntity(id = 2, name = "SCREENSAVER", mediaType = MediaType.VIDEO)
+        ),
+        selectedLocation = LocationEntity(id = 2, name = "SCREENSAVER", mediaType = MediaType.VIDEO),
         adImages = listOf(
             AdImageData(
                 id = "1",
@@ -214,7 +222,7 @@ private fun AdManagementContentLandscapePreview() {
         uiState = sampleUiState,
         onSelectLocation = {},
         onDeleteImage = {},
-        onAddImage = { _, _ -> },
+        onAddImage = {},
         onSaveOrder = {}
     )
 }
@@ -224,7 +232,11 @@ private fun AdManagementContentLandscapePreview() {
 @Composable
 private fun AdManagementContentPortraitPreview() {
     val sampleUiState = AdManagementUiState(
-        selectedAdLocation = AdLocation.TEST_LIST_SCREEN,
+        availableLocations = listOf(
+            LocationEntity(id = 1, name = "TEST_LIST_SCREEN", mediaType = MediaType.IMAGE),
+            LocationEntity(id = 2, name = "SCREENSAVER", mediaType = MediaType.VIDEO)
+        ),
+        selectedLocation = LocationEntity(id = 1, name = "TEST_LIST_SCREEN", mediaType = MediaType.IMAGE),
         adImages = listOf(
             AdImageData(
                 id = "1",
@@ -248,7 +260,7 @@ private fun AdManagementContentPortraitPreview() {
         uiState = sampleUiState,
         onSelectLocation = {},
         onDeleteImage = {},
-        onAddImage = { _, _ -> },
+        onAddImage = {},
         onSaveOrder = {}
     )
 }
