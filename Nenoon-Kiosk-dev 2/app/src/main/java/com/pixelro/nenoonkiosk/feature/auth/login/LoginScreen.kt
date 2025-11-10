@@ -108,7 +108,7 @@ private fun LoginContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
-                    modifier = Modifier.weight(0.8f),
+                    modifier = Modifier.weight(0.7f),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -131,7 +131,7 @@ private fun LoginContent(
                     onSignUpClick = onSignUpClick,
                     isLandscapeMode = true,
                     showTitle = false,
-                    modifier = Modifier.weight(1.2f)
+                    modifier = Modifier.weight(1.3f)
                 )
             }
         } else {
@@ -142,7 +142,7 @@ private fun LoginContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(0.8f))
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -156,7 +156,7 @@ private fun LoginContent(
                     )
                 }
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(1.2f))
 
                 LoginButtonsArea(
                     onIdPasswordSignInClick = onIdPasswordSignInClick,
@@ -252,7 +252,7 @@ private fun LoginButtonsArea(
         }
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 16.dp else 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 24.dp else 30.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             PrimaryButton(
@@ -292,7 +292,7 @@ private fun LoginButtonsArea(
             )
         }
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 20.dp else 30.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 28.dp else 40.dp))
 
         SecondaryButton(
             text = signUp,
@@ -305,7 +305,7 @@ private fun LoginButtonsArea(
                 )
         )
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 16.dp else 20.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 20.dp else 24.dp))
 
         StyledText(
             text = startWithoutSignIn,
