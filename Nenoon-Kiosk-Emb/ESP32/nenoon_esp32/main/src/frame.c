@@ -14,6 +14,21 @@
 
 #include "esp_log.h"
 #define TAG "frame"
+#define PARSER_CANARY 0xDEADBEEF
+
+static inline bool parser_sanity(frame_parser_t* p){
+    if (!p) return false;
+    if (p->canary1 != PARSER_CANARY || p->canary2 != PARSER_CANARY){
+        ESP_LOGE(TAG, "parser canary corrupted (c1=0x%08x c2=0x%08x)", p->canary1, p->canary2);
+        return false;
+    }
+    if (p->fill > FRAME_MAX_WIRE){
+        ESP_LOGE(TAG, "parser fill overflow: %u > %u", (unsigned)p->fill, (unsigned)FRAME_MAX_WIRE);
+        return false;
+    }
+    return true;
+}
+
 
 /* ===================== Utilities ===================== */
 static inline uint16_t be16_rd(const uint8_t* p){ return (uint16_t)((p[0] << 8) | p[1]); }
@@ -147,11 +162,14 @@ static inline void drop_left(uint8_t* buf, size_t* fill, size_t n){
 }
 
 static size_t append_to_buf(frame_parser_t* p, const uint8_t* data, size_t n){
-    size_t can  = FRAME_MAX_WIRE - p->fill;
+    if (!parser_sanity(p)) return 0;
+    size_t can  = (p->fill < FRAME_MAX_WIRE) ? (FRAME_MAX_WIRE - p->fill) : 0;
     size_t take = (n < can) ? n : can;
-    if(take && data){
+    if (take && data){
         memcpy(p->buf + p->fill, data, take);
         p->fill += take;
+    } else if (n && !take){
+        ESP_LOGE(TAG, "append overflow: n=%u fill=%u", (unsigned)n, (unsigned)p->fill);
     }
     return take;
 }
@@ -225,6 +243,8 @@ static void emit_frame_and_consume(frame_parser_t* p, uint16_t len, frame_t* out
 /* ---- Public API ---- */
 void frame_parser_init(frame_parser_t* p){
     if(!p) return;
+    p->canary1 = PARSER_CANARY;
+    p->canary2 = PARSER_CANARY;
     p->fill = 0;
     p->scan = 0;
     ESP_LOGI(TAG, "parser_init");
@@ -305,6 +325,6 @@ frame_parse_status_t frame_parser_feed(frame_parser_t* p, const uint8_t* data, s
 
     /* 8) 프레임 배출 */
     emit_frame_and_consume(p, len, out);
-    ESP_LOGD(TAG, "feed: EMIT type=0x%02X len=%" PRIu16 " (remain fill=%u)", out->type, out->len, (unsigned)p->fill);
+    ESP_LOGI(TAG, "feed: EMIT type=0x%02X len=%" PRIu16 " (remain fill=%u)", out->type, out->len, (unsigned)p->fill);
     return FP_EMIT;
 }

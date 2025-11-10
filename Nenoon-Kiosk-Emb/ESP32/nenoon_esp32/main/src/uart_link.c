@@ -26,7 +26,7 @@
 #define LINK_UART_TX_PIN  17
 #define LINK_UART_RX_PIN  16
 
-#define RX_TASK_STACK     4096
+#define RX_TASK_STACK     8192
 #define RX_TASK_PRIO      (tskIDLE_PRIORITY + 5)
 #define RX_BUF_BYTES      2048
 #define RX_QUEUE_LEN      4
@@ -40,7 +40,7 @@ static frame_parser_t  s_fp;
 static volatile bool   s_ready = false;
 
 /* 옵션: 원시 바이트 스니프(디버깅용) */
-static bool s_sniff = false;
+static bool s_sniff = true;
 void uart_link_set_sniff(bool on){ s_sniff = on; } // ← uart_link.h에 프로토타입 추가 권장
 
 /* ===================== Small helpers ===================== */
@@ -164,6 +164,7 @@ static void feed_bytes_and_emit(const uint8_t* data, size_t n)
 static void link_rx_task(void* arg)
 {
     uint8_t buf[256];
+    TickType_t last = xTaskGetTickCount();
     for(;;){
         int n = uart_read_bytes(LINK_UART_PORT, buf, sizeof(buf), pdMS_TO_TICKS(50));
         if (n > 0) {
@@ -172,6 +173,11 @@ static void link_rx_task(void* arg)
                 for (int i = 0; i < n; ++i) ESP_LOGI(TAG, "RX %02X", buf[i]);
             }
             feed_bytes_and_emit(buf, (size_t)n);
+        }
+        if (xTaskGetTickCount() - last >= pdMS_TO_TICKS(1000)) {
+            UBaseType_t wm = uxTaskGetStackHighWaterMark(NULL);
+            ESP_LOGI(TAG, "rx stack watermark=%u words", (unsigned)wm);
+            last = xTaskGetTickCount();
         }
         // 낮은 우선순위 태스크에 양보(쓸모 없는 바쁜 대기 방지)
         taskYIELD();

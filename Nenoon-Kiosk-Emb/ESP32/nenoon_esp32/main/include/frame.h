@@ -63,11 +63,13 @@ typedef struct{
     uint8_t     buf[FRAME_MAX_WIRE];
     size_t      fill;
     size_t      scan;
+    uint32_t	canary1;
+    uint32_t	canary2;
 }frame_parser_t;
 
 typedef enum {
     FP_EMIT = 0,            // out 프레임 1개 완성됨 (정상)
-    FP_MORE,                // 더 많은 입력 필요 (정상 대기)
+    FP_MORE,                 // 더 많은 입력 필요 (정상 대기)
     FP_RESYNC_MAGIC,        // MAGIC 동기화 중(노이즈 드롭 후 재시도)
     FP_RESYNC_VERSION,      // 버전 불일치 → 1바이트 드롭 후 재동기화
     FP_RESYNC_LEN_OOB,      // LEN 상한 초과 → 1바이트 드롭 후 재동기화
@@ -75,6 +77,8 @@ typedef enum {
     FP_OVERFLOW,            // 내부 버퍼 가득 참 (입력 일부/전부 미수용)
     FP_ARG_ERROR            // 잘못된 인자
 } frame_parse_status_t;
+
+_Static_assert(FRAME_MAX_WIRE >= FRAME_HDR_SIZE + FRAME_TLR_SIZE, "FRAME_MAX_WIRE too small");
 
 void                    frame_parser_init(frame_parser_t* p);
 frame_parse_status_t    frame_parser_feed(frame_parser_t* p, const uint8_t* data, size_t n, frame_t* out, size_t* consumed);
