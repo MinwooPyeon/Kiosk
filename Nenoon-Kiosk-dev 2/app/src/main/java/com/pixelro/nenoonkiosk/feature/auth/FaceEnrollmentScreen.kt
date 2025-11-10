@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -33,6 +32,7 @@ import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.BackButtonHorizontal
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
@@ -136,92 +136,98 @@ private fun PortraitFaceEnrollmentScreen(
     val isPreview = LocalInspectionMode.current
 
     Column(
-        modifier = Modifier
-            .padding(40.dp)
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.Top,
     ) {
-        StyledText(
-            text = stringResource(id = R.string.user_signup_title),
-            style = TextStyle.Title,
+        NenoonTopBar(
+            title = stringResource(id = R.string.user_signup_title),
+            showBackButton = false
         )
 
-        Box(
-            contentAlignment = Alignment.Center,
+        Column(
             modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .aspectRatio(1f)
-                .clip(MaterialTheme.shapes.medium)
-                .align(Alignment.CenterHorizontally),
+                .fillMaxSize()
+                .padding(40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            if (isPreview) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    StyledText(text = "카메라 프리뷰")
-                }
-            } else {
-                CameraPreview(
-                    modifier = Modifier.fillMaxSize(),
-                    onFaceDetected = onFaceDetected,
-                    onDetectionStatus = onDetectionStatus,
-                )
-            }
-
-            lastDetectedFaceBitmap?.let { bitmap ->
-                if (!bitmap.isRecycled) {
-                    Image(
-                        bitmap = bitmap.asImageBitmap(),
-                        contentDescription = stringResource(id = R.string.captured_face_image_description),
-                        modifier = Modifier
-                            .size(150.dp)
-                            .align(Alignment.BottomEnd)
-                            .padding(16.dp),
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .aspectRatio(1f)
+                    .clip(MaterialTheme.shapes.medium)
+                    .align(Alignment.CenterHorizontally),
+            ) {
+                if (isPreview) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        StyledText(text = "카메라 프리뷰")
+                    }
+                } else {
+                    CameraPreview(
+                        modifier = Modifier.fillMaxSize(),
+                        onFaceDetected = onFaceDetected,
+                        onDetectionStatus = onDetectionStatus,
                     )
                 }
+
+                lastDetectedFaceBitmap?.let { bitmap ->
+                    if (!bitmap.isRecycled) {
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = stringResource(id = R.string.captured_face_image_description),
+                            modifier = Modifier
+                                .size(150.dp)
+                                .align(Alignment.BottomEnd)
+                                .padding(16.dp),
+                        )
+                    }
+                }
             }
-        }
 
-        Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f))
 
-        StyledText(
-            text = if (isFaceEnrollmentDataReady) {
-                stringResource(id = R.string.face_enrollment_success)
-            } else {
-                faceDetectionStatus
-            },
-            style = if (isFaceEnrollmentDataReady) {
-                TextStyle.Success
-            } else {
-                TextStyle.Message
-            },
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        PrimaryButton(
-            text = stringResource(id = R.string.user_signup_enroll_face_button),
-            enabled = isFaceEnrollmentDataReady,
-            onClick = onEnrollClick,
-            modifier = Modifier.shadow(
-                elevation = 8.dp,
-                shape = RoundedCornerShape(10.dp)
+            StyledText(
+                text = if (isFaceEnrollmentDataReady) {
+                    stringResource(id = R.string.face_enrollment_success)
+                } else {
+                    faceDetectionStatus
+                },
+                style = if (isFaceEnrollmentDataReady) {
+                    TextStyle.Success
+                } else {
+                    TextStyle.Message
+                },
             )
-        )
 
-        Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
-        BackButtonHorizontal(
-            onClick = onBackClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(
+            PrimaryButton(
+                text = stringResource(id = R.string.user_signup_enroll_face_button),
+                enabled = isFaceEnrollmentDataReady,
+                onClick = onEnrollClick,
+                modifier = Modifier.shadow(
                     elevation = 8.dp,
                     shape = RoundedCornerShape(10.dp)
                 )
-        )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            BackButtonHorizontal(
+                onClick = onBackClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+            )
+        }
     }
 }
 
@@ -239,95 +245,100 @@ private fun LandscapeFaceEnrollmentScreen(
     val isPreview = LocalInspectionMode.current
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(40.dp),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.Top
     ) {
-        StyledText(
-            text = stringResource(id = R.string.user_signup_title),
-            style = TextStyle.Title,
-        )
-
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(350.dp)
-                .clip(MaterialTheme.shapes.medium),
-        ) {
-            if (isPreview) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    StyledText(text = "카메라 프리뷰")
-                }
-            } else {
-                CameraPreview(
-                    modifier = Modifier.fillMaxSize(),
-                    onFaceDetected = onFaceDetected,
-                    onDetectionStatus = onDetectionStatus,
-                )
-            }
-
-            lastDetectedFaceBitmap?.let { bitmap ->
-                if (!bitmap.isRecycled) {
-                    Image(
-                        bitmap = bitmap.asImageBitmap(),
-                        contentDescription = stringResource(id = R.string.captured_face_image_description),
-                        modifier = Modifier
-                            .size(100.dp)
-                            .align(Alignment.BottomEnd)
-                            .padding(8.dp),
-                    )
-                }
-            }
-        }
-
-        StyledText(
-            text = if (isFaceEnrollmentDataReady) {
-                stringResource(id = R.string.face_enrollment_success)
-            } else {
-                faceDetectionStatus
-            },
-            style = if (isFaceEnrollmentDataReady) {
-                TextStyle.Success
-            } else {
-                TextStyle.Message
-            },
+        NenoonTopBar(
+            title = stringResource(id = R.string.user_signup_title),
+            showBackButton = false
         )
 
         Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth(0.6f),
-            verticalArrangement = Arrangement.spacedBy(15.dp)
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            PrimaryButton(
-                text = stringResource(id = R.string.user_signup_enroll_face_button),
-                enabled = isFaceEnrollmentDataReady,
-                onClick = onEnrollClick,
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(
-                        elevation = 8.dp,
-                        shape = RoundedCornerShape(10.dp)
+                    .size(350.dp)
+                    .clip(MaterialTheme.shapes.medium),
+            ) {
+                if (isPreview) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        StyledText(text = "카메라 프리뷰")
+                    }
+                } else {
+                    CameraPreview(
+                        modifier = Modifier.fillMaxSize(),
+                        onFaceDetected = onFaceDetected,
+                        onDetectionStatus = onDetectionStatus,
                     )
+                }
+
+                lastDetectedFaceBitmap?.let { bitmap ->
+                    if (!bitmap.isRecycled) {
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = stringResource(id = R.string.captured_face_image_description),
+                            modifier = Modifier
+                                .size(100.dp)
+                                .align(Alignment.BottomEnd)
+                                .padding(8.dp),
+                        )
+                    }
+                }
+            }
+
+            StyledText(
+                text = if (isFaceEnrollmentDataReady) {
+                    stringResource(id = R.string.face_enrollment_success)
+                } else {
+                    faceDetectionStatus
+                },
+                style = if (isFaceEnrollmentDataReady) {
+                    TextStyle.Success
+                } else {
+                    TextStyle.Message
+                },
             )
 
-            BackButtonHorizontal(
-                onClick = onBackClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(
-                        elevation = 8.dp,
-                        shape = RoundedCornerShape(10.dp)
-                    )
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth(0.6f),
+                verticalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                PrimaryButton(
+                    text = stringResource(id = R.string.user_signup_enroll_face_button),
+                    enabled = isFaceEnrollmentDataReady,
+                    onClick = onEnrollClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(
+                            elevation = 8.dp,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                )
+
+                BackButtonHorizontal(
+                    onClick = onBackClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(
+                            elevation = 8.dp,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                )
+            }
         }
     }
 }
-
 
 @Preview(
     showBackground = true,

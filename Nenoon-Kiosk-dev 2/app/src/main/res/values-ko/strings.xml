@@ -647,7 +647,7 @@
     <string name="qr_print_fail">QR 코드 인쇄 실패</string>
     <string name="qr_generation_fail">QR 코드 생성 실패</string>
     <string name="qr_not_signed_in">로그인된 사용자가 없습니다. QR 코드를 발급할 수 없습니다.</string>
-    <string name="id_pw_sign_in">아이디 / 패스워드 로그인</string>
+    <string name="id_pw_sign_in">비밀번호 로그인</string>
 
     <string name="admin_page">관리자 페이지</string>
 

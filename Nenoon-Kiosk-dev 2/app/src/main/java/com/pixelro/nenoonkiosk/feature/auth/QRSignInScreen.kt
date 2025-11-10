@@ -48,6 +48,7 @@ import androidx.navigation.NavController
 import com.google.common.util.concurrent.ListenableFuture
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.BackButtonHorizontal
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
@@ -174,11 +175,42 @@ private fun QRSignInContent(
 ) {
     val isLandscape = isLandscape()
 
-    if (isLandscape) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        NenoonTopBar(
+            title = stringResource(R.string.qr_sign_in_title),
+            showBackButton = false
+        )
+
+        if (isLandscape) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                QRSignInLayout(
+                    isScanning = isScanning,
+                    signInFailed = signInFailed,
+                    isUserSignedIn = isUserSignedIn,
+                    userName = userName,
+                    signInMessage = signInMessage,
+                    onQRScanned = onQRScanned,
+                    onInvalidQR = onInvalidQR,
+                    onCameraBindFail = onCameraBindFail,
+                    onBackClick = onBackClick,
+                    cameraProviderFutureState = cameraProviderFutureState,
+                    cameraExecutor = cameraExecutor,
+                    lifecycleOwner = lifecycleOwner,
+                    coroutineScope = coroutineScope,
+                    isLandscapeMode = true,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 40.dp, vertical = 16.dp)
+                )
+            }
+        } else {
             QRSignInLayout(
                 isScanning = isScanning,
                 signInFailed = signInFailed,
@@ -193,32 +225,12 @@ private fun QRSignInContent(
                 cameraExecutor = cameraExecutor,
                 lifecycleOwner = lifecycleOwner,
                 coroutineScope = coroutineScope,
-                isLandscapeMode = true,
+                isLandscapeMode = false,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 40.dp, vertical = 16.dp)
+                    .padding(40.dp)
             )
         }
-    } else {
-        QRSignInLayout(
-            isScanning = isScanning,
-            signInFailed = signInFailed,
-            isUserSignedIn = isUserSignedIn,
-            userName = userName,
-            signInMessage = signInMessage,
-            onQRScanned = onQRScanned,
-            onInvalidQR = onInvalidQR,
-            onCameraBindFail = onCameraBindFail,
-            onBackClick = onBackClick,
-            cameraProviderFutureState = cameraProviderFutureState,
-            cameraExecutor = cameraExecutor,
-            lifecycleOwner = lifecycleOwner,
-            coroutineScope = coroutineScope,
-            isLandscapeMode = false,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(40.dp)
-        )
     }
 }
 
@@ -242,11 +254,8 @@ private fun QRSignInLayout(
 ) {
     val context = LocalContext.current
     val isInPreview = LocalInspectionMode.current
-
-    val title = stringResource(R.string.qr_sign_in_title)
     val defaultUserName = stringResource(R.string.default_user_name)
-    val loginSuccess =
-        stringResource(R.string.qr_sign_in_login_success, userName ?: defaultUserName)
+    val loginSuccess = stringResource(R.string.qr_sign_in_login_success, userName ?: defaultUserName)
 
     Column(
         modifier = modifier,
@@ -254,10 +263,6 @@ private fun QRSignInLayout(
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.8f else 1f))
-
-        StyledText(title, TextStyle.Title)
-
-        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.6f else 1f))
 
         if (isScanning || signInFailed) {
             CameraPreviewArea(
@@ -315,7 +320,6 @@ private fun CameraPreviewArea(
     lifecycleOwner: LifecycleOwner
 ) {
     val context = LocalContext.current
-
     val cameraWidthFraction = if (isLandscapeMode) 0.35f else 0.7f
 
     if (isInPreview) {

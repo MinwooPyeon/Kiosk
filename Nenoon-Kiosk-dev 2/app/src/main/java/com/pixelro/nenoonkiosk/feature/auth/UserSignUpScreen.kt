@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.BackButtonHorizontal
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
@@ -179,125 +180,136 @@ private fun UserSignUpContent(
 ) {
     val isLandscape = isLandscape()
 
-    if (isLandscape) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            if (signupSuccess && generatedQrBitmap != null) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(40.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Image(
-                            bitmap = generatedQrBitmap.asImageBitmap(),
-                            contentDescription = stringResource(R.string.user_signup_qr_image_cd),
-                            modifier = Modifier.size(280.dp)
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        StyledText(stringResource(R.string.user_signup_qr_description))
-                    }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        NenoonTopBar(
+            title = stringResource(R.string.user_signup_title),
+            showBackButton = false
+        )
 
-                    Spacer(modifier = Modifier.width(40.dp))
-
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+        if (isLandscape) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                if (signupSuccess && generatedQrBitmap != null) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(40.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        PrimaryButton(
-                            text = stringResource(R.string.user_signup_face_enrollment_button),
-                            onClick = onFaceEnrollmentClick,
-                            enabled = !isFaceEnrollmentDataReady,
-                            modifier = Modifier.shadow(
-                                elevation = 8.dp,
-                                shape = RoundedCornerShape(10.dp)
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Image(
+                                bitmap = generatedQrBitmap.asImageBitmap(),
+                                contentDescription = stringResource(R.string.user_signup_qr_image_cd),
+                                modifier = Modifier.size(280.dp)
                             )
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        BackButtonHorizontal(
-                            onClick = onBackClick,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .shadow(
+                            Spacer(modifier = Modifier.height(16.dp))
+                            StyledText(stringResource(R.string.user_signup_qr_description))
+                        }
+
+                        Spacer(modifier = Modifier.width(40.dp))
+
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            PrimaryButton(
+                                text = stringResource(R.string.user_signup_face_enrollment_button),
+                                onClick = onFaceEnrollmentClick,
+                                enabled = !isFaceEnrollmentDataReady,
+                                modifier = Modifier.shadow(
                                     elevation = 8.dp,
                                     shape = RoundedCornerShape(10.dp)
                                 )
-                        )
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            BackButtonHorizontal(
+                                onClick = onBackClick,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .shadow(
+                                        elevation = 8.dp,
+                                        shape = RoundedCornerShape(10.dp)
+                                    )
+                            )
+                        }
                     }
+                } else {
+                    UserSignUpForm(
+                        id = id,
+                        password = password,
+                        name = name,
+                        email = email,
+                        confirmPassword = confirmPassword,
+                        passwordVisible = passwordVisible,
+                        confirmPasswordVisible = confirmPasswordVisible,
+                        isSigningUp = isSigningUp,
+                        signupSuccess = signupSuccess,
+                        isFaceEnrollmentDataReady = isFaceEnrollmentDataReady,
+                        errorMessage = errorMessage,
+                        passwordError = passwordError,
+                        confirmPasswordError = confirmPasswordError,
+                        emailError = emailError,
+                        onIdChange = onIdChange,
+                        onPasswordChange = onPasswordChange,
+                        onNameChange = onNameChange,
+                        onEmailChange = onEmailChange,
+                        onConfirmPasswordChange = onConfirmPasswordChange,
+                        onPasswordVisibilityToggle = onPasswordVisibilityToggle,
+                        onConfirmPasswordVisibilityToggle = onConfirmPasswordVisibilityToggle,
+                        onSignUpClick = onSignUpClick,
+                        onFaceEnrollmentClick = onFaceEnrollmentClick,
+                        onBackClick = onBackClick,
+                        isLandscapeMode = true,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 80.dp, vertical = 20.dp)
+                    )
                 }
-            } else {
-                UserSignUpForm(
-                    id = id,
-                    password = password,
-                    name = name,
-                    email = email,
-                    confirmPassword = confirmPassword,
-                    passwordVisible = passwordVisible,
-                    confirmPasswordVisible = confirmPasswordVisible,
-                    isSigningUp = isSigningUp,
-                    signupSuccess = signupSuccess,
-                    isFaceEnrollmentDataReady = isFaceEnrollmentDataReady,
-                    errorMessage = errorMessage,
-                    passwordError = passwordError,
-                    confirmPasswordError = confirmPasswordError,
-                    emailError = emailError,
-                    onIdChange = onIdChange,
-                    onPasswordChange = onPasswordChange,
-                    onNameChange = onNameChange,
-                    onEmailChange = onEmailChange,
-                    onConfirmPasswordChange = onConfirmPasswordChange,
-                    onPasswordVisibilityToggle = onPasswordVisibilityToggle,
-                    onConfirmPasswordVisibilityToggle = onConfirmPasswordVisibilityToggle,
-                    onSignUpClick = onSignUpClick,
-                    onFaceEnrollmentClick = onFaceEnrollmentClick,
-                    onBackClick = onBackClick,
-                    isLandscapeMode = true,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 80.dp, vertical = 20.dp)
-                )
             }
+        } else {
+            UserSignUpForm(
+                id = id,
+                password = password,
+                name = name,
+                email = email,
+                confirmPassword = confirmPassword,
+                passwordVisible = passwordVisible,
+                confirmPasswordVisible = confirmPasswordVisible,
+                isSigningUp = isSigningUp,
+                signupSuccess = signupSuccess,
+                isFaceEnrollmentDataReady = isFaceEnrollmentDataReady,
+                errorMessage = errorMessage,
+                passwordError = passwordError,
+                confirmPasswordError = confirmPasswordError,
+                emailError = emailError,
+                onIdChange = onIdChange,
+                onPasswordChange = onPasswordChange,
+                onNameChange = onNameChange,
+                onEmailChange = onEmailChange,
+                onConfirmPasswordChange = onConfirmPasswordChange,
+                onPasswordVisibilityToggle = onPasswordVisibilityToggle,
+                onConfirmPasswordVisibilityToggle = onConfirmPasswordVisibilityToggle,
+                onSignUpClick = onSignUpClick,
+                onFaceEnrollmentClick = onFaceEnrollmentClick,
+                onBackClick = onBackClick,
+                isLandscapeMode = false,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(40.dp)
+            )
         }
-    } else {
-        UserSignUpForm(
-            id = id,
-            password = password,
-            name = name,
-            email = email,
-            confirmPassword = confirmPassword,
-            passwordVisible = passwordVisible,
-            confirmPasswordVisible = confirmPasswordVisible,
-            isSigningUp = isSigningUp,
-            signupSuccess = signupSuccess,
-            isFaceEnrollmentDataReady = isFaceEnrollmentDataReady,
-            errorMessage = errorMessage,
-            passwordError = passwordError,
-            confirmPasswordError = confirmPasswordError,
-            emailError = emailError,
-            onIdChange = onIdChange,
-            onPasswordChange = onPasswordChange,
-            onNameChange = onNameChange,
-            onEmailChange = onEmailChange,
-            onConfirmPasswordChange = onConfirmPasswordChange,
-            onPasswordVisibilityToggle = onPasswordVisibilityToggle,
-            onConfirmPasswordVisibilityToggle = onConfirmPasswordVisibilityToggle,
-            onSignUpClick = onSignUpClick,
-            onFaceEnrollmentClick = onFaceEnrollmentClick,
-            onBackClick = onBackClick,
-            isLandscapeMode = false,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(40.dp)
-        )
     }
 }
 
@@ -330,7 +342,6 @@ private fun UserSignUpForm(
     isLandscapeMode: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val title = stringResource(R.string.user_signup_title)
     val idHint = stringResource(R.string.user_signup_input_id_hint)
     val nameHint = stringResource(R.string.user_signup_input_name_hint)
     val emailHint = stringResource(R.string.user_signup_input_email_hint)
@@ -346,29 +357,22 @@ private fun UserSignUpForm(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = if (signupSuccess) Arrangement.Center else Arrangement.SpaceBetween,
     ) {
-        if (!isLandscapeMode) {
-            Spacer(modifier = Modifier.weight(0.3f))
-        }
-
         if (!signupSuccess) {
-            StyledText(title, com.pixelro.nenoonkiosk.core.ui.TextStyle.Title)
-
-            Spacer(modifier = Modifier.height(if (isLandscapeMode) 16.dp else 20.dp))
-
             if (isSigningUp) {
-                Spacer(modifier = Modifier.weight(0.5f))
+                Spacer(modifier = Modifier.weight(1f))
                 ProgressIndicator()
-                Spacer(modifier = Modifier.weight(0.5f))
+                Spacer(modifier = Modifier.weight(1f))
             } else {
                 Column(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 10.dp else 20.dp)
+                    verticalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 10.dp else 12.dp)
                 ) {
                     InputTextField(
                         value = id,
                         onValueChange = onIdChange,
                         label = idHint,
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        inputHeight = if (isLandscapeMode) 55.dp else 65.dp
                     )
 
                     InputTextField(
@@ -376,6 +380,7 @@ private fun UserSignUpForm(
                         onValueChange = onNameChange,
                         label = nameHint,
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        inputHeight = if (isLandscapeMode) 55.dp else 65.dp
                     )
 
                     InputTextField(
@@ -388,6 +393,7 @@ private fun UserSignUpForm(
                         ),
                         isError = emailError != null,
                         errorMessage = emailError,
+                        inputHeight = if (isLandscapeMode) 55.dp else 65.dp
                     )
 
                     InputTextField(
@@ -411,6 +417,7 @@ private fun UserSignUpForm(
                         },
                         isError = passwordError != null,
                         errorMessage = passwordError,
+                        inputHeight = if (isLandscapeMode) 55.dp else 65.dp
                     )
 
                     InputTextField(
@@ -434,59 +441,99 @@ private fun UserSignUpForm(
                         },
                         isError = confirmPasswordError != null,
                         errorMessage = confirmPasswordError,
+                        inputHeight = if (isLandscapeMode) 55.dp else 65.dp
                     )
                 }
             }
 
             if (errorMessage != null) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(2.dp))
                 StyledText(errorMessage, com.pixelro.nenoonkiosk.core.ui.TextStyle.Error)
             }
 
-            Spacer(modifier = Modifier.height(if (isLandscapeMode) 16.dp else 20.dp))
+            Spacer(modifier = Modifier.height(if (isLandscapeMode) 4.dp else 8.dp))
 
-            PrimaryButton(
-                text = signUpButton,
-                onClick = onSignUpClick,
-                enabled = id.isNotBlank() &&
-                        password.isNotBlank() &&
-                        name.isNotBlank() &&
-                        passwordError == null &&
-                        confirmPasswordError == null &&
-                        (email.isBlank() || emailError == null),
-                modifier = Modifier.shadow(
-                    elevation = 8.dp,
-                    shape = RoundedCornerShape(10.dp)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 6.dp else 10.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                PrimaryButton(
+                    text = signUpButton,
+                    onClick = onSignUpClick,
+                    enabled = id.isNotBlank() &&
+                            password.isNotBlank() &&
+                            name.isNotBlank() &&
+                            passwordError == null &&
+                            confirmPasswordError == null &&
+                            (email.isBlank() || emailError == null),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(if (isLandscapeMode) 70.dp else 80.dp)
+                        .shadow(
+                            elevation = 8.dp,
+                            shape = RoundedCornerShape(10.dp)
+                        )
                 )
-            )
-            Spacer(modifier = Modifier.height(if (isLandscapeMode) 12.dp else 20.dp))
-        }
 
-        if (signupSuccess && !isLandscapeMode) {
-            PrimaryButton(
-                text = faceEnrollmentButton,
-                onClick = onFaceEnrollmentClick,
-                enabled = !isFaceEnrollmentDataReady,
-                modifier = Modifier.shadow(
-                    elevation = 8.dp,
-                    shape = RoundedCornerShape(10.dp)
+                if (signupSuccess && !isLandscapeMode) {
+                    PrimaryButton(
+                        text = faceEnrollmentButton,
+                        onClick = onFaceEnrollmentClick,
+                        enabled = !isFaceEnrollmentDataReady,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(if (isLandscapeMode) 70.dp else 80.dp)
+                            .shadow(
+                                elevation = 8.dp,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                    )
+                }
+
+                BackButtonHorizontal(
+                    onClick = onBackClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(if (isLandscapeMode) 70.dp else 80.dp)
+                        .shadow(
+                            elevation = 8.dp,
+                            shape = RoundedCornerShape(10.dp)
+                        )
                 )
-            )
-            Spacer(modifier = Modifier.height(if (isLandscapeMode) 12.dp else 20.dp))
-        }
+            }
+        } else if (signupSuccess) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 6.dp else 10.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                if (!isLandscapeMode) {
+                    PrimaryButton(
+                        text = faceEnrollmentButton,
+                        onClick = onFaceEnrollmentClick,
+                        enabled = !isFaceEnrollmentDataReady,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(if (isLandscapeMode) 70.dp else 80.dp)
+                            .shadow(
+                                elevation = 8.dp,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                    )
+                }
 
-        BackButtonHorizontal(
-            onClick = onBackClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(
-                    elevation = 8.dp,
-                    shape = RoundedCornerShape(10.dp)
+                BackButtonHorizontal(
+                    onClick = onBackClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(if (isLandscapeMode) 70.dp else 80.dp)
+                        .shadow(
+                            elevation = 8.dp,
+                            shape = RoundedCornerShape(10.dp)
+                        )
                 )
-        )
-
-        if (!isLandscapeMode) {
-            Spacer(modifier = Modifier.weight(0.3f))
+            }
         }
     }
 }
@@ -502,19 +549,20 @@ private fun InputTextField(
     trailingIcon: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
     errorMessage: String? = null,
+    inputHeight: androidx.compose.ui.unit.Dp = 65.dp
 ) {
     Column(modifier = modifier) {
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            textStyle = TextStyle(fontSize = 30.sp),
+            textStyle = TextStyle(fontSize = 24.sp),
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
             decorationBox = { innerTextField ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(80.dp)
+                        .height(inputHeight)
                         .border(
                             border = BorderStroke(
                                 width = 1.dp,
@@ -522,7 +570,7 @@ private fun InputTextField(
                             ),
                             shape = RoundedCornerShape(8.dp),
                         )
-                        .padding(start = 20.dp),
+                        .padding(start = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(
@@ -542,7 +590,7 @@ private fun InputTextField(
             StyledText(
                 text = errorMessage,
                 style = com.pixelro.nenoonkiosk.core.ui.TextStyle.InputError,
-                modifier = Modifier.padding(start = 20.dp, top = 4.dp),
+                modifier = Modifier.padding(start = 14.dp, top = 2.dp),
             )
         }
     }

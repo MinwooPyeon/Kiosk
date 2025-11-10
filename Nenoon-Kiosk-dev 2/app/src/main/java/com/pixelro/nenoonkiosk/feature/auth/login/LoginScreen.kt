@@ -310,6 +310,7 @@ private fun LoginButtonsArea(
         StyledText(
             text = startWithoutSignIn,
             style = TextStyle.Message,
+            fontWeight = FontWeight.Bold,
             textDecoration = TextDecoration.Underline,
             modifier = Modifier.clickable(
                 indication = null,

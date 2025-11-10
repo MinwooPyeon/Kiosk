@@ -419,7 +419,7 @@
 
     <string name="default_sign_in_manage_bt_devices">블루투스 기기 관리</string>
     <string name="default_sign_in_qr_login">QR\n로그인</string>
-    <string name="default_sign_in_face_recognition">얼굴인식\n로그인</string>
+    <string name="default_sign_in_face_recognition">얼굴인식 로그인</string>
     <string name="default_sign_in_sign_up">회원가입</string>
     <string name="id_pw_sign_in">비밀번호\n로그인</string>
 

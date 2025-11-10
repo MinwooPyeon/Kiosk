@@ -17,7 +17,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,9 +38,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.BackButtonHorizontal
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
@@ -131,83 +130,95 @@ private fun PortraitIdPasswordSignInScreen(
     onBackClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(40.dp),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
-        StyledText(
-            stringResource(id = R.string.id_pw_sign_in_title),
-            CoreTextStyle.Title
+        NenoonTopBar(
+            title = stringResource(id = R.string.id_pw_sign_in_title),
+            showBackButton = false
         )
 
-        Spacer(modifier = Modifier.height(40.dp))
-
-        InputTextField(
-            value = id,
-            onValueChange = onIdChange,
-            label = stringResource(id = R.string.id_pw_sign_in_id_hint),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-
-        InputTextField(
-            value = password,
-            onValueChange = onPasswordChange,
-            label = stringResource(id = R.string.id_pw_sign_in_pw_hint),
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password),
-            trailingIcon = {
-                IconButton(onClick = { onPasswordVisibleChange(!passwordVisible) }) {
-                    Icon(
-                        painter = painterResource(if (passwordVisible) R.drawable.icon_visibility_on else R.drawable.icon_visibility_off),
-                        contentDescription = if (passwordVisible) {
-                            stringResource(R.string.id_pw_sign_in_pw_hide)
-                        } else {
-                            stringResource(R.string.id_pw_sign_in_pw_show)
-                        },
-                    )
-                }
-            },
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        if (signingIn) {
-            ProgressIndicator()
-            Spacer(modifier = Modifier.weight(1f))
-        }
-
-        if (signInError) {
-            StyledText(
-                text = stringResource(id = R.string.toast_input_id_pw),
-                style = CoreTextStyle.Error,
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-        }
-
-        PrimaryButton(
-            text = stringResource(id = R.string.id_pw_sign_in_button),
-            onClick = onSignInClick,
-            enabled = id.isNotBlank() && password.isNotBlank(),
-            modifier = Modifier.shadow(
-                elevation = 8.dp,
-                shape = RoundedCornerShape(10.dp)
-            )
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        BackButtonHorizontal(
-            onClick = onBackClick,
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .shadow(
-                    elevation = 8.dp,
-                    shape = RoundedCornerShape(10.dp)
+                .fillMaxSize()
+                .padding(40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                InputTextField(
+                    value = id,
+                    onValueChange = onIdChange,
+                    label = stringResource(id = R.string.id_pw_sign_in_id_hint),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 )
-        )
+
+                InputTextField(
+                    value = password,
+                    onValueChange = onPasswordChange,
+                    label = stringResource(id = R.string.id_pw_sign_in_pw_hint),
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password),
+                    trailingIcon = {
+                        IconButton(onClick = { onPasswordVisibleChange(!passwordVisible) }) {
+                            Icon(
+                                painter = painterResource(if (passwordVisible) R.drawable.icon_visibility_on else R.drawable.icon_visibility_off),
+                                contentDescription = if (passwordVisible) {
+                                    stringResource(R.string.id_pw_sign_in_pw_hide)
+                                } else {
+                                    stringResource(R.string.id_pw_sign_in_pw_show)
+                                },
+                            )
+                        }
+                    },
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            if (signingIn) {
+                ProgressIndicator()
+                Spacer(modifier = Modifier.weight(1f))
+            }
+
+            if (signInError) {
+                StyledText(
+                    text = stringResource(id = R.string.toast_input_id_pw),
+                    style = CoreTextStyle.Error,
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                PrimaryButton(
+                    text = stringResource(id = R.string.id_pw_sign_in_button),
+                    onClick = onSignInClick,
+                    enabled = id.isNotBlank() && password.isNotBlank(),
+                    modifier = Modifier.shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                )
+
+                BackButtonHorizontal(
+                    onClick = onBackClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(
+                            elevation = 8.dp,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                )
+            }
+        }
     }
 }
 
@@ -225,97 +236,100 @@ private fun LandscapeIdPasswordSignInScreen(
     onBackClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(30.dp),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
     ) {
-        StyledText(
-            stringResource(id = R.string.id_pw_sign_in_title),
-            CoreTextStyle.Title
+        NenoonTopBar(
+            title = stringResource(id = R.string.id_pw_sign_in_title),
+            showBackButton = false
         )
 
-        Spacer(modifier = Modifier.height(30.dp))
-
         Column(
-            modifier = Modifier.fillMaxWidth(0.6f),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.Center,
         ) {
-            InputTextField(
-                value = id,
-                onValueChange = onIdChange,
-                label = stringResource(id = R.string.id_pw_sign_in_id_hint),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            InputTextField(
-                value = password,
-                onValueChange = onPasswordChange,
-                label = stringResource(id = R.string.id_pw_sign_in_pw_hint),
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password),
-                trailingIcon = {
-                    IconButton(onClick = { onPasswordVisibleChange(!passwordVisible) }) {
-                        Icon(
-                            painter = painterResource(if (passwordVisible) R.drawable.icon_visibility_on else R.drawable.icon_visibility_off),
-                            contentDescription = if (passwordVisible) {
-                                stringResource(R.string.id_pw_sign_in_pw_hide)
-                            } else {
-                                stringResource(R.string.id_pw_sign_in_pw_show)
-                            },
-                        )
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        Spacer(modifier = Modifier.height(30.dp))
-
-        if (signingIn) {
-            ProgressIndicator()
-        }
-
-        if (signInError) {
-            StyledText(
-                text = stringResource(id = R.string.toast_input_id_pw),
-                style = CoreTextStyle.Error,
-            )
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Column(
-            modifier = Modifier.fillMaxWidth(0.6f),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(15.dp)
-        ) {
-            PrimaryButton(
-                text = stringResource(id = R.string.id_pw_sign_in_button),
-                onClick = onSignInClick,
-                enabled = id.isNotBlank() && password.isNotBlank(),
-                modifier = Modifier.shadow(
-                    elevation = 8.dp,
-                    shape = RoundedCornerShape(10.dp)
+            Column(
+                modifier = Modifier.fillMaxWidth(0.6f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                InputTextField(
+                    value = id,
+                    onValueChange = onIdChange,
+                    label = stringResource(id = R.string.id_pw_sign_in_id_hint),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    modifier = Modifier.fillMaxWidth()
                 )
-            )
 
-            BackButtonHorizontal(
-                onClick = onBackClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(
+                InputTextField(
+                    value = password,
+                    onValueChange = onPasswordChange,
+                    label = stringResource(id = R.string.id_pw_sign_in_pw_hint),
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password),
+                    trailingIcon = {
+                        IconButton(onClick = { onPasswordVisibleChange(!passwordVisible) }) {
+                            Icon(
+                                painter = painterResource(if (passwordVisible) R.drawable.icon_visibility_on else R.drawable.icon_visibility_off),
+                                contentDescription = if (passwordVisible) {
+                                    stringResource(R.string.id_pw_sign_in_pw_hide)
+                                } else {
+                                    stringResource(R.string.id_pw_sign_in_pw_show)
+                                },
+                            )
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            if (signingIn) {
+                ProgressIndicator()
+            }
+
+            if (signInError) {
+                StyledText(
+                    text = stringResource(id = R.string.toast_input_id_pw),
+                    style = CoreTextStyle.Error,
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Column(
+                modifier = Modifier.fillMaxWidth(0.6f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                PrimaryButton(
+                    text = stringResource(id = R.string.id_pw_sign_in_button),
+                    onClick = onSignInClick,
+                    enabled = id.isNotBlank() && password.isNotBlank(),
+                    modifier = Modifier.shadow(
                         elevation = 8.dp,
                         shape = RoundedCornerShape(10.dp)
                     )
-            )
+                )
+
+                BackButtonHorizontal(
+                    onClick = onBackClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(
+                            elevation = 8.dp,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                )
+            }
         }
     }
 }
-
 
 @Composable
 private fun InputTextField(

@@ -186,14 +186,6 @@ private fun AccountManagementContent(
                 contentColor = Color.Black
             )
 
-            Spacer(
-                modifier = Modifier
-                    .padding(start = 5.dp, end = 5.dp)
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(color = Color(0xff000000)),
-            )
-
             if (isLandscape) {
                 Row(
                     modifier = Modifier

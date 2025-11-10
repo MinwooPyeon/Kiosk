@@ -35,6 +35,7 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.ui.BackButtonHorizontal
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.isLandscape
@@ -122,11 +123,37 @@ private fun FaceIdSignInContent(
 ) {
     val isLandscape = isLandscape()
 
-    if (isLandscape) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        NenoonTopBar(
+            title = stringResource(id = R.string.default_sign_in_face_recognition),
+            showBackButton = false
+        )
+
+        if (isLandscape) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                FaceIdSignInLayout(
+                    faceRecognitionStatus = faceRecognitionStatus,
+                    isProcessingFace = isProcessingFace,
+                    isSignedIn = isSignedIn,
+                    liveFaceDetectionStatus = liveFaceDetectionStatus,
+                    attemptsLeft = attemptsLeft,
+                    onFaceDetected = onFaceDetected,
+                    onDetectionStatus = onDetectionStatus,
+                    onBackClick = onBackClick,
+                    isLandscapeMode = true,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 40.dp, vertical = 16.dp)
+                )
+            }
+        } else {
             FaceIdSignInLayout(
                 faceRecognitionStatus = faceRecognitionStatus,
                 isProcessingFace = isProcessingFace,
@@ -136,27 +163,12 @@ private fun FaceIdSignInContent(
                 onFaceDetected = onFaceDetected,
                 onDetectionStatus = onDetectionStatus,
                 onBackClick = onBackClick,
-                isLandscapeMode = true,
+                isLandscapeMode = false,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 40.dp, vertical = 16.dp)
+                    .padding(40.dp)
             )
         }
-    } else {
-        FaceIdSignInLayout(
-            faceRecognitionStatus = faceRecognitionStatus,
-            isProcessingFace = isProcessingFace,
-            isSignedIn = isSignedIn,
-            liveFaceDetectionStatus = liveFaceDetectionStatus,
-            attemptsLeft = attemptsLeft,
-            onFaceDetected = onFaceDetected,
-            onDetectionStatus = onDetectionStatus,
-            onBackClick = onBackClick,
-            isLandscapeMode = false,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(40.dp)
-        )
     }
 }
 
@@ -174,25 +186,14 @@ private fun FaceIdSignInLayout(
     modifier: Modifier = Modifier
 ) {
     val isPreview = LocalInspectionMode.current
-
-    val title = stringResource(id = R.string.default_sign_in_face_recognition)
     val noMatchText = stringResource(id = R.string.signin_vm_face_no_match)
-
-    val cameraWidthFraction = if (isLandscapeMode) 0.3f else 0.7f
+    val cameraWidthFraction = if (isLandscapeMode) 0.28f else 0.7f
 
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.6f else 1f))
-
-        StyledText(
-            title,
-            style = TextStyle.Title,
-            textAlign = TextAlign.Center,
-        )
-
         Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.5f else 1f))
 
         Box(
@@ -213,13 +214,13 @@ private fun FaceIdSignInLayout(
             }
         }
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 20.dp else 20.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 16.dp else 20.dp))
 
         if (attemptsLeft > 0) {
             StyledText(liveFaceDetectionStatus, textAlign = TextAlign.Center)
         }
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 12.dp else 20.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 8.dp else 20.dp))
 
         if (attemptsLeft > 0) {
             StyledText(
@@ -230,19 +231,20 @@ private fun FaceIdSignInLayout(
             StyledText(noMatchText, TextStyle.Error, textAlign = TextAlign.Center)
         }
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 20.dp else 40.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 16.dp else 40.dp))
 
         BackButtonHorizontal(
             onClick = onBackClick,
             modifier = Modifier
                 .fillMaxWidth()
+                .height(if (isLandscapeMode) 70.dp else 80.dp)
                 .shadow(
                     elevation = 8.dp,
                     shape = RoundedCornerShape(10.dp)
                 )
         )
 
-        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.6f else 1f))
+        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.5f else 1f))
     }
 }
 

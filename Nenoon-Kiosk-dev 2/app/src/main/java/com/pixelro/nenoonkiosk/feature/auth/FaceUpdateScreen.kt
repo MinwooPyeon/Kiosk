@@ -37,6 +37,7 @@ import androidx.navigation.NavController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.CameraPreview
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
@@ -78,7 +79,6 @@ fun FaceUpdateScreen(
         loginViewModel.clearEnrollmentMessage()
     }
 
-    // ✅ LaunchedEffect 밖에서 상태 업데이트
     LaunchedEffect(isFaceEnrollmentDataReady, faceDetectionStatus, faceEnrollAttempted) {
         currentScreenStatus = when {
             isFaceEnrollmentDataReady -> readyStatus
@@ -208,89 +208,95 @@ private fun PortraitFaceUpdateScreen(
     val isPreview = LocalInspectionMode.current
 
     Column(
-        modifier = Modifier
-            .padding(40.dp)
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.Top,
     ) {
-        StyledText(
-            text = stringResource(id = R.string.user_face_update_title),
-            style = TextStyle.Title,
+        NenoonTopBar(
+            title = stringResource(id = R.string.user_face_update_title),
+            showBackButton = false
         )
 
-        Box(
-            contentAlignment = Alignment.Center,
+        Column(
             modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .aspectRatio(1f)
-                .clip(MaterialTheme.shapes.medium)
-                .align(Alignment.CenterHorizontally),
+                .fillMaxSize()
+                .padding(40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            if (isPreview) {
-                StyledText(text = "카메라 프리뷰")
-            } else {
-                CameraPreview(
-                    modifier = Modifier.fillMaxSize(),
-                    onFaceDetected = onFaceDetected,
-                    onDetectionStatus = onDetectionStatus,
-                )
-            }
-
-            lastDetectedFaceBitmap?.let { bitmap ->
-                if (!bitmap.isRecycled && isFaceEnrollmentDataReady) {
-                    Image(
-                        bitmap = bitmap.asImageBitmap(),
-                        contentDescription = stringResource(id = R.string.user_face_update_captured_face_description),
-                        modifier = Modifier
-                            .size(150.dp)
-                            .align(Alignment.BottomEnd)
-                            .padding(16.dp),
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .aspectRatio(1f)
+                    .clip(MaterialTheme.shapes.medium)
+                    .align(Alignment.CenterHorizontally),
+            ) {
+                if (isPreview) {
+                    StyledText(text = "카메라 프리뷰")
+                } else {
+                    CameraPreview(
+                        modifier = Modifier.fillMaxSize(),
+                        onFaceDetected = onFaceDetected,
+                        onDetectionStatus = onDetectionStatus,
                     )
                 }
+
+                lastDetectedFaceBitmap?.let { bitmap ->
+                    if (!bitmap.isRecycled && isFaceEnrollmentDataReady) {
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = stringResource(id = R.string.user_face_update_captured_face_description),
+                            modifier = Modifier
+                                .size(150.dp)
+                                .align(Alignment.BottomEnd)
+                                .padding(16.dp),
+                        )
+                    }
+                }
             }
-        }
 
-        Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f))
 
-        StyledText(
-            text = currentScreenStatus,
-            style = if (isFaceEnrollmentDataReady) {
-                TextStyle.Success
-            } else if (faceDetectionStatus.isEmpty()) {
-                TextStyle.Error
-            } else {
-                TextStyle.Message
-            },
-            textAlign = TextAlign.Center,
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Column {
-            PrimaryButton(
-                text = if (!faceEnrollAttempted) {
-                    stringResource(id = R.string.user_face_update_capture_button)
+            StyledText(
+                text = currentScreenStatus,
+                style = if (isFaceEnrollmentDataReady) {
+                    TextStyle.Success
+                } else if (faceDetectionStatus.isEmpty()) {
+                    TextStyle.Error
                 } else {
-                    stringResource(id = R.string.user_face_update_recapture_button)
+                    TextStyle.Message
                 },
-                onClick = onCaptureClick,
+                textAlign = TextAlign.Center,
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
-            PrimaryButton(
-                text = stringResource(id = R.string.user_face_update_save_button),
-                onClick = onSaveClick,
-                enabled = isFaceEnrollmentDataReady && !isProcessingFace,
-            )
+            Column {
+                PrimaryButton(
+                    text = if (!faceEnrollAttempted) {
+                        stringResource(id = R.string.user_face_update_capture_button)
+                    } else {
+                        stringResource(id = R.string.user_face_update_recapture_button)
+                    },
+                    onClick = onCaptureClick,
+                )
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-            PrimaryButton(
-                text = stringResource(id = R.string.cancel),
-                onClick = onCancelClick,
-            )
+                PrimaryButton(
+                    text = stringResource(id = R.string.user_face_update_save_button),
+                    onClick = onSaveClick,
+                    enabled = isFaceEnrollmentDataReady && !isProcessingFace,
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                PrimaryButton(
+                    text = stringResource(id = R.string.cancel),
+                    onClick = onCancelClick,
+                )
+            }
         }
     }
 }
@@ -313,85 +319,91 @@ private fun LandscapeFaceUpdateScreen(
     val isPreview = LocalInspectionMode.current
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 20.dp, vertical = 15.dp),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.Top
     ) {
-        StyledText(
-            text = stringResource(id = R.string.user_face_update_title),
-            style = TextStyle.Title,
+        NenoonTopBar(
+            title = stringResource(id = R.string.user_face_update_title),
+            showBackButton = false
         )
 
-        Box(
-            contentAlignment = Alignment.Center,
+        Column(
             modifier = Modifier
-                .size(400.dp)
-                .clip(MaterialTheme.shapes.medium),
+                .fillMaxSize()
+                .padding(horizontal = 20.dp, vertical = 15.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            if (isPreview) {
-                StyledText(text = "카메라 프리뷰")
-            } else {
-                CameraPreview(
-                    modifier = Modifier.fillMaxSize(),
-                    onFaceDetected = onFaceDetected,
-                    onDetectionStatus = onDetectionStatus,
-                )
-            }
-
-            lastDetectedFaceBitmap?.let { bitmap ->
-                if (!bitmap.isRecycled && isFaceEnrollmentDataReady) {
-                    Image(
-                        bitmap = bitmap.asImageBitmap(),
-                        contentDescription = stringResource(id = R.string.user_face_update_captured_face_description),
-                        modifier = Modifier
-                            .size(120.dp)
-                            .align(Alignment.BottomEnd)
-                            .padding(12.dp),
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(400.dp)
+                    .clip(MaterialTheme.shapes.medium),
+            ) {
+                if (isPreview) {
+                    StyledText(text = "카메라 프리뷰")
+                } else {
+                    CameraPreview(
+                        modifier = Modifier.fillMaxSize(),
+                        onFaceDetected = onFaceDetected,
+                        onDetectionStatus = onDetectionStatus,
                     )
                 }
+
+                lastDetectedFaceBitmap?.let { bitmap ->
+                    if (!bitmap.isRecycled && isFaceEnrollmentDataReady) {
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = stringResource(id = R.string.user_face_update_captured_face_description),
+                            modifier = Modifier
+                                .size(120.dp)
+                                .align(Alignment.BottomEnd)
+                                .padding(12.dp),
+                        )
+                    }
+                }
             }
-        }
 
-        StyledText(
-            text = currentScreenStatus,
-            style = if (isFaceEnrollmentDataReady) {
-                TextStyle.Success
-            } else if (faceDetectionStatus.isEmpty()) {
-                TextStyle.Error
-            } else {
-                TextStyle.Message
-            },
-            textAlign = TextAlign.Center,
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier.fillMaxWidth(0.8f)
-        ) {
-            PrimaryButton(
-                text = if (!faceEnrollAttempted) {
-                    stringResource(id = R.string.user_face_update_capture_button)
+            StyledText(
+                text = currentScreenStatus,
+                style = if (isFaceEnrollmentDataReady) {
+                    TextStyle.Success
+                } else if (faceDetectionStatus.isEmpty()) {
+                    TextStyle.Error
                 } else {
-                    stringResource(id = R.string.user_face_update_recapture_button)
+                    TextStyle.Message
                 },
-                onClick = onCaptureClick,
-                modifier = Modifier.weight(1f)
+                textAlign = TextAlign.Center,
             )
 
-            PrimaryButton(
-                text = stringResource(id = R.string.user_face_update_save_button),
-                onClick = onSaveClick,
-                enabled = isFaceEnrollmentDataReady && !isProcessingFace,
-                modifier = Modifier.weight(1f)
-            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.fillMaxWidth(0.8f)
+            ) {
+                PrimaryButton(
+                    text = if (!faceEnrollAttempted) {
+                        stringResource(id = R.string.user_face_update_capture_button)
+                    } else {
+                        stringResource(id = R.string.user_face_update_recapture_button)
+                    },
+                    onClick = onCaptureClick,
+                    modifier = Modifier.weight(1f)
+                )
 
-            PrimaryButton(
-                text = stringResource(id = R.string.cancel),
-                onClick = onCancelClick,
-                modifier = Modifier.weight(1f)
-            )
+                PrimaryButton(
+                    text = stringResource(id = R.string.user_face_update_save_button),
+                    onClick = onSaveClick,
+                    enabled = isFaceEnrollmentDataReady && !isProcessingFace,
+                    modifier = Modifier.weight(1f)
+                )
+
+                PrimaryButton(
+                    text = stringResource(id = R.string.cancel),
+                    onClick = onCancelClick,
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
     }
 }
