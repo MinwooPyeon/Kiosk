@@ -4,7 +4,9 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.harang.data.db.entity.AdImageEntity
+import com.harang.data.db.entity.LocationEntity
 import com.harang.data.repository.AdImageRepository
+import com.harang.data.repository.LocationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AdManagementViewModel @Inject constructor(
-    private val adImageRepository: AdImageRepository
+    private val adImageRepository: AdImageRepository,
+    private val locationRepository: LocationRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AdManagementUiState())
     val uiState: StateFlow<AdManagementUiState> = _uiState.asStateFlow()
@@ -25,17 +28,33 @@ class AdManagementViewModel @Inject constructor(
     private var loadImagesJob: kotlinx.coroutines.Job? = null
 
     init {
-        // 초기 선택된 location의 이미지 로드
-        loadAdImages(_uiState.value.selectedAdLocation)
+        // DB에서 모든 location 로드
+        loadAllLocations()
     }
 
-    private fun loadAdImages(location: AdLocation?) {
+    private fun loadAllLocations() {
+        locationRepository.getAllLocations()
+            .onEach { locations ->
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        availableLocations = locations,
+                        selectedLocation = currentState.selectedLocation ?: locations.firstOrNull()
+                    )
+                }
+                // 첫 번째 location의 이미지 로드 (초기화 시에만)
+                if (_uiState.value.selectedLocation != null && loadImagesJob == null) {
+                    loadAdImages(_uiState.value.selectedLocation)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun loadAdImages(location: LocationEntity?) {
         // 이전 로드 작업 취소
         loadImagesJob?.cancel()
 
         location?.let {
-            val locationId = it.toLocationId()
-            loadImagesJob = adImageRepository.getAdImagesByLocation(locationId)
+            loadImagesJob = adImageRepository.getAdImagesByLocation(it.id)
                 .onEach { entities ->
                     _uiState.update { currentState ->
                         currentState.copy(
@@ -50,14 +69,14 @@ class AdManagementViewModel @Inject constructor(
     private fun AdImageEntity.toAdImageData(): AdImageData {
         return AdImageData(
             id = this.id.toString(),
-            fileName = this.name,
+            fileName = "", // 파일명은 표시하지 않음
             imageUri = this.url
         )
     }
 
-    fun selectAdLocation(location: AdLocation) {
+    fun selectAdLocation(location: LocationEntity) {
         _uiState.update { currentState ->
-            currentState.copy(selectedAdLocation = location)
+            currentState.copy(selectedLocation = location)
         }
         // location 변경 시 해당 location의 이미지 다시 로드
         loadAdImages(location)
@@ -74,23 +93,20 @@ class AdManagementViewModel @Inject constructor(
     }
 
     /**
-     * 갤러리에서 선택한 이미지를 광고 이미지로 추가합니다.
-     * @param uri 갤러리에서 선택한 이미지 Uri
+     * 갤러리에서 선택한 이미지/동영상을 추가합니다.
+     * 원본 파일명은 FileManager에서 자동으로 추출됩니다.
+     * @param uri 갤러리에서 선택한 미디어 Uri
      */
     fun addAdImageFromUri(uri: Uri) {
         viewModelScope.launch {
-            val selectedLocation = _uiState.value.selectedAdLocation ?: return@launch
-            val locationId = selectedLocation.toLocationId()
+            val selectedLocation = _uiState.value.selectedLocation ?: return@launch
 
             // 현재 해당 location의 이미지 개수를 가져와서 order 값 설정
             val currentImages = _uiState.value.adImages
             val nextOrder = currentImages.size + 1
 
-            // 파일명 생성 (timestamp 기반)
-            val fileName = "ad_image_${System.currentTimeMillis()}"
-
-            // Repository를 통해 DB에 저장
-            adImageRepository.insertAdImageFromUri(uri, locationId, nextOrder, fileName)
+            // Repository를 통해 DB에 저장 (원본 파일명은 FileManager에서 추출)
+            adImageRepository.insertAdImageFromUri(uri, selectedLocation.id, nextOrder)
             // Flow가 자동으로 UI 업데이트
         }
     }
