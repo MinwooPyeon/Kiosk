@@ -6,10 +6,11 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -21,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,28 +32,37 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.google.common.util.concurrent.ListenableFuture
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
+import com.pixelro.nenoonkiosk.core.ui.BackButtonHorizontal
+import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
-import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.core.util.qr.QRScannerAnalyzer
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import androidx.camera.core.Preview as CameraPreview
 
 @Composable
 fun QRSignInScreen(
@@ -59,9 +70,13 @@ fun QRSignInScreen(
     loginViewModel: LoginViewModel,
     navController: NavController,
 ) {
+    val scanInstruction = stringResource(R.string.qr_sign_in_scan_instruction)
+    val loginProcessing = stringResource(R.string.qr_sign_in_login_processing)
+    val invalidQR = stringResource(R.string.qr_sign_in_invalid_qr)
+    val scannedSuccess = stringResource(R.string.qr_sign_in_scanned_success)
+
     var scannedId by remember { mutableStateOf("") }
     var scannedPassword by remember { mutableStateOf("") }
-
     var isScanning by remember { mutableStateOf(true) }
     var signInFailed by remember { mutableStateOf(false) }
     var signInMessage by remember { mutableStateOf("") }
@@ -69,13 +84,12 @@ fun QRSignInScreen(
     val userData by loginViewModel.userData.collectAsState()
     val isUserSignedIn by loginViewModel.isUserSignedIn.collectAsState()
 
-    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val cameraExecutor: ExecutorService = remember { Executors.newSingleThreadExecutor() }
-
-    val cameraProviderFutureState = remember { mutableStateOf<ListenableFuture<ProcessCameraProvider>?>(null) }
+    val cameraProviderFutureState =
+        remember { mutableStateOf<ListenableFuture<ProcessCameraProvider>?>(null) }
 
     DisposableEffect(Unit) {
         signInFailed = false
@@ -87,17 +101,17 @@ fun QRSignInScreen(
     }
 
     LaunchedEffect(Unit) {
-        signInMessage = StringProvider.getString(R.string.qr_sign_in_scan_instruction)
+        signInMessage = scanInstruction
     }
 
     LaunchedEffect(isScanning, scannedId, scannedPassword) {
         if (!isScanning && scannedId.isNotBlank() && scannedPassword.isNotBlank()) {
-            signInMessage = StringProvider.getString(R.string.qr_sign_in_login_processing)
+            signInMessage = loginProcessing
             coroutineScope.launch(Dispatchers.Main) {
                 loginViewModel.userSignIn(scannedId, scannedPassword, {}).also { success ->
                     delay(1500L)
                     if (!success) {
-                        signInMessage = StringProvider.getString(R.string.qr_sign_in_invalid_qr)
+                        signInMessage = invalidQR
                         signInFailed = true
                         isScanning = true
                     } else {
@@ -108,131 +122,346 @@ fun QRSignInScreen(
         }
     }
 
-    Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        StyledText(StringProvider.getString(R.string.qr_sign_in_title), TextStyle.Title)
+    QRSignInContent(
+        isScanning = isScanning,
+        signInFailed = signInFailed,
+        isUserSignedIn = isUserSignedIn,
+        userName = userData?.name,
+        signInMessage = signInMessage,
+        onQRScanned = { id, password ->
+            scannedId = id
+            scannedPassword = password
+            isScanning = false
+            signInFailed = false
+            signInMessage = scannedSuccess
+        },
+        onInvalidQR = {
+            signInMessage = invalidQR
+            isScanning = true
+        },
+        onCameraBindFail = {
+            isScanning = false
+            navController.navigate(SignInScreenState.UserSignIn.name) {
+                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+            }
+        },
+        onBackClick = {
+            navController.navigate(SignInScreenState.UserSignIn.name) {
+                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+            }
+        },
+        cameraProviderFutureState = cameraProviderFutureState,
+        cameraExecutor = cameraExecutor,
+        lifecycleOwner = lifecycleOwner,
+        coroutineScope = coroutineScope
+    )
+}
 
-        Spacer(modifier = Modifier.weight(1f))
+@Composable
+private fun QRSignInContent(
+    isScanning: Boolean,
+    signInFailed: Boolean,
+    isUserSignedIn: Boolean,
+    userName: String?,
+    signInMessage: String,
+    onQRScanned: (String, String) -> Unit,
+    onInvalidQR: () -> Unit,
+    onCameraBindFail: () -> Unit,
+    onBackClick: () -> Unit,
+    cameraProviderFutureState: MutableState<ListenableFuture<ProcessCameraProvider>?>,
+    cameraExecutor: ExecutorService,
+    lifecycleOwner: LifecycleOwner,
+    coroutineScope: CoroutineScope
+) {
+    val isLandscape = isLandscape()
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        NenoonTopBar(
+            title = stringResource(R.string.qr_sign_in_title),
+            showBackButton = false
+        )
+
+        if (isLandscape) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                QRSignInLayout(
+                    isScanning = isScanning,
+                    signInFailed = signInFailed,
+                    isUserSignedIn = isUserSignedIn,
+                    userName = userName,
+                    signInMessage = signInMessage,
+                    onQRScanned = onQRScanned,
+                    onInvalidQR = onInvalidQR,
+                    onCameraBindFail = onCameraBindFail,
+                    onBackClick = onBackClick,
+                    cameraProviderFutureState = cameraProviderFutureState,
+                    cameraExecutor = cameraExecutor,
+                    lifecycleOwner = lifecycleOwner,
+                    coroutineScope = coroutineScope,
+                    isLandscapeMode = true,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 40.dp, vertical = 16.dp)
+                )
+            }
+        } else {
+            QRSignInLayout(
+                isScanning = isScanning,
+                signInFailed = signInFailed,
+                isUserSignedIn = isUserSignedIn,
+                userName = userName,
+                signInMessage = signInMessage,
+                onQRScanned = onQRScanned,
+                onInvalidQR = onInvalidQR,
+                onCameraBindFail = onCameraBindFail,
+                onBackClick = onBackClick,
+                cameraProviderFutureState = cameraProviderFutureState,
+                cameraExecutor = cameraExecutor,
+                lifecycleOwner = lifecycleOwner,
+                coroutineScope = coroutineScope,
+                isLandscapeMode = false,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(40.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun QRSignInLayout(
+    isScanning: Boolean,
+    signInFailed: Boolean,
+    isUserSignedIn: Boolean,
+    userName: String?,
+    signInMessage: String,
+    onQRScanned: (String, String) -> Unit,
+    onInvalidQR: () -> Unit,
+    onCameraBindFail: () -> Unit,
+    onBackClick: () -> Unit,
+    cameraProviderFutureState: MutableState<ListenableFuture<ProcessCameraProvider>?>,
+    cameraExecutor: ExecutorService,
+    lifecycleOwner: LifecycleOwner,
+    coroutineScope: CoroutineScope,
+    isLandscapeMode: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val isInPreview = LocalInspectionMode.current
+    val defaultUserName = stringResource(R.string.default_user_name)
+    val loginSuccess = stringResource(R.string.qr_sign_in_login_success, userName ?: defaultUserName)
+
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.8f else 1f))
 
         if (isScanning || signInFailed) {
-            AndroidView(
-                modifier =
-                    Modifier
-                        .fillMaxWidth(0.7f)
-                        .aspectRatio(1f)
-                        .clip(RoundedCornerShape(16.dp)),
-                factory = { ctx ->
-                    PreviewView(ctx).apply {
-                        this.scaleType = PreviewView.ScaleType.FILL_CENTER
-                        layoutParams =
-                            LinearLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                            )
-
-                        val cameraProvider = ProcessCameraProvider.getInstance(ctx)
-                        cameraProviderFutureState.value = cameraProvider
-
-                        cameraProvider.addListener({
-                            val actualCameraProvider = cameraProvider.get()
-                            val preview =
-                                Preview.Builder().build().also {
-                                    it.setSurfaceProvider(this.surfaceProvider)
-                                }
-
-                            val imageAnalysis =
-                                ImageAnalysis.Builder()
-                                    .setTargetResolution(Size(640, 480))
-                                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                                    .build()
-                                    .also {
-                                        it.setAnalyzer(
-                                            cameraExecutor,
-                                            QRScannerAnalyzer { result ->
-                                                if (isScanning) {
-                                                    isScanning = false
-                                                    signInFailed = false
-
-                                                    ContextCompat.getMainExecutor(context).execute {
-                                                        actualCameraProvider.unbindAll()
-                                                    }
-
-                                                    try {
-                                                        val json = JSONObject(result)
-                                                        scannedId = json.getString("id")
-                                                        scannedPassword = json.getString("pw")
-                                                        signInMessage = StringProvider.getString(R.string.qr_sign_in_scanned_success)
-                                                    } catch (e: Exception) {
-                                                        signInMessage = StringProvider.getString(R.string.qr_sign_in_invalid_qr)
-                                                        isScanning = true
-                                                        ContextCompat.getMainExecutor(context).execute {
-                                                            actualCameraProvider.bindToLifecycle(
-                                                                lifecycleOwner,
-                                                                CameraSelector.DEFAULT_FRONT_CAMERA,
-                                                                preview,
-                                                                it,
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            },
-                                        )
-                                    }
-
-                            try {
-                                actualCameraProvider.unbindAll()
-                                actualCameraProvider.bindToLifecycle(
-                                    lifecycleOwner,
-                                    CameraSelector.DEFAULT_FRONT_CAMERA,
-                                    preview,
-                                    imageAnalysis,
-                                )
-                            } catch (exc: Exception) {
-                                Log.e("CAMERA_BIND", StringProvider.getString(R.string.qr_sign_in_camera_bind_fail), exc)
-                                isScanning = false
-                                navController.navigate(SignInScreenState.UserSignIn.name) {
-                                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                                }
-                            }
-                        }, ContextCompat.getMainExecutor(ctx))
-                    }
-                },
+            CameraPreviewArea(
+                isInPreview = isInPreview,
+                isScanning = isScanning,
+                isLandscapeMode = isLandscapeMode,
+                onQRScanned = onQRScanned,
+                onInvalidQR = onInvalidQR,
+                onCameraBindFail = onCameraBindFail,
+                cameraProviderFutureState = cameraProviderFutureState,
+                cameraExecutor = cameraExecutor,
+                lifecycleOwner = lifecycleOwner
             )
-        } else if (isUserSignedIn && userData?.name?.isNotEmpty() == true && !signInFailed) {
-            StyledText(
-                StringProvider.getString(
-                    R.string.qr_sign_in_login_success,
-                    userData?.name ?: StringProvider.getString(R.string.default_user_name),
-                ),
-            )
+        } else if (isUserSignedIn && userName?.isNotEmpty() == true && !signInFailed) {
+            StyledText(loginSuccess)
         } else {
             ProgressIndicator()
         }
 
-        Spacer(modifier = Modifier.weight(1f).height(40.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 32.dp else 20.dp))
 
         StyledText(
-            text = if (!(isUserSignedIn && userData?.name?.isNotEmpty() == true && !signInFailed)) signInMessage else "",
+            text = if (!(isUserSignedIn && userName?.isNotEmpty() == true && !signInFailed)) signInMessage else "",
             textAlign = TextAlign.Center,
             style = TextStyle.Message,
             modifier = Modifier.fillMaxWidth(),
         )
 
-        Spacer(modifier = Modifier.height(120.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 32.dp else 40.dp))
 
-        PrimaryButton(
-            text = StringProvider.getString(R.string.button_back),
-            onClick = {
-                navController.navigate(SignInScreenState.UserSignIn.name) {
-                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+        BackButtonHorizontal(
+            onClick = onBackClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(10.dp)
+                )
+        )
+
+        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.8f else 1f))
+    }
+}
+
+@Composable
+private fun CameraPreviewArea(
+    isInPreview: Boolean,
+    isScanning: Boolean,
+    isLandscapeMode: Boolean,
+    onQRScanned: (String, String) -> Unit,
+    onInvalidQR: () -> Unit,
+    onCameraBindFail: () -> Unit,
+    cameraProviderFutureState: MutableState<ListenableFuture<ProcessCameraProvider>?>,
+    cameraExecutor: ExecutorService,
+    lifecycleOwner: LifecycleOwner
+) {
+    val context = LocalContext.current
+    val cameraWidthFraction = if (isLandscapeMode) 0.35f else 0.7f
+
+    if (isInPreview) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(cameraWidthFraction)
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.White)
+        )
+    } else {
+        AndroidView(
+            modifier = Modifier
+                .fillMaxWidth(cameraWidthFraction)
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(16.dp)),
+            factory = { ctx ->
+                PreviewView(ctx).apply {
+                    this.scaleType = PreviewView.ScaleType.FILL_CENTER
+                    layoutParams = LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                    )
+
+                    val cameraProvider = ProcessCameraProvider.getInstance(ctx)
+                    cameraProviderFutureState.value = cameraProvider
+
+                    cameraProvider.addListener({
+                        val actualCameraProvider = cameraProvider.get()
+                        val preview = CameraPreview.Builder().build().also {
+                            it.setSurfaceProvider(this.surfaceProvider)
+                        }
+
+                        val imageAnalysis = ImageAnalysis.Builder()
+                            .setTargetResolution(Size(640, 480))
+                            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                            .build()
+                            .also {
+                                it.setAnalyzer(
+                                    cameraExecutor,
+                                    QRScannerAnalyzer { result ->
+                                        if (isScanning) {
+                                            ContextCompat.getMainExecutor(context).execute {
+                                                actualCameraProvider.unbindAll()
+                                            }
+
+                                            try {
+                                                val json = JSONObject(result)
+                                                val id = json.getString("id")
+                                                val pw = json.getString("pw")
+                                                onQRScanned(id, pw)
+                                            } catch (e: Exception) {
+                                                onInvalidQR()
+                                                ContextCompat.getMainExecutor(context).execute {
+                                                    actualCameraProvider.bindToLifecycle(
+                                                        lifecycleOwner,
+                                                        CameraSelector.DEFAULT_FRONT_CAMERA,
+                                                        preview,
+                                                        it,
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    },
+                                )
+                            }
+
+                        try {
+                            actualCameraProvider.unbindAll()
+                            actualCameraProvider.bindToLifecycle(
+                                lifecycleOwner,
+                                CameraSelector.DEFAULT_FRONT_CAMERA,
+                                preview,
+                                imageAnalysis,
+                            )
+                        } catch (exc: Exception) {
+                            Log.e(
+                                "CAMERA_BIND",
+                                context.getString(R.string.qr_sign_in_camera_bind_fail),
+                                exc
+                            )
+                            onCameraBindFail()
+                        }
+                    }, ContextCompat.getMainExecutor(ctx))
                 }
             },
         )
     }
+}
+
+@Preview(
+    name = "Tablet Portrait",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF,
+    widthDp = 800,
+    heightDp = 1280
+)
+@Composable
+fun PreviewPortrait() {
+    val scanInstruction = stringResource(R.string.qr_sign_in_scan_instruction)
+
+    QRSignInContent(
+        isScanning = true,
+        signInFailed = false,
+        isUserSignedIn = false,
+        userName = null,
+        signInMessage = scanInstruction,
+        onQRScanned = { _, _ -> },
+        onInvalidQR = { },
+        onCameraBindFail = { },
+        onBackClick = { },
+        cameraProviderFutureState = remember { mutableStateOf(null) },
+        cameraExecutor = remember { Executors.newSingleThreadExecutor() },
+        lifecycleOwner = LocalLifecycleOwner.current,
+        coroutineScope = rememberCoroutineScope()
+    )
+}
+
+@Preview(
+    name = "Tablet Landscape",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF,
+    widthDp = 1280,
+    heightDp = 800
+)
+@Composable
+fun PreviewLandscape() {
+    val scanInstruction = stringResource(R.string.qr_sign_in_scan_instruction)
+
+    QRSignInContent(
+        isScanning = true,
+        signInFailed = false,
+        isUserSignedIn = false,
+        userName = null,
+        signInMessage = scanInstruction,
+        onQRScanned = { _, _ -> },
+        onInvalidQR = { },
+        onCameraBindFail = { },
+        onBackClick = { },
+        cameraProviderFutureState = remember { mutableStateOf(null) },
+        cameraExecutor = remember { Executors.newSingleThreadExecutor() },
+        lifecycleOwner = LocalLifecycleOwner.current,
+        coroutineScope = rememberCoroutineScope()
+    )
 }
