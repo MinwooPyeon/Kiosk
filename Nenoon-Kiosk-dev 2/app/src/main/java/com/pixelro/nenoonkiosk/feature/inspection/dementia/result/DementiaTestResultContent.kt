@@ -39,7 +39,6 @@ import com.pixelro.nenoonkiosk.ui.theme.Red
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
-
 @Composable
 fun DementiaInspectionResultContent(
     testResult: DementiaInspectionResult,
