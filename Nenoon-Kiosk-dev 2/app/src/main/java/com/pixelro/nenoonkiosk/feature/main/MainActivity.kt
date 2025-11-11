@@ -71,7 +71,7 @@ import com.pixelro.nenoonkiosk.core.manager.LicenseManager
 import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 import com.pixelro.nenoonkiosk.core.receiver.NenoonDeviceAdminReceiver
-import com.pixelro.nenoonkiosk.feature.license.LicenseScreen
+import com.pixelro.nenoonkiosk.feature.license.LicenseRoute
 import javax.inject.Inject
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
@@ -268,7 +268,7 @@ class MainActivity : AppCompatActivity() {
 
                     if (!isLicenseValid) {
                         // 라이선스 미인증 시 인증 화면 표시
-                        LicenseScreen(
+                        LicenseRoute(
                             onLicenseActivated = {
                                 isLicenseValid = true
                             }

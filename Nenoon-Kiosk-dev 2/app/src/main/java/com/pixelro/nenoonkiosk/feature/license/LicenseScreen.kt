@@ -25,17 +25,21 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.pixelro.nenoonkiosk.R
+import com.pixelro.nenoonkiosk.ui.theme.Black
+import com.pixelro.nenoonkiosk.ui.theme.DarkGray
+import com.pixelro.nenoonkiosk.ui.theme.Gray
+import com.pixelro.nenoonkiosk.ui.theme.Green
 import com.pixelro.nenoonkiosk.ui.theme.Red
+import com.pixelro.nenoonkiosk.ui.theme.White
+import com.pixelro.nenoonkiosk.ui.theme.Yellow200
 
 
 /**
@@ -46,25 +50,18 @@ import com.pixelro.nenoonkiosk.ui.theme.Red
  */
 @Composable
 fun LicenseScreen(
-    viewModel: LicenseViewModel = hiltViewModel(),
-    onLicenseActivated: () -> Unit
+    password: String,
+    isLoading: Boolean,
+    errorMessage: String?,
+    onNumberClick: (String) -> Unit,
+    onBackspaceClick: () -> Unit,
+    onClearClick: () -> Unit,
+    onAuthenticateClick: () -> Unit
 ) {
-    val password by viewModel.password.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val errorMessage by viewModel.errorMessage.collectAsState()
-    val isAuthenticated by viewModel.isAuthenticated.collectAsState()
-
-    // 인증 성공 시 콜백
-    LaunchedEffect(isAuthenticated) {
-        if (isAuthenticated) {
-            onLicenseActivated()
-        }
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1E1E1E)),
+            .background(Black),
         contentAlignment = Alignment.Center
     ) {
         Card(
@@ -72,7 +69,7 @@ fun LicenseScreen(
                 .width(500.dp)
                 .padding(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFF2D2D2D)
+                containerColor = DarkGray
             ),
             elevation = CardDefaults.cardElevation(8.dp)
         ) {
@@ -87,25 +84,25 @@ fun LicenseScreen(
                     imageVector = Icons.Default.Lock,
                     contentDescription = "Lock",
                     modifier = Modifier.size(48.dp),
-                    tint = Color(0xFF4CAF50)
+                    tint = Green
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // 제목
                 Text(
-                    text = "라이선스 인증",
+                    text = stringResource(R.string.license_title),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = White
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "비밀번호를 입력하여 해당 기기에 라이선스를 부여하세요",
+                    text = stringResource(R.string.license_description),
                     fontSize = 14.sp,
-                    color = Color.Gray
+                    color = Gray
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -129,33 +126,33 @@ fun LicenseScreen(
 
                 // 숫자 키패드
                 NumberKeypad(
-                    onNumberClick = { viewModel.onNumberClick(it) },
-                    onBackspaceClick = { viewModel.onBackspaceClick() },
-                    onClearClick = { viewModel.onClearClick() }
+                    onNumberClick = onNumberClick,
+                    onBackspaceClick = onBackspaceClick,
+                    onClearClick = onClearClick
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // 인증 버튼
                 Button(
-                    onClick = { viewModel.onAuthenticateClick() },
+                    onClick = onAuthenticateClick,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
                     enabled = !isLoading && password.isNotEmpty(),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF4CAF50)
+                        containerColor = Green
                     ),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     if (isLoading) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(24.dp),
-                            color = Color.White
+                            color = White
                         )
                     } else {
                         Text(
-                            text = "인증",
+                            text = stringResource(R.string.license_authenticate),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -167,6 +164,37 @@ fun LicenseScreen(
 }
 
 /**
+ * 프리뷰
+ */
+@Preview(showBackground = true, widthDp = 800, heightDp = 1280)
+@Composable
+private fun LicenseScreenPreview() {
+    LicenseScreen(
+        password = "",
+        isLoading = false,
+        errorMessage = null,
+        onNumberClick = {},
+        onBackspaceClick = {},
+        onClearClick = {},
+        onAuthenticateClick = {}
+    )
+}
+
+@Preview(showBackground = true, widthDp = 800, heightDp = 1280)
+@Composable
+private fun LicenseScreenWithErrorPreview() {
+    LicenseScreen(
+        password = "12",
+        isLoading = false,
+        errorMessage = "인증 실패. 비밀번호를 확인하세요",
+        onNumberClick = {},
+        onBackspaceClick = {},
+        onClearClick = {},
+        onAuthenticateClick = {}
+    )
+}
+
+/**
  * 비밀번호 표시 영역
  */
 @Composable
@@ -175,14 +203,14 @@ private fun PasswordDisplay(password: String) {
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
-            .border(2.dp, Color(0xFF4CAF50), RoundedCornerShape(8.dp))
-            .background(Color(0xFF1E1E1E), RoundedCornerShape(8.dp)),
+            .border(2.dp, Green, RoundedCornerShape(8.dp))
+            .background(DarkGray, RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = if (password.isEmpty()) "비밀번호 입력" else "•".repeat(password.length),
+            text = if (password.isEmpty()) stringResource(R.string.license_password_placeholder) else "•".repeat(password.length),
             fontSize = 24.sp,
-            color = if (password.isEmpty()) Color.Gray else Color.White,
+            color = if (password.isEmpty()) Gray else White,
             letterSpacing = 4.sp
         )
     }
@@ -242,7 +270,7 @@ private fun NumberKeypad(
                     .weight(1f)
                     .height(64.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFF44336)
+                    containerColor = Red
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
@@ -257,7 +285,7 @@ private fun NumberKeypad(
                     .weight(1f)
                     .height(64.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFFF9800)
+                    containerColor = Yellow200
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
@@ -284,7 +312,7 @@ private fun NumberButton(
         onClick = onClick,
         modifier = modifier.height(64.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF3F3F3F)
+            containerColor = Gray
         ),
         shape = RoundedCornerShape(8.dp)
     ) {
@@ -292,7 +320,7 @@ private fun NumberButton(
             text = number,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White
+            color = White
         )
     }
 }
