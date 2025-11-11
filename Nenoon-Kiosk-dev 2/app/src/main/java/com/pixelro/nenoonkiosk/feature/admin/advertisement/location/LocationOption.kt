@@ -2,6 +2,7 @@ package com.pixelro.nenoonkiosk.feature.admin.advertisement.location
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.harang.data.db.entity.LocationEntity
+import com.pixelro.nenoonkiosk.ui.theme.LightGray300
 
 
 @Composable
@@ -36,13 +38,14 @@ fun LocationOption(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(12.dp))
+            .border(1.dp, LightGray300, RoundedCornerShape(12.dp))
+            .clickable(onClick = onSelect)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         RadioButton(
             selected = isSelected,
-            onClick = onSelect
+            onClick = null
         )
 
         Spacer(modifier = Modifier.width(12.dp))
