@@ -136,7 +136,7 @@ fun AdLocationDisplay(
                             val context = LocalContext.current
                             val imageRequest = remember(selectedImageUri) {
                                 ImageRequest.Builder(context)
-                                    .data(File(selectedImageUri))
+                                    .data(selectedImageUri)
                                     .build()
                             }
 
