@@ -1105,4 +1105,14 @@
     <string name="admin_password_description">관리자 비밀번호를 변경할 수 있습니다</string>
     <string name="admin_password_coming_soon">비밀번호 관리 화면 (구현 예정)</string>
 
+    <!-- 라이선스 화면 -->
+    <string name="license_title">라이선스 인증</string>
+    <string name="license_description">비밀번호를 입력하여 해당 기기에 라이선스를 부여하세요</string>
+    <string name="license_password_placeholder">비밀번호 입력</string>
+    <string name="license_authenticate">인증</string>
+    <string name="license_error_empty">비밀번호를 입력하세요</string>
+    <string name="license_error_failed">인증 실패. 비밀번호를 확인하세요</string>
+    <string name="license_error_locked">너무 많이 시도했습니다. %d분 후에 다시 시도하세요</string>
+    <string name="license_cloned_device">다른 기기에서 실행되었습니다. 인증키를 다시 입력해주세요.</string>
+
 </resources>

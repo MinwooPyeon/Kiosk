@@ -26,8 +26,12 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
         }
     }
     compileOptions {
@@ -144,6 +148,9 @@ dependencies {
 
     // location
     implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // Security - EncryptedSharedPreferences (Keystore + AES-256-GCM)
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // MPAndroidChart
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
