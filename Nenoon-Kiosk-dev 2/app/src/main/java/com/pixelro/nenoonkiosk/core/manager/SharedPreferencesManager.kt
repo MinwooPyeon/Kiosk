@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.harang.data.model.dto.GetCompoundTestResult
 import com.harang.data.model.dto.User
+import com.pixelro.nenoonkiosk.BuildConfig
 import com.pixelro.nenoonkiosk.app.NenoonKioskApplication
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import java.lang.reflect.Type
@@ -17,7 +18,6 @@ object SharedPreferencesManager {
     private const val KEY_USER_ACCOUNTS = "user_accounts"
     private const val KEY_BLOOD_PRESSURE_MONITOR_TYPE = "blood_pressure_monitor_type"
     private const val KEY_ADMIN_PASSWORD = "admin_password"
-    private const val DEFAULT_ADMIN_PASSWORD = "0000"
 
     enum class BloodPressureMonitorType {
         BPBIO320,
@@ -79,7 +79,7 @@ object SharedPreferencesManager {
     }
 
     fun getAdminPassword(): String {
-        val password = pref.getString(KEY_ADMIN_PASSWORD, DEFAULT_ADMIN_PASSWORD) ?: DEFAULT_ADMIN_PASSWORD
+        val password = pref.getString(KEY_ADMIN_PASSWORD, BuildConfig.DEFAULT_ADMIN_PASSWORD) ?: BuildConfig.DEFAULT_ADMIN_PASSWORD
         Log.d("SharedPreferencesManager", "Admin password retrieved.")
         return password
     }
