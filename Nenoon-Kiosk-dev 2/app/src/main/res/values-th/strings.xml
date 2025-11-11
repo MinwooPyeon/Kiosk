@@ -1105,6 +1105,7 @@
     <string name="admin_add">เพิ่ม</string>
     <string name="admin_delete">ลบ</string>
     <string name="admin_reorder">เรียงลำดับใหม่</string>
+    <string name="admin_password">รหัสผ่านผู้ดูแลระบบ</string>
     <string name="admin_password_description">คุณสามารถเปลี่ยนรหัสผ่านผู้ดูแลระบบได้</string>
     <string name="admin_password_coming_soon">หน้าจอการจัดการรหัสผ่าน (เร็วๆ นี้)</string>
 

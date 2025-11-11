@@ -1102,6 +1102,8 @@ en ciertas situaciones, como cuando se cubre un ojo, el ojo se desvía. Esto se 
     <string name="admin_add">Agregar</string>
     <string name="admin_delete">Eliminar</string>
     <string name="admin_reorder">Reordenar</string>
+    <string name="admin_password">Mot de passe administrateur</string>
+    <string name="admin_password">Contraseña de administrador</string>
     <string name="admin_password_description">Puede cambiar la contraseña de administrador</string>
     <string name="admin_password_coming_soon">Pantalla de Gestión de Contraseña (Próximamente)</string>
 
