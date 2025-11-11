@@ -1093,6 +1093,7 @@
     <string name="admin_add">添加</string>
     <string name="admin_delete">删除</string>
     <string name="admin_reorder">重新排序</string>
+    <string name="admin_password">管理员密码</string>
     <string name="admin_password_description">您可以更改管理员密码</string>
     <string name="admin_password_coming_soon">密码管理屏幕（即将推出）</string>
 
