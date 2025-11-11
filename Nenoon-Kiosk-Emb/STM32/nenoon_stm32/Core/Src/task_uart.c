@@ -32,11 +32,10 @@ static void on_frame_rx(const uint8_t* frame, size_t len){
 static void vTaskUartRx(void * arg){
 	(void)arg;
 	STLINK_UART_Println("[task uart] start");
+	frame_parser_init(&s_fp, on_frame_rx);\
+
 	__HAL_UART_CLEAR_IDLEFLAG(&huart6);
 	__HAL_UART_ENABLE_IT(&huart6, UART_IT_IDLE);
-	HAL_UARTEx_ReceiveToIdle_DMA(&huart6, s_uart6_rx_dma, sizeof(s_uart6_rx_dma));
-	frame_parser_init(&s_fp, on_frame_rx);
-
 	HAL_UARTEx_ReceiveToIdle_DMA(&huart6, s_uart6_rx_dma, sizeof(s_uart6_rx_dma));
 	uint8_t chunk[64];
 	for(;;){
@@ -61,8 +60,10 @@ void task_uart_start(uint32_t stack, osPriority_t prio){
 	osThreadNew(vTaskUartRx, NULL, &attr);
 }
 
+volatile uint32_t g_uart6_isr_cnt = 0;
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef* huart, uint16_t size){
 	if(huart->Instance == USART6){
+		STLINK_UART_Println("[uart6] Rx Event Callback");
 		BaseType_t xHigher = pdFALSE;
 		(void)xStreamBufferSendFromISR(s_uart6_rx_sb, s_uart6_rx_dma, size, &xHigher);
 		vTaskNotifyGiveFromISR(s_uart_rx_th, &xHigher);

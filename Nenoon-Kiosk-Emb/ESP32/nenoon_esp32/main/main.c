@@ -14,6 +14,7 @@
 #include "uart_link.h"
 #include "http_srv.h"
 #include "metrics.h"
+#include "debug_tx.h"
 #include <string.h>
 
 static const char* TAG = "app_main";
@@ -47,14 +48,30 @@ static void task_net_http(void* arg){
     vTaskDelete(NULL);
 }
 
-static void task_metrics(void* arg){
+void task_metrics(void* arg){
     metrics_snapshot_t m;
     while(1){
         metrics_get(&m);
         ESP_LOGI(TAG, "[metrics] http_ok=%u http_err=%u tx=%u rx=%u sse=%u",
                  m.http_ok, m.http_err, m.bytes_tx, m.bytes_rx, m.sse_clients);
-        vTaskDelay(pdMS_TO_TICKS(5000));
+        vTaskDelay(pdMS_TO_TICKS(5000)); 
     }
+}
+
+void test_tx(void){
+	// 1) PING 프레임 1회
+    debug_tx_send_ping();
+	ESP_LOGI(TAG, "debug tx send ping");
+    // 2) 텍스트 프레임
+    debug_tx_send_text("hello, stm32!");
+	ESP_LOGI(TAG, "debug tx send hello stm32");
+    // 3) HEX → RAW (프레임 래핑 방식으로 전송)
+    debug_tx_send_hex("FF00A1C0");
+    ESP_LOGI(TAG, "debug tx send FF00A1C0");
+
+    // 4) 10회 버스트(50ms 간격)
+    debug_tx_burst(10, 50);
+    ESP_LOGI(TAG, "debug tx send burst 10");
 }
 
 void app_main(void) {
@@ -72,7 +89,7 @@ void app_main(void) {
     xTaskCreate(task_uart_link,   "t_uart",    4096, NULL, 8, NULL);
     xTaskCreate(task_session_mgr, "t_session", 4096, NULL, 7, NULL);
     xTaskCreate(task_net_http,    "t_http",    4096, NULL, 6, NULL);
-
+	
     // 필요 시 켜세요(지속 루프)
-    // xTaskCreate(task_metrics,   "t_metrics", 4096, NULL, 3, NULL);
+    xTaskCreate(task_metrics,   "t_metrics", 4096, NULL, 3, NULL);
 }

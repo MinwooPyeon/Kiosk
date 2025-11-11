@@ -12,6 +12,7 @@ idf_component_register(
     "src/link_io.c"
     "src/link_rx_task.c"
     "src/media_json.c"
+    "src/debug_tx.c"
   INCLUDE_DIRS
     "include"
   REQUIRES
