@@ -16,6 +16,8 @@ object SharedPreferencesManager {
     private const val KEY_COMPOUND_TEST_RESULT_PREFIX = "compound_test_result_"
     private const val KEY_USER_ACCOUNTS = "user_accounts"
     private const val KEY_BLOOD_PRESSURE_MONITOR_TYPE = "blood_pressure_monitor_type"
+    private const val KEY_ADMIN_PASSWORD = "admin_password"
+    private const val DEFAULT_ADMIN_PASSWORD = "0000"
 
     enum class BloodPressureMonitorType {
         BPBIO320,
@@ -68,6 +70,23 @@ object SharedPreferencesManager {
             BloodPressureMonitorType.BP170B.name -> BloodPressureMonitorType.BP170B
             else -> BloodPressureMonitorType.BPBIO320
         }
+    }
+
+    fun putAdminPassword(password: String) {
+        editor.putString(KEY_ADMIN_PASSWORD, password)
+        editor.commit()
+        Log.d("SharedPreferencesManager", "Admin password updated successfully.")
+    }
+
+    fun getAdminPassword(): String {
+        val password = pref.getString(KEY_ADMIN_PASSWORD, DEFAULT_ADMIN_PASSWORD) ?: DEFAULT_ADMIN_PASSWORD
+        Log.d("SharedPreferencesManager", "Admin password retrieved.")
+        return password
+    }
+
+    fun checkAdminPassword(inputPassword: String): Boolean {
+        val storedPassword = getAdminPassword()
+        return inputPassword == storedPassword
     }
 
     fun putUserAccount(

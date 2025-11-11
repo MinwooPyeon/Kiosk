@@ -12,8 +12,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
 
-// 관리자 대시보드로 들어가는 좌상단 비밂영역
+// 관리자 대시보드로 들어가는 좌상단 비밀영역
 @Composable
 fun SecretAdminTapArea(
     onSecretActivated: () -> Unit,
@@ -22,8 +23,10 @@ fun SecretAdminTapArea(
     requiredTaps: Int = 10,
     timeoutMillis: Long = 2000L
 ) {
+    val correctPassword = remember { SharedPreferencesManager.getAdminPassword() }
     var tapCount by remember { mutableStateOf(0) }
     var lastTapTime by remember { mutableStateOf(0L) }
+    var showPasswordDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier
@@ -43,8 +46,20 @@ fun SecretAdminTapArea(
 
                 if (tapCount >= requiredTaps) {
                     tapCount = 0
-                    onSecretActivated()
+                    showPasswordDialog = true
                 }
             }
     )
+
+    if (showPasswordDialog) {
+        AdminPasswordDialog(
+            onDismiss = { showPasswordDialog = false },
+            onPasswordConfirm = {
+                // 비밀번호가 맞을 때만 호출됨
+                showPasswordDialog = false
+                onSecretActivated()
+            },
+            correctPassword = correctPassword
+        )
+    }
 }
