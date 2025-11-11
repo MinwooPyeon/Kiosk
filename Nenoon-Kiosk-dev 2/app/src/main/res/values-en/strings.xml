@@ -1101,6 +1101,7 @@ to the center of the circle.</string>
     <string name="admin_add">Add</string>
     <string name="admin_delete">Delete</string>
     <string name="admin_reorder">Reorder</string>
+    <string name="admin_password">Administrator Password</string>
     <string name="admin_password_description">You can change the administrator password</string>
     <string name="admin_password_coming_soon">Password Management Screen (Coming Soon)</string>
 

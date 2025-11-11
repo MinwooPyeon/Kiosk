@@ -336,8 +336,6 @@ private fun LandscapeVisualAcuityContent(
             )
         }
 
-//        Spacer(modifier = Modifier.height(20.dp))
-
         // 설명 텍스트
         Text(
             text = stringResource(STRING_VISUAL_ACUITY_DESCRIPTION),
@@ -346,8 +344,6 @@ private fun LandscapeVisualAcuityContent(
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
         )
-
-//        Spacer(modifier = Modifier.height(16.dp))
 
         // 프로그레스 바
         LinearProgressIndicator(
@@ -358,14 +354,10 @@ private fun LandscapeVisualAcuityContent(
             color = neNoon_blue,
         )
 
-//        Spacer(modifier = Modifier.height(12.dp))
-
         VoiceRecognitionIndicator(
             sttActive = sttActive,
             sttEnabled = sttEnabled,
         )
-
-//        Spacer(modifier = Modifier.height(20.dp))
 
         // 방향 버튼 3개 (가로 배치)
         Row(

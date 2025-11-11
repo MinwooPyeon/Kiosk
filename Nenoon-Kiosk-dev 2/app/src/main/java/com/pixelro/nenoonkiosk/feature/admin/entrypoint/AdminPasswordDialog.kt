@@ -99,7 +99,7 @@ private fun AdminPasswordDialogContent(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "관리자 비밀번호",
+                    text = stringResource(R.string.admin_password),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
