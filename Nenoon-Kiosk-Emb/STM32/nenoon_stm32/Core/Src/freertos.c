@@ -118,7 +118,7 @@ void MX_FREERTOS_Init(void) {
 	osDelay(200);
 	//task_usb_start(2048, osPriorityNormal);
 	//task_scan_start(2048, osPriorityNormal);
-	task_verify_start();
+	//task_verify_start();
   /* USER CODE END Init */
 
   /* USER CODE BEGIN RTOS_MUTEX */

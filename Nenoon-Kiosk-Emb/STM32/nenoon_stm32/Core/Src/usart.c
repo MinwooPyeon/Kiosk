@@ -297,7 +297,8 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     }
 
     __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart6_rx);
-
+    HAL_NVIC_SetPriority(USART6_IRQn, 6, 0);  // FreeRTOS와 호환되도록 6 이상
+    HAL_NVIC_EnableIRQ(USART6_IRQn);
     /* USART6_TX Init */
     hdma_usart6_tx.Instance = DMA2_Stream6;
     hdma_usart6_tx.Init.Channel = DMA_CHANNEL_5;

@@ -84,15 +84,25 @@ bool linkio_enqueue_owned(uint8_t type, const uint8_t* payload, uint16_t plen)
 
 esp_err_t linkio_send_frame(uint8_t type, const uint8_t* payload, uint16_t plen)
 {
-    if(s_uart_num < 0) return ESP_ERR_INVALID_STATE;
-    uint8_t fbuf[FRAME_MAX_WIRE];
-    size_t  flen = 0;
-    frame_err_t fer = frame_build(type, payload, plen, fbuf, sizeof(fbuf), &flen);
-    if(fer != FRAME_OK){ ESP_LOGE(TAG, "frame build fail %d", fer); return ESP_FAIL; }
-    int wr = uart_write_bytes(s_uart_num, (const char*)fbuf, flen);
-    if(wr < 0){ ESP_LOGE(TAG, "uart write fail"); return ESP_FAIL; }
-    return ESP_OK;
+    if (s_uart_num < 0) return ESP_ERR_INVALID_STATE;
+
+    esp_err_t ret = ESP_FAIL;
+    size_t flen = 0;
+    uint8_t *fbuf = malloc(FRAME_MAX_WIRE);
+    if (!fbuf) { ESP_LOGE(TAG, "oom"); return ESP_ERR_NO_MEM; }
+
+    frame_err_t fer = frame_build(type, payload, plen, fbuf, FRAME_MAX_WIRE, &flen);
+    if (fer == FRAME_OK) {
+        int wr = uart_write_bytes(s_uart_num, (const char*)fbuf, flen);
+        ret = (wr < 0) ? ESP_FAIL : ESP_OK;
+    } else {
+        ESP_LOGE(TAG, "frame build fail %d", fer);
+        ret = ESP_FAIL;
+    }
+    free(fbuf);
+    return ret;
 }
+
 
 /* 🚩 핵심 수정: 딥카피 불필요. frame_t(배열 포함) 통째로 복사 후 원본 블록만 free */
 esp_err_t linkio_recv_frame(frame_t* out, TickType_t to)

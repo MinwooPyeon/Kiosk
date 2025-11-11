@@ -63,6 +63,7 @@ extern DMA_HandleTypeDef hdma_usart3_tx;
 extern DMA_HandleTypeDef hdma_usart6_rx;
 extern DMA_HandleTypeDef hdma_usart6_tx;
 extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef huart6;
 extern TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN EV */
@@ -265,6 +266,10 @@ void DMA2_Stream1_IRQHandler(void)
   /* USER CODE END DMA2_Stream1_IRQn 1 */
 }
 
+void USART6_IRQHandler(void)
+{
+    HAL_UART_IRQHandler(&huart6);   // ★ 필수: HAL이 IDLE/DMA 완료 등 이벤트를 콜백으로 넘김
+}
 /**
   * @brief This function handles USB On The Go FS global interrupt.
   */

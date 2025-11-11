@@ -14,7 +14,7 @@
 #define RX_TASK_PRIO  (tskIDLE_PRIORITY + 5)
 
 static const char* TAG = "link_rx";
-static bool s_sniff = true;
+static bool s_sniff = false;
 void uart_link_set_sniff(bool on){ s_sniff = on; } // 외부에서 사용
 
 /* frame_reader emit → 큐에 소유권 전송 */
