@@ -37,7 +37,8 @@ fun AdManagementContent(
     onSelectLocation: (LocationEntity) -> Unit,
     onDeleteImage: (String) -> Unit,
     onAddImage: () -> Unit,
-    onSaveOrder: (List<AdImageData>) -> Unit
+    onSaveOrder: (List<AdImageData>) -> Unit,
+    onSelectImage: (AdImageData) -> Unit
 ) {
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
@@ -82,7 +83,8 @@ fun AdManagementContent(
                     onSelectLocation = onSelectLocation,
                     onDeleteImage = onDeleteImage,
                     onAddImage = onAddImage,
-                    onSaveOrder = onSaveOrder
+                    onSaveOrder = onSaveOrder,
+                    onSelectImage = onSelectImage
                 )
             } else {
                 LandscapeLayout(
@@ -90,7 +92,8 @@ fun AdManagementContent(
                     onSelectLocation = onSelectLocation,
                     onDeleteImage = onDeleteImage,
                     onAddImage = onAddImage,
-                    onSaveOrder = onSaveOrder
+                    onSaveOrder = onSaveOrder,
+                    onSelectImage = onSelectImage
                 )
             }
         }
@@ -103,7 +106,8 @@ private fun PortraitLayout(
     onSelectLocation: (LocationEntity) -> Unit,
     onDeleteImage: (String) -> Unit,
     onAddImage: () -> Unit,
-    onSaveOrder: (List<AdImageData>) -> Unit
+    onSaveOrder: (List<AdImageData>) -> Unit,
+    onSelectImage: (AdImageData) -> Unit
 ) {
     // 세로 모드: 위에 광고 위치 선택, 아래에 미리보기와 목록
     Column(
@@ -125,7 +129,10 @@ private fun PortraitLayout(
             AdLocationDisplay(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxHeight()
+                    .fillMaxHeight(),
+                adImages = uiState.adImages.mapNotNull { it.toAdImageEntity(uiState.selectedLocation?.id ?: 1) },
+                locationId = uiState.selectedLocation?.id ?: 1,
+                selectedImageUri = uiState.selectedPreviewImagesByLocation[uiState.selectedLocation?.id]?.imageUri
             )
 
             ImageListArea(
@@ -133,6 +140,8 @@ private fun PortraitLayout(
                 onDeleteImage = onDeleteImage,
                 onAddImage = onAddImage,
                 onSaveOrder = onSaveOrder,
+                onSelectImage = onSelectImage,
+                selectedImageId = uiState.selectedPreviewImagesByLocation[uiState.selectedLocation?.id]?.id,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight()
@@ -147,7 +156,8 @@ private fun LandscapeLayout(
     onSelectLocation: (LocationEntity) -> Unit,
     onDeleteImage: (String) -> Unit,
     onAddImage: () -> Unit,
-    onSaveOrder: (List<AdImageData>) -> Unit
+    onSaveOrder: (List<AdImageData>) -> Unit,
+    onSelectImage: (AdImageData) -> Unit
 ) {
     // 가로 모드: 좌측에 광고 위치 선택과 미리보기, 우측에 목록
     Row(
@@ -169,7 +179,11 @@ private fun LandscapeLayout(
             )
 
             // 광고 위치 미리보기 섹션
-            AdLocationDisplay()
+            AdLocationDisplay(
+                adImages = uiState.adImages.mapNotNull { it.toAdImageEntity(uiState.selectedLocation?.id ?: 1) },
+                locationId = uiState.selectedLocation?.id ?: 1,
+                selectedImageUri = uiState.selectedPreviewImagesByLocation[uiState.selectedLocation?.id]?.imageUri
+            )
         }
 
         // 우측: 광고 이미지 목록
@@ -178,6 +192,8 @@ private fun LandscapeLayout(
             onDeleteImage = onDeleteImage,
             onAddImage = onAddImage,
             onSaveOrder = onSaveOrder,
+            onSelectImage = onSelectImage,
+            selectedImageId = uiState.selectedPreviewImagesByLocation[uiState.selectedLocation?.id]?.id,
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
@@ -223,7 +239,8 @@ private fun AdManagementContentLandscapePreview() {
         onSelectLocation = {},
         onDeleteImage = {},
         onAddImage = {},
-        onSaveOrder = {}
+        onSaveOrder = {},
+        onSelectImage = {}
     )
 }
 
@@ -261,6 +278,7 @@ private fun AdManagementContentPortraitPreview() {
         onSelectLocation = {},
         onDeleteImage = {},
         onAddImage = {},
-        onSaveOrder = {}
+        onSaveOrder = {},
+        onSelectImage = { }
     )
 }

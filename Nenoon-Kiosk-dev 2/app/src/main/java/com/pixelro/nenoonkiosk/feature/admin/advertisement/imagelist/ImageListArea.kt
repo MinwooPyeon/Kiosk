@@ -50,6 +50,8 @@ fun ImageListArea(
     onDeleteImage: (String) -> Unit,
     onAddImage: () -> Unit,
     onSaveOrder: (List<AdImageData>) -> Unit,
+    onSelectImage: (AdImageData) -> Unit = {},
+    selectedImageId: String? = null,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -142,6 +144,8 @@ fun ImageListArea(
                                 onDeleteImage(image.id)
                             }
                         },
+                        onClick = { onSelectImage(image) },
+                        isSelected = image.id == selectedImageId,
                         dragModifier = Modifier.dragHandle(
                             state = reorderableState,
                             key = image.id,

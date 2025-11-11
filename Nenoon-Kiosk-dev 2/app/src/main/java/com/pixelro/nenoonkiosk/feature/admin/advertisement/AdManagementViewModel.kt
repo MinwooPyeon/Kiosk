@@ -132,4 +132,19 @@ class AdManagementViewModel @Inject constructor(
             }
         }
     }
+
+    /**
+     * 미리보기 영역에 표시할 이미지를 선택합니다.
+     * 현재 선택된 location별로 별도로 저장됩니다.
+     * @param image 선택된 광고 이미지
+     */
+    fun selectPreviewImage(image: AdImageData) {
+        val locationId = _uiState.value.selectedLocation?.id ?: return
+
+        _uiState.update { currentState ->
+            val updatedMap = currentState.selectedPreviewImagesByLocation.toMutableMap()
+            updatedMap[locationId] = image
+            currentState.copy(selectedPreviewImagesByLocation = updatedMap)
+        }
+    }
 }

@@ -60,6 +60,7 @@ fun AdminDashboardScreen(
             mediaPickerLauncher.launch(PickVisualMediaRequest(mediaType))
         },
         onSaveOrder = adManagementViewModel::saveAdImagesOrder,
+        onSelectImage = adManagementViewModel::selectPreviewImage,
         isOutClick = isOutClick
     )
 }
@@ -73,6 +74,7 @@ private fun AdminDashboardContent(
     onDeleteImage: (String) -> Unit,
     onAddImage: () -> Unit,
     onSaveOrder: (List<AdImageData>) -> Unit,
+    onSelectImage: (AdImageData) -> Unit,
     isOutClick: () -> Unit
 ) {
     BoxWithConstraints(
@@ -106,7 +108,8 @@ private fun AdminDashboardContent(
                             onSelectLocation = onSelectLocation,
                             onDeleteImage = onDeleteImage,
                             onAddImage = onAddImage,
-                            onSaveOrder = onSaveOrder
+                            onSaveOrder = onSaveOrder,
+                            onSelectImage = onSelectImage
                         )
 
                         AdminTab.PASSWORD_MANAGEMENT -> PasswordManagementContent()
@@ -137,7 +140,8 @@ private fun AdminDashboardContent(
                             onSelectLocation = onSelectLocation,
                             onDeleteImage = onDeleteImage,
                             onAddImage = onAddImage,
-                            onSaveOrder = onSaveOrder
+                            onSaveOrder = onSaveOrder,
+                            onSelectImage = onSelectImage
                         )
 
                         AdminTab.PASSWORD_MANAGEMENT -> PasswordManagementContent()
@@ -183,6 +187,7 @@ fun AdminDashboardContentPreview() {
         onDeleteImage = {},
         onAddImage = {},
         onSaveOrder = {},
+        onSelectImage = {},
         isOutClick = {}
     )
 }
@@ -216,6 +221,7 @@ fun AdminDashboardContentPortraitPreview() {
         onDeleteImage = {},
         onAddImage = {},
         onSaveOrder = {},
+        onSelectImage = {},
         isOutClick = {}
     )
 }

@@ -1088,7 +1088,7 @@
     <string name="admin_screensaver">スクリーンセーバー</string>
     <string name="admin_screensaver_subtitle">画面をタッチ</string>
     <string name="admin_badge_video">動画</string>
-    <string name="admin_ad_location_preview">広告位置プレビュー</string>
+    <string name="admin_ad_location_preview">広告表示エリア</string>
     <string name="admin_ad_image_list">広告画像リスト</string>
     <string name="admin_add">追加</string>
     <string name="admin_delete">削除</string>

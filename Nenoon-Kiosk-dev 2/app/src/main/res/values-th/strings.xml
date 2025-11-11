@@ -1100,7 +1100,7 @@
     <string name="admin_screensaver">โปรแกรมรักษาหน้าจอ</string>
     <string name="admin_screensaver_subtitle">แตะหน้าจอ</string>
     <string name="admin_badge_video">วิดีโอ</string>
-    <string name="admin_ad_location_preview">ดูตัวอย่างตำแหน่งโฆษณา</string>
+    <string name="admin_ad_location_preview">พื้นที่แสดงโฆษณา</string>
     <string name="admin_ad_image_list">รายการภาพโฆษณา</string>
     <string name="admin_add">เพิ่ม</string>
     <string name="admin_delete">ลบ</string>

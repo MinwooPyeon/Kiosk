@@ -1097,7 +1097,7 @@ en ciertas situaciones, como cuando se cubre un ojo, el ojo se desvía. Esto se 
     <string name="admin_screensaver">Salvapantallas</string>
     <string name="admin_screensaver_subtitle">Toque la pantalla</string>
     <string name="admin_badge_video">Video</string>
-    <string name="admin_ad_location_preview">Vista Previa de Ubicación de Anuncio</string>
+    <string name="admin_ad_location_preview">Área de Visualización de Anuncios</string>
     <string name="admin_ad_image_list">Lista de Imágenes de Anuncios</string>
     <string name="admin_add">Agregar</string>
     <string name="admin_delete">Eliminar</string>
