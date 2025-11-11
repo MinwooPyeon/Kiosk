@@ -22,6 +22,10 @@
     <string name="not_allow_camera">ไม่ได้รับอนุญาตให้ใช้กล้อง</string>
     <string name="not_exist_print">ไม่พบเครื่องพิมพ์ที่เชื่อมต่อ</string>
 
+    <string name="password_login_button">รหัสผ่าน\nเข้าสู่ระบบ</string>
+    <string name="qr_login_button">QR\nเข้าสู่ระบบ</string>
+    <string name="face_login_button">ใบหน้า\nเข้าสู่ระบบ</string>
+
     <!-- 로그인 화면 -->
     <string name="id_input">กรุณากรอกชื่อผู้ใช้ของคุณ</string>
     <string name="pw_input">กรุณากรอกรหัสผ่านของคุณ</string>

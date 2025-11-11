@@ -70,10 +70,6 @@ fun SecondaryButton(
         interactionSource = interactionSource,
         modifier =
             modifier
-                .border(
-                    border = BorderStroke(2.dp, primaryColor),
-                    shape = RoundedCornerShape(10.dp),
-                )
                 .fillMaxWidth()
                 .height(100.dp),
         shape = RoundedCornerShape(10.dp),

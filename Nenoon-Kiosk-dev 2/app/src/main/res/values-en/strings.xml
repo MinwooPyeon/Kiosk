@@ -32,6 +32,10 @@
     <string name="toast_input_id_pw">Please check your ID and password</string>
     <string name="toast_check_wifi">Please check if you are connected to Wi-Fi</string>
 
+    <string name="password_login_button">Password\nLogin</string>
+    <string name="qr_login_button">QR\nLogin</string>
+    <string name="face_login_button">Face\nRecognition</string>
+
     <!-- 화면 보호기 화면 -->
     <string name="screensaver_description1">&#160;</string>
     <string name="screensaver_description2">Touch the screen</string>

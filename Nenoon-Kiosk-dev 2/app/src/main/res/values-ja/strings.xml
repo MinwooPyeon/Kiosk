@@ -22,6 +22,10 @@
     <string name="not_allow_camera">カメラの権限が許可されていません</string>
     <string name="not_exist_print">接続されたプリンターがありません</string>
 
+    <string name="password_login_button">パスワード\nログイン</string>
+    <string name="qr_login_button">QR\nログイン</string>
+    <string name="face_login_button">顔認証\nログイン</string>
+
     <!-- 로그인 화면 -->
     <string name="id_input">IDを入力してください</string>
     <string name="pw_input">パスワードを入力してください</string>

@@ -22,6 +22,10 @@
     <string name="not_allow_camera">相机权限未被允许</string>
     <string name="not_exist_print">没有连接的打印机</string>
 
+    <string name="password_login_button">密码\n登录</string>
+    <string name="qr_login_button">二维码\n登录</string>
+    <string name="face_login_button">人脸识别\n登录</string>
+
     <!-- 로그인 화면 -->
     <string name="id_input">请输入用户名</string>
     <string name="pw_input">请输入密码</string>

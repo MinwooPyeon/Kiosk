@@ -22,6 +22,10 @@
     <string name="not_allow_camera">No se permitió el permiso de cámara</string>
     <string name="not_exist_print">No hay impresora conectada</string>
 
+    <string name="password_login_button">Contraseña\nAcceso</string>
+    <string name="qr_login_button">QR\nAcceso</string>
+    <string name="face_login_button">Reconocimiento\nFacial</string>
+
     <!-- 로그인 화면 -->
     <string name="id_input">Por favor, ingrese su ID</string>
     <string name="pw_input">Por favor, ingrese su contraseña</string>
