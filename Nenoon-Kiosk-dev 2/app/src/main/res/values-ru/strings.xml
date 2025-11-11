@@ -1097,6 +1097,7 @@
     <string name="admin_add">Добавить</string>
     <string name="admin_delete">Удалить</string>
     <string name="admin_reorder">Изменить порядок</string>
+    <string name="admin_password">Пароль администратора</string>
     <string name="admin_password_description">Вы можете изменить пароль администратора</string>
     <string name="admin_password_coming_soon">Экран управления паролем (Скоро)</string>
 

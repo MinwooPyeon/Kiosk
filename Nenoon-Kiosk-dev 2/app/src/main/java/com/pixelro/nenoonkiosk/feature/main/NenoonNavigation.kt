@@ -965,7 +965,7 @@ fun nenoonApp(
                 navController.navigate(NavConstants.ROUTE_ADMIN_DASHBOARD_PAGE)
             },
             tapAreaSize = 50.dp,
-            modifier = Modifier.align(Alignment.TopStart)
+            modifier = Modifier.align(Alignment.BottomEnd)
         )
     }
 }
