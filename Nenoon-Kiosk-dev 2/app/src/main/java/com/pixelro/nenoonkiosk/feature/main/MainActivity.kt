@@ -197,10 +197,10 @@ class MainActivity : AppCompatActivity() {
             delay(1000) 
             TTS.forceKoreanLanguage()
         }
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-        )
+//        window.setFlags(
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//        )
 
         val statusBarResourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
         GlobalValue.statusBarPadding = resources.getDimension(statusBarResourceId)
