@@ -57,6 +57,7 @@
             android:configChanges="locale"
             android:launchMode="singleTask"
             android:excludeFromRecents="true"
+            android:windowSoftInputMode="adjustResize"
             android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
