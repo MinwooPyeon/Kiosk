@@ -47,7 +47,7 @@ void frame_reader_feed(frame_reader_t* r, const uint8_t* data, size_t n)
 
         /* CRC 검증 */
         uint16_t want = be16(&p[FRAME_HDR_SIZE + plen]); // tail CRC
-        uint16_t got  = frame_crc16_ccitt(p, FRAME_HDR_SIZE + plen);
+        uint16_t got  = frame_crc16_ccitt(p + 2, 4 + plen);
         if(want == got){
             /* 유효 프레임 emit */
             if(r->emit) r->emit(p, need, r->user);

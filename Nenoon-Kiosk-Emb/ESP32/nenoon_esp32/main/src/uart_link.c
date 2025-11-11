@@ -39,6 +39,22 @@ esp_err_t uart_link_init(void)
 
 bool uart_link_usb_attached(void) { return true; }
 
+static esp_err_t req_resp_with_cstr_fallback(uint8_t type, const uint8_t* buf, uint16_t n, frame_t* resp){
+    // 1차: 길이 기반
+    esp_err_t er = linkio_req_resp(type, buf, n, resp, pdMS_TO_TICKS(3000));
+    if(er == ESP_OK) return ESP_OK;
+
+    // 2차: 널 포함(상대가 C 문자열 파싱 시)
+    uint8_t tmp[160];
+    if(n + 1 <= sizeof(tmp)){
+        memcpy(tmp, buf, n);
+        tmp[n] = 0;
+        er = linkio_req_resp(type, tmp, n + 1, resp, pdMS_TO_TICKS(3000));
+    }
+    return er;
+}
+
+
 esp_err_t uart_link_lic_mgr_login(const char *id, const char *pw, bool *ok)
 {
     if (!ok) return ESP_ERR_INVALID_ARG;
@@ -51,10 +67,9 @@ esp_err_t uart_link_lic_mgr_login(const char *id, const char *pw, bool *ok)
     if ((size_t)n >= sizeof(buf)) return ESP_ERR_NO_MEM;
 
     frame_t resp = {0};
-    esp_err_t er = linkio_req_resp(FRAME_LIC_MGR_LOGIN,
-                                   (const uint8_t*)buf, (uint16_t)n,
-                                   &resp, pdMS_TO_TICKS(3000));
-    if (er != ESP_OK) return er;
+	esp_err_t er = req_resp_with_cstr_fallback(FRAME_LIC_MGR_LOGIN,
+                                           (const uint8_t*)buf, (uint16_t)n, &resp);
+	if (er != ESP_OK) return er;
 
     *ok = (resp.len >= 1 && resp.payload[0] == 1);
     return ESP_OK;

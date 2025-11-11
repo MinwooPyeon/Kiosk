@@ -55,7 +55,6 @@ void proto_dispatch_handle(const uint8_t* frame, size_t len) {
             uint8_t out_frame[FRAME_MAX_WIRE];
             size_t of_len = 0;
             if(frame_build(ROUTES[i].resp_type, out_payload, out_len, out_frame, sizeof(out_frame), &of_len) == FRAME_OK) {
-                STLINK_UART_Println("Frame built successfully. Sending response...");
                 STLINK_UART_SendBytes(out_frame, (uint16_t)of_len);  // ST-LINK VCP
                 UART6_SendBytes(out_frame, (uint16_t)of_len);        // 기본 UART (USART6)
                 found = true;

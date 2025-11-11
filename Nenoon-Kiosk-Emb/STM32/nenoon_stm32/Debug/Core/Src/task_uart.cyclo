@@ -1,4 +1,4 @@
-../Core/Src/task_uart.c:26:13:on_frame_rx	1
-../Core/Src/task_uart.c:30:13:vTaskUartRx	2
-../Core/Src/task_uart.c:45:6:task_uart_start	1
-../Core/Src/task_uart.c:56:6:HAL_UARTEx_RxEventCallback	3
+../Core/Src/task_uart.c:28:13:on_frame_rx	1
+../Core/Src/task_uart.c:32:13:vTaskUartRx	2
+../Core/Src/task_uart.c:50:6:task_uart_start	1
+../Core/Src/task_uart.c:61:6:HAL_UARTEx_RxEventCallback	3

@@ -14,7 +14,7 @@
 #define RX_TASK_PRIO  (tskIDLE_PRIORITY + 5)
 
 static const char* TAG = "link_rx";
-static bool s_sniff = false;
+static bool s_sniff = true;
 void uart_link_set_sniff(bool on){ s_sniff = on; } // 외부에서 사용
 
 /* frame_reader emit → 큐에 소유권 전송 */
@@ -23,6 +23,7 @@ static void emit_cb(const uint8_t* frame, size_t len, void* user)
     if(len < FRAME_HDR_SIZE + FRAME_TLR_SIZE) return;
     uint8_t type = frame[3];
     uint16_t plen = (uint16_t)((frame[4] << 8) | frame[5]);
+    ESP_LOGI("link_rx","EMIT type=0x%02X plen=%u total=%u", type, (unsigned)plen, (unsigned)len);
     const uint8_t* payload = plen ? &frame[6] : NULL;
     (void)user;
     (void)linkio_enqueue_owned(type, payload, plen);

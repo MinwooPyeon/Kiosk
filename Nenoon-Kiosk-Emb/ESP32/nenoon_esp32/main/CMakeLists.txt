@@ -8,6 +8,10 @@ idf_component_register(
     "src/ratelimit.c"
     "src/metrics.c"
     "src/frame.c"
+    "src/frame_reader.c"
+    "src/link_io.c"
+    "src/link_rx_task.c"
+    "src/media_json.c"
   INCLUDE_DIRS
     "include"
   REQUIRES

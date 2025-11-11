@@ -115,6 +115,7 @@ void vApplicationMallocFailedHook(void)
 void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN*/
 	task_uart_start(2048, osPriorityHigh);
+	osDelay(200);
 	//task_usb_start(2048, osPriorityNormal);
 	//task_scan_start(2048, osPriorityNormal);
 	task_verify_start();

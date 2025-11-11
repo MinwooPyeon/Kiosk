@@ -22,11 +22,4 @@ static void on_frame_rx(const uint8_t* frame, size_t len){
 void uart_link_init(void){
 	HAL_UARTEx_ReceiveToIdle_DMA(&huart6, s_uart6_rx_buf, sizeof(s_uart6_rx_buf));
 }
-/*
-void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t size){
-	if(huart->Instance == USART6){
-		frame_parser_feed(&s_fp, s_uart6_rx_buf, size);
-		HAL_UARTEx_ReceiveToIdle_DMA(&huart6, s_uart6_rx_buf, sizeof(s_uart6_rx_buf));
-	}
-}
-*/
+

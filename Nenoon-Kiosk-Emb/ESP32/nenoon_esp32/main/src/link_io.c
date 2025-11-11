@@ -99,10 +99,13 @@ esp_err_t linkio_recv_frame(frame_t* out, TickType_t to)
 {
     if(!out) return ESP_ERR_INVALID_ARG;
     frame_t* rx = NULL;
-    if(xQueueReceive(s_rxq, &rx, to) != pdTRUE) return ESP_ERR_TIMEOUT;
+    if(xQueueReceive(s_rxq, &rx, to) != pdTRUE){
+        ESP_LOGE("link_io","recv_frame timeout after %u ms", (unsigned)(to*portTICK_PERIOD_MS)); // ★
+        return ESP_ERR_TIMEOUT;
+    }
     if(!rx) return ESP_FAIL;
-
-    *out = *rx;  // 배열 멤버 포함 전체 복사
-    free((void*)((uintptr_t)rx - offsetof(rxblk_t, f))); // rx는 rxblk_t 내부의 f를 가리킴 → 컨테이너 free
+    *out = *rx;
+    free((void*)((uintptr_t)rx - offsetof(rxblk_t, f)));
     return ESP_OK;
 }
+
