@@ -1,6 +1,6 @@
 package com.pixelro.nenoonkiosk.core.ui
 
-import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,7 +11,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 
 @Composable
 fun Logo(
@@ -19,10 +18,16 @@ fun Logo(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val sharedPreferences =
-        remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }
-    val savedLanguage =
-        sharedPreferences.getString("language", "defaultLanguage")
+
+    // SettingsScreen에서 설정한 언어를 AppCompatDelegate로부터 가져오기
+    val savedLanguage = remember {
+        val appLocale = AppCompatDelegate.getApplicationLocales()
+        if (appLocale.isEmpty) {
+            "ko"
+        } else {
+            appLocale[0]?.toLanguageTag() ?: "ko"
+        }
+    }
 
     Image(
         modifier = modifier
