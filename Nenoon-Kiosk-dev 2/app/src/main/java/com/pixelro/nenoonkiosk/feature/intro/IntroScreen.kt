@@ -22,11 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.intro.components.IntroText
-import com.pixelro.nenoonkiosk.feature.intro.components.LogoWithVersion
 import com.pixelro.nenoonkiosk.feature.intro.components.StartButton
 
 // 시작 버튼 있는 화면
@@ -80,7 +80,7 @@ fun IntroScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                LogoWithVersion()
+                Logo()
                 Spacer(modifier = Modifier.width(200.dp))
                 StartButton(alphaVal, toSurveyScreen)
             }
@@ -93,7 +93,7 @@ fun IntroScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                LogoWithVersion()
+                Logo()
                 Spacer(modifier = Modifier.height(80.dp))
                 StartButton(alphaVal, toSurveyScreen)
             }

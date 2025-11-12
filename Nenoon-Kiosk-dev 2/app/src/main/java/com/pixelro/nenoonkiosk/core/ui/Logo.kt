@@ -31,7 +31,7 @@ fun Logo(
 
     Image(
         modifier = modifier
-            .fillMaxWidth()
+//            .fillMaxWidth()
             .padding(horizontal = 40.dp),
         painter =
             painterResource(
