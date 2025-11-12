@@ -1,6 +1,5 @@
 package com.pixelro.nenoonkiosk.feature.inspection
 
-import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
@@ -16,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.main.NenoonViewModel
 import dagger.hilt.android.EntryPointAccessors

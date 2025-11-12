@@ -1,6 +1,5 @@
 package com.pixelro.nenoonkiosk.feature.inspection
 
-import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.speech.tts.TextToSpeech
@@ -57,7 +56,6 @@ import com.harang.data.db.entity.AdImageEntity
 import com.harang.data.repository.AdImageRepository
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.AdCarousel
 import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton

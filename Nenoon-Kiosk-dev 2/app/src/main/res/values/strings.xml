@@ -728,7 +728,7 @@
     <string name="default_user_name">사용자</string>
     <string name="qr_sign_in_login_success">%1$s님 로그인 성공!</string>
 
-    <string name="cross_eye_test">사위,부등상시 검사</string>
+    <string name="cross_eye_test">사위, 부등상시 검사</string>
     <string name="phoria_test">사위 검사</string>
     <string name="aniseikonia_test">부등상시 검사</string>
     <string name="red_green_filter_glass_prompt">오른쪽에 적색, 왼쪽에 녹색이 위치하도록 적녹필터 안경을 착용해주세요.</string>
