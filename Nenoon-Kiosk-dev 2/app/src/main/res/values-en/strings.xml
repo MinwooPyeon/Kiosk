@@ -1105,4 +1105,8 @@ to the center of the circle.</string>
     <string name="admin_password_description">You can change the administrator password</string>
     <string name="admin_password_coming_soon">Password Management Screen (Coming Soon)</string>
 
+    <!-- Bluetooth Device Management -->
+    <string name="change_default_blood_pressure_monitor">Change default blood pressure monitor</string>
+    <string name="default_blood_pressure_monitor">Default</string>
+
 </resources>

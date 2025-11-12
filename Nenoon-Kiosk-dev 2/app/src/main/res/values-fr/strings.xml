@@ -1097,4 +1097,8 @@ jusqu’à ce qu’elle soit centrée dans le cercle.</string>
     <string name="admin_password_description">Vous pouvez modifier le mot de passe administrateur</string>
     <string name="admin_password_coming_soon">Écran de gestion des mots de passe (bientôt disponible)</string>
 
+    <!-- Gestion des appareils Bluetooth -->
+    <string name="change_default_blood_pressure_monitor">Changer le tensiomètre par défaut</string>
+    <string name="default_blood_pressure_monitor">Par défaut</string>
+
 </resources>

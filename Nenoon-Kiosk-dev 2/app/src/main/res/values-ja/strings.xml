@@ -1097,4 +1097,8 @@
     <string name="admin_password_description">管理者パスワードを変更できます</string>
     <string name="admin_password_coming_soon">パスワード管理画面（実装予定）</string>
 
+    <!-- Bluetooth機器管理 -->
+    <string name="change_default_blood_pressure_monitor">デフォルトの血圧計を変更</string>
+    <string name="default_blood_pressure_monitor">デフォルト</string>
+
 </resources>
