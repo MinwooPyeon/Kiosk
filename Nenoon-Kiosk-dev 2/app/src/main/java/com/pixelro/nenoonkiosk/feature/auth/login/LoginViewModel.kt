@@ -20,11 +20,10 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
-import com.pixelro.nenoonkiosk.core.navigation.Navigator
+import com.pixelro.nenoonkiosk.core.manager.detection.FaceRecognizer
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.bitmapToFile
 import com.pixelro.nenoonkiosk.core.util.qr.QRCodeGenerator
-import com.pixelro.nenoonkiosk.core.manager.detection.FaceRecognizer
 import com.pixelro.nenoonkiosk.feature.inspection.inspectionresult.result.InspectionResultUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +43,6 @@ class LoginViewModel
 constructor(
     application: Application,
     private val signInRepository: SignInRepository,
-    private val navigator: Navigator,
     val faceRecognizer: FaceRecognizer,
 ) : AndroidViewModel(application) {
 
