@@ -194,8 +194,6 @@ private fun FaceIdSignInLayout(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.5f else 1f))
-
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -214,13 +212,13 @@ private fun FaceIdSignInLayout(
             }
         }
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 16.dp else 20.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 24.dp else 30.dp))
 
         if (attemptsLeft > 0) {
             StyledText(liveFaceDetectionStatus, textAlign = TextAlign.Center)
         }
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 8.dp else 20.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 16.dp else 30.dp))
 
         if (attemptsLeft > 0) {
             StyledText(
@@ -231,7 +229,7 @@ private fun FaceIdSignInLayout(
             StyledText(noMatchText, TextStyle.Error, textAlign = TextAlign.Center)
         }
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 16.dp else 40.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 24.dp else 60.dp))
 
         BackButtonHorizontal(
             onClick = onBackClick,
@@ -239,7 +237,7 @@ private fun FaceIdSignInLayout(
                 .fillMaxWidth()
                 .height(if (isLandscapeMode) 70.dp else 80.dp)
                 .shadow(
-                    elevation = 8.dp,
+                    elevation = 2.dp,
                     shape = RoundedCornerShape(10.dp)
                 )
         )

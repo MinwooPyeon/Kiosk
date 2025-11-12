@@ -109,7 +109,7 @@ private fun LoginContent(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 40.dp, vertical = 20.dp),
+                    .padding(horizontal = 60.dp, vertical = 40.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -119,7 +119,7 @@ private fun LoginContent(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Logo()
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.height(50.dp))
                     StyledText(
                         text = stringResource(R.string.user_sign_in),
                         style = TextStyle.Message,
@@ -127,7 +127,7 @@ private fun LoginContent(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(40.dp))
+                Spacer(modifier = Modifier.width(60.dp))
 
                 LoginButtonsArea(
                     onIdPasswordSignInClick = onIdPasswordSignInClick,
@@ -144,17 +144,15 @@ private fun LoginContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 40.dp, vertical = 20.dp),
+                    .padding(horizontal = 60.dp, vertical = 40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-//                Spacer(modifier = Modifier.weight(0.8f))
-
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Logo()
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.height(50.dp))
                     StyledText(
                         text = stringResource(R.string.user_sign_in),
                         style = TextStyle.Message,
@@ -192,7 +190,7 @@ private fun TopIconBar(
         horizontalArrangement = Arrangement.End,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 40.dp, vertical = 40.dp),
+            .padding(horizontal = 20.dp, vertical = 20.dp),
     ) {
         Image(
             modifier = Modifier
@@ -207,7 +205,7 @@ private fun TopIconBar(
             contentDescription = ""
         )
 
-        Spacer(modifier = Modifier.width(40.dp))
+        Spacer(modifier = Modifier.width(60.dp))
 
         Image(
             modifier = Modifier
@@ -254,11 +252,11 @@ private fun LoginButtonsArea(
                 fontWeight = FontWeight.SemiBold,
             )
 
-            Spacer(modifier = Modifier.height(if (isLandscapeMode) 20.dp else 30.dp))
+            Spacer(modifier = Modifier.height(if (isLandscapeMode) 40.dp else 50.dp))
         }
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(30.dp),
+            horizontalArrangement = Arrangement.spacedBy(40.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             PrimaryButton(
@@ -268,7 +266,7 @@ private fun LoginButtonsArea(
                 modifier = Modifier
                     .weight(1f)
                     .shadow(
-                        elevation = 8.dp,
+                        elevation = 2.dp,
                         shape = RoundedCornerShape(10.dp)
                     )
             )
@@ -280,7 +278,7 @@ private fun LoginButtonsArea(
                 modifier = Modifier
                     .weight(1f)
                     .shadow(
-                        elevation = 8.dp,
+                        elevation = 2.dp,
                         shape = RoundedCornerShape(10.dp)
                     )
             )
@@ -292,13 +290,13 @@ private fun LoginButtonsArea(
                 modifier = Modifier
                     .weight(1f)
                     .shadow(
-                        elevation = 8.dp,
+                        elevation = 2.dp,
                         shape = RoundedCornerShape(10.dp)
                     )
             )
         }
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(50.dp))
 
         SecondaryButton(
             text = signUp,
@@ -306,12 +304,12 @@ private fun LoginButtonsArea(
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(
-                    elevation = 8.dp,
+                    elevation = 2.dp,
                     shape = RoundedCornerShape(10.dp)
                 )
         )
 
-        Spacer(modifier = Modifier.height(38.dp))
+        Spacer(modifier = Modifier.height(60.dp))
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
