@@ -149,11 +149,11 @@ private fun PortraitIdPasswordSignInScreen(
                 .imePadding()
                 .padding(40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Top,
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+                verticalArrangement = Arrangement.spacedBy(25.dp)
             ) {
                 InputTextField(
                     value = id,
@@ -183,11 +183,11 @@ private fun PortraitIdPasswordSignInScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(30.dp))
 
             if (signingIn) {
                 ProgressIndicator()
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(30.dp))
             }
 
             if (signInError) {
@@ -197,6 +197,8 @@ private fun PortraitIdPasswordSignInScreen(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
             }
+
+            Spacer(modifier = Modifier.height(30.dp))
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -208,7 +210,7 @@ private fun PortraitIdPasswordSignInScreen(
                     onClick = onSignInClick,
                     enabled = id.isNotBlank() && password.isNotBlank(),
                     modifier = Modifier.shadow(
-                        elevation = 8.dp,
+                        elevation = 2.dp,
                         shape = RoundedCornerShape(10.dp)
                     )
                 )
@@ -218,11 +220,13 @@ private fun PortraitIdPasswordSignInScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .shadow(
-                            elevation = 8.dp,
+                            elevation = 2.dp,
                             shape = RoundedCornerShape(10.dp)
                         )
                 )
             }
+
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
@@ -319,7 +323,7 @@ private fun LandscapeIdPasswordSignInScreen(
                     onClick = onSignInClick,
                     enabled = id.isNotBlank() && password.isNotBlank(),
                     modifier = Modifier.shadow(
-                        elevation = 8.dp,
+                        elevation = 2.dp,
                         shape = RoundedCornerShape(10.dp)
                     )
                 )
@@ -329,11 +333,13 @@ private fun LandscapeIdPasswordSignInScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .shadow(
-                            elevation = 8.dp,
+                            elevation = 2.dp,
                             shape = RoundedCornerShape(10.dp)
                         )
                 )
             }
+
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
