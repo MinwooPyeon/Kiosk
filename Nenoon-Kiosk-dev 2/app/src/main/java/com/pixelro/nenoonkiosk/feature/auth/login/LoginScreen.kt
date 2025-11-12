@@ -1,11 +1,13 @@
 package com.pixelro.nenoonkiosk.feature.auth.login
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,12 +16,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +42,7 @@ import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.auth.SignInScreenState
+import com.pixelro.nenoonkiosk.ui.theme.Gray
 
 @Composable
 fun LoginScreen(
@@ -142,7 +148,7 @@ private fun LoginContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                Spacer(modifier = Modifier.weight(0.8f))
+//                Spacer(modifier = Modifier.weight(0.8f))
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -169,7 +175,7 @@ private fun LoginContent(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.weight(0.3f))
+                Spacer(modifier = Modifier.weight(0.8f))
             }
         }
     }
@@ -252,7 +258,7 @@ private fun LoginButtonsArea(
         }
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 24.dp else 30.dp),
+            horizontalArrangement = Arrangement.spacedBy(30.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             PrimaryButton(
@@ -292,7 +298,7 @@ private fun LoginButtonsArea(
             )
         }
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 28.dp else 40.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         SecondaryButton(
             text = signUp,
@@ -305,20 +311,33 @@ private fun LoginButtonsArea(
                 )
         )
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 20.dp else 24.dp))
+        Spacer(modifier = Modifier.height(38.dp))
 
-        StyledText(
-            text = startWithoutSignIn,
-            style = TextStyle.Message,
-            fontWeight = FontWeight.Bold,
-            textDecoration = TextDecoration.Underline,
-            modifier = Modifier.clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            ) {
-                onStartWithoutSignInClick()
-            }
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .width(IntrinsicSize.Max)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    onStartWithoutSignInClick()
+                }
+        ) {
+            StyledText(
+                text = startWithoutSignIn,
+                style = TextStyle.Message,
+                fontWeight = FontWeight.Bold,
+                color = Gray
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.Black)
+            )
+        }
     }
 }
 
