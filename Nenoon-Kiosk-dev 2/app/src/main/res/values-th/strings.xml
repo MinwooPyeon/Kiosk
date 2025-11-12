@@ -1109,4 +1109,8 @@
     <string name="admin_password_description">คุณสามารถเปลี่ยนรหัสผ่านผู้ดูแลระบบได้</string>
     <string name="admin_password_coming_soon">หน้าจอการจัดการรหัสผ่าน (เร็วๆ นี้)</string>
 
+    <!-- การจัดการอุปกรณ์บลูทูธ -->
+    <string name="change_default_blood_pressure_monitor">เปลี่ยนเครื่องวัดความดันโลหิตเริ่มต้น</string>
+    <string name="default_blood_pressure_monitor">ค่าเริ่มต้น</string>
+
 </resources>

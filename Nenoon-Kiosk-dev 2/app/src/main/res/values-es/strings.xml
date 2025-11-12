@@ -1106,4 +1106,8 @@ en ciertas situaciones, como cuando se cubre un ojo, el ojo se desvía. Esto se 
     <string name="admin_password_description">Puede cambiar la contraseña de administrador</string>
     <string name="admin_password_coming_soon">Pantalla de Gestión de Contraseña (Próximamente)</string>
 
+    <!-- Gestión de dispositivos Bluetooth -->
+    <string name="change_default_blood_pressure_monitor">Cambiar tensiómetro predeterminado</string>
+    <string name="default_blood_pressure_monitor">Predeterminado</string>
+
 </resources>
