@@ -182,21 +182,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         checkLocationPermission()
-        val locale = SharedPreferencesManager.getString("language")
 
-        if (locale.isBlank()) {
-            TTS.initTTS("ko-KR") 
-            viewModel.updateLanguage("ko-KR")
+        // SettingsScreen에서 설정한 언어를 AppCompatDelegate로부터 가져오기
+        val appLocale = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales()
+        val locale = if (appLocale.isEmpty) {
+            "ko-KR"
         } else {
-            TTS.initTTS(locale)
-            viewModel.updateLanguage(locale)
+            appLocale[0]?.toLanguageTag() ?: "ko-KR"
         }
-        
-        // TTS 초기화 후 한국어 설정
-        lifecycleScope.launch {
-            delay(1000) 
-            TTS.forceKoreanLanguage()
-        }
+
+        // TTS 초기화 (initTTS에서 이미 언어 설정함)
+        TTS.initTTS(locale)
 //        window.setFlags(
 //            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
 //            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,

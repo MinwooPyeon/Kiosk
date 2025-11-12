@@ -56,7 +56,7 @@
     <string name="intropage_appname">자가진단 키오스크</string>
     <string name="intropage_title">(시력, 황반변성, 사시, 노안조절력, 혈압, 악력, 치매, 폐나이)</string>
     <string name="intropage_start_button">시작</string>
-    <string name="intropage_description1">모든 눈 검사는 교정시력을 측정합니다</string>
+    <string name="intropage_description1">모든 눈 검사는 교정시력을 측정합니다.</string>
     <string name="intropage_description2">평상시의 상태로 검사를 진행해주세요</string>
 
     <!-- 문진표 작성 화면 -->
@@ -725,7 +725,7 @@
     <string name="default_user_name">사용자</string>
     <string name="qr_sign_in_login_success">%1$s님 로그인 성공!</string>
 
-    <string name="cross_eye_test">사위,부등상시 검사</string>
+    <string name="cross_eye_test">사위, 부등상시 검사</string>
     <string name="phoria_test">사위 검사</string>
     <string name="aniseikonia_test">부등상시 검사</string>
     <string name="red_green_filter_glass_prompt">오른쪽에 적색, 왼쪽에 녹색이 위치하도록 적녹필터 안경을 착용해주세요.</string>

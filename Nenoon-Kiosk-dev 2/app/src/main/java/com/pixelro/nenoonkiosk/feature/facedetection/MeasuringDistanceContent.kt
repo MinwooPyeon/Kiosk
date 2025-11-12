@@ -673,53 +673,10 @@ fun MeasuringDistanceContent(
                                     shape = RoundedCornerShape(8.dp),
                                 )
                                 .clickable {
-                                    when (isDistanceOK) {
-                                        0 -> {
-                                            coroutineScope.launch {
-                                                for (i in 1..2) {
-                                                    isWarningShowing.intValue = 0
-                                                    delay(400)
-                                                    isWarningShowing.intValue = 5
-                                                    delay(400)
-                                                }
-                                                isWarningShowing.intValue = 0
-                                                delay(1500)
-                                                isWarningShowing.intValue = 5
-                                            }
-                                        }
-
-                                        1 -> {
-                                            if (!TTS.tts.isSpeaking) {
-                                                toNextContent()
-                                            } else {
-                                                coroutineScope.launch {
-                                                    for (i in 1..3) {
-                                                        isWarningShowing.intValue = 1
-                                                        delay(400)
-                                                        isWarningShowing.intValue = 5
-                                                        delay(400)
-                                                    }
-                                                    isWarningShowing.intValue = 1
-                                                    delay(2000)
-                                                    isWarningShowing.intValue = 5
-                                                }
-                                            }
-                                        }
-
-                                        else -> {
-                                            coroutineScope.launch {
-                                                for (i in 1..2) {
-                                                    isWarningShowing.intValue = 2
-                                                    delay(400)
-                                                    isWarningShowing.intValue = 5
-                                                    delay(400)
-                                                }
-                                                isWarningShowing.intValue = 2
-                                                delay(1500)
-                                                isWarningShowing.intValue = 5
-                                            }
-                                        }
+                                    if (TTS.tts.isSpeaking) {
+                                        TTS.tts.stop()
                                     }
+                                    toNextContent()
                                 },
                         contentAlignment = Alignment.Center,
                     ) {
