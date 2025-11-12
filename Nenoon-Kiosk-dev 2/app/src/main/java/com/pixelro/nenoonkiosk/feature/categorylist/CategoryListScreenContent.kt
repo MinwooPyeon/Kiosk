@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,6 +44,22 @@ fun CategoryListScreenContent(
     toPrintScreen: () -> Unit,
     toAccountManagementScreen: () -> Unit,
 ) {
+    val config = LocalConfiguration.current
+    val screenHeight = config.screenHeightDp.dp
+    val screenWidth = config.screenWidthDp.dp
+    val isLandscape = isLandscape()
+
+    // 동적 크기 계산
+    val topPadding = (screenHeight * 0.05f).coerceIn(40.dp, 80.dp)
+    val horizontalPadding = (screenWidth * 0.05f).coerceIn(40.dp, 60.dp)
+    val iconSize = (screenWidth * 0.078f).coerceIn(80.dp, 120.dp)
+    val buttonHeight = if (isLandscape) {
+        (screenHeight * 0.135f).coerceIn(110.dp, 140.dp)
+    } else {
+        (screenHeight * 0.09f).coerceIn(110.dp, 130.dp)
+    }
+    val buttonSpacing = (screenHeight * 0.02f).coerceIn(15.dp, 25.dp)
+
     val testButtons = listOf(
         Triple(R.string.blood_pressure_and_grip_strength, R.drawable.blood_pressure_and_grip_strength_icon) { toExternalDeviceTestListScreen() },
         Triple(R.string.eye_test, R.drawable.eye_test_icon) { toEyeTestScreen() },
@@ -51,74 +68,109 @@ fun CategoryListScreenContent(
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
-        if (isLandscape()) {
-        // 가로모드: 좌우 분할
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(neNoon_blue)
-        ) {
-            // 왼쪽: 로고
-            Box(
+        if (isLandscape) {
+            // 가로모드: 좌우 분할
+            Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                contentAlignment = Alignment.Center
+                    .fillMaxSize()
+                    .background(neNoon_blue)
             ) {
-                Logo(true)
-            }
-
-            // 오른쪽: 상단 버튼 + 카테고리 버튼
-            Column(
-                modifier = Modifier
-                    .weight(1.6f)
-                    .fillMaxHeight()
-                    .padding(40.dp)
-            ) {
-                // 상단 버튼들
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+                // 왼쪽: 로고
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    if (!isSignInSkipped()) {
+                    Logo(true)
+                }
+
+                // 오른쪽: 상단 버튼 + 카테고리 버튼
+                Column(
+                    modifier = Modifier
+                        .weight(1.6f)
+                        .fillMaxHeight()
+                        .padding(horizontal = horizontalPadding, vertical = topPadding),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    // 상단 버튼들
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        if (!isSignInSkipped()) {
+                            Card(
+                                modifier = Modifier
+                                    .size(iconSize)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .clickable { toPrintScreen() },
+                                backgroundColor = Color.White
+                            ) {
+                                Icon(
+                                    modifier = Modifier.padding(iconSize * 0.2f),
+                                    painter = painterResource(id = R.drawable.icon_print),
+                                    contentDescription = ""
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(buttonSpacing))
+                        }
+
                         Card(
                             modifier = Modifier
-                                .size(100.dp)
+                                .size(iconSize)
                                 .clip(RoundedCornerShape(8.dp))
-                                .clickable { toPrintScreen() },
+                                .clickable { toAccountManagementScreen() },
                             backgroundColor = Color.White
                         ) {
                             Icon(
-                                modifier = Modifier
-                                    .width(60.dp)
-                                    .padding(20.dp),
-                                painter = painterResource(id = R.drawable.icon_print),
+                                modifier = Modifier.padding(iconSize * 0.2f),
+                                painter = painterResource(id = R.drawable.account_icon),
                                 contentDescription = ""
                             )
                         }
-                        Spacer(modifier = Modifier.width(20.dp))
                     }
 
-                    Card(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable { toAccountManagementScreen() },
-                        backgroundColor = Color.White
+                    // 카테고리 버튼들 (고정 간격)
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Icon(
-                            modifier = Modifier
-                                .width(60.dp)
-                                .padding(20.dp),
-                            painter = painterResource(id = R.drawable.account_icon),
-                            contentDescription = ""
-                        )
+                        testButtons.forEachIndexed { index, (titleId, icon, onClick) ->
+                            InspectionCategoryButton(
+                                iconRes = icon,
+                                title = stringResource(id = titleId),
+                                onClick = onClick,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(buttonHeight)
+                            )
+                            if (index != testButtons.lastIndex) {
+                                Spacer(modifier = Modifier.height(buttonSpacing))
+                            }
+                        }
                     }
+
+                    // 하단 여백 (균형 맞추기)
+                    Spacer(modifier = Modifier.height(topPadding * 0.5f))
+                }
+            }
+        } else {
+            // 세로모드: 기존 레이아웃
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(neNoon_blue),
+            ) {
+                Spacer(modifier = Modifier.weight(1f))
+
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Logo(true)
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                // 카테고리 버튼들
                 testButtons.forEachIndexed { index, (titleId, icon, onClick) ->
                     InspectionCategoryButton(
                         iconRes = icon,
@@ -126,84 +178,55 @@ fun CategoryListScreenContent(
                         onClick = onClick,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(124.dp)
+                            .height(buttonHeight)
+                            .padding(horizontal = horizontalPadding)
                     )
-                    Spacer(modifier = Modifier.height(if (index == testButtons.lastIndex) 0.dp else 20.dp))
+                    Spacer(modifier = Modifier.height(
+                        if (index == testButtons.lastIndex) topPadding else buttonSpacing
+                    ))
                 }
             }
         }
-    } else {
-        // 세로모드: 기존 레이아웃
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(neNoon_blue),
-        ) {
-            Spacer(modifier = Modifier.weight(1f))
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Logo(true)
-            }
-            Spacer(modifier = Modifier.weight(1f))
 
-            testButtons.forEachIndexed { index, (titleId, icon, onClick) ->
-                InspectionCategoryButton(
-                    iconRes = icon,
-                    title = stringResource(id = titleId),
-                    onClick = onClick,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(115.dp)
-                        .padding(horizontal = 40.dp)
-                )
-                Spacer(modifier = Modifier.height(if (index == testButtons.lastIndex) 40.dp else 20.dp))
-            }
-        }
-        }
-
-        // 상단 버튼들
-        Row(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(40.dp),
-            horizontalArrangement = Arrangement.End
-        ) {
-        if (!isSignInSkipped()) {
-            Card(
+        // 상단 버튼들 (세로모드에서만 overlay)
+        if (!isLandscape) {
+            Row(
                 modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .clickable { toPrintScreen() },
-                backgroundColor = Color.White
+                    .align(Alignment.TopEnd)
+                    .padding(horizontalPadding, topPadding),
+                horizontalArrangement = Arrangement.End
             ) {
-                Icon(
-                    modifier = Modifier
-                        .width(60.dp)
-                        .padding(20.dp),
-                    painter = painterResource(id = R.drawable.icon_print),
-                    contentDescription = ""
-                )
-            }
-            Spacer(modifier = Modifier.width(20.dp))
-        }
+                if (!isSignInSkipped()) {
+                    Card(
+                        modifier = Modifier
+                            .size(iconSize)
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable { toPrintScreen() },
+                        backgroundColor = Color.White
+                    ) {
+                        Icon(
+                            modifier = Modifier.padding(iconSize * 0.2f),
+                            painter = painterResource(id = R.drawable.icon_print),
+                            contentDescription = ""
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(buttonSpacing))
+                }
 
-        Card(
-            modifier = Modifier
-                .size(100.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .clickable { toAccountManagementScreen() },
-            backgroundColor = Color.White
-        ) {
-            Icon(
-                modifier = Modifier
-                    .width(60.dp)
-                    .padding(20.dp),
-                painter = painterResource(id = R.drawable.account_icon),
-                contentDescription = ""
-            )
-        }
+                Card(
+                    modifier = Modifier
+                        .size(iconSize)
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable { toAccountManagementScreen() },
+                    backgroundColor = Color.White
+                ) {
+                    Icon(
+                        modifier = Modifier.padding(iconSize * 0.2f),
+                        painter = painterResource(id = R.drawable.account_icon),
+                        contentDescription = ""
+                    )
+                }
+            }
         }
     }
 }
@@ -213,8 +236,7 @@ fun CategoryListScreenContent(
     backgroundColor = 0xFF1D71E1,
     widthDp = 800,
     heightDp = 1280,
-    apiLevel = 34,
-    name = "CategoryListScreenContent Preview"
+    name = "Portrait - Standard Tablet"
 )
 @Composable
 fun CategoryListScreenContentVerticalPreview() {
@@ -234,11 +256,30 @@ fun CategoryListScreenContentVerticalPreview() {
     backgroundColor = 0xFF1D71E1,
     widthDp = 1280,
     heightDp = 800,
-    apiLevel = 34,
-    name = "CategoryListScreenContent Preview"
+    name = "Landscape - Standard Tablet"
 )
 @Composable
-fun CategoryListScreenContentHorizentalPreview() {
+fun CategoryListScreenContentHorizontalPreview() {
+    CategoryListScreenContent(
+        isSignInSkipped = { false },
+        toEyeTestScreen = {},
+        toDementiaTestScreen = {},
+        toExternalDeviceTestListScreen = {},
+        toStrabismusTestListScreen = {},
+        toPrintScreen = {},
+        toAccountManagementScreen = {}
+    )
+}
+
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFF1D71E1,
+    widthDp = 1920,
+    heightDp = 1080,
+    name = "Landscape - 32 inch Full HD"
+)
+@Composable
+fun CategoryListScreenContent32InchPreview() {
     CategoryListScreenContent(
         isSignInSkipped = { false },
         toEyeTestScreen = {},
