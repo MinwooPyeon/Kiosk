@@ -321,6 +321,7 @@ private fun LoginButtonsArea(
                 ) {
                     onStartWithoutSignInClick()
                 }
+
         ) {
             StyledText(
                 text = startWithoutSignIn,

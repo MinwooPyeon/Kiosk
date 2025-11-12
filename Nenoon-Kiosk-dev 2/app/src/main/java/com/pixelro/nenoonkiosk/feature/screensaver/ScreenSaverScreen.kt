@@ -10,11 +10,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.ExoPlayer
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.ui.theme.Black
@@ -44,48 +47,99 @@ fun ScreenSaverScreen(
             ),
     )
 
-    Column(
-        modifier =
-            Modifier
+    val isLandscape = isLandscape()
+
+    if (isLandscape) {
+        // 가로 모드
+        Column(
+            modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    color = Black,
-                ),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top,
-    ) {
-        if (!isLandscape()) {
-            Spacer(modifier = Modifier.weight(1f))
+                .background(Black),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Spacer(modifier = Modifier.height(40.dp))
+
+            ScreenSaverGuideText(
+                shiftVal = shiftVal,
+                savedLanguage = savedLanguage,
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            ScreenSaverVideo(
+                exoPlayer = exoPlayer,
+                useAspectRatio = false,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            )
         }
+    } else {
+        // 세로 모드
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Black),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
 
-        // 안내 텍스트
-        ScreenSaverGuideText(
-            shiftVal = shiftVal,
-            savedLanguage = savedLanguage,
-        )
+            ScreenSaverGuideText(
+                shiftVal = shiftVal,
+                savedLanguage = savedLanguage,
+            )
 
-        // 비디오 플레이어
-        ScreenSaverVideo(
-            exoPlayer = exoPlayer,
-            modifier = if (isLandscape()) Modifier.weight(1f) else Modifier.weight(2f)
-        )
+            Spacer(modifier = Modifier.height(40.dp))
 
-        if (!isLandscape()) {
+            ScreenSaverVideo(
+                exoPlayer = exoPlayer,
+                useAspectRatio = false,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(2f)
+            )
+
             Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
 
-@Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
+@Preview(
+    showBackground = true,
+    widthDp = 1920,
+    heightDp = 1080,
+    name = "Landscape - 32 inch Full HD"
+)
 @Composable
-fun PreviewScreenSaverScreenHorizental() {
+fun PreviewScreenSaverScreen32InchFullHD() {
     ScreenSaverScreen(
         exoPlayer = null,
         savedLanguage = "ko",
     )
 }
 
-@Preview(showBackground = true, device = "spec:width=800dp,height=1280dp,dpi=240")
+@Preview(
+    showBackground = true,
+    widthDp = 1280,
+    heightDp = 800,
+    name = "Landscape - Standard Tablet"
+)
+@Composable
+fun PreviewScreenSaverScreenHorizontal() {
+    ScreenSaverScreen(
+        exoPlayer = null,
+        savedLanguage = "ko",
+    )
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 800,
+    heightDp = 1280,
+    name = "Portrait - Standard Tablet"
+)
 @Composable
 fun PreviewScreenSaverScreenVertical() {
     ScreenSaverScreen(

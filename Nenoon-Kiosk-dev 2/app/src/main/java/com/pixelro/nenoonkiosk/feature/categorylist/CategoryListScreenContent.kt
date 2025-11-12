@@ -130,8 +130,6 @@ fun CategoryListScreenContent(
                     )
                     Spacer(modifier = Modifier.height(if (index == testButtons.lastIndex) 0.dp else 20.dp))
                 }
-
-                //Spacer(modifier = Modifier.weight(1f))
             }
         }
     } else {
