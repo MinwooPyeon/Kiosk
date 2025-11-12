@@ -6,11 +6,14 @@ import android.graphics.Rect
 import android.os.SystemClock
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
 import com.google.mlkit.vision.face.FaceLandmark
+import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.pixelro.nenoonkiosk.feature.facedetection.IrisResult
@@ -66,15 +69,20 @@ class MyFaceAnalyzer(
         val inputImage = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 
         // 텍스트 인식
-        processTextRecognition(inputImage)
+        val faceTask = processTextRecognition(inputImage)
 
         // 얼굴 감지
-        processFaceDetection(inputImage, imageProxy)
+        val textTask = processFaceDetection(inputImage, imageProxy)
+
+        Tasks.whenAllComplete(faceTask, textTask)
+            .addOnCompleteListener {
+                imageProxy.close()
+            }
     }
 
     // 텍스트 인식 처리
-    private fun processTextRecognition(image: InputImage) {
-        textRecognizer.process(image)
+    private fun processTextRecognition(image: InputImage): Task<Text?> {
+        return textRecognizer.process(image)
             .addOnSuccessListener(executor) { result ->
                 val nenoonTextDetected = result.textBlocks.any { block ->
                     block.lines.any { line ->
@@ -95,8 +103,8 @@ class MyFaceAnalyzer(
     }
 
     // 얼굴 감지 처리
-    private fun processFaceDetection(image: InputImage, imageProxy: ImageProxy) {
-        faceDetector.process(image)
+    private fun processFaceDetection(image: InputImage, imageProxy: ImageProxy): Task<List<Face?>?> {
+        return faceDetector.process(image)
             .addOnSuccessListener(executor) { faces ->
                 val centerFace = findCenterFace(faces)
 
@@ -107,7 +115,6 @@ class MyFaceAnalyzer(
                 }
             }
             .addOnFailureListener { it.printStackTrace() }
-            .addOnCompleteListener { imageProxy.close() }
     }
 
     // 중앙 얼굴 찾기
