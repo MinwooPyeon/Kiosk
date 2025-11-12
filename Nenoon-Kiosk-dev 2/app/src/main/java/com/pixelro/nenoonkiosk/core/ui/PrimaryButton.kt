@@ -69,7 +69,7 @@ fun PrimaryButton(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(if (icon != null || iconDrawable != null) 380.dp else 100.dp),
+                .height(if (icon != null || iconDrawable != null) 340.dp else 100.dp),
         shape = RoundedCornerShape(10.dp),
         colors =
             ButtonDefaults.buttonColors(

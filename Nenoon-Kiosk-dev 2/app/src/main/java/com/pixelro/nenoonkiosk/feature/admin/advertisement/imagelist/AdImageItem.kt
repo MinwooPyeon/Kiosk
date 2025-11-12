@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -74,7 +75,7 @@ fun AdImageItem(
             .fillMaxWidth()
             .border(
                 width = if (isSelected) 2.dp else 1.dp,
-                color = if (isSelected) Red.copy(alpha = 0.6f) else LightGray300,
+                color = if (isSelected) Gray.copy(alpha = 0.6f) else LightGray300,
                 shape = RoundedCornerShape(8.dp)
             )
             .background(White)
@@ -164,8 +165,7 @@ fun AdImageItem(
             imageVector = Icons.Default.Menu,
             contentDescription = stringResource(R.string.admin_reorder),
             tint = Color.Gray,
-            modifier = dragModifier
-                .size(40.dp)
+            modifier = dragModifier.fillMaxHeight()
                 .padding(8.dp)
         )
     }

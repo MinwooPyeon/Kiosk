@@ -22,6 +22,15 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        // local.properties에서 관리자 비밀번호 가져오기
+        Properties localProperties = new Properties()
+        def localPropertiesFile = rootProject.file('local.properties')
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.withInputStream { localProperties.load(it) }
+        }
+        def adminPassword = localProperties.getProperty('admin.password') ?: '0000'
+        buildConfigField "String", "DEFAULT_ADMIN_PASSWORD", "\"${adminPassword}\""
     }
 
     buildTypes {
@@ -49,6 +58,7 @@ android {
     
     buildFeatures {
         compose true
+        buildConfig true
     }
 
     composeOptions {
