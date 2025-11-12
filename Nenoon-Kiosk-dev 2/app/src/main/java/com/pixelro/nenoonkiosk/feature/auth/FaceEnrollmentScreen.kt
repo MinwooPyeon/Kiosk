@@ -211,7 +211,7 @@ private fun PortraitFaceEnrollmentScreen(
                 enabled = isFaceEnrollmentDataReady,
                 onClick = onEnrollClick,
                 modifier = Modifier.shadow(
-                    elevation = 8.dp,
+                    elevation = 2.dp,
                     shape = RoundedCornerShape(10.dp)
                 )
             )
@@ -223,7 +223,7 @@ private fun PortraitFaceEnrollmentScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .shadow(
-                        elevation = 8.dp,
+                        elevation = 2.dp,
                         shape = RoundedCornerShape(10.dp)
                     )
             )
@@ -321,7 +321,7 @@ private fun LandscapeFaceEnrollmentScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .shadow(
-                            elevation = 8.dp,
+                            elevation = 2.dp,
                             shape = RoundedCornerShape(10.dp)
                         )
                 )
@@ -331,7 +331,7 @@ private fun LandscapeFaceEnrollmentScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .shadow(
-                            elevation = 8.dp,
+                            elevation = 2.dp,
                             shape = RoundedCornerShape(10.dp)
                         )
                 )

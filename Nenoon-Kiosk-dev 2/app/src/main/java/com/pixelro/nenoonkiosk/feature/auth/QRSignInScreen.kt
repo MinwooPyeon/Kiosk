@@ -298,7 +298,7 @@ private fun QRSignInLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(
-                    elevation = 8.dp,
+                    elevation = 2.dp,
                     shape = RoundedCornerShape(10.dp)
                 )
         )

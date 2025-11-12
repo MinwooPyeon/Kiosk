@@ -11,12 +11,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -217,7 +220,7 @@ private fun UserSignUpContent(
                             StyledText(stringResource(R.string.user_signup_qr_description))
                         }
 
-                        Spacer(modifier = Modifier.width(40.dp))
+                        Spacer(modifier = Modifier.width(20.dp))
 
                         Column(
                             modifier = Modifier.weight(1f),
@@ -229,7 +232,7 @@ private fun UserSignUpContent(
                                 onClick = onFaceEnrollmentClick,
                                 enabled = !isFaceEnrollmentDataReady,
                                 modifier = Modifier.shadow(
-                                    elevation = 8.dp,
+                                    elevation = 2.dp,
                                     shape = RoundedCornerShape(10.dp)
                                 )
                             )
@@ -239,7 +242,7 @@ private fun UserSignUpContent(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .shadow(
-                                        elevation = 8.dp,
+                                        elevation = 2.dp,
                                         shape = RoundedCornerShape(10.dp)
                                     )
                             )
@@ -274,7 +277,7 @@ private fun UserSignUpContent(
                         isLandscapeMode = true,
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 80.dp, vertical = 20.dp)
+                            .padding(horizontal = 40.dp, vertical = 20.dp)
                     )
                 }
             }
@@ -353,19 +356,20 @@ private fun UserSignUpForm(
     val passwordHideCd = stringResource(R.string.user_signup_password_hide_cd)
 
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .imePadding()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = if (signupSuccess) Arrangement.Center else Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.Top,
     ) {
         if (!signupSuccess) {
             if (isSigningUp) {
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(100.dp))
                 ProgressIndicator()
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(100.dp))
             } else {
                 Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 10.dp else 12.dp)
+                    verticalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 20.dp else 25.dp)
                 ) {
                     InputTextField(
                         value = id,
@@ -447,15 +451,15 @@ private fun UserSignUpForm(
             }
 
             if (errorMessage != null) {
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 StyledText(errorMessage, com.pixelro.nenoonkiosk.core.ui.TextStyle.Error)
             }
 
-            Spacer(modifier = Modifier.height(if (isLandscapeMode) 4.dp else 8.dp))
+            Spacer(modifier = Modifier.height(if (isLandscapeMode) 20.dp else 30.dp))
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 6.dp else 10.dp),
+                verticalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 10.dp else 15.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 PrimaryButton(
@@ -471,7 +475,7 @@ private fun UserSignUpForm(
                         .fillMaxWidth()
                         .height(if (isLandscapeMode) 70.dp else 80.dp)
                         .shadow(
-                            elevation = 8.dp,
+                            elevation = 2.dp,
                             shape = RoundedCornerShape(10.dp)
                         )
                 )
@@ -485,7 +489,7 @@ private fun UserSignUpForm(
                             .fillMaxWidth()
                             .height(if (isLandscapeMode) 70.dp else 80.dp)
                             .shadow(
-                                elevation = 8.dp,
+                                elevation = 2.dp,
                                 shape = RoundedCornerShape(10.dp)
                             )
                     )
@@ -497,15 +501,19 @@ private fun UserSignUpForm(
                         .fillMaxWidth()
                         .height(if (isLandscapeMode) 70.dp else 80.dp)
                         .shadow(
-                            elevation = 8.dp,
+                            elevation = 2.dp,
                             shape = RoundedCornerShape(10.dp)
                         )
                 )
             }
+
+            Spacer(modifier = Modifier.height(40.dp))
         } else if (signupSuccess) {
+            Spacer(modifier = Modifier.height(100.dp))
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 6.dp else 10.dp),
+                verticalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 10.dp else 15.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 if (!isLandscapeMode) {
@@ -517,7 +525,7 @@ private fun UserSignUpForm(
                             .fillMaxWidth()
                             .height(if (isLandscapeMode) 70.dp else 80.dp)
                             .shadow(
-                                elevation = 8.dp,
+                                elevation = 2.dp,
                                 shape = RoundedCornerShape(10.dp)
                             )
                     )
@@ -529,11 +537,13 @@ private fun UserSignUpForm(
                         .fillMaxWidth()
                         .height(if (isLandscapeMode) 70.dp else 80.dp)
                         .shadow(
-                            elevation = 8.dp,
+                            elevation = 2.dp,
                             shape = RoundedCornerShape(10.dp)
                         )
                 )
             }
+
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
