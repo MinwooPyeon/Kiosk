@@ -3,6 +3,7 @@ package com.pixelro.nenoonkiosk.feature.inspection
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
@@ -37,11 +38,15 @@ fun EyeTestInspectionRoute(
     viewModel: NenoonViewModel,
 ) {
     val context = LocalContext.current
-    val sharedPreferences = remember {
-        context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE)
-    }
+
+    // SettingsScreen에서 설정한 언어를 AppCompatDelegate로부터 가져오기
     val savedLanguage = remember {
-        sharedPreferences.getString("language", "defaultLanguage")
+        val appLocale = AppCompatDelegate.getApplicationLocales()
+        if (appLocale.isEmpty) {
+            "ko"
+        } else {
+            appLocale[0]?.toLanguageTag() ?: "ko"
+        }
     }
 
     // 상태 (saveable)
@@ -67,7 +72,7 @@ fun EyeTestInspectionRoute(
             AdImageRepositoryEntryPoint::class.java
         ).adImageRepository()
     }
-    val adImages by adImageRepository.getAdImagesByLocationAndLanguage(1, savedLanguage ?: "ko")
+    val adImages by adImageRepository.getAdImagesByLocationAndLanguage(1, savedLanguage)
         .collectAsState(initial = emptyList())
 
     EyeTestInspectionScreen(

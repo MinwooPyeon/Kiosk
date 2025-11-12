@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.speech.tts.TextToSpeech
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -87,13 +88,16 @@ fun ExternalDeviceInspectionListScreen(
     viewModel: NenoonViewModel,
 ) {
     val context = LocalContext.current
-    val sharedPreferences = remember {
-        context.getSharedPreferences(
-            NavConstants.PREFERENCE_NAME,
-            Context.MODE_PRIVATE
-        )
+
+    // SettingsScreen에서 설정한 언어를 AppCompatDelegate로부터 가져오기
+    val savedLanguage = remember {
+        val appLocale = AppCompatDelegate.getApplicationLocales()
+        if (appLocale.isEmpty) {
+            "ko"
+        } else {
+            appLocale[0]?.toLanguageTag() ?: "ko"
+        }
     }
-    val savedLanguage = sharedPreferences.getString("language", "defaultLanguage")
     val warningTextSize = if (savedLanguage == "ru") 10.sp else 16.sp
     val isLandscapeMode =
         LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -105,7 +109,7 @@ fun ExternalDeviceInspectionListScreen(
             AdImageRepositoryEntryPoint::class.java
         ).adImageRepository()
     }
-    val adImages by adImageRepository.getAdImagesByLocationAndLanguage(1, savedLanguage ?: "ko")
+    val adImages by adImageRepository.getAdImagesByLocationAndLanguage(1, savedLanguage)
         .collectAsState(initial = emptyList())
 
     val pagerState =
