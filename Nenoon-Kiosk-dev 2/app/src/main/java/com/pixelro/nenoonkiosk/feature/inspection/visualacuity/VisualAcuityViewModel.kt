@@ -22,6 +22,7 @@ import android.util.Log
 enum class VisualAcuitySttState {
     Inactive,
     ShortDigit,
+    LongDigit,
 }
 
 @HiltViewModel

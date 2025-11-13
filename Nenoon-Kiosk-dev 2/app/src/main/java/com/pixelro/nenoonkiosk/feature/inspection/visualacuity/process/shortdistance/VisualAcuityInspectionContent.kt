@@ -18,12 +18,12 @@ import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.VisualAcui
 import com.pixelro.nenoonkiosk.ui.theme.Black
 
 /**
- * 근거리 시력 검사 UI 컴포넌트 (순수 UI)
+ * 시력 검사 UI 컴포넌트 (순수 UI)
  *
  * ## 검사 흐름 (2단계)
  * 1단계: 거리 조정 (MeasuringDistanceContent)
  *    ↓
- *   40~50cm 거리 맞추기 완료
+ *   근거리: 40~50cm / 원거리: 3m 거리 맞추기 완료
  *    ↓
  * 2단계: 시력 검사 (VisualAcuityInspectionCommonContent)
  *    ↓
@@ -32,10 +32,11 @@ import com.pixelro.nenoonkiosk.ui.theme.Black
  *   결과 화면
  *
  * ## 주요 구성
- * - **Phase 1**: 거리 조정 화면 (40~50cm 맞추기)
+ * - **Phase 1**: 거리 조정 화면
  * - **Phase 2**: 란돌트 C 시력 검사 (좌안 먼저, 그 다음 우안)
  * - 두 화면은 AnimatedVisibility로 전환됨
  *
+ * @param inspectionType 검사 타입 (ShortDistanceVisualAcuity / LongDistanceVisualAcuity)
  * @param uiState 현재 UI 상태 (MeasuringDistance, VisualAcuityTest)
  * @param measuringDistanceContentVisibleState 거리 조정 화면 표시 여부 (AnimatedVisibility 제어)
  * @param visualAcuityContentVisibleState 시력 검사 화면 표시 여부 (AnimatedVisibility 제어)
@@ -51,7 +52,8 @@ import com.pixelro.nenoonkiosk.ui.theme.Black
  * @param toResultScreen 검사 완료 후 결과 화면으로 이동하는 콜백
  */
 @Composable
-fun ShortVisualAcuityInspectionContent(
+fun VisualAcuityInspectionContent(
+    inspectionType: InspectionType,
     uiState: VisualAcuityInspectionUiState,
     measuringDistanceContentVisibleState: MutableTransitionState<Boolean>,
     visualAcuityContentVisibleState: MutableTransitionState<Boolean>,
@@ -70,7 +72,11 @@ fun ShortVisualAcuityInspectionContent(
     onStartVoiceRecognition: ((String) -> Unit) -> Unit,
     onCancelVoiceRecognition: () -> Unit,
 ) {
-    val sttEnabled = sttState == VisualAcuitySttState.ShortDigit
+    val sttEnabled = when (inspectionType) {
+        InspectionType.ShortDistanceVisualAcuity -> sttState == VisualAcuitySttState.ShortDigit
+        InspectionType.LongDistanceVisualAcuity -> sttState == VisualAcuitySttState.LongDigit
+        else -> false
+    }
 
     Column(
         modifier =
@@ -93,7 +99,7 @@ fun ShortVisualAcuityInspectionContent(
             MeasuringDistanceContent(
                 measuringDistanceContentVisibleState = measuringDistanceContentVisibleState,
                 toNextContent = onNextFromDistance,
-                selectedTestType = InspectionType.ShortDistanceVisualAcuity,
+                selectedTestType = inspectionType,
                 isLeftEye = isLeftEye,
             )
             /**
@@ -125,7 +131,8 @@ private fun PreviewShortDistanceVisualAcuityInspection_MeasuringDistance() {
     val measuringDistanceState = MutableTransitionState(true)
     val visualAcuityState = MutableTransitionState(false)
 
-    ShortVisualAcuityInspectionContent(
+    VisualAcuityInspectionContent(
+        inspectionType = InspectionType.ShortDistanceVisualAcuity,
         uiState = VisualAcuityInspectionUiState.MeasuringDistance,
         measuringDistanceContentVisibleState = measuringDistanceState,
         visualAcuityContentVisibleState = visualAcuityState,
@@ -153,7 +160,8 @@ private fun PreviewShortDistanceVisualAcuityInspection_VisualAcuityTest() {
     val measuringDistanceState = MutableTransitionState(false)
     val visualAcuityState = MutableTransitionState(true)
 
-    ShortVisualAcuityInspectionContent(
+    VisualAcuityInspectionContent(
+        inspectionType = InspectionType.ShortDistanceVisualAcuity,
         uiState = VisualAcuityInspectionUiState.VisualAcuityTest,
         measuringDistanceContentVisibleState = measuringDistanceState,
         visualAcuityContentVisibleState = visualAcuityState,
