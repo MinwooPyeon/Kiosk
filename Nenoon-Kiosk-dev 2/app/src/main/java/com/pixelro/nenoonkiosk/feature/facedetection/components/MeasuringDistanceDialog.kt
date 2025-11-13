@@ -194,21 +194,10 @@ fun MeasuringDistanceDialog(
                             )
                             .clickable {
                                 if (TTS.tts.isSpeaking) {
-                                    coroutineScope.launch {
-                                        for (i in 1..3) {
-                                            isWarningShowing.value = true
-                                            delay(400)
-                                            isWarningShowing.value = false
-                                            delay(400)
-                                        }
-                                        isWarningShowing.value = true
-                                        delay(2000)
-                                        isWarningShowing.value = false
-                                    }
-                                } else {
-                                    faceDetectionViewModel.updateIsOccluderPickedTTSDone(true)
-                                    onDismissRequest()
+                                    TTS.tts.stop()
                                 }
+                                faceDetectionViewModel.updateIsOccluderPickedTTSDone(true)
+                                onDismissRequest()
                             }
                             .padding(20.dp),
                     text = StringProvider.getString(R.string.confirm),

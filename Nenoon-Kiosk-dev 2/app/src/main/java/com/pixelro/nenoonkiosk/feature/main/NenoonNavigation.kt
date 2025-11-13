@@ -56,7 +56,7 @@ import com.pixelro.nenoonkiosk.feature.intro.IntroScreen
 import com.pixelro.nenoonkiosk.feature.iotdevice.BP170B.BP170BManagementRoute
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ManagementRoute
 import com.pixelro.nenoonkiosk.feature.iotdevice.BPBIO320.BPBIO320ViewModel
-import com.pixelro.nenoonkiosk.feature.iotdevice.BTDeviceMenuScreen
+import com.pixelro.nenoonkiosk.feature.iotdevice.BTDeviceMenuRoute
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripManagementRoute
 import com.pixelro.nenoonkiosk.feature.iotdevice.inGrip.InGripViewModel
 import com.pixelro.nenoonkiosk.feature.permission.PermissionRequestRoute
@@ -813,7 +813,7 @@ fun nenoonApp(
                 popEnterTransition = { AnimationProvider.popEnterTransition },
                 popExitTransition = { AnimationProvider.popExitTransition },
             ) {
-                BTDeviceMenuScreen(
+                BTDeviceMenuRoute(
                     navController = navController,
                     bpbio320ViewModel = bloodPressureMonitorViewModel,
                     bp170bViewModel = bp170bViewModel,

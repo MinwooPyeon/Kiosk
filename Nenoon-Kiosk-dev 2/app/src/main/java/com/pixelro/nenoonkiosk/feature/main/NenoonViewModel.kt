@@ -138,10 +138,9 @@ class NenoonViewModel
         }
 
         fun updateLanguage(language: String) {
-            SharedPreferencesManager.putString("language", language)
-            val locale = Locale.forLanguageTag(language)
-            getApplication<Application>().resources.configuration.setLocale(locale)
-            TTS.setLanguage(language) 
+            // AppCompatDelegate.setApplicationLocales()가 locale 설정을 처리
+            // 여기서는 TTS 언어만 업데이트
+            TTS.setLanguage(language)
             _settingsDialogState.update { SettingsDialogState.None }
         }
 
