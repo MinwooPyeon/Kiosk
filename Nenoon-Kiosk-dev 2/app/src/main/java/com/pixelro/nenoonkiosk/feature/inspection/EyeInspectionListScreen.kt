@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +38,7 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.ui.AdCarousel
 import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.SettingsButton
+import com.pixelro.nenoonkiosk.core.ui.SimpleInspectionSelectionButton
 import com.pixelro.nenoonkiosk.core.ui.SurveyRecommendationDialog
 import com.pixelro.nenoonkiosk.core.ui.TopBarOrientation
 import com.pixelro.nenoonkiosk.core.ui.TwoLineInspectionSelectionButton
@@ -44,6 +46,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.dementia.components.WarningBar
 import com.pixelro.nenoonkiosk.ui.theme.LightGray100
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
+import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
 @Composable
 fun EyeTestInspectionScreen(
@@ -171,35 +174,102 @@ private fun PortraitLayout(
             )
         }
 
-        Box(
+        Column(
             modifier = Modifier
-                .padding(start = 40.dp, end = 40.dp, bottom = 20.dp)
-                .fillMaxWidth()
-                .height(80.dp),
-            contentAlignment = Alignment.TopCenter
+                .fillMaxSize()
+                .padding(horizontal = 40.dp)
         ) {
-            if (isDescriptionShowing) {
-                Text(
-                    modifier = Modifier
-                        .offset(y = shiftVal.dp)
-                        .align(Alignment.Center),
-                    text = stringResource(R.string.test_list_description),
-                    style = bodyTextStyle,
-                    textAlign = TextAlign.Center
-                )
-            }
+            // 시력 검사 섹션
+            Text(
+                text = stringResource(R.string.test_predescription_short_visual_acuity_title1),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = neNoon_blue,
+                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
+            )
+
+            // 근거리
+            SimpleInspectionSelectionButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(bottom = 8.dp),
+                title = stringResource(R.string.short_visual_acuity_name2),
+                isDone = isShortVisualAcuityDone,
+                time = 2,
+                onClick = { onOpenTest(InspectionType.ShortDistanceVisualAcuity) }
+            )
+
+            // 원거리
+            SimpleInspectionSelectionButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(bottom = 16.dp),
+                title = stringResource(R.string.long_visual_acuity_name),
+                isDone = false, // TODO: Add state parameter
+                time = 2,
+                onClick = { onOpenTest(InspectionType.LongDistanceVisualAcuity) }
+            )
+
+            // 황반 변성 검사 섹션
+            Text(
+                text = stringResource(R.string.macular_degeneration_name),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = neNoon_blue,
+                modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
+            )
+
+            // 암슬러 차트
+            SimpleInspectionSelectionButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(bottom = 8.dp),
+                title = stringResource(R.string.test_predescription_amsler_title1),
+                isDone = isAmslerGridDone,
+                time = 2,
+                onClick = { onOpenTest(InspectionType.AmslerGrid) }
+            )
+
+            // 엠식 변형시
+            SimpleInspectionSelectionButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(bottom = 16.dp),
+                title = stringResource(R.string.test_predescription_mchart_title1),
+                isDone = isMChartDone,
+                time = 2,
+                onClick = { onOpenTest(InspectionType.MChart) }
+            )
+
+            // 안구 나이 검사 섹션
+            Text(
+                text = stringResource(R.string.test_predescription_presbyopia_title2),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = neNoon_blue,
+                modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
+            )
+
+            // 노안조절력 검사
+            SimpleInspectionSelectionButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(bottom = 8.dp),
+                title = stringResource(R.string.test_predescription_presbyopia_title1),
+                isDone = isPresbyopiaDone,
+                time = 3,
+                onClick = { onOpenTest(InspectionType.Presbyopia) }
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            WarningBar(warningTextSize = warningTextSize)
         }
-
-        TestListSection(
-            isSenior = isSenior,
-            isShortVisualAcuityDone = isShortVisualAcuityDone,
-            isPresbyopiaDone = isPresbyopiaDone,
-            isAmslerGridDone = isAmslerGridDone,
-            isMChartDone = isMChartDone,
-            onOpenTest = onOpenTest
-        )
-
-        WarningBar(warningTextSize = warningTextSize)
     }
 }
 
@@ -239,169 +309,166 @@ private fun LandscapeLayout(
                 .background(color = LightGray100)
         )
 
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 30.dp, end = 30.dp, bottom = 16.dp)
+                .fillMaxSize().padding(30.dp)
         ) {
-            // 왼쪽: 광고 + 경고
+            // 2x2 그리드
             Column(
                 modifier = Modifier
-                    .weight(0.45f)
-                    .fillMaxHeight()
-                    .padding(end = 20.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                // 광고
-                Box(
+                // 첫 번째 행: 시력검사 (왼쪽 위) | 황반변성 검사 (오른쪽 위)
+                Row(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
-                    contentAlignment = Alignment.TopCenter
+                    horizontalArrangement = Arrangement.spacedBy(26.dp)
                 ) {
-                    if (!isSenior) {
-                        AdCarousel(
-                            adImages = adImages,
-                            modifier = Modifier.fillMaxSize(),
-                            onPageChange = onAdPageChange
+                    // 왼쪽 위: 시력검사
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.test_predescription_short_visual_acuity_title1),
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = neNoon_blue,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+
+                        // 근거리
+                        SimpleInspectionSelectionButton(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            title = stringResource(R.string.short_visual_acuity_name2),
+                            isDone = isShortVisualAcuityDone,
+                            time = 2,
+                            onClick = { onOpenTest(InspectionType.ShortDistanceVisualAcuity) }
+                        )
+
+                        // 원거리
+                        SimpleInspectionSelectionButton(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            title = stringResource(R.string.long_visual_acuity_name),
+                            isDone = false,
+                            time = 2,
+                            onClick = { onOpenTest(InspectionType.LongDistanceVisualAcuity) }
+                        )
+                    }
+
+                    // 오른쪽 위: 황반변성 검사
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.macular_degeneration_name),
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = neNoon_blue,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+
+                        // 암슬러 차트
+                        SimpleInspectionSelectionButton(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            title = stringResource(R.string.test_predescription_amsler_title1),
+                            isDone = isAmslerGridDone,
+                            time = 2,
+                            onClick = { onOpenTest(InspectionType.AmslerGrid) }
+                        )
+
+                        // 엠식 변형시
+                        SimpleInspectionSelectionButton(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            title = stringResource(R.string.test_predescription_mchart_title1),
+                            isDone = isMChartDone,
+                            time = 2,
+                            onClick = { onOpenTest(InspectionType.MChart) }
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(1.dp))
 
-                // 경고 (아래)
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.BottomStart
+                // 두 번째 행: 광고 배너 (왼쪽 아래) | 안구 나이 검사 + 경고 (오른쪽 아래)
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(26.dp)
                 ) {
-                    WarningBar(warningTextSize = warningTextSize)
+                    // 왼쪽 아래: 광고 배너
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (!isSenior) {
+                            AdCarousel(
+                                adImages = adImages,
+                                modifier = Modifier.fillMaxSize(),
+                                onPageChange = onAdPageChange
+                            )
+                        }
+                    }
+
+                    // 오른쪽 아래: 안구 나이 검사 + 경고
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.test_predescription_presbyopia_title2),
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = neNoon_blue,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+
+                        // 노안조절력 검사
+                        SimpleInspectionSelectionButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            title = stringResource(R.string.test_predescription_presbyopia_title1),
+                            isDone = isPresbyopiaDone,
+                            time = 3,
+                            onClick = { onOpenTest(InspectionType.Presbyopia) }
+                        )
+
+                        // 경고 배너
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                            contentAlignment = Alignment.BottomStart
+                        ) {
+                            WarningBar(warningTextSize = warningTextSize)
+                        }
+                    }
                 }
             }
-
-            // 구분선
-            Spacer(
-                modifier = Modifier
-                    .width(1.dp)
-                    .fillMaxHeight()
-                    .background(color = LightGray100)
-            )
-
-            // 오른쪽: 검사 목록 (버튼 간격)
-            Column(
-                modifier = Modifier
-                    .weight(0.55f)
-                    .fillMaxHeight()
-                    .padding(top = 12.dp, start = 20.dp, end = 8.dp, bottom = 8.dp),
-                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)
-            ) {
-                val itemModifier = Modifier.weight(1f)
-
-                // 단거리 시력
-                TwoLineInspectionSelectionButton(
-                    modifier = itemModifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    title1 = stringResource(R.string.test_predescription_short_visual_acuity_title1),
-                    title2 = stringResource(R.string.test_predescription_short_visual_acuity_title2),
-                    isDone = isShortVisualAcuityDone,
-                    time = 2,
-                    onClick = { onOpenTest(InspectionType.ShortDistanceVisualAcuity) }
-                )
-
-                // 노안(안구 나이)
-                TwoLineInspectionSelectionButton(
-                    modifier = itemModifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    title1 = stringResource(R.string.test_predescription_presbyopia_title1),
-                    title2 = stringResource(R.string.test_predescription_presbyopia_title2),
-                    isDone = isPresbyopiaDone,
-                    time = 3,
-                    onClick = { onOpenTest(InspectionType.Presbyopia) }
-                )
-
-                // 암슬러
-                TwoLineInspectionSelectionButton(
-                    modifier = itemModifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    title1 = stringResource(R.string.test_predescription_amsler_title1),
-                    title2 = stringResource(R.string.test_predescription_amsler_title2),
-                    isDone = isAmslerGridDone,
-                    time = 2,
-                    onClick = { onOpenTest(InspectionType.AmslerGrid) }
-                )
-
-                // M-Chart
-                TwoLineInspectionSelectionButton(
-                    modifier = itemModifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    title1 = stringResource(R.string.test_predescription_mchart_title1),
-                    title2 = stringResource(R.string.test_predescription_mchart_title2),
-                    isDone = isMChartDone,
-                    time = 2,
-                    onClick = { onOpenTest(InspectionType.MChart) }
-                )
-            }
         }
-    }
-}
-
-@Composable
-private fun TestListSection(
-    isSenior: Boolean,
-    isShortVisualAcuityDone: Boolean,
-    isPresbyopiaDone: Boolean,
-    isAmslerGridDone: Boolean,
-    isMChartDone: Boolean,
-    onOpenTest: (InspectionType) -> Unit
-) {
-    Column {
-        val itemModifier = Modifier.weight(1f).padding(start = 20.dp, top = 5.dp, end = 20.dp, bottom = 5.dp)
-
-        TwoLineInspectionSelectionButton(
-            modifier = itemModifier,
-            title1 = stringResource(R.string.test_predescription_short_visual_acuity_title1),
-            title2 = stringResource(R.string.test_predescription_short_visual_acuity_title2),
-            isDone = isShortVisualAcuityDone,
-            time = 2,
-            onClick = { onOpenTest(InspectionType.ShortDistanceVisualAcuity) }
-        )
-
-
-        TwoLineInspectionSelectionButton(
-            modifier = itemModifier
-                .wrapContentHeight(),
-            title1 = stringResource(R.string.test_predescription_presbyopia_title1),
-            title2 = stringResource(R.string.test_predescription_presbyopia_title2),
-            isDone = isPresbyopiaDone,
-            time = 3,
-            onClick = { onOpenTest(InspectionType.Presbyopia) }
-        )
-
-
-        TwoLineInspectionSelectionButton(
-            modifier = itemModifier
-                .wrapContentHeight(),
-            title1 = stringResource(R.string.test_predescription_amsler_title1),
-            title2 = stringResource(R.string.test_predescription_amsler_title2),
-            isDone = isAmslerGridDone,
-            time = 2,
-            onClick = { onOpenTest(InspectionType.AmslerGrid) }
-        )
-
-        TwoLineInspectionSelectionButton(
-            modifier = itemModifier
-                .wrapContentHeight(),
-            title1 = stringResource(R.string.test_predescription_mchart_title1),
-            title2 = stringResource(R.string.test_predescription_mchart_title2),
-            isDone = isMChartDone,
-            time = 2,
-            onClick = { onOpenTest(InspectionType.MChart) }
-        )
-        Spacer(modifier = Modifier.height(40.dp))
     }
 }
 
@@ -454,36 +521,8 @@ private fun Preview_EyeTestList_SeniorFalse_Portrait() {
 
 @Preview(
     showBackground = true,
-    widthDp = 888,
-    heightDp = 1422,
-    name = "EyeTestList - Senior True - Portrait (No Ads)",
-    apiLevel = 34
-)
-@Composable
-private fun Preview_EyeTestList_SeniorTrue_Portrait() {
-    EyeTestInspectionScreen(
-        savedLanguage = "es",
-        isSenior = true,
-        isDialogShowing = true,
-        selectedTest = InspectionType.MChart,
-        isPresbyopiaDone = true,
-        isShortVisualAcuityDone = true,
-        isAmslerGridDone = false,
-        isMChartDone = false,
-        isDescriptionShowing = true,
-        onAdPageChange = {},
-        onBackToIntro = {},
-        onOpenSettings = {},
-        onOpenTest = {},
-        onDismissDialog = {},
-        toTestScreen = {}
-    )
-}
-
-@Preview(
-    showBackground = true,
-    widthDp = 1422,
-    heightDp = 888,
+    widthDp = 1280,
+    heightDp = 800,
     name = "EyeTestList - Senior False - Landscape",
     apiLevel = 34
 )
@@ -516,34 +555,6 @@ private fun Preview_EyeTestList_SeniorFalse_Landscape() {
         isShortVisualAcuityDone = true,
         isAmslerGridDone = false,
         isMChartDone = true,
-        isDescriptionShowing = true,
-        onAdPageChange = {},
-        onBackToIntro = {},
-        onOpenSettings = {},
-        onOpenTest = {},
-        onDismissDialog = {},
-        toTestScreen = {}
-    )
-}
-
-@Preview(
-    showBackground = true,
-    widthDp = 1422,
-    heightDp = 888,
-    name = "EyeTestList - Senior True - Landscape (No Ads)",
-    apiLevel = 34
-)
-@Composable
-private fun Preview_EyeTestList_SeniorTrue_Landscape() {
-    EyeTestInspectionScreen(
-        savedLanguage = "ko",
-        isSenior = true,
-        isDialogShowing = false,
-        selectedTest = InspectionType.MChart,
-        isPresbyopiaDone = true,
-        isShortVisualAcuityDone = true,
-        isAmslerGridDone = false,
-        isMChartDone = false,
         isDescriptionShowing = true,
         onAdPageChange = {},
         onBackToIntro = {},

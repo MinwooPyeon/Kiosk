@@ -34,9 +34,9 @@ fun WarningBar(
         Row(
             modifier = Modifier
                 .padding(
-                    start = 40.dp,
-                    bottom = (GlobalValue.navigationBarPadding + 40).dp,
-                    top = 20.dp
+                    start = 10.dp,
+                    bottom = (GlobalValue.navigationBarPadding + 20).dp,
+                    top = 10.dp
                 )
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -51,7 +51,7 @@ fun WarningBar(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 40.dp),
+                    .padding(end = 10.dp),
                 text = buildAnnotatedString {
                     withStyle(
                         style = SpanStyle(

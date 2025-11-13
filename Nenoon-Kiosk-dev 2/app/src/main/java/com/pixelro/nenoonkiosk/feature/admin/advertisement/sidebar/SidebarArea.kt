@@ -84,16 +84,9 @@ fun SidebarArea(
                 onDismissRequest = { showExitDialog = false },
                 title = {
                     Text(
-                        text = stringResource(R.string.admin_exit_confirm_title),
+                        text = stringResource(R.string.admin_exit_confirm_message),
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
-                        fontFamily = defaultFont,
-                        color = Color.Black
-                    )
-                },
-                text = {
-                    Text(
-                        stringResource(R.string.admin_exit_confirm_message), fontSize = 22.sp,
                         fontFamily = defaultFont,
                         color = Color.Black
                     )
@@ -310,7 +303,7 @@ private fun SidebarAreaPortraitPreview() {
 @Composable
 private fun SidebarAreaLandscapePreview() {
     LandscapeLayout(
-        selectedTab = AdminTab.PASSWORD_MANAGEMENT,
+        selectedTab = AdminTab.AD_MANAGEMENT,
         onTabSelected = {},
         onExitClick = {}
     )
