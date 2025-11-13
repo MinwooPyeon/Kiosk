@@ -40,8 +40,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -292,7 +290,7 @@ private fun LandscapeLocationSignInScreen(
                     onIdChange = { id = it },
                     password = password,
                     onPasswordChange = { password = it },
-                    modifier = Modifier.fillMaxWidth(0.8f)
+                    modifier = Modifier.fillMaxWidth(0.95f)
                 )
 
                 Spacer(modifier = Modifier.height(40.dp))
@@ -313,7 +311,7 @@ private fun LandscapeLocationSignInScreen(
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(0.8f)
+                    modifier = Modifier.fillMaxWidth(0.95f)
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -436,28 +434,42 @@ private fun InputFields(
 
 @Preview(
     showBackground = true,
-    widthDp = 800,
-    heightDp = 1280,
+    widthDp = 1920,
+    heightDp = 1080,
     backgroundColor = 0xFFFFFFFF,
-    name = "LocationSignIn - Portrait"
+    name = "Landscape - 32 inch Full HD"
 )
 @Composable
-private fun LocationSignInScreen_Preview_Portrait() {
+private fun LocationSignInScreen_Preview_Landscape_FullHD() {
     NenoonKioskTheme {
-        PortraitLocationSignInScreen()
+        LandscapeLocationSignInScreen()
     }
 }
 
 @Preview(
     showBackground = true,
-    widthDp = 1422,
-    heightDp = 888,
+    widthDp = 1280,
+    heightDp = 800,
     backgroundColor = 0xFFFFFFFF,
-    name = "LocationSignIn - Landscape"
+    name = "Landscape - Standard Tablet"
 )
 @Composable
-private fun LocationSignInScreen_Preview_Landscape() {
+private fun LocationSignInScreen_Preview_Landscape_Tablet() {
     NenoonKioskTheme {
         LandscapeLocationSignInScreen()
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 800,
+    heightDp = 1280,
+    backgroundColor = 0xFFFFFFFF,
+    name = "Portrait - Standard Tablet"
+)
+@Composable
+private fun LocationSignInScreen_Preview_Portrait() {
+    NenoonKioskTheme {
+        PortraitLocationSignInScreen()
     }
 }

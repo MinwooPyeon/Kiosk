@@ -105,7 +105,7 @@ private fun LoginContent(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 60.dp, vertical = 20.dp),
+                    .padding(horizontal = 40.dp, vertical = 20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -115,7 +115,7 @@ private fun LoginContent(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Logo()
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
                     StyledText(
                         text = stringResource(R.string.user_sign_in),
                         style = TextStyle.Message,
@@ -140,7 +140,7 @@ private fun LoginContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 60.dp, vertical = 40.dp),
+                    .padding(horizontal = 40.dp, vertical = 40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
@@ -148,7 +148,7 @@ private fun LoginContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Logo()
-                    Spacer(modifier = Modifier.height(50.dp))
+                    Spacer(modifier = Modifier.height(52.dp))
                     StyledText(
                         text = stringResource(R.string.user_sign_in),
                         style = TextStyle.Message,
@@ -186,7 +186,7 @@ private fun TopIconBar(
         horizontalArrangement = Arrangement.End,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 20.dp),
+            .padding(horizontal = 12.dp, vertical = 12.dp),
     ) {
         Image(
             modifier = Modifier
@@ -201,7 +201,7 @@ private fun TopIconBar(
             contentDescription = ""
         )
 
-        Spacer(modifier = Modifier.width(60.dp))
+        Spacer(modifier = Modifier.width(28.dp))
 
         Image(
             modifier = Modifier
@@ -248,11 +248,11 @@ private fun LoginButtonsArea(
                 fontWeight = FontWeight.SemiBold,
             )
 
-            Spacer(modifier = Modifier.height(if (isLandscapeMode) 40.dp else 50.dp))
+            Spacer(modifier = Modifier.height(if (isLandscapeMode) 40.dp else 52.dp))
         }
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 30.dp else 40.dp),
+            horizontalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 32.dp else 28.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             PrimaryButton(
@@ -292,7 +292,7 @@ private fun LoginButtonsArea(
             )
         }
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 30.dp else 50.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 32.dp else 52.dp))
 
         SecondaryButton(
             text = signUp,
@@ -305,7 +305,7 @@ private fun LoginButtonsArea(
                 )
         )
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 30.dp else 60.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 32.dp else 60.dp))
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -324,7 +324,7 @@ private fun LoginButtonsArea(
                 fontWeight = FontWeight.Bold,
                 color = Gray
             )
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -337,13 +337,13 @@ private fun LoginButtonsArea(
 
 @Preview(
     showBackground = true,
+    widthDp = 1920,
     backgroundColor = 0xFFFFFFFF,
-    widthDp = 800,
-    heightDp = 1280,
-    name = "Portrait - Standard Tablet"
+    heightDp = 1080,
+    name = "Landscape - 32 inch Full HD"
 )
 @Composable
-fun PreviewLoginPortrait() {
+fun PreviewLogin32InchFullHD() {
     LoginContent(
         onBluetoothSettingsClick = {},
         onAdminPageClick = {},
@@ -359,8 +359,8 @@ fun PreviewLoginPortrait() {
 
 @Preview(
     showBackground = true,
-    backgroundColor = 0xFFFFFFFF,
     widthDp = 1280,
+    backgroundColor = 0xFFFFFFFF,
     heightDp = 800,
     name = "Landscape - Standard Tablet"
 )
@@ -381,13 +381,13 @@ fun PreviewLoginLandscape() {
 
 @Preview(
     showBackground = true,
+    widthDp = 800,
     backgroundColor = 0xFFFFFFFF,
-    widthDp = 1920,
-    heightDp = 1080,
-    name = "Landscape - 32 inch Full HD"
+    heightDp = 1280,
+    name = "Portrait - Standard Tablet"
 )
 @Composable
-fun PreviewLogin32InchFullHD() {
+fun PreviewLoginPortrait() {
     LoginContent(
         onBluetoothSettingsClick = {},
         onAdminPageClick = {},
