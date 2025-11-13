@@ -60,7 +60,7 @@ val topBackButtonTextStyle =
     TextStyle(
         fontFamily = defaultFont,
         fontWeight = FontWeight.Normal,
-        fontSize = 36.sp,
+        fontSize = 28.sp,
         letterSpacing = 0.5.sp,
     )
 

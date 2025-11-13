@@ -101,15 +101,15 @@ fun AdLocationDisplay(
                         1 -> if (isLandscape) {
                             // Location 1 가로: 왼쪽 광고 배너
                             Modifier
-                                .fillMaxWidth(0.418f)
+                                .fillMaxWidth(0.41f)
                                 .fillMaxHeight(0.27f)
-                                .offset(x = imageWidth * 0.02f, y = imageHeight * 0.23f)
+                                .offset(x = imageWidth * 0.05f, y = imageHeight * 0.26f)
                         } else {
                             // Location 1 세로: 상단 광고 배너
                             Modifier
                                 .fillMaxWidth(0.9f)
                                 .fillMaxHeight(0.235f)
-                                .offset(x = imageWidth * 0.05f,y = imageHeight * 0.132f)
+                                .offset(x = imageWidth * 0.05f,y = imageHeight * 0.116f)
                         }
                         2 -> if (isLandscape) {
                             // Location 2 가로: 상단 텍스트 광고 (0-10%)
