@@ -69,8 +69,8 @@ fun PrimaryButton(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(if (icon != null || iconDrawable != null) 340.dp else 100.dp),
-        shape = RoundedCornerShape(10.dp),
+                .height(if (icon != null || iconDrawable != null) 320.dp else 80.dp),
+        shape = RoundedCornerShape(12.dp),
         colors =
             ButtonDefaults.buttonColors(
                 backgroundColor = if (isPressed) Color.White else primaryColor,
@@ -83,7 +83,7 @@ fun PrimaryButton(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .padding(vertical = 24.dp, horizontal = 12.dp)
+                    .padding(vertical = 16.dp, horizontal = 12.dp)
                     .fillMaxWidth()
             ) {
                 when {
@@ -111,7 +111,7 @@ fun PrimaryButton(
                     color = if (!isPressed) Color.White else primaryColor,
                     textAlign = TextAlign.Center,
                     maxLines = 3,
-                    overflow = TextOverflow.Visible,
+                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

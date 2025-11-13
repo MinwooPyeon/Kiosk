@@ -9,10 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.pixelro.nenoonkiosk.ui.theme.Black
 import com.pixelro.nenoonkiosk.ui.theme.Gray
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.selectLargeTextStyle
@@ -23,24 +23,28 @@ import com.pixelro.nenoonkiosk.ui.theme.selectLargeTextStyle
  * ExoPlayer를 사용하여 비디오를 재생
  *
  * @param exoPlayer ExoPlayer 인스턴스 (null이면 프리뷰 모드)
+ * @param useAspectRatio 16:9 비율 유지 여부
  * @param modifier Modifier
  */
 @Composable
 fun ScreenSaverVideo(
     exoPlayer: ExoPlayer?,
+    useAspectRatio: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 
+    val finalModifier = if (useAspectRatio) {
+        modifier
+            .fillMaxWidth()
+            .aspectRatio(16f / 9f)
+    } else {
+        modifier
+    }
+
     if (exoPlayer != null) {
         AndroidView(
-            modifier =
-                modifier
-                    .fillMaxWidth()
-                    .aspectRatio(16f / 9f)
-                    .background(
-                        color = White,
-                    ),
+            modifier = finalModifier.background(color = Black),
             factory = {
                 PlayerView(context).apply {
                     player = exoPlayer
@@ -51,13 +55,7 @@ fun ScreenSaverVideo(
     } else {
         // 프리뷰용 플레이스홀더
         Box(
-            modifier =
-                modifier
-                    .fillMaxWidth()
-                    .aspectRatio(16f / 9f)
-                    .background(
-                        color = Gray,
-                    ),
+            modifier = finalModifier.background(color = Gray),
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -67,16 +65,4 @@ fun ScreenSaverVideo(
             )
         }
     }
-}
-
-@Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
-@Composable
-fun PreviewScreenSaverVideoHorizontal() {
-    ScreenSaverVideo(exoPlayer = null)
-}
-
-@Preview(showBackground = true, device = "spec:width=800dp,height=1280dp,dpi=240")
-@Composable
-fun PreviewScreenSaverVideoVertical() {
-    ScreenSaverVideo(exoPlayer = null)
 }

@@ -13,6 +13,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +35,8 @@ import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.termsofservice.base.TermsTableData
 import com.pixelro.nenoonkiosk.feature.termsofservice.components.ConsentRow
 import com.pixelro.nenoonkiosk.feature.termsofservice.components.TermsTable
+import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpTermsOfServiceScreen(
@@ -97,7 +101,8 @@ private fun SignUpTermsOfServicePortraitLayout(
                     onChangePersonal = onChangePersonal,
                     onChangeSensitive = onChangeSensitive,
                     onClickAgree = onClickAgree,
-                    onClickBack = onClickBack
+                    onClickBack = onClickBack,
+                    isLandscapeMode = false
                 )
             }
         }
@@ -115,6 +120,16 @@ private fun SignUpTermsOfServiceLandscapeLayout(
     onClickBack: () -> Unit
 ) {
     val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+
+    // 첫 번째 동의 체크 시 맨 아래로 스크롤
+    LaunchedEffect(state.acceptedPersonal) {
+        if (state.acceptedPersonal == true) {
+            coroutineScope.launch {
+                scrollState.animateScrollTo(scrollState.maxValue)
+            }
+        }
+    }
 
     Scaffold { paddingValues ->
         Surface(
@@ -136,7 +151,8 @@ private fun SignUpTermsOfServiceLandscapeLayout(
                     onChangePersonal = onChangePersonal,
                     onChangeSensitive = onChangeSensitive,
                     onClickAgree = onClickAgree,
-                    onClickBack = onClickBack
+                    onClickBack = onClickBack,
+                    isLandscapeMode = true
                 )
             }
         }
@@ -151,12 +167,13 @@ private fun SignUpTermsOfServiceContent(
     onChangePersonal: (Boolean?) -> Unit,
     onChangeSensitive: (Boolean?) -> Unit,
     onClickAgree: () -> Unit,
-    onClickBack: () -> Unit
+    onClickBack: () -> Unit,
+    isLandscapeMode: Boolean
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(32.dp))
 
         // Title
         Text(
@@ -172,7 +189,7 @@ private fun SignUpTermsOfServiceContent(
                 }
                 withStyle(
                     SpanStyle(
-                        fontSize = 22.sp,
+                        fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
                     )
                 ) {
@@ -186,7 +203,7 @@ private fun SignUpTermsOfServiceContent(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(32.dp))
 
         // Description
         Text(
@@ -195,14 +212,14 @@ private fun SignUpTermsOfServiceContent(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(32.dp))
 
         // Personal Information
         TermsTable(
             data = personalTable,
             textSize = state.textSize
         )
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(32.dp))
         ConsentRow(
             description = stringResource(R.string.signup_personal_info_checkbox_description),
             question = stringResource(R.string.signup_personal_info_checkbox_question),
@@ -211,14 +228,14 @@ private fun SignUpTermsOfServiceContent(
             textSize = state.textSize
         )
 
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(32.dp))
 
         // Sensitive Information
         TermsTable(
             data = sensitiveTable,
             textSize = state.textSize
         )
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(32.dp))
         ConsentRow(
             description = stringResource(R.string.signup_sensitive_info_checkbox_description),
             question = stringResource(R.string.signup_sensitive_info_checkbox_question),
@@ -227,8 +244,7 @@ private fun SignUpTermsOfServiceContent(
             textSize = state.textSize
         )
 
-        Spacer(Modifier.weight(1f))
-
+        Spacer(Modifier.height(40.dp))
         PrimaryButton(
             onClick = onClickAgree,
             enabled = state.acceptedPersonal == true && state.acceptedSensitive == true,
@@ -242,70 +258,110 @@ private fun SignUpTermsOfServiceContent(
     }
 }
 
-// Portrait Preview
 @Preview(
     showBackground = true,
-    widthDp = 888,
-    heightDp = 1422,
-    name = "SignUp - Portrait"
+    widthDp = 1920,
+    backgroundColor = 0xFFFFFFFF,
+    heightDp = 1080,
+    name = "Landscape - 32 inch Full HD"
 )
 @Composable
-private fun SignUpTermsOfServiceScreen_Preview_Portrait() {
-    SignUpTermsOfServiceScreen(
-        state = SignUpTosUiState(
-            acceptedPersonal = true,
-            acceptedSensitive = true,
-            textSize = 20.sp
-        ),
-        personalTable = TermsTableData(
-            label = "개인정보 수집·이용",
-            column1 = "성명/연락처",
-            column2 = "본인확인 및 상담",
-            column3 = "1년 보관"
-        ),
-        sensitiveTable = TermsTableData(
-            label = "민감정보 수집·이용",
-            column1 = "건강정보",
-            column2 = "맞춤 서비스 제공",
-            column3 = "동의 철회 시까지"
-        ),
-        onChangePersonal = {},
-        onChangeSensitive = {},
-        onClickAgree = {},
-        onClickBack = {}
-    )
+private fun SignUpTermsOfServiceScreen_Preview_32InchFullHD() {
+    NenoonKioskTheme {
+        SignUpTermsOfServiceScreen(
+            state = SignUpTosUiState(
+                acceptedPersonal = true,
+                acceptedSensitive = null,
+                textSize = 20.sp
+            ),
+            personalTable = TermsTableData(
+                label = "개인정보 수집·이용",
+                column1 = "성명/연락처",
+                column2 = "본인확인 및 상담",
+                column3 = "1년 보관"
+            ),
+            sensitiveTable = TermsTableData(
+                label = "민감정보 수집·이용",
+                column1 = "건강정보",
+                column2 = "맞춤 서비스 제공",
+                column3 = "동의 철회 시까지"
+            ),
+            onChangePersonal = {},
+            onChangeSensitive = {},
+            onClickAgree = {},
+            onClickBack = {}
+        )
+    }
 }
 
-// Landscape Preview
 @Preview(
     showBackground = true,
-    widthDp = 1422,
-    heightDp = 888,
-    name = "SignUp - Landscape"
+    widthDp = 1280,
+    backgroundColor = 0xFFFFFFFF,
+    heightDp = 800,
+    name = "Landscape - Standard Tablet"
 )
 @Composable
 private fun SignUpTermsOfServiceScreen_Preview_Landscape() {
-    SignUpTermsOfServiceScreen(
-        state = SignUpTosUiState(
-            acceptedPersonal = true,
-            acceptedSensitive = null,
-            textSize = 20.sp
-        ),
-        personalTable = TermsTableData(
-            label = "개인정보 수집·이용",
-            column1 = "성명/연락처",
-            column2 = "본인확인 및 상담",
-            column3 = "1년 보관"
-        ),
-        sensitiveTable = TermsTableData(
-            label = "민감정보 수집·이용",
-            column1 = "건강정보",
-            column2 = "맞춤 서비스 제공",
-            column3 = "동의 철회 시까지"
-        ),
-        onChangePersonal = {},
-        onChangeSensitive = {},
-        onClickAgree = {},
-        onClickBack = {}
-    )
+    NenoonKioskTheme {
+        SignUpTermsOfServiceScreen(
+            state = SignUpTosUiState(
+                acceptedPersonal = true,
+                acceptedSensitive = null,
+                textSize = 20.sp
+            ),
+            personalTable = TermsTableData(
+                label = "개인정보 수집·이용",
+                column1 = "성명/연락처",
+                column2 = "본인확인 및 상담",
+                column3 = "1년 보관"
+            ),
+            sensitiveTable = TermsTableData(
+                label = "민감정보 수집·이용",
+                column1 = "건강정보",
+                column2 = "맞춤 서비스 제공",
+                column3 = "동의 철회 시까지"
+            ),
+            onChangePersonal = {},
+            onChangeSensitive = {},
+            onClickAgree = {},
+            onClickBack = {}
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 800,
+    backgroundColor = 0xFFFFFFFF,
+    heightDp = 1280,
+    name = "Portrait - Standard Tablet"
+)
+@Composable
+private fun SignUpTermsOfServiceScreen_Preview_Portrait() {
+    NenoonKioskTheme {
+        SignUpTermsOfServiceScreen(
+            state = SignUpTosUiState(
+                acceptedPersonal = true,
+                acceptedSensitive = true,
+                textSize = 20.sp
+            ),
+            personalTable = TermsTableData(
+                label = "개인정보 수집·이용",
+                column1 = "성명/연락처",
+                column2 = "본인확인 및 상담",
+                column3 = "1년 보관"
+            ),
+            sensitiveTable = TermsTableData(
+                label = "민감정보 수집·이용",
+                column1 = "건강정보",
+                column2 = "맞춤 서비스 제공",
+                column3 = "동의 철회 시까지"
+            ),
+            onChangePersonal = {},
+            onChangeSensitive = {},
+            onClickAgree = {},
+            onClickBack = {}
+        )
+    }
 }

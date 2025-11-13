@@ -16,19 +16,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -109,7 +105,7 @@ private fun LoginContent(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 60.dp, vertical = 40.dp),
+                    .padding(horizontal = 40.dp, vertical = 20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -119,7 +115,7 @@ private fun LoginContent(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Logo()
-                    Spacer(modifier = Modifier.height(50.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
                     StyledText(
                         text = stringResource(R.string.user_sign_in),
                         style = TextStyle.Message,
@@ -127,7 +123,7 @@ private fun LoginContent(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(60.dp))
+                Spacer(modifier = Modifier.width(40.dp))
 
                 LoginButtonsArea(
                     onIdPasswordSignInClick = onIdPasswordSignInClick,
@@ -144,7 +140,7 @@ private fun LoginContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 60.dp, vertical = 40.dp),
+                    .padding(horizontal = 40.dp, vertical = 40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
@@ -152,7 +148,7 @@ private fun LoginContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Logo()
-                    Spacer(modifier = Modifier.height(50.dp))
+                    Spacer(modifier = Modifier.height(52.dp))
                     StyledText(
                         text = stringResource(R.string.user_sign_in),
                         style = TextStyle.Message,
@@ -190,7 +186,7 @@ private fun TopIconBar(
         horizontalArrangement = Arrangement.End,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 20.dp),
+            .padding(horizontal = 12.dp, vertical = 12.dp),
     ) {
         Image(
             modifier = Modifier
@@ -205,7 +201,7 @@ private fun TopIconBar(
             contentDescription = ""
         )
 
-        Spacer(modifier = Modifier.width(60.dp))
+        Spacer(modifier = Modifier.width(28.dp))
 
         Image(
             modifier = Modifier
@@ -252,11 +248,11 @@ private fun LoginButtonsArea(
                 fontWeight = FontWeight.SemiBold,
             )
 
-            Spacer(modifier = Modifier.height(if (isLandscapeMode) 40.dp else 50.dp))
+            Spacer(modifier = Modifier.height(if (isLandscapeMode) 40.dp else 52.dp))
         }
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(40.dp),
+            horizontalArrangement = Arrangement.spacedBy(if (isLandscapeMode) 32.dp else 28.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             PrimaryButton(
@@ -296,7 +292,7 @@ private fun LoginButtonsArea(
             )
         }
 
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 32.dp else 52.dp))
 
         SecondaryButton(
             text = signUp,
@@ -309,7 +305,7 @@ private fun LoginButtonsArea(
                 )
         )
 
-        Spacer(modifier = Modifier.height(60.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 32.dp else 60.dp))
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -328,26 +324,26 @@ private fun LoginButtonsArea(
                 fontWeight = FontWeight.Bold,
                 color = Gray
             )
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(1.dp)
-                    .background(Color.Black)
+                    .background(Gray)
             )
         }
     }
 }
 
 @Preview(
-    name = "Tablet Portrait",
     showBackground = true,
+    widthDp = 1920,
     backgroundColor = 0xFFFFFFFF,
-    widthDp = 800,
-    heightDp = 1280
+    heightDp = 1080,
+    name = "Landscape - 32 inch Full HD"
 )
 @Composable
-fun PreviewLoginPortrait() {
+fun PreviewLogin32InchFullHD() {
     LoginContent(
         onBluetoothSettingsClick = {},
         onAdminPageClick = {},
@@ -362,14 +358,36 @@ fun PreviewLoginPortrait() {
 }
 
 @Preview(
-    name = "Tablet Landscape",
     showBackground = true,
-    backgroundColor = 0xFFFFFFFF,
     widthDp = 1280,
-    heightDp = 800
+    backgroundColor = 0xFFFFFFFF,
+    heightDp = 800,
+    name = "Landscape - Standard Tablet"
 )
 @Composable
 fun PreviewLoginLandscape() {
+    LoginContent(
+        onBluetoothSettingsClick = {},
+        onAdminPageClick = {},
+        onSettingsClick = {},
+        onIdPasswordSignInClick = {},
+        onQrSignInClick = {},
+        onFaceRecognitionClick = {},
+        onStartWithoutSignInClick = {},
+        onSignUpClick = {},
+        showAdminPage = true
+    )
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 800,
+    backgroundColor = 0xFFFFFFFF,
+    heightDp = 1280,
+    name = "Portrait - Standard Tablet"
+)
+@Composable
+fun PreviewLoginPortrait() {
     LoginContent(
         onBluetoothSettingsClick = {},
         onAdminPageClick = {},
