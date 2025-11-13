@@ -61,7 +61,7 @@ import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetection
 import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetectionViewModel
-import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceContent
+import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceRoute
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridTestResult
 import com.pixelro.nenoonkiosk.feature.inspection.macular.amslergrid.AmslerGridViewModel
@@ -96,7 +96,7 @@ fun AmslerGridTestContent(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            MeasuringDistanceContent(
+            MeasuringDistanceRoute(
                 measuringDistanceContentVisibleState = measuringDistanceContentVisibleState,
                 toNextContent = {
                     amslerGridViewModel.updateIsMeasuringDistanceContentVisible(false)

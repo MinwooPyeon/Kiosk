@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -42,8 +42,7 @@ import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetectionViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.pixelro.nenoonkiosk.ui.theme.White
 
 /**
  * 눈가리개 사용 dialog
@@ -68,7 +67,7 @@ fun MeasuringDistanceDialog(
                     .width(if(isLandscape()) 600.dp else 800.dp)
                     .height(if(isLandscape()) 800.dp else 1000.dp)
                     .background(
-                        color = Color(0xffffffff),
+                        color = White,
                         shape = RoundedCornerShape(8.dp),
                     ),
         ) {

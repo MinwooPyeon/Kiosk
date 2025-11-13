@@ -26,13 +26,14 @@ class MyFaceAnalyzer(
     private val updateIsNenoonTextDetected: (Boolean) -> Unit,
     private val onGazeDetectionResult: (IrisResult) -> Unit,
     private val executor: Executor,
+    private val updateInputImageSize: ((Float, Float) -> Unit)? = null,
 ) : ImageAnalysis.Analyzer {
 
     companion object {
         // 얼굴 인식 범위 상수
-        private const val EYE_LEFT_MIN_X = 260f
-        private const val EYE_CENTER_X = 544f
-        private const val EYE_RIGHT_MAX_X = 804f
+        private const val EYE_LEFT_MIN_X = 360f
+        private const val EYE_CENTER_X = 644f
+        private const val EYE_RIGHT_MAX_X = 904f
         private const val EYE_MIN_Y = 400f
         private const val EYE_DISTANCE_MIN = 100f
 
@@ -49,6 +50,7 @@ class MyFaceAnalyzer(
 
     private var lastAnalysisTime = -1L
     private var noFaceCount = 0
+    private var isImageSizeUpdated = false
 
     private val faceDetectorOptions = FaceDetectorOptions.Builder()
         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
@@ -67,6 +69,12 @@ class MyFaceAnalyzer(
 
         val mediaImage = imageProxy.image ?: return
         val inputImage = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+
+        // 이미지 크기 업데이트 (최초 1회만)
+        if (!isImageSizeUpdated) {
+            updateInputImageSize?.invoke(inputImage.width.toFloat(), inputImage.height.toFloat())
+            isImageSizeUpdated = true
+        }
 
         // 텍스트 인식
         val faceTask = processTextRecognition(inputImage)

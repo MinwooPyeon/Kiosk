@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceContent
+import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceRoute
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuitySttState
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.VisualAcuityInspectionCommonContent
@@ -90,7 +90,7 @@ fun ShortVisualAcuityInspectionContent(
             /**
              * 거리 조절 화면
              */
-            MeasuringDistanceContent(
+            MeasuringDistanceRoute(
                 measuringDistanceContentVisibleState = measuringDistanceContentVisibleState,
                 toNextContent = onNextFromDistance,
                 selectedTestType = InspectionType.ShortDistanceVisualAcuity,

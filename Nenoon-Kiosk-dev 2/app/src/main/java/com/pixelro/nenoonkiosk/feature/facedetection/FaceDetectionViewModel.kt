@@ -29,7 +29,8 @@ constructor(
         // 기본 이미지 크기 상수
         private const val DEFAULT_IMAGE_SIZE = 1088f
         private const val ZERO_FLOAT = 0f
-        private const val EYE_CENTER_X = 544f
+        // 텍스트 인식 중앙값 (얼굴 인식 범위와 동일하게 설정)
+        private const val TEXT_CENTER_X = 644f
 
         // 거리 측정 상수
         private const val FOCAL_LENGTH_MULTIPLIER = 1.33f
@@ -256,6 +257,11 @@ constructor(
 
     fun updateIsFaceDetected(isFaceDetected: Boolean) {
         _isFaceDetected.update { isFaceDetected }
+
+        // 얼굴이 감지되지 않으면 거리 값도 리셋
+        if (!isFaceDetected) {
+            _screenToFaceDistance.update { ZERO_FLOAT }
+        }
     }
 
     fun updateIsDistanceOK(isDistanceOK: Int) {
@@ -309,7 +315,8 @@ constructor(
         val textCenterX = ((_textBox.value?.right?.toFloat() ?: ZERO_FLOAT) +
                 (_textBox.value?.left?.toFloat() ?: ZERO_FLOAT)) / 2
 
-        if (textCenterX > EYE_CENTER_X) {
+        // 얼굴 인식 범위와 동일한 중앙값 사용
+        if (textCenterX > TEXT_CENTER_X) {
             _isLeftEyeCovered.update { true }
             _isRightEyeCovered.update { false }
         } else {
