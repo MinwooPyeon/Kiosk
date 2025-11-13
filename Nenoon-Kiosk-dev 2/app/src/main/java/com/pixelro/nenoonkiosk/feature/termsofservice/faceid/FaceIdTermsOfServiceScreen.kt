@@ -213,7 +213,7 @@ private fun FaceIdTermsOfServiceContent(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(40.dp))
 
         // Buttons
         PrimaryButton(
