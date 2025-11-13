@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
+import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
 import com.pixelro.nenoonkiosk.ui.theme.titleTextStyle
 
 enum class TopBarOrientation {
@@ -51,8 +52,8 @@ fun NenoonTopBar(
     contentColor: Color = Color.Black,
 ) {
     val barHeight = when (orientation) {
-        TopBarOrientation.Vertical -> 130.dp
-        TopBarOrientation.Horizontal -> 164.dp
+        TopBarOrientation.Vertical -> 126.dp
+        TopBarOrientation.Horizontal -> 126.dp
     }
 
     val actionSlotSize = when (orientation) {
@@ -68,7 +69,7 @@ fun NenoonTopBar(
         CenterAlignedTopAppBar(
             modifier = Modifier
                 .height(barHeight)
-                .padding(horizontal = 34.dp),
+                .padding(horizontal = 28.dp),
             title = {
                 Box(
                     modifier = Modifier.fillMaxHeight(),
@@ -76,7 +77,7 @@ fun NenoonTopBar(
                 ) {
                     Text(
                         text = title,
-                        style = titleTextStyle,
+                        style = bodyTextStyle,
                         color = contentColor,
                         textAlign = TextAlign.Center,
                     )
@@ -113,7 +114,7 @@ fun NenoonTopBar(
 
 @Preview(
     showBackground = true, name = "세로형 TopBar (화이트)",
-    backgroundColor = 0xFFFFFFFF, widthDp = 800, heightDp = 130
+    backgroundColor = 0xFFFFFFFF, device = "spec:width=800dp,height=1280dp,dpi=240"
 )
 @Composable
 private fun NenoonTopBarVerticalPreview() {
@@ -131,7 +132,7 @@ private fun NenoonTopBarVerticalPreview() {
 
 @Preview(
     showBackground = true, name = "가로형 TopBar (검정색)",
-    backgroundColor = 0xFFFFFFFF, widthDp = 1280, heightDp = 164
+    backgroundColor = 0xFFFFFFFF, device = "spec:width=1280dp,height=800dp,dpi=240"
 )
 @Composable
 private fun NenoonTopBarHorizontalPreview() {

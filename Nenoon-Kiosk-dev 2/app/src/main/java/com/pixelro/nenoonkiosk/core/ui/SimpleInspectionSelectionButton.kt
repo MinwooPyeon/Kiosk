@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.ui.theme.Black
+import com.pixelro.nenoonkiosk.ui.theme.Gray
 import com.pixelro.nenoonkiosk.ui.theme.LightGray100
 import com.pixelro.nenoonkiosk.ui.theme.LightGray400
 import com.pixelro.nenoonkiosk.ui.theme.LightGray500
@@ -68,7 +69,6 @@ fun SimpleInspectionSelectionButton(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(500.dp)
             .border(
                 border = BorderStroke(1.dp, LightGray100),
                 shape = RoundedCornerShape(8.dp),
@@ -88,14 +88,15 @@ fun SimpleInspectionSelectionButton(
                 .fillMaxWidth()
                 .background(
                     brush = Brush.verticalGradient(colors = gradientColors))
-                .padding(horizontal = 28 .dp, vertical = 6.dp),
+                .padding(horizontal = 20.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             // 왼쪽: 검사명
             Text(
                 text = title,
-                fontSize = 42.sp,
+                fontSize = 22.sp,
+                lineHeight = 26.sp,
                 fontWeight = FontWeight.Bold,
                 color = Black,
                 textAlign = TextAlign.Start,
@@ -109,35 +110,35 @@ fun SimpleInspectionSelectionButton(
                 modifier = Modifier.padding(start = 4.dp)
             ) {
                 Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = stringResource(R.string.box_time_required),
-                        fontSize = 18.sp,
-                        color = Black
-                    )
+
                     Row() {
                         Text(
                             text = stringResource(R.string.box_approximate),
-                            fontSize = 32.sp,
+                            fontSize = 16.sp,
+                            lineHeight = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Black
+                            color = Gray
                         )
                         Text(
                             text = " ",
-                            fontSize = 32.sp,
+                            fontSize = 16.sp,
+                            lineHeight = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Black
+                            color = Gray
                         )
                         Text(
                             text = time.toString(),
-                            fontSize = 32.sp,
+                            fontSize = 16.sp,
+                            lineHeight = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Black
+                            color = Gray
                         )
                         Text(
                             text = stringResource(R.string.box_minute),
-                            fontSize = 32.sp,
+                            fontSize = 16.sp,
+                            lineHeight = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Black
+                            color = Gray
                         )
                     }
                 }
@@ -147,7 +148,7 @@ fun SimpleInspectionSelectionButton(
                     contentDescription = null,
                     tint = neNoon_blue,
                     modifier = Modifier
-                        .size(42.dp)
+                        .size(32.dp)
                         .rotate(180f)
                 )
             }

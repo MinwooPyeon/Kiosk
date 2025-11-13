@@ -38,8 +38,8 @@ fun BackButtonHorizontal(
         onClick = onClick,
         modifier =
             modifier
-                .width(232.dp)
-                .height(96.dp),
+                .width(214.dp)
+                .height(74.dp),
         shape = RoundedCornerShape(10.dp),
         colors =
             ButtonDefaults.buttonColors(

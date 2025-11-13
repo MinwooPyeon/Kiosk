@@ -98,13 +98,13 @@
     <string name="test_list_dialog_re_button">再検査する</string>
     <string name="test_list_dialog_cancel_button">キャンセル</string>
     <string name="test_predescription_presbyopia_title1">老眼ピント調節力検査</string>
-    <string name="test_predescription_presbyopia_title2">(目の年齢検査)</string>
+    <string name="test_predescription_presbyopia_title2">目の年齢検査</string>
     <string name="test_predescription_short_visual_acuity_title1">視力検査</string>
-    <string name="test_predescription_short_visual_acuity_title2">(近見)</string>
+    <string name="test_predescription_short_visual_acuity_title2">近見</string>
     <string name="test_predescription_amsler_title1">アムスラーチャート</string>
-    <string name="test_predescription_amsler_title2">(黄斑変性検査)</string>
+    <string name="test_predescription_amsler_title2">黄斑変性検査</string>
     <string name="test_predescription_mchart_title1">M-CHARTS変視症</string>
-    <string name="test_predescription_mchart_title2">(黄斑変性検査)</string>
+    <string name="test_predescription_mchart_title2">黄斑変性検査</string>
     <string name="test_list_screen_warning1">NENOON アプリのすべての検査は自己検査であり</string>
     <string name="test_list_screen_warning2">医学的な所見ではありませんので</string>
     <string name="test_list_screen_warning3">正確な診断は病院で受けるようお願いします目の調子や周辺環境またはデバイスによって、検査の結果が変動する場合があります</string>
