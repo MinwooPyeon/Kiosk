@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -77,12 +78,12 @@ fun IntroScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.Center),
-                horizontalArrangement = Arrangement.Center,
+                    .align(Alignment.Center)
+                    .padding(horizontal = 80.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Logo()
-                Spacer(modifier = Modifier.width(200.dp))
                 StartButton(alphaVal, toSurveyScreen)
             }
         } else {
@@ -109,18 +110,45 @@ fun IntroScreen(
     }
 }
 
-@Preview(showBackground = true, widthDp = 800, heightDp = 1280, apiLevel = 34)
+@Preview(
+    showBackground = true,
+    widthDp = 1920,
+    backgroundColor = 0xFFFFFFFF,
+    heightDp = 1080,
+    name = "Landscape - 32 inch Full HD"
+)
 @Composable
-fun IntroScreenPreviewVertical() {
+fun IntroScreenPreview32InchFullHD() {
     IntroScreen(
         toSurveyScreen = {},
         toSettingsScreen = {}
     )
 }
 
-@Preview(showBackground = true, widthDp = 1280, heightDp = 800, apiLevel = 34)
+@Preview(
+    showBackground = true,
+    widthDp = 1280,
+    backgroundColor = 0xFFFFFFFF,
+    heightDp = 800,
+    name = "Landscape - Standard Tablet"
+)
 @Composable
-fun IntroScreenPreviewHorizental() {
+fun IntroScreenPreviewLandscape() {
+    IntroScreen(
+        toSurveyScreen = {},
+        toSettingsScreen = {}
+    )
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 800,
+    backgroundColor = 0xFFFFFFFF,
+    heightDp = 1280,
+    name = "Portrait - Standard Tablet"
+)
+@Composable
+fun IntroScreenPreviewPortrait() {
     IntroScreen(
         toSurveyScreen = {},
         toSettingsScreen = {}
