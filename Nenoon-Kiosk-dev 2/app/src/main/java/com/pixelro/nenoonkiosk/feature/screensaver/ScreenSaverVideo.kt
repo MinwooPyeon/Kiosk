@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.pixelro.nenoonkiosk.ui.theme.Black
 import com.pixelro.nenoonkiosk.ui.theme.Gray
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.selectLargeTextStyle
@@ -43,7 +44,7 @@ fun ScreenSaverVideo(
 
     if (exoPlayer != null) {
         AndroidView(
-            modifier = finalModifier.background(color = White),
+            modifier = finalModifier.background(color = Black),
             factory = {
                 PlayerView(context).apply {
                     player = exoPlayer
