@@ -17,13 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
-import com.pixelro.nenoonkiosk.ui.theme.bodyTextStyle
-import com.pixelro.nenoonkiosk.ui.theme.titleTextStyle
 
 enum class TopBarOrientation {
     Vertical, Horizontal
@@ -52,8 +52,8 @@ fun NenoonTopBar(
     contentColor: Color = Color.Black,
 ) {
     val barHeight = when (orientation) {
-        TopBarOrientation.Vertical -> 126.dp
-        TopBarOrientation.Horizontal -> 126.dp
+        TopBarOrientation.Vertical -> 110.dp
+        TopBarOrientation.Horizontal -> 114.dp
     }
 
     val actionSlotSize = when (orientation) {
@@ -77,9 +77,11 @@ fun NenoonTopBar(
                 ) {
                     Text(
                         text = title,
-                        style = bodyTextStyle,
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.Bold,
                         color = contentColor,
                         textAlign = TextAlign.Center,
+                        letterSpacing = 0.5.sp,
                     )
                 }
             },

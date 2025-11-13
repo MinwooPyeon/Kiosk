@@ -182,7 +182,7 @@ private fun PortraitLayout(
             // 시력 검사 섹션
             Text(
                 text = stringResource(R.string.test_predescription_short_visual_acuity_title1),
-                fontSize = 20.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = neNoon_blue,
                 modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
@@ -215,7 +215,7 @@ private fun PortraitLayout(
             // 황반 변성 검사 섹션
             Text(
                 text = stringResource(R.string.macular_degeneration_name),
-                fontSize = 20.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = neNoon_blue,
                 modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
@@ -248,7 +248,7 @@ private fun PortraitLayout(
             // 안구 나이 검사 섹션
             Text(
                 text = stringResource(R.string.test_predescription_presbyopia_title2),
-                fontSize = 20.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = neNoon_blue,
                 modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
@@ -337,7 +337,7 @@ private fun LandscapeLayout(
                     ) {
                         Text(
                             text = stringResource(R.string.test_predescription_short_visual_acuity_title1),
-                            fontSize = 18.sp,
+                            fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                             color = neNoon_blue,
                             modifier = Modifier.padding(bottom = 4.dp)
@@ -375,7 +375,7 @@ private fun LandscapeLayout(
                     ) {
                         Text(
                             text = stringResource(R.string.macular_degeneration_name),
-                            fontSize = 18.sp,
+                            fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                             color = neNoon_blue,
                             modifier = Modifier.padding(bottom = 4.dp)
@@ -439,7 +439,7 @@ private fun LandscapeLayout(
                     ) {
                         Text(
                             text = stringResource(R.string.test_predescription_presbyopia_title2),
-                            fontSize = 18.sp,
+                            fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                             color = neNoon_blue,
                             modifier = Modifier.padding(bottom = 4.dp)

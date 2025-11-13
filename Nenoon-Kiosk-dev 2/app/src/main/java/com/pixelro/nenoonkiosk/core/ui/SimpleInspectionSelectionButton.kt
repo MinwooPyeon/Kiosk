@@ -95,7 +95,7 @@ fun SimpleInspectionSelectionButton(
             // 왼쪽: 검사명
             Text(
                 text = title,
-                fontSize = 22.sp,
+                fontSize = 28.sp,
                 lineHeight = 26.sp,
                 fontWeight = FontWeight.Bold,
                 color = Black,
@@ -114,28 +114,28 @@ fun SimpleInspectionSelectionButton(
                     Row() {
                         Text(
                             text = stringResource(R.string.box_approximate),
-                            fontSize = 16.sp,
+                            fontSize = 18.sp,
                             lineHeight = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Gray
                         )
                         Text(
                             text = " ",
-                            fontSize = 16.sp,
+                            fontSize = 18.sp,
                             lineHeight = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Gray
                         )
                         Text(
                             text = time.toString(),
-                            fontSize = 16.sp,
+                            fontSize = 18.sp,
                             lineHeight = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Gray
                         )
                         Text(
                             text = stringResource(R.string.box_minute),
-                            fontSize = 16.sp,
+                            fontSize = 18.sp,
                             lineHeight = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Gray
