@@ -72,6 +72,7 @@ fun ScreenSaverScreen(
                 useAspectRatio = false,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(Black)
                     .weight(1f)
             )
         }
