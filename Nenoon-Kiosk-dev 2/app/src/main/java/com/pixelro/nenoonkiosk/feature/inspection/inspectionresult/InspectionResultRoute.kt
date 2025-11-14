@@ -48,10 +48,10 @@ import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.PresbyopiaInspectio
 import com.pixelro.nenoonkiosk.feature.inspection.presbyopia.result.PresbyopiaInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.children.ChildrenVisualAcuityInspectionResult
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.longdistance.LongVisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.longdistance.LongVisualAcuityInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortDistanceVisualAcuityInspectionResultContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.shortdistance.ShortVisualAcuityInspectionResult
 import com.pixelro.nenoonkiosk.feature.undeveloped.testresultcontent.ChildrenVisualAcuityInspectionResultContent
-import com.pixelro.nenoonkiosk.feature.undeveloped.testresultcontent.LongDistanceVisualAcuityTestResultContent
 import kotlinx.coroutines.delay
 
 @Composable
@@ -123,8 +123,8 @@ fun InspectionResultRoute(
                     )
                 }
                 InspectionType.LongDistanceVisualAcuity -> {
-                    LongDistanceVisualAcuityTestResultContent(
-                        testResult = testResult as LongVisualAcuityInspectionResult,
+                    LongVisualAcuityInspectionResultContent(
+                        inspectionResult = testResult as LongVisualAcuityInspectionResult,
                         navController = navController,
                     )
                 }

@@ -486,8 +486,9 @@ fun MeasuringDistanceContent(
                                 }
 
                                 else -> {
-                                    when (faceDetectionViewModel.screenToFaceDistance.collectAsState().value) {
-                                        in 246.0..355.0 -> Color(0xff1d71e1)
+                                    val distance = faceDetectionViewModel.screenToFaceDistance.collectAsState().value
+                                    when {
+                                        distance in 600.0..800.0 -> Color(0xff1d71e1)
                                         else -> Color(0xffff0000)
                                     }
                                 }
@@ -518,9 +519,8 @@ fun MeasuringDistanceContent(
                                             }
 
                                             else -> {
-                                                if (faceDetectionViewModel.screenToFaceDistance.collectAsState().value > 355.0 ||
-                                                    faceDetectionViewModel.screenToFaceDistance.collectAsState().value < 246.0
-                                                ) {
+                                                val distance = faceDetectionViewModel.screenToFaceDistance.collectAsState().value
+                                                if (distance > 800.0 || distance < 600.0) {
                                                     BorderStroke(3.dp, Color(0xffff0000))
                                                 } else {
                                                     BorderStroke(1.dp, Color(0xff1d71e1))
@@ -573,7 +573,7 @@ fun MeasuringDistanceContent(
                                                     ),
                                             ) {
                                                 append(
-                                                    " 25~35cm",
+                                                    " 60~80cm",
                                                 )
                                             }
                                             append(
@@ -627,12 +627,13 @@ fun MeasuringDistanceContent(
                         }
 
                         else -> {
-                            when (faceDetectionViewModel.screenToFaceDistance.collectAsState().value) {
-                                in 0.1..246.0 -> {
+                            val distance = faceDetectionViewModel.screenToFaceDistance.collectAsState().value
+                            when {
+                                distance < 600.0 -> {
                                     faceDetectionViewModel.updateIsDistanceOK(0)
                                 }
 
-                                in 355.0..995.0 -> {
+                                distance > 800.0 -> {
                                     faceDetectionViewModel.updateIsDistanceOK(2)
                                 }
 
