@@ -10,6 +10,7 @@ import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.util.STT
 import com.pixelro.nenoonkiosk.core.util.stt.SttConfig
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.VisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +32,7 @@ class VisualAcuityViewModel
 constructor(
     application: Application,
 ) : AndroidViewModel(application) {
+    private var inspectionType: InspectionType = InspectionType.ShortDistanceVisualAcuity
     private val _isMeasuringDistanceContentVisible = MutableStateFlow(true)
     val isMeasuringDistanceContentVisible: StateFlow<Boolean> = _isMeasuringDistanceContentVisible
     private val _isCoveredEyeCheckingContentVisible = MutableStateFlow(false)
@@ -67,9 +69,12 @@ constructor(
 
     fun updateIsVisualAcuityContentVisible(visible: Boolean) {
         _isVisualAcuityContentVisible.update { visible }
-        _sttState.update {
-            if (visible) VisualAcuitySttState.ShortDigit else VisualAcuitySttState.Inactive
-        }
+        val targetState =
+            when (inspectionType) {
+                InspectionType.LongDistanceVisualAcuity -> VisualAcuitySttState.LongDigit
+                else -> VisualAcuitySttState.ShortDigit
+            }
+        _sttState.update { if (visible) targetState else VisualAcuitySttState.Inactive }
         if (!visible) {
             STT.stopContinuousListening()
         }
@@ -81,7 +86,12 @@ constructor(
     }
 
     fun startVoiceRecognition(onResult: (String) -> Unit) {
-        if (_sttState.value != VisualAcuitySttState.ShortDigit || _sttSessionActive.value) return
+        if (_sttSessionActive.value) return
+        if (_sttState.value != VisualAcuitySttState.ShortDigit &&
+            _sttState.value != VisualAcuitySttState.LongDigit
+        ) {
+            return
+        }
 
         _sttSessionActive.update { true }
         _sttHadSpeech.update { false }
@@ -351,6 +361,18 @@ constructor(
         STT.stopContinuousListening()
         STT.setStateObserver { active, hadSpeech ->
             onSttSessionStateChanged(active, hadSpeech)
+        }
+    }
+
+    fun setInspectionType(type: InspectionType) {
+        inspectionType = type
+        if (_isVisualAcuityContentVisible.value) {
+            val targetState =
+                when (inspectionType) {
+                    InspectionType.LongDistanceVisualAcuity -> VisualAcuitySttState.LongDigit
+                    else -> VisualAcuitySttState.ShortDigit
+                }
+            _sttState.update { targetState }
         }
     }
 
