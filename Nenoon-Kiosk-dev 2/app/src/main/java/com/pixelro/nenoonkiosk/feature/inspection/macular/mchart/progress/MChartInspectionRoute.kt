@@ -19,7 +19,7 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.AnimationProvider
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceContent
+import com.pixelro.nenoonkiosk.feature.facedetection.MeasuringDistanceRoute
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartInspectionUiState
 import com.pixelro.nenoonkiosk.feature.inspection.macular.mchart.MChartViewModel
@@ -82,7 +82,7 @@ fun MChartInspectionRoute(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // 거리 측정 화면
-        MeasuringDistanceContent(
+        MeasuringDistanceRoute(
             measuringDistanceContentVisibleState = measuringDistanceVisibleState,
             toNextContent = {
                 mChartViewModel.updateIsMeasuringDistanceContentVisible(false)
