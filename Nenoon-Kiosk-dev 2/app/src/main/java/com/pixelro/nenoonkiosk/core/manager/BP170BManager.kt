@@ -83,12 +83,14 @@ object BP170BManager {
 
     private var pollingJob: Job? = null
     private var testCompletionJob: Job? = null // Job for handling 0xBA trigger
+    private var deviceFilterJob: Job? = null // Job for continuously filtering connected devices
 
     fun init(context: Context) {
         appContext = context.applicationContext
         bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothAdapter = bluetoothManager?.adapter
         _isInitialized.value = true
+        startDeviceFilterJob()
     }
 
     @SuppressLint("MissingPermission")
@@ -131,11 +133,10 @@ object BP170BManager {
             }
         bluetoothAdapter?.startLeScan(deviceListener)
         
-        // ===== 성능 최적화: 5초마다 체크 (200ms는 너무 빈번) =====
         // 이미 리스트에 추가된 기기가 다른 곳에서 연결되면 제거하는 용도
         managerScope.launch {
             while (isScanning) {
-                delay(5000) // 200ms → 5초로 변경
+                delay(1000) 
                 if (isScanning) {
                     _availableDevices.value = _availableDevices.value.filter { scanDevice ->
                         if (device?.address == scanDevice.address) {
@@ -157,6 +158,8 @@ object BP170BManager {
             stopScan(deviceListener)
             filterConnectedDevices()
         }
+        
+        startDeviceFilterJob()
     }
 
     @SuppressLint("MissingPermission")
@@ -170,18 +173,39 @@ object BP170BManager {
     @SuppressLint("MissingPermission")
     private fun filterConnectedDevices() {
         // ===== 스캔 종료 후 최종 정리 (1회만 호출) =====
-        // 스캔 중에 다른 앱에서 연결된 기기를 최종적으로 제거
-        // 5초 주기 체크로 놓친 마지막 구간(0~5초)의 변화를 정리
+
         _availableDevices.value = _availableDevices.value.filter { scanDevice ->
-            if (BP170BManager.device?.address == scanDevice.address) {
-                return@filter false
-            }
             val state = bluetoothManager?.getConnectionState(scanDevice, BluetoothProfile.GATT) ?: BluetoothProfile.STATE_DISCONNECTED
             val isConnected = state == BluetoothProfile.STATE_CONNECTED || state == BluetoothProfile.STATE_CONNECTING
+
             if (isConnected) {
                 Log.d(TAG, "Removing device connected elsewhere (post-scan): ${scanDevice.name} - ${scanDevice.address} (state: $state)")
+                return@filter false
             }
-            !isConnected
+            true
+        }
+    }
+    
+    @SuppressLint("MissingPermission")
+    private fun startDeviceFilterJob() {
+        deviceFilterJob?.cancel()
+        deviceFilterJob = managerScope.launch {
+            while (isActive) {
+                delay(1000) 
+                if (_availableDevices.value.isNotEmpty()) {
+                    _availableDevices.value = _availableDevices.value.filter { scanDevice ->
+                        if (device?.address == scanDevice.address) {
+                            return@filter false
+                        }
+                        val state = bluetoothManager?.getConnectionState(scanDevice, BluetoothProfile.GATT) ?: BluetoothProfile.STATE_DISCONNECTED
+                        val isConnected = state == BluetoothProfile.STATE_CONNECTED || state == BluetoothProfile.STATE_CONNECTING
+                        if (isConnected) {
+                            Log.d(TAG, "Removing device connected elsewhere (continuous check): ${scanDevice.name} - ${scanDevice.address} (state: $state)")
+                        }
+                        !isConnected
+                    }
+                }
+            }
         }
     }
 
@@ -245,6 +269,20 @@ object BP170BManager {
                                 gatt?.discoverServices()
                             } else {
                                 Log.e(TAG, "Connection failed with status: $status")
+                                // 연결 실패 시 다른 앱에서 연결되었는지 확인
+                                device?.let { failedDevice ->
+                                    val currentState = bluetoothManager?.getConnectionState(failedDevice, BluetoothProfile.GATT)
+                                    val isConnectedElsewhere = currentState == BluetoothProfile.STATE_CONNECTED ||
+                                                               currentState == BluetoothProfile.STATE_CONNECTING
+                                    val mightBeConnectedElsewhere = status == 133 || status == 8 || isConnectedElsewhere
+                                    
+                                    if (mightBeConnectedElsewhere) {
+                                        // 다른 앱에서 연결된 경우 리스트에서 제거 (다른 디바이스에 표시되지 않도록)
+                                        Log.d(TAG, "Device connected elsewhere, removing from list: ${failedDevice.address} (state: $currentState, status: $status)")
+                                        _availableDevices.value = _availableDevices.value.filter { it.address != failedDevice.address }
+                                    }
+                                    // 다른 앱에서 연결되지 않은 경우는 리스트에 추가하지 않음 (재시도는 사용자가 수동으로)
+                                }
                                 _connectionState.value = BluetoothConnectionState.ERROR("Connection failed with status: $status")
                                 closeGatt()
                                 device = null
@@ -261,13 +299,21 @@ object BP170BManager {
                             if (status != BluetoothGatt.GATT_SUCCESS) {
                                 // 에러로 끊긴 경우만 정리
                                 Log.e(TAG, "Connection failed with status: $status")
-                                _connectionState.value = BluetoothConnectionState.ERROR("Connection failed with status: $status")
+                                // 연결 실패 시 다른 앱에서 연결되었는지 확인
                                 device?.let { failedDevice ->
-                                    if (!_availableDevices.value.any { it.address == failedDevice.address }) {
-                                        _availableDevices.value = _availableDevices.value + failedDevice
-                                        Log.d(TAG, "Re-added failed device to available list: ${failedDevice.address}")
+                                    val currentState = bluetoothManager?.getConnectionState(failedDevice, BluetoothProfile.GATT)
+                                    val isConnectedElsewhere = currentState == BluetoothProfile.STATE_CONNECTED ||
+                                                               currentState == BluetoothProfile.STATE_CONNECTING
+                                    val mightBeConnectedElsewhere = status == 133 || status == 8 || isConnectedElsewhere
+                                    
+                                    if (mightBeConnectedElsewhere) {
+                                        // 다른 앱에서 연결된 경우 리스트에서 제거 (다른 디바이스에 표시되지 않도록)
+                                        Log.d(TAG, "Device connected elsewhere, removing from list: ${failedDevice.address} (state: $currentState, status: $status)")
+                                        _availableDevices.value = _availableDevices.value.filter { it.address != failedDevice.address }
                                     }
+                                    // 다른 앱에서 연결되지 않은 경우는 리스트에 추가하지 않음 (재시도는 사용자가 수동으로)
                                 }
+                                _connectionState.value = BluetoothConnectionState.ERROR("Connection failed with status: $status")
                                 closeGatt()
                                 device = null
                             } else {
@@ -280,14 +326,21 @@ object BP170BManager {
 
                         else -> {
                             Log.w(TAG, "Connection state changed with status $status")
-                            _connectionState.value = BluetoothConnectionState.ERROR("GATT connection error with status $status")
-                            // 연결 실패 시 리스트에 다시 추가
+                            // 연결 실패 시 다른 앱에서 연결되었는지 확인
                             device?.let { failedDevice ->
-                                if (!_availableDevices.value.any { it.address == failedDevice.address }) {
-                                    _availableDevices.value = _availableDevices.value + failedDevice
-                                    Log.d(TAG, "Re-added failed device to available list: ${failedDevice.address}")
+                                val currentState = bluetoothManager?.getConnectionState(failedDevice, BluetoothProfile.GATT)
+                                val isConnectedElsewhere = currentState == BluetoothProfile.STATE_CONNECTED ||
+                                                           currentState == BluetoothProfile.STATE_CONNECTING
+                                val mightBeConnectedElsewhere = status == 133 || status == 8 || isConnectedElsewhere
+                                
+                                if (mightBeConnectedElsewhere) {
+                                    // 다른 앱에서 연결된 경우 리스트에서 제거 (다른 디바이스에 표시되지 않도록)
+                                    Log.d(TAG, "Device connected elsewhere, removing from list: ${failedDevice.address} (state: $currentState, status: $status)")
+                                    _availableDevices.value = _availableDevices.value.filter { it.address != failedDevice.address }
                                 }
+                                // 다른 앱에서 연결되지 않은 경우는 리스트에 추가하지 않음 (재시도는 사용자가 수동으로)
                             }
+                            _connectionState.value = BluetoothConnectionState.ERROR("GATT connection error with status $status")
                             closeGatt()
                             device = null
                             pollingJob?.cancel() // Stop polling on error
