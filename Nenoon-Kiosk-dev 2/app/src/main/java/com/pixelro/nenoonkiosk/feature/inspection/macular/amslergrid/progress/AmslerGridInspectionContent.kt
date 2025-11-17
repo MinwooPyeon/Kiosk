@@ -272,29 +272,29 @@ fun AmslerGridContent(
                             .width(if(isLandscape()) 400.dp else 600.dp)
                             .height(if(isLandscape()) 400.dp else 600.dp)
                     ) {
+                        val centerX = size.width / 2f
+                        val centerY = size.height / 2f
+
                         if (isDotShowing) {
                             drawCircle(
                                 color = Color(0xff000000),
                                 radius = 50f,
-                                center = Offset(450f, 450f)
+                                center = Offset(centerX, centerY)
                             )
                         }
 //                        if (!isFaceCenter) {
+                        val blueX = centerX - (400f * tan(rotY * 0.0174533)).toFloat()
+                        val blueY = centerY - (400f * tan((rotX + 10) * 0.0174533)).toFloat()
+
                         drawCircle(
                             color = Color(0xff0000ff),
                             radius = 20f,
-                            center = Offset(
-                                450f - (400f * tan(rotY * 0.0174533)).toFloat(),
-                                450f - (400f * tan((rotX + 10) * 0.0174533)).toFloat()
-                            )
+                            center = Offset(blueX, blueY)
                         )
 //                        }
-                        if (isBlinkingDone && !isFaceCenter && 450f - (400f * tan(rotY * 0.0174533)).toFloat() > 400f && 450f - (400f * tan(
-                                rotY * 0.0174533
-                            )).toFloat() < 500f
-                            && 450f - (400f * tan((rotX + 10) * 0.0174533)).toFloat() > 400f && 450f - (400f * tan(
-                                (rotX + 10) * 0.0174533
-                            )).toFloat() < 500f
+                        if (isBlinkingDone && !isFaceCenter
+                            && blueX > centerX - 50f && blueX < centerX + 50f
+                            && blueY > centerY - 50f && blueY < centerY + 50f
                         ) {
                             amslerGridViewModel.updateIsFaceCenter(true)
                         }
