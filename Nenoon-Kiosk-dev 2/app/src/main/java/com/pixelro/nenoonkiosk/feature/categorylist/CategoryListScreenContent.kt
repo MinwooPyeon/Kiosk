@@ -154,9 +154,6 @@ fun CategoryListScreenContent(
                         white = true,
                         modifier = Modifier.size(logoSize)
                     )
-
-                    Spacer(modifier = Modifier.height(buttonSpacing))
-
                     // 계정 관리 + 프린트 버튼 (가로 배치)
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(buttonSpacing)

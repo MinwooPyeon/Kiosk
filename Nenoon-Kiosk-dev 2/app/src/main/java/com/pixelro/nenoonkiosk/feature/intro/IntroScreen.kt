@@ -80,7 +80,7 @@ fun IntroScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Logo()
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             StartButton(alphaVal, toSurveyScreen)
         }
 
