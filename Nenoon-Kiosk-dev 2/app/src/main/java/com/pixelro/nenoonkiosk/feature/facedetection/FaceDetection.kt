@@ -4,6 +4,8 @@ import android.Manifest
 import android.util.Size
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
@@ -51,9 +53,17 @@ fun FaceDetectionScreenContent(viewModel: FaceDetectionViewModel = hiltViewModel
                 val cameraSelector =
                     CameraSelector.Builder()
                         .requireLensFacing(CameraSelector.LENS_FACING_FRONT).build()
+                val resolutionSelector = ResolutionSelector.Builder()
+                    .setResolutionStrategy(
+                        ResolutionStrategy(
+                            Size(1000, 1000),
+                            ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER_THEN_LOWER
+                        )
+                    )
+                    .build()
                 val imageAnalysis =
                     ImageAnalysis.Builder()
-                        .setTargetResolution(Size(1000, 1000))
+                        .setResolutionSelector(resolutionSelector)
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .setImageQueueDepth(5).build().apply {
                             setAnalyzer(
