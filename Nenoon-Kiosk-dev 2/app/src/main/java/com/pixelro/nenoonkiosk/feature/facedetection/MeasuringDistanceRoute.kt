@@ -51,6 +51,7 @@ fun MeasuringDistanceRoute(
     val screenToFaceDistance by faceDetectionViewModel.screenToFaceDistance.collectAsState()
     val leftEyePosition by faceDetectionViewModel.leftEyePosition.collectAsState()
     val rightEyePosition by faceDetectionViewModel.rightEyePosition.collectAsState()
+    val inputImageSizeX by faceDetectionViewModel.inputImageSizeX.collectAsState()
 
     val isOccluderPickedTTSDone by faceDetectionViewModel.isOccluderPickedTTSDone.collectAsState()
     val isFaceDetectedTTSDone by faceDetectionViewModel.isFaceDetectedTTSDone.collectAsState()
@@ -156,6 +157,7 @@ fun MeasuringDistanceRoute(
         screenToFaceDistance = screenToFaceDistance,
         leftEyePosition = leftEyePosition,
         rightEyePosition = rightEyePosition,
+        inputImageSizeX = inputImageSizeX,
         onUpdateIsDistanceOK = faceDetectionViewModel::updateIsDistanceOK,
     )
 }

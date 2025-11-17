@@ -14,7 +14,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,8 +35,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -220,9 +226,13 @@ fun MeasuringDistanceScreen(
     screenToFaceDistance: Float,
     leftEyePosition: PointF,
     rightEyePosition: PointF,
+    inputImageSizeX: Float,
     onUpdateIsDistanceOK: (Int) -> Unit,
 ) {
     val isPreviewMode = LocalInspectionMode.current
+
+    // GlobalValue에 현재 화면 방향 저장
+    GlobalValue.isLandscape = isLandscape()
 
     AnimatedVisibility(
         visibleState = measuringDistanceContentVisibleState,
@@ -309,52 +319,42 @@ fun MeasuringDistanceScreen(
                         }
 
                         Image(
-                            modifier = Modifier.width(360.dp),
+                            modifier = Modifier
+                                .width(if (isLandscape()) 360.dp else 480.dp)
+                                .height(if (isLandscape()) 360.dp else 480.dp),
                             painter = painterResource(id = R.drawable.face_frame),
                             contentDescription = "",
                             colorFilter = ColorFilter.tint(neNoon_blue),
                         )
                     }
-                }
 
-                // 눈가리개 이미지
-                Box(
-                    modifier =
-                        Modifier
-                            .padding(top = 80.dp)
-                            .fillMaxWidth()
-                            .height(600.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    if (isFaceDetected) {
-                        val eyePosition = if (!isLeftEye) rightEyePosition else leftEyePosition
-                        val offsetX = if (isLandscape()) {
-                            // 가로모드: 오른쪽으로 이동 (값을 빼면 오른쪽으로 이동)
-                            (680 - eyePosition.x).dp
-                        } else {
-                            // 세로모드: 기존 로직
-                            (310 - (eyePosition.x / 1.75f)).dp
+                    // 눈가리개 이미지 - 맨 위에 렌더링되도록 마지막에 배치
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        // 프리뷰 모드에서도 눈가리개 표시
+                        if (isFaceDetected || isPreviewMode) {
+                            val eyePosition = if (!isLeftEye) rightEyePosition else leftEyePosition
+
+                            // 카메라 이미지 중앙 기준으로 동적 계산
+                            val imageCenterX = inputImageSizeX / 2f
+
+                            // 가로/세로 모두 동일한 공식 사용
+                            val offsetX = (400f - (eyePosition.x / 1.75f)).dp
+                            Image(
+                                modifier =
+                                    Modifier
+                                        .width((300 * 300 / screenToFaceDistance).dp)
+                                        .height((600 * 300 / screenToFaceDistance).dp)
+                                        .offset(
+                                            x = offsetX,
+                                        )
+                                        .alpha(if (isPreviewMode) 0.5f else shiftVal),
+                                painter = painterResource(id = R.drawable.occluder),
+                                contentDescription = null,
+                            )
                         }
-                        val offsetY = if (isLandscape()) {
-                            // 가로모드: 위로 올리기 위해 값을 줄임
-                            (eyePosition.y - 600).dp
-                        } else {
-                            // 세로모드: 기존 로직
-                            (eyePosition.y / 1.75f - 240).dp
-                        }
-                        Image(
-                            modifier =
-                                Modifier
-                                    .width((300 * 300 / screenToFaceDistance).dp)
-                                    .height((600 * 300 / screenToFaceDistance).dp)
-                                    .offset(
-                                        x = offsetX,
-                                        y = offsetY,
-                                    )
-                                    .alpha(shiftVal),
-                            painter = painterResource(id = R.drawable.occluder),
-                            contentDescription = null,
-                        )
                     }
                 }
 
@@ -451,11 +451,11 @@ fun MeasuringDistanceScreen(
                  * 하단 안내문 (세로모드일 때만 표시)
                  */
                 if (!isLandscape()) {
-                    Column(
+                    Row(
                         modifier =
                             Modifier
                                 .padding(bottom = 120.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
                             text =
@@ -616,6 +616,7 @@ fun MeasuringDistanceScreenHorizentalPreview() {
         screenToFaceDistance = 300f,
         leftEyePosition = PointF(100f, 100f),
         rightEyePosition = PointF(200f, 100f),
+        inputImageSizeX = 1088f,
         onUpdateIsDistanceOK = {},
     )
 }
@@ -642,6 +643,7 @@ fun MeasuringDistanceScreenVerticalPreview() {
         screenToFaceDistance = 300f,
         leftEyePosition = PointF(100f, 100f),
         rightEyePosition = PointF(200f, 100f),
+        inputImageSizeX = 1088f,
         onUpdateIsDistanceOK = {},
     )
 }

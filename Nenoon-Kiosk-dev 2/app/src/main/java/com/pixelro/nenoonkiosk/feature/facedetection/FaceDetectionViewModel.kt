@@ -27,7 +27,7 @@ constructor(
 
     companion object {
         // 기본 이미지 크기 상수
-        private const val DEFAULT_IMAGE_SIZE = 1088f
+private const val DEFAULT_IMAGE_SIZE = 1088f
         private const val ZERO_FLOAT = 0f
         // 텍스트 인식 중앙값 (얼굴 인식 범위와 동일하게 설정)
         private const val TEXT_CENTER_X = 644f
@@ -55,7 +55,10 @@ constructor(
     val screenToFaceDistance: StateFlow<Float> = _screenToFaceDistance
 
     private val _inputImageSizeX = MutableStateFlow(DEFAULT_IMAGE_SIZE)
+    val inputImageSizeX: StateFlow<Float> = _inputImageSizeX
+
     private val _inputImageSizeY = MutableStateFlow(DEFAULT_IMAGE_SIZE)
+    val inputImageSizeY: StateFlow<Float> = _inputImageSizeY
 
     private val _rightEyePosition = MutableStateFlow(PointF(ZERO_FLOAT, ZERO_FLOAT))
     val rightEyePosition: StateFlow<PointF> = _rightEyePosition
@@ -315,8 +318,10 @@ constructor(
         val textCenterX = ((_textBox.value?.right?.toFloat() ?: ZERO_FLOAT) +
                 (_textBox.value?.left?.toFloat() ?: ZERO_FLOAT)) / 2
 
-        // 얼굴 인식 범위와 동일한 중앙값 사용
-        if (textCenterX > TEXT_CENTER_X) {
+        // 카메라 이미지 중앙값 사용 (동적 계산)
+        val imageCenterX = _inputImageSizeX.value / 2f
+
+        if (textCenterX > imageCenterX) {
             _isLeftEyeCovered.update { true }
             _isRightEyeCovered.update { false }
         } else {

@@ -11,4 +11,6 @@ object GlobalValue {
 
     var statusBarPadding = 1f
     var navigationBarPadding = 1f
+
+    var isLandscape = true  // 화면 방향 (기본값: 가로모드)
 }
