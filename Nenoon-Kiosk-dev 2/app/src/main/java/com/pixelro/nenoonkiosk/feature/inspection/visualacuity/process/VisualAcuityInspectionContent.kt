@@ -16,9 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -112,21 +112,25 @@ fun VisualAcuityInspectionContent(
     val latestOnCancelRecognition = rememberUpdatedState(onCancelVoiceRecognition)
     val ansNumState = rememberUpdatedState(ansNum)
     val randomListState = rememberUpdatedState(randomList)
-    val voiceHandler: (String) -> Unit = remember(randomList, ansNum, getInspectionResult, onAnswerSelected) {
-        { recognized: String ->
-            val currentChoices = randomListState.value
-            Log.d("VoiceHandler", "recognized='$recognized', choices=$currentChoices, ans=${ansNumState.value}")
-            handleVoiceAnswer(
-                result = recognized,
-                randomList = currentChoices,
-                correctAnswer = ansNumState.value,
-                currentProgress = progress,
-                onAnswerSelected = onAnswerSelected,
-                updateProgress = { newProgress -> progress = newProgress },
-                onComplete = { toResultScreen(getInspectionResult()) }
-            )
+    val voiceHandler: (String) -> Unit =
+        remember(randomList, ansNum, getInspectionResult, onAnswerSelected) {
+            { recognized: String ->
+                val currentChoices = randomListState.value
+                Log.d(
+                    "VoiceHandler",
+                    "recognized='$recognized', choices=$currentChoices, ans=${ansNumState.value}"
+                )
+                handleVoiceAnswer(
+                    result = recognized,
+                    randomList = currentChoices,
+                    correctAnswer = ansNumState.value,
+                    currentProgress = progress,
+                    onAnswerSelected = onAnswerSelected,
+                    updateProgress = { newProgress -> progress = newProgress },
+                    onComplete = { toResultScreen(getInspectionResult()) }
+                )
+            }
         }
-    }
 
     DisposableEffect(Unit) {
         onDispose {
@@ -317,9 +321,9 @@ private fun LandscapeVisualAcuityContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .padding(horizontal = 60.dp, vertical = 20.dp),
+            .padding(horizontal = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
         // 시력표 (고정 크기로 찌부러짐 방지)
         Box(
@@ -592,7 +596,10 @@ private fun handleVoiceAnswer(
     }
 
     if (selectedIdx != null && selectedIdx in 0..3) {
-        Log.d("VoiceHandler", "selectedIdx=$selectedIdx, correct=$correctAnswer, invoking onAnswerSelected")
+        Log.d(
+            "VoiceHandler",
+            "selectedIdx=$selectedIdx, correct=$correctAnswer, invoking onAnswerSelected"
+        )
         onAnswerSelected(selectedIdx, updateProgress, onComplete)
         Log.d("VoiceHandler", "onAnswerSelected invoked for index=$selectedIdx")
     }

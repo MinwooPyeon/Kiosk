@@ -16,6 +16,8 @@ import com.google.mlkit.vision.face.FaceLandmark
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.pixelro.nenoonkiosk.core.constants.GlobalValue
+import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.facedetection.IrisResult
 import java.util.concurrent.Executor
 
@@ -26,15 +28,14 @@ class MyFaceAnalyzer(
     private val updateIsNenoonTextDetected: (Boolean) -> Unit,
     private val onGazeDetectionResult: (IrisResult) -> Unit,
     private val executor: Executor,
+    private val updateInputImageSize: ((Float, Float) -> Unit)? = null,
 ) : ImageAnalysis.Analyzer {
 
     companion object {
-        // 얼굴 인식 범위 상수
-        private const val EYE_LEFT_MIN_X = 260f
-        private const val EYE_CENTER_X = 544f
-        private const val EYE_RIGHT_MAX_X = 804f
-        private const val EYE_MIN_Y = 400f
-        private const val EYE_DISTANCE_MIN = 100f
+        // 얼굴 인식 범위 비율 (카메라 이미지 중앙 기준)
+        private const val CENTER_RATIO = 0.5f        // 이미지 정중앙
+        private const val EYE_MIN_Y_RATIO = 0.1f     // 상단 10% 이하는 제외 (세로모드 대응)
+        private const val EYE_DISTANCE_MIN_RATIO = 0.1f  // 최소 눈 간격 10%
 
         // 얼굴 미감지 카운트 임계값
         private const val NO_FACE_COUNT_THRESHOLD = 6
@@ -49,6 +50,11 @@ class MyFaceAnalyzer(
 
     private var lastAnalysisTime = -1L
     private var noFaceCount = 0
+    private var isImageSizeUpdated = false
+
+    // 카메라 이미지 크기
+    private var _inputImageSizeX = 1088f
+    private var _inputImageSizeY = 1088f
 
     private val faceDetectorOptions = FaceDetectorOptions.Builder()
         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
@@ -67,6 +73,14 @@ class MyFaceAnalyzer(
 
         val mediaImage = imageProxy.image ?: return
         val inputImage = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+
+        // 이미지 크기 업데이트 (최초 1회만)
+        if (!isImageSizeUpdated) {
+            _inputImageSizeX = inputImage.width.toFloat()
+            _inputImageSizeY = inputImage.height.toFloat()
+            updateInputImageSize?.invoke(_inputImageSizeX, _inputImageSizeY)
+            isImageSizeUpdated = true
+        }
 
         // 텍스트 인식
         val faceTask = processTextRecognition(inputImage)
@@ -173,14 +187,29 @@ class MyFaceAnalyzer(
         return text == NENOON_TEXT || text == NENOON_TEXT_ALT
     }
 
-    // 얼굴 인식 범위 확인
+    // 얼굴 인식 범위 확인 (카메라 이미지 중앙 기준)
     private fun isFaceInValidRange(leftEye: PointF, rightEye: PointF): Boolean {
-        return leftEye.x > EYE_LEFT_MIN_X &&
-                leftEye.x < EYE_CENTER_X &&
-                rightEye.x > EYE_CENTER_X &&
-                rightEye.x < EYE_RIGHT_MAX_X &&
-                leftEye.y > EYE_MIN_Y &&
-                rightEye.y > EYE_MIN_Y &&
-                (rightEye.x - leftEye.x) > EYE_DISTANCE_MIN
+        // 이미지 크기 업데이트되지 않았으면 기본값 사용
+        if (!isImageSizeUpdated) return false
+
+        // 카메라 이미지 중앙 계산
+        val imageCenterX = if (!GlobalValue.isLandscape) {
+            _inputImageSizeX / 2f * 0.8f  // 세로모드: 중앙을 5% 왼쪽으로
+        } else {
+            _inputImageSizeX / 2f
+        }
+        val imageCenterY = _inputImageSizeY / 2f
+
+        // 비율 계산
+        val leftEyeYRatio = leftEye.y / _inputImageSizeY
+        val rightEyeYRatio = rightEye.y / _inputImageSizeY
+        val eyeDistanceRatio = (rightEye.x - leftEye.x) / _inputImageSizeX
+
+        // 왼쪽 눈은 중앙보다 왼쪽, 오른쪽 눈은 중앙보다 오른쪽
+        return leftEye.x < imageCenterX &&
+                rightEye.x > imageCenterX &&
+                leftEyeYRatio > EYE_MIN_Y_RATIO &&
+                rightEyeYRatio > EYE_MIN_Y_RATIO &&
+                eyeDistanceRatio > EYE_DISTANCE_MIN_RATIO
     }
 }
