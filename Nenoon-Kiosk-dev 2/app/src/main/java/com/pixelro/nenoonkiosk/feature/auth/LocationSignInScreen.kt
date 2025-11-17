@@ -27,6 +27,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -246,29 +250,16 @@ private fun PortraitLocationSignInScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .width(IntrinsicSize.Max)
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ) {
-                            onSignInSkip()
-                        }
+                // 아이콘 버튼으로 변경
+                IconButton(
+                    onClick = onSignInSkip,
+                    modifier = Modifier.size(48.dp)
                 ) {
-                    StyledText(
-                        text = stringResource(id = R.string.start_without_signin),
-                        style = com.pixelro.nenoonkiosk.core.ui.TextStyle.Message,
-                        fontWeight = FontWeight.Bold,
-                        color = Gray
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .background(Gray)
+                    Icon(
+                        imageVector = Icons.Default.ArrowForward,
+                        contentDescription = stringResource(id = R.string.start_without_signin),
+                        tint = Gray,
+                        modifier = Modifier.size(32.dp)
                     )
                 }
             }
@@ -356,11 +347,11 @@ private fun LandscapeLocationSignInScreen(
                     )
                 }
 
-                // 오른쪽: 입력 필드 + 로그인 버튼 + 로그인 없이 시작하기
+                // 오른쪽: 입력 필드 + 로그인 버튼
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.width(500.dp) // 400dp -> 500dp로 증가
+                    modifier = Modifier.width(500.dp)
                 ) {
                     InputFields(
                         id = id,
@@ -391,45 +382,32 @@ private fun LandscapeLocationSignInScreen(
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .width(IntrinsicSize.Max)
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) {
-                                onSignInSkip()
-                            }
-                    ) {
-                        StyledText(
-                            text = stringResource(id = R.string.start_without_signin),
-                            style = com.pixelro.nenoonkiosk.core.ui.TextStyle.Message,
-                            fontWeight = FontWeight.Bold,
-                            color = Gray
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(1.dp)
-                                .background(Gray)
-                        )
-                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 아이콘 버튼으로 변경
+            IconButton(
+                onClick = onSignInSkip,
+                modifier = Modifier.size(56.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowForward,
+                    contentDescription = stringResource(id = R.string.start_without_signin),
+                    tint = Gray,
+                    modifier = Modifier.size(40.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             // 광고 배너 - 스크롤 영역 안에 포함
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(210.dp)
-                    .padding(horizontal = 40.dp, vertical = 0.dp), // vertical 5dp -> 0dp로 변경
+                    .padding(horizontal = 40.dp, vertical = 0.dp),
                 contentAlignment = Alignment.Center
             ) {
                 AdCarousel(

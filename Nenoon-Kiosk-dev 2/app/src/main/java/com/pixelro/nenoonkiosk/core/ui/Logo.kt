@@ -31,7 +31,7 @@ fun Logo(
 
     Image(
         modifier = modifier
-            .padding(horizontal = 40.dp),
+            .padding(horizontal = 20.dp),
         painter =
             painterResource(
                 id =

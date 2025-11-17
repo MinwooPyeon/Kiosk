@@ -55,7 +55,7 @@ fun Advertisement(adImage: AdImageEntity?) {
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(shape = RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Fit,
                     error = {
                         Icon(
                             imageVector = Icons.Default.Image,
