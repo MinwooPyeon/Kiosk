@@ -454,22 +454,128 @@ fun MeasuringDistanceScreen(
                     Row(
                         modifier =
                             Modifier
-                                .padding(bottom = 120.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                                .padding(bottom = (GlobalValue.navigationBarPadding + 284).dp),
+                        text =
+                            StringProvider.getString(
+                                R.string.test_screen_current_distance,
+                            ),
+                        color = Color(0xffffffff),
+                        fontSize = 24.sp,
+                    )
+                    Text(
+                        modifier =
+                            Modifier
+                                .padding(bottom = (GlobalValue.navigationBarPadding + 100).dp),
+                        color =
+                            when (selectedTestType) {
+                                InspectionType.ShortDistanceVisualAcuity -> {
+                                    when (faceDetectionViewModel.screenToFaceDistance.collectAsState().value) {
+                                        in 396.0..505.0 -> Color(0xff1d71e1)
+                                        else -> Color(0xffff0000)
+                                    }
+                                }
+
+                                else -> {
+                                    when (faceDetectionViewModel.screenToFaceDistance.collectAsState().value) {
+                                        in 400.0..600.0 -> Color(0xff1d71e1)
+                                        else -> Color(0xffff0000)
+                                    }
+                                }
+                            },
+                        text = "${(faceDetectionViewModel.screenToFaceDistance.collectAsState().value / 10).roundToInt()}cm",
+                        fontSize = 140.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Box(
+                        modifier =
+                            Modifier
+                                .padding(
+                                    start = 40.dp,
+                                    end = 40.dp,
+                                    bottom = (GlobalValue.navigationBarPadding + 340).dp,
+                                )
+                                .border(
+                                    border =
+                                        when (selectedTestType) {
+                                            InspectionType.ShortDistanceVisualAcuity -> {
+                                                if (faceDetectionViewModel.screenToFaceDistance.collectAsState().value > 505.0 ||
+                                                    faceDetectionViewModel.screenToFaceDistance.collectAsState().value < 396.0
+                                                ) {
+                                                    BorderStroke(3.dp, Color(0xffff0000))
+                                                } else {
+                                                    BorderStroke(1.dp, Color(0xff1d71e1))
+                                                }
+                                            }
+
+                                            else -> {
+                                                if (faceDetectionViewModel.screenToFaceDistance.collectAsState().value > 600.0 ||
+                                                    faceDetectionViewModel.screenToFaceDistance.collectAsState().value < 400.0
+                                                ) {
+                                                    BorderStroke(3.dp, Color(0xffff0000))
+                                                } else {
+                                                    BorderStroke(1.dp, Color(0xff1d71e1))
+                                                }
+                                            }
+                                        },
+                                    shape = RoundedCornerShape(50),
+                                )
+                                .padding(start = 20.dp, top = 8.dp, end = 20.dp, bottom = 12.dp),
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text =
-                                stringResource(
-                                    R.string.test_screen_current_distance,
-                                ),
-                            color = White,
-                            fontSize = 24.sp,
-                        )
-                        Text(
-                            color = getDistanceColor(selectedTestType, screenToFaceDistance),
-                            text = "${(screenToFaceDistance / 10).roundToInt()}cm",
-                            fontSize = 80.sp,
-                            fontWeight = FontWeight.Bold,
+                                when (selectedTestType) {
+                                    InspectionType.ShortDistanceVisualAcuity ->
+                                        buildAnnotatedString {
+                                            append(
+                                                StringProvider.getString(
+                                                    R.string.measuring_distance_description6_start,
+                                                ),
+                                            )
+                                            withStyle(
+                                                style =
+                                                    SpanStyle(
+                                                        color = Color(0xff1d71e1),
+                                                        fontWeight = FontWeight.Bold,
+                                                    ),
+                                            ) {
+                                                append(" 40~50cm")
+                                            }
+                                            append(
+                                                StringProvider.getString(
+                                                    R.string.measuring_distance_description6_end,
+                                                ),
+                                            )
+                                        }
+
+                                    else ->
+                                        buildAnnotatedString {
+                                            append(
+                                                StringProvider.getString(
+                                                    R.string.measuring_distance_description6_start,
+                                                ),
+                                            )
+                                            withStyle(
+                                                style =
+                                                    SpanStyle(
+                                                        color = Color(0xff1d71e1),
+                                                        fontWeight = FontWeight.Bold,
+                                                    ),
+                                            ) {
+                                                append(
+                                                    " 40~60cm",
+                                                )
+                                            }
+                                            append(
+                                                StringProvider.getString(
+                                                    R.string.measuring_distance_description6_end,
+                                                ),
+                                            )
+                                        }
+                                },
+                            fontSize = 32.sp,
+                            color = Color(0xffffffff),
+                            textAlign = TextAlign.Center,
                         )
                     }
                 }
@@ -511,13 +617,13 @@ fun MeasuringDistanceScreen(
                         }
 
                         else -> {
-                            when (screenToFaceDistance) {
-                                in 0.1..246.0 -> {
-                                    onUpdateIsDistanceOK(0)
+                            when (faceDetectionViewModel.screenToFaceDistance.collectAsState().value) {
+                                in 0.1..400.0 -> {
+                                    faceDetectionViewModel.updateIsDistanceOK(0)
                                 }
 
-                                in 355.0..995.0 -> {
-                                    onUpdateIsDistanceOK(2)
+                                in 600.0..995.0 -> {
+                                    faceDetectionViewModel.updateIsDistanceOK(2)
                                 }
 
                                 else -> {
