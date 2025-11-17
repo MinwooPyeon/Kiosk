@@ -71,7 +71,7 @@ fun SecondaryButton(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(100.dp),
+                .height(80.dp),
         shape = RoundedCornerShape(10.dp),
         colors =
             ButtonDefaults.buttonColors(

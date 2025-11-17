@@ -2,12 +2,14 @@ package com.pixelro.nenoonkiosk.feature.auth
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -37,8 +40,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,8 +48,10 @@ import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
+import com.pixelro.nenoonkiosk.core.ui.StyledText
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
+import com.pixelro.nenoonkiosk.ui.theme.Gray
 import com.pixelro.nenoonkiosk.ui.theme.NEURAL200
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import kotlinx.coroutines.Dispatchers
@@ -189,21 +192,31 @@ private fun PortraitLocationSignInScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text(
-                text = stringResource(id = R.string.start_without_signin),
-                fontSize = 38.sp,
-                color = Color.Black,
-                textDecoration = TextDecoration.Underline,
-                textAlign = TextAlign.Center,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
+                    .width(IntrinsicSize.Max)
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ) {
                         onSignInSkip()
                     }
-                    .padding(vertical = 8.dp)
-            )
+            ) {
+                StyledText(
+                    text = stringResource(id = R.string.start_without_signin),
+                    style = com.pixelro.nenoonkiosk.core.ui.TextStyle.Message,
+                    fontWeight = FontWeight.Bold,
+                    color = Gray
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Gray)
+                )
+            }
         }
     }
 }
@@ -277,7 +290,7 @@ private fun LandscapeLocationSignInScreen(
                     onIdChange = { id = it },
                     password = password,
                     onPasswordChange = { password = it },
-                    modifier = Modifier.fillMaxWidth(0.8f)
+                    modifier = Modifier.fillMaxWidth(0.95f)
                 )
 
                 Spacer(modifier = Modifier.height(40.dp))
@@ -298,26 +311,36 @@ private fun LandscapeLocationSignInScreen(
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(0.8f)
+                    modifier = Modifier.fillMaxWidth(0.95f)
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Text(
-                    text = stringResource(id = R.string.start_without_signin),
-                    fontSize = 38.sp,
-                    color = Color.Black,
-                    textDecoration = TextDecoration.Underline,
-                    textAlign = TextAlign.Center,
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
+                        .width(IntrinsicSize.Max)
                         .clickable(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
                         ) {
                             onSignInSkip()
                         }
-                        .padding(vertical = 8.dp)
-                )
+                ) {
+                    StyledText(
+                        text = stringResource(id = R.string.start_without_signin),
+                        style = com.pixelro.nenoonkiosk.core.ui.TextStyle.Message,
+                        fontWeight = FontWeight.Bold,
+                        color = Gray
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(Gray)
+                    )
+                }
             }
         }
     }
@@ -411,28 +434,42 @@ private fun InputFields(
 
 @Preview(
     showBackground = true,
-    widthDp = 800,
-    heightDp = 1280,
+    widthDp = 1920,
+    heightDp = 1080,
     backgroundColor = 0xFFFFFFFF,
-    name = "LocationSignIn - Portrait"
+    name = "Landscape - 32 inch Full HD"
 )
 @Composable
-private fun LocationSignInScreen_Preview_Portrait() {
+private fun LocationSignInScreen_Preview_Landscape_FullHD() {
     NenoonKioskTheme {
-        PortraitLocationSignInScreen()
+        LandscapeLocationSignInScreen()
     }
 }
 
 @Preview(
     showBackground = true,
-    widthDp = 1422,
-    heightDp = 888,
+    widthDp = 1280,
+    heightDp = 800,
     backgroundColor = 0xFFFFFFFF,
-    name = "LocationSignIn - Landscape"
+    name = "Landscape - Standard Tablet"
 )
 @Composable
-private fun LocationSignInScreen_Preview_Landscape() {
+private fun LocationSignInScreen_Preview_Landscape_Tablet() {
     NenoonKioskTheme {
         LandscapeLocationSignInScreen()
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 800,
+    heightDp = 1280,
+    backgroundColor = 0xFFFFFFFF,
+    name = "Portrait - Standard Tablet"
+)
+@Composable
+private fun LocationSignInScreen_Preview_Portrait() {
+    NenoonKioskTheme {
+        PortraitLocationSignInScreen()
     }
 }

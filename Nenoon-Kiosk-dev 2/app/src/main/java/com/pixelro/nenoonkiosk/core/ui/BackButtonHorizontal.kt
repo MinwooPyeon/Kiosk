@@ -38,8 +38,8 @@ fun BackButtonHorizontal(
         onClick = onClick,
         modifier =
             modifier
-                .width(232.dp)
-                .height(96.dp),
+                .width(212.dp)
+                .height(80.dp),
         shape = RoundedCornerShape(10.dp),
         colors =
             ButtonDefaults.buttonColors(
@@ -56,7 +56,7 @@ fun BackButtonHorizontal(
                 tint = neNoon_blue,
                 modifier = Modifier.size(32.dp),
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(10.dp))
             Text(
                 text = StringProvider.getStringComposable(R.string.back),
                 style = topBackButtonTextStyle,

@@ -14,8 +14,7 @@ import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.feature.facedetection.FaceDetectionViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuityViewModel
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuitySttState
-import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.shortdistance.ShortVisualAcuityInspectionContent
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.shortdistance.VisualAcuityInspectionContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.VisualAcuityInspectionResult
 
 /**
@@ -91,73 +90,34 @@ fun VisualAcuityInspectionRoute(
 
     // 얼굴 인식은 MeasuringDistanceContent 내부의 FaceDetectionWithPreview에서 처리
 
-    // Content 렌더링 - inspectionType에 따라 분기
-    when (inspectionType) {
-        InspectionType.ShortDistanceVisualAcuity -> {
-            ShortVisualAcuityInspectionContent(
-                uiState = uiState,
-                measuringDistanceContentVisibleState = measuringDistanceContentVisibleState,
-                visualAcuityContentVisibleState = visualAcuityContentVisibleState,
-                isLeftEye = isLeftEye,
-                randomList = randomList,
-                ansNum = ansNum,
-                sightLevel = sightLevel,
-                isFaceDetected = isFaceDetected,
-                isFacingForward = isFacingForward,
-                onNextFromDistance = {
-                    visualAcuityViewModel.updateIsMeasuringDistanceContentVisible(false)
-                    visualAcuityViewModel.updateIsVisualAcuityContentVisible(true)
-                },
-                onAnswerSelected = { idx, handleWrong, onComplete ->
-                    visualAcuityViewModel.processAnswerSelected(idx, handleWrong, onComplete)
-                },
-                getInspectionResult = { visualAcuityViewModel.getVisualAcuityInspectionResult() },
-                toResultScreen = toResultScreen,
-                sttState = sttState,
-                sttActive = sttSessionActive,
-                onStartVoiceRecognition = { callback ->
-                    visualAcuityViewModel.startVoiceRecognition(callback)
-                },
-                onCancelVoiceRecognition = {
-                    visualAcuityViewModel.cancelVoiceRecognition()
-                },
-            )
-        }
-
-        InspectionType.LongDistanceVisualAcuity -> {
-            // TODO: LongVisualAcuityInspectionContent 구현 시 추가
-        }
-
-        else -> {
-            // Fallback
-            ShortVisualAcuityInspectionContent(
-                uiState = uiState,
-                measuringDistanceContentVisibleState = measuringDistanceContentVisibleState,
-                visualAcuityContentVisibleState = visualAcuityContentVisibleState,
-                isLeftEye = isLeftEye,
-                randomList = randomList,
-                ansNum = ansNum,
-                sightLevel = sightLevel,
-                isFaceDetected = isFaceDetected,
-                isFacingForward = isFacingForward,
-                onNextFromDistance = {
-                    visualAcuityViewModel.updateIsMeasuringDistanceContentVisible(false)
-                    visualAcuityViewModel.updateIsVisualAcuityContentVisible(true)
-                },
-                onAnswerSelected = { idx, handleWrong, onComplete ->
-                    visualAcuityViewModel.processAnswerSelected(idx, handleWrong, onComplete)
-                },
-                getInspectionResult = { visualAcuityViewModel.getVisualAcuityInspectionResult() },
-                toResultScreen = toResultScreen,
-                sttState = sttState,
-                sttActive = sttSessionActive,
-                onStartVoiceRecognition = { callback ->
-                    visualAcuityViewModel.startVoiceRecognition(callback)
-                },
-                onCancelVoiceRecognition = {
-                    visualAcuityViewModel.cancelVoiceRecognition()
-                },
-            )
-        }
-    }
+    // Content 렌더링 - 통합된 단일 호출
+    VisualAcuityInspectionContent(
+        inspectionType = inspectionType,
+        uiState = uiState,
+        measuringDistanceContentVisibleState = measuringDistanceContentVisibleState,
+        visualAcuityContentVisibleState = visualAcuityContentVisibleState,
+        isLeftEye = isLeftEye,
+        randomList = randomList,
+        ansNum = ansNum,
+        sightLevel = sightLevel,
+        isFaceDetected = isFaceDetected,
+        isFacingForward = isFacingForward,
+        onNextFromDistance = {
+            visualAcuityViewModel.updateIsMeasuringDistanceContentVisible(false)
+            visualAcuityViewModel.updateIsVisualAcuityContentVisible(true)
+        },
+        onAnswerSelected = { idx, handleWrong, onComplete ->
+            visualAcuityViewModel.processAnswerSelected(idx, handleWrong, onComplete)
+        },
+        getInspectionResult = { visualAcuityViewModel.getVisualAcuityInspectionResult() },
+        toResultScreen = toResultScreen,
+        sttState = sttState,
+        sttActive = sttSessionActive,
+        onStartVoiceRecognition = { callback ->
+            visualAcuityViewModel.startVoiceRecognition(callback)
+        },
+        onCancelVoiceRecognition = {
+            visualAcuityViewModel.cancelVoiceRecognition()
+        },
+    )
 }

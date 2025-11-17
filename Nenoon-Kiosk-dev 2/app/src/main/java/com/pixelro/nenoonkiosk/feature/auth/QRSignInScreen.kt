@@ -55,6 +55,7 @@ import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.core.util.qr.QRScannerAnalyzer
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
+import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -256,19 +257,18 @@ private fun QRSignInLayout(
     val isInPreview = LocalInspectionMode.current
     val defaultUserName = stringResource(R.string.default_user_name)
     val loginSuccess = stringResource(R.string.qr_sign_in_login_success, userName ?: defaultUserName)
+    val cameraWidthFraction = if (isLandscapeMode) 0.35f else 0.7f
 
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.Top
     ) {
-        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.8f else 1f))
-
         if (isScanning || signInFailed) {
             CameraPreviewArea(
                 isInPreview = isInPreview,
                 isScanning = isScanning,
-                isLandscapeMode = isLandscapeMode,
+                cameraWidthFraction = cameraWidthFraction,
                 onQRScanned = onQRScanned,
                 onInvalidQR = onInvalidQR,
                 onCameraBindFail = onCameraBindFail,
@@ -277,12 +277,26 @@ private fun QRSignInLayout(
                 lifecycleOwner = lifecycleOwner
             )
         } else if (isUserSignedIn && userName?.isNotEmpty() == true && !signInFailed) {
-            StyledText(loginSuccess)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(cameraWidthFraction)
+                    .aspectRatio(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                StyledText(loginSuccess, textAlign = TextAlign.Center)
+            }
         } else {
-            ProgressIndicator()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(cameraWidthFraction)
+                    .aspectRatio(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                ProgressIndicator()
+            }
         }
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 32.dp else 20.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 24.dp else 32.dp))
 
         StyledText(
             text = if (!(isUserSignedIn && userName?.isNotEmpty() == true && !signInFailed)) signInMessage else "",
@@ -291,19 +305,20 @@ private fun QRSignInLayout(
             modifier = Modifier.fillMaxWidth(),
         )
 
-        Spacer(modifier = Modifier.height(if (isLandscapeMode) 32.dp else 40.dp))
+        Spacer(modifier = Modifier.height(if (isLandscapeMode) 24.dp else 60.dp))
 
         BackButtonHorizontal(
             onClick = onBackClick,
             modifier = Modifier
                 .fillMaxWidth()
+                .height(if (isLandscapeMode) 70.dp else 80.dp)
                 .shadow(
                     elevation = 2.dp,
-                    shape = RoundedCornerShape(10.dp)
+                    shape = RoundedCornerShape(12.dp)
                 )
         )
 
-        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.8f else 1f))
+        Spacer(modifier = Modifier.weight(if (isLandscapeMode) 0.5f else 1f))
     }
 }
 
@@ -311,7 +326,7 @@ private fun QRSignInLayout(
 private fun CameraPreviewArea(
     isInPreview: Boolean,
     isScanning: Boolean,
-    isLandscapeMode: Boolean,
+    cameraWidthFraction: Float,
     onQRScanned: (String, String) -> Unit,
     onInvalidQR: () -> Unit,
     onCameraBindFail: () -> Unit,
@@ -320,7 +335,6 @@ private fun CameraPreviewArea(
     lifecycleOwner: LifecycleOwner
 ) {
     val context = LocalContext.current
-    val cameraWidthFraction = if (isLandscapeMode) 0.35f else 0.7f
 
     if (isInPreview) {
         Box(
@@ -411,57 +425,91 @@ private fun CameraPreviewArea(
 }
 
 @Preview(
-    name = "Tablet Portrait",
     showBackground = true,
+    widthDp = 1920,
     backgroundColor = 0xFFFFFFFF,
-    widthDp = 800,
-    heightDp = 1280
+    heightDp = 1080,
+    name = "Landscape - 32 inch Full HD"
 )
 @Composable
-fun PreviewPortrait() {
+fun QRSignInScreen_Preview_32InchFullHD() {
     val scanInstruction = stringResource(R.string.qr_sign_in_scan_instruction)
 
-    QRSignInContent(
-        isScanning = true,
-        signInFailed = false,
-        isUserSignedIn = false,
-        userName = null,
-        signInMessage = scanInstruction,
-        onQRScanned = { _, _ -> },
-        onInvalidQR = { },
-        onCameraBindFail = { },
-        onBackClick = { },
-        cameraProviderFutureState = remember { mutableStateOf(null) },
-        cameraExecutor = remember { Executors.newSingleThreadExecutor() },
-        lifecycleOwner = LocalLifecycleOwner.current,
-        coroutineScope = rememberCoroutineScope()
-    )
+    NenoonKioskTheme {
+        QRSignInContent(
+            isScanning = true,
+            signInFailed = false,
+            isUserSignedIn = false,
+            userName = null,
+            signInMessage = scanInstruction,
+            onQRScanned = { _, _ -> },
+            onInvalidQR = { },
+            onCameraBindFail = { },
+            onBackClick = { },
+            cameraProviderFutureState = remember { mutableStateOf(null) },
+            cameraExecutor = remember { Executors.newSingleThreadExecutor() },
+            lifecycleOwner = LocalLifecycleOwner.current,
+            coroutineScope = rememberCoroutineScope()
+        )
+    }
 }
 
 @Preview(
-    name = "Tablet Landscape",
     showBackground = true,
-    backgroundColor = 0xFFFFFFFF,
     widthDp = 1280,
-    heightDp = 800
+    backgroundColor = 0xFFFFFFFF,
+    heightDp = 800,
+    name = "Landscape - Standard Tablet"
 )
 @Composable
-fun PreviewLandscape() {
+fun QRSignInScreen_Preview_Landscape() {
     val scanInstruction = stringResource(R.string.qr_sign_in_scan_instruction)
 
-    QRSignInContent(
-        isScanning = true,
-        signInFailed = false,
-        isUserSignedIn = false,
-        userName = null,
-        signInMessage = scanInstruction,
-        onQRScanned = { _, _ -> },
-        onInvalidQR = { },
-        onCameraBindFail = { },
-        onBackClick = { },
-        cameraProviderFutureState = remember { mutableStateOf(null) },
-        cameraExecutor = remember { Executors.newSingleThreadExecutor() },
-        lifecycleOwner = LocalLifecycleOwner.current,
-        coroutineScope = rememberCoroutineScope()
-    )
+    NenoonKioskTheme {
+        QRSignInContent(
+            isScanning = true,
+            signInFailed = false,
+            isUserSignedIn = false,
+            userName = null,
+            signInMessage = scanInstruction,
+            onQRScanned = { _, _ -> },
+            onInvalidQR = { },
+            onCameraBindFail = { },
+            onBackClick = { },
+            cameraProviderFutureState = remember { mutableStateOf(null) },
+            cameraExecutor = remember { Executors.newSingleThreadExecutor() },
+            lifecycleOwner = LocalLifecycleOwner.current,
+            coroutineScope = rememberCoroutineScope()
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 800,
+    backgroundColor = 0xFFFFFFFF,
+    heightDp = 1280,
+    name = "Portrait - Standard Tablet"
+)
+@Composable
+fun QRSignInScreen_Preview_Portrait() {
+    val scanInstruction = stringResource(R.string.qr_sign_in_scan_instruction)
+
+    NenoonKioskTheme {
+        QRSignInContent(
+            isScanning = true,
+            signInFailed = false,
+            isUserSignedIn = false,
+            userName = null,
+            signInMessage = scanInstruction,
+            onQRScanned = { _, _ -> },
+            onInvalidQR = { },
+            onCameraBindFail = { },
+            onBackClick = { },
+            cameraProviderFutureState = remember { mutableStateOf(null) },
+            cameraExecutor = remember { Executors.newSingleThreadExecutor() },
+            lifecycleOwner = LocalLifecycleOwner.current,
+            coroutineScope = rememberCoroutineScope()
+        )
+    }
 }

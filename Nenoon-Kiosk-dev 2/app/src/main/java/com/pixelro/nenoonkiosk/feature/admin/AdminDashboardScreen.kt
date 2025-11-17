@@ -22,7 +22,6 @@ import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdManagementContent
 import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdManagementUiState
 import com.pixelro.nenoonkiosk.feature.admin.advertisement.AdManagementViewModel
 import com.pixelro.nenoonkiosk.feature.admin.advertisement.sidebar.SidebarArea
-import com.pixelro.nenoonkiosk.feature.admin.password.PasswordManagementContent
 import com.pixelro.nenoonkiosk.ui.theme.LightGray200
 import com.pixelro.nenoonkiosk.ui.theme.White
 
@@ -111,8 +110,6 @@ private fun AdminDashboardContent(
                             onSaveOrder = onSaveOrder,
                             onSelectImage = onSelectImage
                         )
-
-                        AdminTab.PASSWORD_MANAGEMENT -> PasswordManagementContent()
                     }
                 }
             }
@@ -143,8 +140,6 @@ private fun AdminDashboardContent(
                             onSaveOrder = onSaveOrder,
                             onSelectImage = onSelectImage
                         )
-
-                        AdminTab.PASSWORD_MANAGEMENT -> PasswordManagementContent()
                     }
                 }
             }
@@ -163,7 +158,11 @@ fun AdminDashboardContentPreview() {
                 LocationEntity(id = 1, name = "TEST_LIST_SCREEN", mediaType = MediaType.IMAGE),
                 LocationEntity(id = 2, name = "SCREENSAVER", mediaType = MediaType.VIDEO)
             ),
-            selectedLocation = LocationEntity(id = 1, name = "TEST_LIST_SCREEN", mediaType = MediaType.IMAGE),
+            selectedLocation = LocationEntity(
+                id = 1,
+                name = "TEST_LIST_SCREEN",
+                mediaType = MediaType.IMAGE
+            ),
             adImages = listOf(
                 AdImageData(
                     id = "1",
@@ -202,7 +201,11 @@ fun AdminDashboardContentPortraitPreview() {
                 LocationEntity(id = 1, name = "TEST_LIST_SCREEN", mediaType = MediaType.IMAGE),
                 LocationEntity(id = 2, name = "SCREENSAVER", mediaType = MediaType.VIDEO)
             ),
-            selectedLocation = LocationEntity(id = 2, name = "SCREENSAVER", mediaType = MediaType.VIDEO),
+            selectedLocation = LocationEntity(
+                id = 2,
+                name = "SCREENSAVER",
+                mediaType = MediaType.VIDEO
+            ),
             adImages = listOf(
                 AdImageData(
                     id = "1",

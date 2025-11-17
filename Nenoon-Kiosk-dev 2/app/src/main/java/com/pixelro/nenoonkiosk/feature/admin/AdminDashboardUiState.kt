@@ -14,13 +14,11 @@ data class AdminDashboardUiState(
 
 enum class AdminTab(val icon: ImageVector) {
     AD_MANAGEMENT(Icons.Default.Image),
-    PASSWORD_MANAGEMENT(Icons.Default.Lock),
 }
 
 @Composable
 fun AdminTab.getTitle(): String {
     return when (this) {
         AdminTab.AD_MANAGEMENT -> stringResource(R.string.admin_ad_management)
-        AdminTab.PASSWORD_MANAGEMENT -> stringResource(R.string.admin_password_management)
     }
 }

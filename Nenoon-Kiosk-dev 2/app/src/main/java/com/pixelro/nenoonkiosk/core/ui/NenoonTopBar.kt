@@ -17,12 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
-import com.pixelro.nenoonkiosk.ui.theme.titleTextStyle
 
 enum class TopBarOrientation {
     Vertical, Horizontal
@@ -51,8 +52,8 @@ fun NenoonTopBar(
     contentColor: Color = Color.Black,
 ) {
     val barHeight = when (orientation) {
-        TopBarOrientation.Vertical -> 130.dp
-        TopBarOrientation.Horizontal -> 164.dp
+        TopBarOrientation.Vertical -> 110.dp
+        TopBarOrientation.Horizontal -> 114.dp
     }
 
     val actionSlotSize = when (orientation) {
@@ -68,7 +69,7 @@ fun NenoonTopBar(
         CenterAlignedTopAppBar(
             modifier = Modifier
                 .height(barHeight)
-                .padding(horizontal = 34.dp),
+                .padding(horizontal = 28.dp),
             title = {
                 Box(
                     modifier = Modifier.fillMaxHeight(),
@@ -76,9 +77,11 @@ fun NenoonTopBar(
                 ) {
                     Text(
                         text = title,
-                        style = titleTextStyle,
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.Bold,
                         color = contentColor,
                         textAlign = TextAlign.Center,
+                        letterSpacing = 0.5.sp,
                     )
                 }
             },
@@ -113,7 +116,7 @@ fun NenoonTopBar(
 
 @Preview(
     showBackground = true, name = "세로형 TopBar (화이트)",
-    backgroundColor = 0xFFFFFFFF, widthDp = 800, heightDp = 130
+    backgroundColor = 0xFFFFFFFF, device = "spec:width=800dp,height=1280dp,dpi=240"
 )
 @Composable
 private fun NenoonTopBarVerticalPreview() {
@@ -131,7 +134,7 @@ private fun NenoonTopBarVerticalPreview() {
 
 @Preview(
     showBackground = true, name = "가로형 TopBar (검정색)",
-    backgroundColor = 0xFFFFFFFF, widthDp = 1280, heightDp = 164
+    backgroundColor = 0xFFFFFFFF, device = "spec:width=1280dp,height=800dp,dpi=240"
 )
 @Composable
 private fun NenoonTopBarHorizontalPreview() {
