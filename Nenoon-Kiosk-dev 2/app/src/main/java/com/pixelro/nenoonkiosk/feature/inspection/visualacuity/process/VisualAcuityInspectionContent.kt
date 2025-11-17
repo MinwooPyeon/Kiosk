@@ -317,7 +317,7 @@ private fun LandscapeVisualAcuityContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .padding(horizontal = 60.dp, vertical = 20.dp),
+            .padding(horizontal = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -332,7 +332,7 @@ private fun LandscapeVisualAcuityContent(
                 sightLevel = sightLevel,
                 isFaceDetected = isFaceDetected,
                 isFacingForward = isFacingForward,
-                modifier = Modifier.size(400.dp)
+                modifier = Modifier.size(300.dp)
             )
         }
 

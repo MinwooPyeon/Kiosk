@@ -193,10 +193,6 @@ class MainActivity : AppCompatActivity() {
 
         // TTS 초기화 (initTTS에서 이미 언어 설정함)
         TTS.initTTS(locale)
-//        window.setFlags(
-//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-//        )
 
         val statusBarResourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
         GlobalValue.statusBarPadding = resources.getDimension(statusBarResourceId)
@@ -223,25 +219,58 @@ class MainActivity : AppCompatActivity() {
                     systemUiController.isNavigationBarVisible = false
                     val context = LocalContext.current
                     val configuration = LocalConfiguration.current
+
+                    // 카메라 초기화 (안전하게 수정)
                     LaunchedEffect(true) {
-                        val cameraManager =
-                            context.getSystemService(CAMERA_SERVICE) as CameraManager
-                        val cameraCharacteristics =
-                            (context.getSystemService(CAMERA_SERVICE) as CameraManager).getCameraCharacteristics(
-                                cameraManager.cameraIdList[if (DebugConstants.EMULATOR_MODE) 0 else 1],
+                        val cameraManager = context.getSystemService(CAMERA_SERVICE) as CameraManager
+
+                        try {
+                            // 전면/후면 카메라 찾기
+                            val targetFacing = if (DebugConstants.EMULATOR_MODE) {
+                                CameraCharacteristics.LENS_FACING_BACK
+                            } else {
+                                CameraCharacteristics.LENS_FACING_FRONT
+                            }
+
+                            val cameraId = cameraManager.cameraIdList.firstOrNull { id ->
+                                val characteristics = cameraManager.getCameraCharacteristics(id)
+                                characteristics.get(CameraCharacteristics.LENS_FACING) == targetFacing
+                            } ?: cameraManager.cameraIdList.firstOrNull()
+
+                            if (cameraId != null) {
+                                val cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId)
+                                viewModel.updateLocalConfigurationValues(
+                                    pixelDensity = context.resources.displayMetrics.density,
+                                    screenWidthDp = configuration.screenWidthDp,
+                                    screenHeightDp = configuration.screenHeightDp,
+                                    focalLength = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
+                                        ?.getOrNull(0) ?: 0f,
+                                    lensSize = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)
+                                        ?: SizeF(0f, 0f),
+                                )
+                            } else {
+                                Log.w("MainActivity", "No camera found, using default values")
+                                viewModel.updateLocalConfigurationValues(
+                                    pixelDensity = context.resources.displayMetrics.density,
+                                    screenWidthDp = configuration.screenWidthDp,
+                                    screenHeightDp = configuration.screenHeightDp,
+                                    focalLength = 0f,
+                                    lensSize = SizeF(0f, 0f),
+                                )
+                            }
+                        } catch (e: Exception) {
+                            Log.e("MainActivity", "Camera initialization error: ${e.message}", e)
+                            // 기본값 설정
+                            viewModel.updateLocalConfigurationValues(
+                                pixelDensity = context.resources.displayMetrics.density,
+                                screenWidthDp = configuration.screenWidthDp,
+                                screenHeightDp = configuration.screenHeightDp,
+                                focalLength = 0f,
+                                lensSize = SizeF(0f, 0f),
                             )
-                        viewModel.updateLocalConfigurationValues(
-                            pixelDensity = context.resources.displayMetrics.density,
-                            screenWidthDp = configuration.screenWidthDp,
-                            screenHeightDp = configuration.screenHeightDp,
-                            focalLength =
-                                cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
-                                    ?.get(0) ?: 0f,
-                            lensSize =
-                                cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)
-                                    ?: SizeF(0f, 0f),
-                        )
+                        }
                     }
+
                     val sharedPreferences =
                         getSharedPreferences(
                             NavConstants.PREFERENCE_NAME,
@@ -297,7 +326,7 @@ class MainActivity : AppCompatActivity() {
     private fun connectPrinter() {
         when {
             ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED -> {
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED -> {
                 PrinterManager.startBluetoothScan(this)
             }
             else -> {
@@ -358,10 +387,10 @@ class MainActivity : AppCompatActivity() {
                 DevicePolicyManager.LOCK_TASK_FEATURE_NONE
             } else {
                 DevicePolicyManager.LOCK_TASK_FEATURE_HOME or
-                    DevicePolicyManager.LOCK_TASK_FEATURE_OVERVIEW or
-                    DevicePolicyManager.LOCK_TASK_FEATURE_NOTIFICATIONS or
-                    DevicePolicyManager.LOCK_TASK_FEATURE_SYSTEM_INFO or
-                    DevicePolicyManager.LOCK_TASK_FEATURE_GLOBAL_ACTIONS
+                        DevicePolicyManager.LOCK_TASK_FEATURE_OVERVIEW or
+                        DevicePolicyManager.LOCK_TASK_FEATURE_NOTIFICATIONS or
+                        DevicePolicyManager.LOCK_TASK_FEATURE_SYSTEM_INFO or
+                        DevicePolicyManager.LOCK_TASK_FEATURE_GLOBAL_ACTIONS
             }
         dpm.setLockTaskFeatures(adminComponentName, features)
 
