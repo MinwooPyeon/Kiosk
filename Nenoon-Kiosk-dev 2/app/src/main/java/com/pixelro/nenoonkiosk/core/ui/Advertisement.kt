@@ -21,7 +21,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.harang.data.db.entity.AdImageEntity
-import com.pixelro.nenoonkiosk.ui.theme.LightGray400
 import com.pixelro.nenoonkiosk.ui.theme.White
 
 /**
@@ -54,9 +53,9 @@ fun Advertisement(adImage: AdImageEntity?) {
                     model = adImage.url,
                     contentDescription = "광고",
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .clip(shape = RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.FillWidth,
+                    contentScale = ContentScale.Crop,
                     error = {
                         Icon(
                             imageVector = Icons.Default.Image,

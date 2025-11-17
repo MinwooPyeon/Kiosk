@@ -23,8 +23,8 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AdCarousel(
-    adImages: List<AdImageEntity> = emptyList(),
     modifier: Modifier = Modifier,
+    adImages: List<AdImageEntity> = emptyList(),
     autoScrollInterval: Long = 5000L,
     onPageChange: (() -> Unit)? = null
 ) {

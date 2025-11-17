@@ -48,6 +48,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.harang.data.db.entity.AdImageEntity
 import com.pixelro.nenoonkiosk.R
@@ -95,7 +96,7 @@ fun LocationSignInScreen(
             AdImageRepositoryEntryPoint::class.java
         ).adImageRepository()
     }
-    val adImages by adImageRepository.getAdImagesByLocationAndLanguage(2, savedLanguage)
+    val adImages by adImageRepository.getAdImagesByLocationAndLanguage(1, savedLanguage)
         .collectAsState(initial = emptyList())
 
     val coroutineScope = rememberCoroutineScope()
@@ -201,11 +202,11 @@ private fun PortraitLocationSignInScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(107.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
                 Logo()
 
-                Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
                 Text(
                     text = stringResource(id = R.string.location_signin),
@@ -214,7 +215,7 @@ private fun PortraitLocationSignInScreen(
                     fontSize = 32.sp
                 )
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
                 InputFields(
                     id = id,
@@ -223,7 +224,7 @@ private fun PortraitLocationSignInScreen(
                     onPasswordChange = { password = it }
                 )
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
                 PrimaryButton(
                     text = stringResource(id = R.string.signin),
@@ -276,8 +277,8 @@ private fun PortraitLocationSignInScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp)
-                    .padding(horizontal = 40.dp, vertical = 20.dp),
+                    .height(200.dp)
+                    .padding(horizontal = 40.dp, vertical = 5.dp),
                 contentAlignment = Alignment.Center
             ) {
                 AdCarousel(
@@ -309,9 +310,10 @@ private fun LandscapeLocationSignInScreen(
         // 설정 버튼
         Image(
             modifier = Modifier
-                .padding(40.dp)
+                .padding(30.dp)
                 .size(40.dp)
                 .align(Alignment.TopEnd)
+                .zIndex(10f)
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() },
@@ -322,53 +324,54 @@ private fun LandscapeLocationSignInScreen(
             contentDescription = "",
         )
 
+        // 전체 스크롤 가능 (광고 포함)
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .imePadding(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            // 상단: 로고 + 입력 필드
             Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(horizontal = 80.dp, vertical = 40.dp),
-                horizontalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.spacedBy(80.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.Bottom
             ) {
-                // 왼쪽: 로고
+                // 왼쪽: 로고 + 기관로그인
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Logo(
-                        modifier = Modifier.size(300.dp)
+                        modifier = Modifier.size(304.dp)
                     )
 
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
                         text = stringResource(id = R.string.location_signin),
                         color = NEURAL200,
                         fontWeight = FontWeight.ExtraBold,
-                        fontSize = 36.sp
+                        fontSize = 29.sp
                     )
                 }
 
-                // 오른쪽: 입력 필드와 로그인 버튼
+                // 오른쪽: 입력 필드 + 로그인 버튼 + 로그인 없이 시작하기
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.width(500.dp)
+                    modifier = Modifier.width(500.dp) // 400dp -> 500dp로 증가
                 ) {
                     InputFields(
                         id = id,
                         onIdChange = { id = it },
                         password = password,
                         onPasswordChange = { password = it },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        fontSize = 29.sp
                     )
 
-                    Spacer(modifier = Modifier.height(40.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     PrimaryButton(
                         text = stringResource(id = R.string.signin),
@@ -388,49 +391,45 @@ private fun LandscapeLocationSignInScreen(
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
-                }
-            }
 
-            // 중앙: "로그인 없이 시작하기" (화면 가운데 고정)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 20.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .width(IntrinsicSize.Max)
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ) {
-                            onSignInSkip()
-                        }
-                ) {
-                    StyledText(
-                        text = stringResource(id = R.string.start_without_signin),
-                        style = com.pixelro.nenoonkiosk.core.ui.TextStyle.Message,
-                        fontWeight = FontWeight.Bold,
-                        color = Gray
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Box(
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
-                            .width(200.dp)
-                            .height(1.dp)
-                            .background(Gray)
-                    )
+                            .width(IntrinsicSize.Max)
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                onSignInSkip()
+                            }
+                    ) {
+                        StyledText(
+                            text = stringResource(id = R.string.start_without_signin),
+                            style = com.pixelro.nenoonkiosk.core.ui.TextStyle.Message,
+                            fontWeight = FontWeight.Bold,
+                            color = Gray
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(1.dp)
+                                .background(Gray)
+                        )
+                    }
                 }
             }
 
-            // 하단: 광고 배너 (전체 너비)
+            Spacer(modifier = Modifier.height(40.dp))
+
+            // 광고 배너 - 스크롤 영역 안에 포함
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
-                    .padding(horizontal = 40.dp, vertical = 15.dp),
+                    .height(210.dp)
+                    .padding(horizontal = 40.dp, vertical = 0.dp), // vertical 5dp -> 0dp로 변경
                 contentAlignment = Alignment.Center
             ) {
                 AdCarousel(
@@ -449,20 +448,21 @@ private fun InputFields(
     onIdChange: (String) -> Unit,
     password: String,
     onPasswordChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    fontSize: androidx.compose.ui.unit.TextUnit = 36.sp
 ) {
     Column(modifier = modifier) {
         BasicTextField(
             value = id,
             onValueChange = onIdChange,
             textStyle = TextStyle(
-                fontSize = 36.sp,
+                fontSize = fontSize,
             ),
             decorationBox = { innerTextField ->
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(80.dp)
+                        .height(64.dp)
                         .border(
                             border = BorderStroke(
                                 width = 1.dp,
@@ -470,13 +470,13 @@ private fun InputFields(
                             ),
                             shape = RoundedCornerShape(8.dp),
                         )
-                        .padding(start = 20.dp),
+                        .padding(start = 16.dp),
                     contentAlignment = Alignment.CenterStart,
                 ) {
                     if (id.isEmpty()) {
                         Text(
                             text = stringResource(id = R.string.id_input),
-                            fontSize = 36.sp,
+                            fontSize = fontSize,
                             color = Color.LightGray,
                         )
                     }
@@ -488,20 +488,20 @@ private fun InputFields(
             ),
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         BasicTextField(
             value = password,
             onValueChange = onPasswordChange,
             visualTransformation = PasswordVisualTransformation(),
             textStyle = TextStyle(
-                fontSize = 36.sp,
+                fontSize = fontSize,
             ),
             decorationBox = { innerTextField ->
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(80.dp)
+                        .height(64.dp)
                         .border(
                             border = BorderStroke(
                                 width = 1.dp,
@@ -509,13 +509,13 @@ private fun InputFields(
                             ),
                             shape = RoundedCornerShape(8.dp),
                         )
-                        .padding(start = 20.dp),
+                        .padding(start = 16.dp),
                     contentAlignment = Alignment.CenterStart,
                 ) {
                     if (password.isEmpty()) {
                         Text(
                             text = stringResource(id = R.string.pw_input),
-                            fontSize = 36.sp,
+                            fontSize = fontSize,
                             color = Color.LightGray,
                         )
                     }
