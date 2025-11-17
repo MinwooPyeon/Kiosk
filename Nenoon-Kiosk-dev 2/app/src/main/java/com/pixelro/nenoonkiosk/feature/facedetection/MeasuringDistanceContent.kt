@@ -487,7 +487,7 @@ fun MeasuringDistanceContent(
 
                                 else -> {
                                     when (faceDetectionViewModel.screenToFaceDistance.collectAsState().value) {
-                                        in 400.0..600.0 -> Color(0xff1d71e1)
+                                        in 246.0..355.0 -> Color(0xff1d71e1)
                                         else -> Color(0xffff0000)
                                     }
                                 }
@@ -518,8 +518,8 @@ fun MeasuringDistanceContent(
                                             }
 
                                             else -> {
-                                                if (faceDetectionViewModel.screenToFaceDistance.collectAsState().value > 600.0 ||
-                                                    faceDetectionViewModel.screenToFaceDistance.collectAsState().value < 400.0
+                                                if (faceDetectionViewModel.screenToFaceDistance.collectAsState().value > 355.0 ||
+                                                    faceDetectionViewModel.screenToFaceDistance.collectAsState().value < 246.0
                                                 ) {
                                                     BorderStroke(3.dp, Color(0xffff0000))
                                                 } else {
@@ -573,7 +573,7 @@ fun MeasuringDistanceContent(
                                                     ),
                                             ) {
                                                 append(
-                                                    " 40~60cm",
+                                                    " 25~35cm",
                                                 )
                                             }
                                             append(
@@ -628,11 +628,11 @@ fun MeasuringDistanceContent(
 
                         else -> {
                             when (faceDetectionViewModel.screenToFaceDistance.collectAsState().value) {
-                                in 0.1..400.0 -> {
+                                in 0.1..246.0 -> {
                                     faceDetectionViewModel.updateIsDistanceOK(0)
                                 }
 
-                                in 600.0..995.0 -> {
+                                in 355.0..995.0 -> {
                                     faceDetectionViewModel.updateIsDistanceOK(2)
                                 }
 
