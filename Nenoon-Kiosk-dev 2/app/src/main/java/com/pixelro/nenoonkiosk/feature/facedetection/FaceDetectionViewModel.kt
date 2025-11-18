@@ -35,7 +35,7 @@ private const val DEFAULT_IMAGE_SIZE = 1088f
         // 거리 측정 상수
         private const val FOCAL_LENGTH_MULTIPLIER = 1.33f
         private const val INTERPUPILLARY_DISTANCE_MM = 63
-        private const val MAX_VALID_DISTANCE = 600f
+        private const val MAX_VALID_DISTANCE = 3000f
         private const val MIN_VALID_DISTANCE = 1f
 
         // 텍스트 기반 거리 계산 상수
@@ -120,6 +120,9 @@ private const val DEFAULT_IMAGE_SIZE = 1088f
 
     private val _isNenoonTextDetected = MutableStateFlow(false)
     val isNenoonTextDetected: StateFlow<Boolean> = _isNenoonTextDetected
+
+    private val _faceBoundingBox = MutableStateFlow<Rect?>(null)
+    val faceBoundingBox: StateFlow<Rect?> = _faceBoundingBox
 
     private var textDetectionCount = 0
 
@@ -232,7 +235,7 @@ private const val DEFAULT_IMAGE_SIZE = 1088f
         }
     }
 
-    // Legacy 함수 
+    // Legacy 함수
     fun updateFaceDetectionData(
         boundingBox: Rect,
         leftEyePosition: PointF?,
@@ -243,6 +246,7 @@ private const val DEFAULT_IMAGE_SIZE = 1088f
         leftEyeOpenProbability: Float?,
         rightEyeOpenProbability: Float?,
     ) {
+        _faceBoundingBox.update { boundingBox }
         _rightEyePosition.update {
             PointF(
                 rightEyePosition?.x ?: it.x,
@@ -255,16 +259,16 @@ private const val DEFAULT_IMAGE_SIZE = 1088f
         _rotZ.update { rotZ }
         _leftEyeOpenProbability.update { leftEyeOpenProbability ?: 100f }
         _rightEyeOpenProbability.update { rightEyeOpenProbability ?: 100f }
-        updateScreenToFaceDistance()
+
+        // 텍스트 감지 중이 아닐 때만 눈 기반 거리 계산
+        if (!_isNenoonTextDetected.value) {
+            updateScreenToFaceDistance()
+        }
     }
 
     fun updateIsFaceDetected(isFaceDetected: Boolean) {
         _isFaceDetected.update { isFaceDetected }
-
-        // 얼굴이 감지되지 않으면 거리 값도 리셋
-        if (!isFaceDetected) {
-            _screenToFaceDistance.update { ZERO_FLOAT }
-        }
+        
     }
 
     fun updateIsDistanceOK(isDistanceOK: Int) {
@@ -333,6 +337,8 @@ private const val DEFAULT_IMAGE_SIZE = 1088f
                 (_textBox.value?.left?.toFloat() ?: ZERO_FLOAT)
 
         _distance.update { TEXT_WIDTH_CONSTANT / textWidth }
+
+        // 텍스트 기반 거리 직접 업데이트
         _screenToFaceDistance.update { _distance.value * TEXT_DISTANCE_MULTIPLIER }
     }
 
