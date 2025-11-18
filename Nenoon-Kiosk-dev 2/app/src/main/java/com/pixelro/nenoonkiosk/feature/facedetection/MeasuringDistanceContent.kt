@@ -1,6 +1,7 @@
 package com.pixelro.nenoonkiosk.feature.facedetection
 
 import android.graphics.PointF
+import android.graphics.Rect
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.RepeatMode
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -227,6 +229,7 @@ fun MeasuringDistanceScreen(
     leftEyePosition: PointF,
     rightEyePosition: PointF,
     inputImageSizeX: Float,
+    faceBoundingBox: Rect?,
     onUpdateIsDistanceOK: (Int) -> Unit,
 ) {
     val isPreviewMode = LocalInspectionMode.current
@@ -269,6 +272,9 @@ fun MeasuringDistanceScreen(
                 },
             )
         }
+
+        val isLandscapeMode = isLandscape()
+
         Box(
             modifier =
                 Modifier
@@ -278,11 +284,8 @@ fun MeasuringDistanceScreen(
              * 카메라 preview 영역 (모든 요소 포함)
              */
             Box(
-                modifier =
-                    Modifier
-                        .padding(top = 40.dp)
-                        .fillMaxSize(),
-                contentAlignment = Alignment.TopCenter,
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
             ) {
                 // 카메라 프리뷰와 face_frame
             Box(
@@ -291,14 +294,34 @@ fun MeasuringDistanceScreen(
                 ) {
                     FaceDetectionScreenContentWithPreview(isPreviewShowing = !isPreviewMode)
 
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                    // face_frame만 표시
+                    val faceFrameSize = remember(isLandscapeMode) {
+                        if (isLandscapeMode) {
+                            if (GlobalValue.screenWidthDp > 1500) 450.dp else 340.dp
+                        } else {
+                            if (GlobalValue.screenHeightDp > 900) 600.dp else 480.dp
+                        }
+                    }
+
+                    Image(
+                        modifier = Modifier
+                            .width(faceFrameSize)
+                            .height(faceFrameSize),
+                        painter = painterResource(id = R.drawable.face_frame),
+                        contentDescription = "",
+                        colorFilter = ColorFilter.tint(neNoon_blue),
+                    )
+
+                    // 거리 안내 박스 - 오버레이로 분리
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 100.dp),
+                        contentAlignment = Alignment.TopCenter,
                     ) {
-                        // 거리 안내 박스 (face 이미지 상단)
                         Box(
                             modifier =
                                 Modifier
-                                    .padding(bottom = 40.dp)
                                     .background(
                                         color = Black.copy(alpha = 0.3f),
                                         shape = RoundedCornerShape(50),
@@ -317,14 +340,20 @@ fun MeasuringDistanceScreen(
                                 textAlign = TextAlign.Center,
                             )
                         }
+                    }
 
-                        Image(
-                            modifier = Modifier
-                                .width(if (isLandscape()) 360.dp else 480.dp)
-                                .height(if (isLandscape()) 360.dp else 480.dp),
-                            painter = painterResource(id = R.drawable.face_frame),
-                            contentDescription = "",
-                            colorFilter = ColorFilter.tint(neNoon_blue),
+                    // 디버깅: 눈 위치 확인
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.TopStart,
+                    ) {
+                        Text(
+                            text = "L: ${leftEyePosition.x.toInt()}, R: ${rightEyePosition.x.toInt()}, isLeft: $isLeftEye",
+                            color = White,
+                            fontSize = 20.sp,
+                            modifier = Modifier.background(Black.copy(alpha = 0.7f)).padding(8.dp)
                         )
                     }
 
@@ -333,28 +362,42 @@ fun MeasuringDistanceScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center,
                     ) {
-                        // 프리뷰 모드에서도 눈가리개 표시
-                        if (isFaceDetected || isPreviewMode) {
-                            val eyePosition = if (!isLeftEye) rightEyePosition else leftEyePosition
+                        // 눈가리개 위치 계산 (원래 공식 사용)
+                        val eyePosition = if (!isLeftEye) rightEyePosition else leftEyePosition
 
-                            // 카메라 이미지 중앙 기준으로 동적 계산
-                            val imageCenterX = inputImageSizeX / 2f
+                        // ML Kit 좌표를 faceFrameSize에 맞춰 스케일
+                        val scale = faceFrameSize.value / 1088f
 
-                            // 가로/세로 모두 동일한 공식 사용
-                            val offsetX = (400f - (eyePosition.x / 1.75f)).dp
-                            Image(
-                                modifier =
-                                    Modifier
-                                        .width((300 * 300 / screenToFaceDistance).dp)
-                                        .height((600 * 300 / screenToFaceDistance).dp)
-                                        .offset(
-                                            x = offsetX,
-                                        )
-                                        .alpha(if (isPreviewMode) 0.5f else shiftVal),
-                                painter = painterResource(id = R.drawable.occluder),
-                                contentDescription = null,
-                            )
-                        }
+                        // ML Kit 중앙 좌표 (1088 / 2 = 544)
+                        val mlKitCenterX = 544f
+
+                        // 중앙으로부터의 거리를 계산하여 offset 적용
+                        val offsetX = ((eyePosition.x - mlKitCenterX) * scale).dp
+
+                        // 눈가리개 크기
+                        val validDistance = screenToFaceDistance.coerceAtLeast(30f)
+                        val occluderWidth = (300 * 300 / validDistance).dp
+                        val occluderHeight = (600 * 300 / validDistance).dp
+
+                        // 항상 렌더링하되 alpha로 표시/숨김 제어
+                        Image(
+                            modifier =
+                                Modifier
+                                    .width(occluderWidth)
+                                    .height(occluderHeight)
+                                    .offset(
+                                        x = offsetX,
+                                    )
+                                    .alpha(
+                                        when {
+                                            isPreviewMode -> 0.5f
+                                            isFaceDetected -> shiftVal
+                                            else -> 0f
+                                        }
+                                    ),
+                            painter = painterResource(id = R.drawable.occluder),
+                            contentDescription = null,
+                        )
                     }
                 }
 
@@ -362,13 +405,16 @@ fun MeasuringDistanceScreen(
                 Box(
                     modifier =
                         Modifier
+                            .align(Alignment.TopCenter)
                             .fillMaxWidth()
                             .height(80.dp)
                             .background(color = Black),
-                    contentAlignment = Alignment.TopCenter,
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp),
                         text = getTopGuideText(
                             isFaceDetected, isLeftEye, isLeftEyeCovered,
                             isRightEyeCovered, isNenoonTextDetected, isDistanceOK
@@ -376,6 +422,15 @@ fun MeasuringDistanceScreen(
                         color = White,
                         fontSize = faceDetectionTextSize,
                         fontWeight = FontWeight.ExtraBold,
+                        textAlign = TextAlign.Center,
+                    )
+
+                    // 디버깅: 눈 위치 확인
+                    Text(
+                        text = "L: ${leftEyePosition.x.toInt()}, R: ${rightEyePosition.x.toInt()}, isLeft: $isLeftEye",
+                        color = Color.Yellow,
+                        fontSize = 16.sp,
+                        modifier = Modifier.align(Alignment.BottomStart).padding(8.dp)
                     )
                 }
 
@@ -406,34 +461,38 @@ fun MeasuringDistanceScreen(
                         )
                     }
                 }
+            }
 
-                // 하단 안내문 (가로모드일 때만 카메라 영역에 표시)
-                if (isLandscape()) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.BottomStart,
+            // 하단 안내문 (가로모드일 때만 표시) - 독립 레이어
+            if (isLandscapeMode) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    contentAlignment = Alignment.BottomStart,
+                ) {
+                    Column(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth(0.3f)
+                                .padding(start = 40.dp, bottom = 120.dp),
+                        horizontalAlignment = Alignment.Start,
                     ) {
-                        Column(
-                            modifier =
-                                Modifier
-                                    .padding(start = 40.dp, bottom = 120.dp),
-                            horizontalAlignment = Alignment.Start,
-                        ) {
-                            Text(
-                                text =
-                                    stringResource(
-                                        R.string.test_screen_current_distance,
-                                    ),
-                                color = White,
-                                fontSize = 24.sp,
-                            )
-                            Text(
-                                color = getDistanceColor(selectedTestType, screenToFaceDistance),
-                                text = "${(screenToFaceDistance / 10).roundToInt()}cm",
-                                fontSize = 80.sp,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        }
+                        Text(
+                            text =
+                                stringResource(
+                                    R.string.test_screen_current_distance,
+                                ),
+                            color = White,
+                            fontSize = 24.sp,
+                        )
+                        Text(
+                            color = getDistanceColor(selectedTestType, screenToFaceDistance),
+                            text = "${(screenToFaceDistance / 10).roundToInt()}cm",
+                            fontSize = 80.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
                     }
                 }
             }
@@ -594,7 +653,7 @@ fun MeasuringDistanceScreen(
     }
 }
 
-@Preview(widthDp = 1920, heightDp = 1080, showBackground = true, backgroundColor = 0xFF000000)
+@Preview(widthDp = 1920, heightDp = 600, showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun MeasuringDistanceScreenHorizentalPreview() {
     val visibleState = remember { MutableTransitionState(true) }
@@ -617,6 +676,7 @@ fun MeasuringDistanceScreenHorizentalPreview() {
         leftEyePosition = PointF(100f, 100f),
         rightEyePosition = PointF(200f, 100f),
         inputImageSizeX = 1088f,
+        faceBoundingBox = null,
         onUpdateIsDistanceOK = {},
     )
 }
@@ -644,6 +704,7 @@ fun MeasuringDistanceScreenVerticalPreview() {
         leftEyePosition = PointF(100f, 100f),
         rightEyePosition = PointF(200f, 100f),
         inputImageSizeX = 1088f,
+        faceBoundingBox = null,
         onUpdateIsDistanceOK = {},
     )
 }
