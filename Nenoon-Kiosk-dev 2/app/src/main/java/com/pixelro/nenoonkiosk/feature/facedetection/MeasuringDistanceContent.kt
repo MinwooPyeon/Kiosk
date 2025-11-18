@@ -448,13 +448,13 @@ fun MeasuringDistanceScreen(
                         textAlign = TextAlign.Center,
                     )
 
-                    // 디버깅: 눈 위치 확인
-                    Text(
-                        text = "L: ${leftEyePosition.x.toInt()}, R: ${rightEyePosition.x.toInt()}, isLeft: $isLeftEye",
-                        color = Color.Yellow,
-                        fontSize = 16.sp,
-                        modifier = Modifier.align(Alignment.BottomStart).padding(8.dp)
-                    )
+//                    // 디버깅: 눈 위치 확인
+//                    Text(
+//                        text = "L: ${leftEyePosition.x.toInt()}, R: ${rightEyePosition.x.toInt()}, isLeft: $isLeftEye",
+//                        color = Color.Yellow,
+//                        fontSize = 16.sp,
+//                        modifier = Modifier.align(Alignment.BottomStart).padding(8.dp)
+//                    )
                 }
 
                 // 경고 박스
