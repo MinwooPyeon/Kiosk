@@ -60,13 +60,12 @@ fun VisualAcuityChartBox(
 ) {
     val chartSize =
         when (sizeMode) {
-            VisualAcuityChartSizeMode.ShortDistance -> 500.dp
-                VisualAcuityChartSizeMode.LongDistance -> 500.dp
+            VisualAcuityChartSizeMode.ShortDistance -> 360.dp
+                VisualAcuityChartSizeMode.LongDistance -> 360.dp
         }
     Box(
         modifier =
             modifier
-                .padding(top = 40.dp)
                 .requiredSize(chartSize)
                 .background(
                     color = White,
