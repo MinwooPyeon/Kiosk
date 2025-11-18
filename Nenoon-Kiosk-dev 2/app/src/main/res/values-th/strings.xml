@@ -29,7 +29,7 @@
     <!-- 로그인 화면 -->
     <string name="id_input">กรุณากรอกชื่อผู้ใช้ของคุณ</string>
     <string name="pw_input">กรุณากรอกรหัสผ่านของคุณ</string>
-    <string name="start_without_signin">เริ่มต้นโดยไม่ต้องเข้าสู่ระบบ</string>
+    <string name="start_without_signin">เริ่มต้นโดยไม่ต้องเข้าสู่ระบบ ></string>
     <string name="signin">เข้าสู่ระบบ</string>
     <string name="toast_input_id">กรุณากรอกชื่อผู้ใช้ของคุณ</string>
     <string name="toast_input_pw">กรุณากรอกรหัสผ่านของคุณ</string>

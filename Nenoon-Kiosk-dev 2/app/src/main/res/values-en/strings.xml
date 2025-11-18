@@ -25,7 +25,7 @@
     <!-- 로그인 화면 -->
     <string name="id_input">Enter your ID</string>
     <string name="pw_input">Enter your password</string>
-    <string name="start_without_signin">Start Without Sign In</string>
+    <string name="start_without_signin">Start Without Sign In ></string>
     <string name="signin">Sign In</string>
     <string name="toast_input_id">Please enter your ID</string>
     <string name="toast_input_pw">Please enter your password</string>

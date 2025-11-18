@@ -29,7 +29,7 @@
     <!-- 로그인 화면 -->
     <string name="id_input">IDを入力してください</string>
     <string name="pw_input">パスワードを入力してください</string>
-    <string name="start_without_signin">ログインせずにスタート</string>
+    <string name="start_without_signin">ログインせずにスタート ></string>
     <string name="signin">ログイン</string>
     <string name="toast_input_id">IDを入力してください</string>
     <string name="toast_input_pw">パスワードを入力してください</string>

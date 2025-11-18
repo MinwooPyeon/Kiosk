@@ -29,7 +29,7 @@
     <!-- 로그인 화면 -->
     <string name="id_input">Entrez votre identifiant</string>
     <string name="pw_input">Entrez votre mot de passe</string>
-    <string name="start_without_signin">Démarrer sans connexion</string>
+    <string name="start_without_signin">Démarrer sans connexion ></string>
     <string name="signin">CONNEXION</string>
     <string name="toast_input_id">Veuillez entrer votre identifiant</string>
     <string name="toast_input_pw">Veuillez entrer votre mot de passe</string>
