@@ -58,10 +58,9 @@ fun GripStrengthInstructionsRoute(
             when (ev) {
                 GripInstructionsEvent.StartPressed -> {
                     if (ttsSpeaking) {
-                        ttsWarningActive.update { true }
-                    } else {
-                        navController.navigate(GripStrengthInspectionNavRoute.InProgress.name)
+                        TTS.stopTTS()
                     }
+                    navController.navigate(GripStrengthInspectionNavRoute.InProgress.name)
                 }
             }
         },
