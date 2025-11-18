@@ -14,6 +14,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.VisualAcuitySttState
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.VisualAcuityInspectionCommonContent
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.VisualAcuityInspectionUiState
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.components.VisualAcuityChartSizeMode
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.VisualAcuityInspectionResult
 import com.pixelro.nenoonkiosk.ui.theme.Black
 
@@ -78,6 +79,12 @@ fun VisualAcuityInspectionContent(
         else -> false
     }
 
+    val chartSizeMode =
+        when (inspectionType) {
+            InspectionType.LongDistanceVisualAcuity -> VisualAcuityChartSizeMode.LongDistance
+            else -> VisualAcuityChartSizeMode.ShortDistance
+        }
+
     Column(
         modifier =
             Modifier
@@ -119,6 +126,7 @@ fun VisualAcuityInspectionContent(
                 sttActive = sttActive,
                 onStartVoiceRecognition = onStartVoiceRecognition,
                 onCancelVoiceRecognition = onCancelVoiceRecognition,
+                chartSizeMode = chartSizeMode,
             )
         }
     }

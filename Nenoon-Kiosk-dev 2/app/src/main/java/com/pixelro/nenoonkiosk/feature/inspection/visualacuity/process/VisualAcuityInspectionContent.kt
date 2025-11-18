@@ -43,6 +43,7 @@ import com.pixelro.nenoonkiosk.core.util.stt.SttConfig
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.components.CantSeeButton
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.components.DirectionSelectionButton
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.components.VisualAcuityChartBox
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process.components.VisualAcuityChartSizeMode
 import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.VisualAcuityInspectionResult
 import com.pixelro.nenoonkiosk.ui.theme.White
 import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
@@ -65,6 +66,7 @@ fun VisualAcuityInspectionCommonContent(
     sttActive: Boolean = false,
     onStartVoiceRecognition: ((String) -> Unit) -> Unit,
     onCancelVoiceRecognition: () -> Unit,
+    chartSizeMode: VisualAcuityChartSizeMode = VisualAcuityChartSizeMode.ShortDistance,
 ) {
     AnimatedVisibility(
         visibleState = visualAcuityInspectionCommonContentVisibleState,
@@ -84,6 +86,7 @@ fun VisualAcuityInspectionCommonContent(
             sttActive = sttActive,
             onStartVoiceRecognition = onStartVoiceRecognition,
             onCancelVoiceRecognition = onCancelVoiceRecognition,
+            chartSizeMode = chartSizeMode,
         )
     }
 }
@@ -102,6 +105,7 @@ fun VisualAcuityInspectionContent(
     sttActive: Boolean = false,
     onStartVoiceRecognition: ((String) -> Unit) -> Unit,
     onCancelVoiceRecognition: () -> Unit,
+    chartSizeMode: VisualAcuityChartSizeMode = VisualAcuityChartSizeMode.ShortDistance,
 ) {
     var progress by remember { mutableFloatStateOf(0.1f) }
     val animatedProgress by animateFloatAsState(
@@ -167,6 +171,7 @@ fun VisualAcuityInspectionContent(
             updateProgress = { progress = it },
             sttEnabled = sttEnabled,
             sttActive = sttActive,
+            chartSizeMode = chartSizeMode,
         )
     } else {
         PortraitVisualAcuityContent(
@@ -182,6 +187,7 @@ fun VisualAcuityInspectionContent(
             updateProgress = { progress = it },
             sttEnabled = sttEnabled,
             sttActive = sttActive,
+            chartSizeMode = chartSizeMode,
         )
     }
 }
@@ -200,12 +206,13 @@ private fun PortraitVisualAcuityContent(
     updateProgress: (Float) -> Unit,
     sttEnabled: Boolean,
     sttActive: Boolean,
+    chartSizeMode: VisualAcuityChartSizeMode,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .padding(vertical = 20.dp),
+            .padding(vertical = 40.dp, horizontal = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -221,6 +228,7 @@ private fun PortraitVisualAcuityContent(
                 sightLevel = sightLevel,
                 isFaceDetected = isFaceDetected,
                 isFacingForward = isFacingForward,
+                sizeMode = chartSizeMode,
             )
         }
 
@@ -316,19 +324,21 @@ private fun LandscapeVisualAcuityContent(
     updateProgress: (Float) -> Unit,
     sttEnabled: Boolean,
     sttActive: Boolean,
+    chartSizeMode: VisualAcuityChartSizeMode,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .padding(horizontal = 60.dp),
+            .padding(bottom = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
         // 시력표 (고정 크기로 찌부러짐 방지)
         Box(
-            modifier = Modifier
-                .size(400.dp),
+            modifier =
+                Modifier
+                    .size(360.dp),
             contentAlignment = Alignment.Center
         ) {
             VisualAcuityChartBox(
@@ -336,7 +346,7 @@ private fun LandscapeVisualAcuityContent(
                 sightLevel = sightLevel,
                 isFaceDetected = isFaceDetected,
                 isFacingForward = isFacingForward,
-                modifier = Modifier.size(400.dp)
+                sizeMode = chartSizeMode,
             )
         }
 
@@ -470,6 +480,7 @@ private fun PreviewVisualAcuityInspectionContent_Portrait() {
             updateProgress = {},
             sttEnabled = true,
             sttActive = false,
+            chartSizeMode = VisualAcuityChartSizeMode.ShortDistance,
         )
     }
 }
@@ -500,6 +511,7 @@ private fun PreviewVisualAcuityInspectionContent_Landscape() {
             updateProgress = {},
             sttEnabled = true,
             sttActive = false,
+            chartSizeMode = VisualAcuityChartSizeMode.ShortDistance,
         )
     }
 }
