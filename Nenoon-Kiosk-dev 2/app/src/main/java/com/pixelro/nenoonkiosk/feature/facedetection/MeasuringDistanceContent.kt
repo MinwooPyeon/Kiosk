@@ -28,11 +28,13 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -148,6 +150,19 @@ private fun getDistanceGuideText(selectedTestType: InspectionType) = when (selec
                 )
             ) {
                 append(" 40~50cm")
+            }
+            append(stringResource(R.string.measuring_distance_description6_end))
+        }
+    InspectionType.LongDistanceVisualAcuity ->
+        buildAnnotatedString {
+            append(stringResource(R.string.measuring_distance_description6_start))
+            withStyle(
+                style = SpanStyle(
+                    color = neNoon_blue,
+                    fontWeight = FontWeight.Bold,
+                )
+            ) {
+                append(" 3m")
             }
             append(stringResource(R.string.measuring_distance_description6_end))
         }
@@ -274,6 +289,14 @@ fun MeasuringDistanceScreen(
         }
 
         val isLandscapeMode = isLandscape()
+
+        // LongDistanceVisualAcuity일 때 3초 후 자동 시작
+        LaunchedEffect(selectedTestType) {
+            if (selectedTestType == InspectionType.LongDistanceVisualAcuity) {
+                delay(3000)
+                onStartButtonClick()
+            }
+        }
 
         Box(
             modifier =
@@ -540,7 +563,10 @@ fun MeasuringDistanceScreen(
                  * 2 = 거리 초과
                  * 4 = 눈가리개 인식 X
                  */
-                if (
+                // LongDistanceVisualAcuity는 유효성 검사 없이 바로 통과
+                if (selectedTestType == InspectionType.LongDistanceVisualAcuity) {
+                    onUpdateIsDistanceOK(1)
+                } else if (
                 /**
                  * 조건 1: 눈가리개 인식
                  * 조건 2: 눈가리개 위치
