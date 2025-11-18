@@ -93,22 +93,23 @@ constructor(
             return
         }
 
-        _sttSessionActive.update { true }
+        STT.setStateObserver { active, hadSpeech ->
+            onSttSessionStateChanged(active, hadSpeech)
+        }
+        
         _sttHadSpeech.update { false }
         STT.enableVisualAcuityNumberHints(boost = 180)
 
         STT.startContinuousListening(
             language = "ko-KR",
             onResult = { result ->
-                _sttSessionActive.update { false }
                 _sttHadSpeech.update { true }
                 onResult(result)
             },
             onError = { _ ->
-                _sttSessionActive.update { false }
             },
             onReady = {
-                _sttSessionActive.update { true }
+                Log.d("VisualAcuityVM", "STT onReady callback invoked")
             },
             restartDelayOnResultMs = SttConfig.Recognition.AUTO_RESTART_DELAY_MS,
             restartDelayOnErrorMs = SttConfig.Recognition.AUTO_RESTART_DELAY_MS + 250L,
@@ -119,7 +120,7 @@ constructor(
 
     fun cancelVoiceRecognition() {
         STT.stopContinuousListening()
-        _sttSessionActive.update { false }
+        // setStateObserver가 상태를 업데이트하므로 여기서는 업데이트하지 않음
     }
 
     private var sightHistory =

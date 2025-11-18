@@ -1,5 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.inspection.visualacuity.process
 
+import android.Manifest
 import android.speech.tts.TextToSpeech
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.runtime.Composable
@@ -8,6 +9,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.util.TTS
@@ -29,6 +32,7 @@ import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.VisualAcui
  * @param visualAcuityViewModel 시력 검사 ViewModel
  * @param faceDetectionViewModel 얼굴 인식 ViewModel
  */
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun VisualAcuityInspectionRoute(
     inspectionType: InspectionType,
@@ -36,6 +40,17 @@ fun VisualAcuityInspectionRoute(
     visualAcuityViewModel: VisualAcuityViewModel = hiltViewModel(),
     faceDetectionViewModel: FaceDetectionViewModel = hiltViewModel(),
 ) {
+    // RECORD_AUDIO 권한 요청
+    val permissionState = rememberMultiplePermissionsState(
+        permissions = listOf(Manifest.permission.RECORD_AUDIO)
+    )
+
+    LaunchedEffect(Unit) {
+        if (!permissionState.allPermissionsGranted) {
+            permissionState.launchMultiplePermissionRequest()
+        }
+    }
+
     // ViewModel 초기화
     LaunchedEffect(true) {
         visualAcuityViewModel.init()

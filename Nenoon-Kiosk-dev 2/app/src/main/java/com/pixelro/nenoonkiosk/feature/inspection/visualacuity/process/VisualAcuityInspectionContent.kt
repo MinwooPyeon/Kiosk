@@ -212,7 +212,7 @@ private fun PortraitVisualAcuityContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .padding(vertical = 40.dp, horizontal = 40.dp),
+            .padding(vertical = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -330,7 +330,7 @@ private fun LandscapeVisualAcuityContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .padding(bottom = 20.dp),
+            .padding(horizontal = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -338,7 +338,7 @@ private fun LandscapeVisualAcuityContent(
         Box(
             modifier =
                 Modifier
-                    .size(360.dp),
+                    .size(400.dp),
             contentAlignment = Alignment.Center
         ) {
             VisualAcuityChartBox(
@@ -346,6 +346,7 @@ private fun LandscapeVisualAcuityContent(
                 sightLevel = sightLevel,
                 isFaceDetected = isFaceDetected,
                 isFacingForward = isFacingForward,
+                modifier = Modifier.size(400.dp),
                 sizeMode = chartSizeMode,
             )
         }
