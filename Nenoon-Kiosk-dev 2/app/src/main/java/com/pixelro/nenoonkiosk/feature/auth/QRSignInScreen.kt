@@ -256,7 +256,8 @@ private fun QRSignInLayout(
     val context = LocalContext.current
     val isInPreview = LocalInspectionMode.current
     val defaultUserName = stringResource(R.string.default_user_name)
-    val loginSuccess = stringResource(R.string.qr_sign_in_login_success, userName ?: defaultUserName)
+    val loginSuccess =
+        stringResource(R.string.qr_sign_in_login_success, userName ?: defaultUserName)
     val cameraWidthFraction = if (isLandscapeMode) 0.35f else 0.7f
 
     Column(
@@ -283,7 +284,7 @@ private fun QRSignInLayout(
                     .aspectRatio(1f),
                 contentAlignment = Alignment.Center
             ) {
-                StyledText(loginSuccess, textAlign = TextAlign.Center)
+                StyledText(text = loginSuccess, textAlign = TextAlign.Center)
             }
         } else {
             Box(

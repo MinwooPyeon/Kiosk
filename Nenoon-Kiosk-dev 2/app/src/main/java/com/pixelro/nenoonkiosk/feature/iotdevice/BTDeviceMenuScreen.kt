@@ -75,15 +75,15 @@ fun BTDeviceMenuScreen(
         ) {
             if (isBPBIO320Connected) {
                 StyledText(
-                    stringResource(R.string.bt_device_management_bp_connected),
-                    TextStyle.Success,
-                    TextAlign.Start,
+                    text = stringResource(R.string.bt_device_management_bp_connected),
+                    style = TextStyle.Success,
+                    textAlign = TextAlign.Start,
                 )
             } else {
                 StyledText(
-                    stringResource(R.string.bt_device_management_bp_disconnected),
-                    TextStyle.Error,
-                    TextAlign.Start,
+                    text = stringResource(R.string.bt_device_management_bp_disconnected),
+                    style = TextStyle.Error,
+                    textAlign = TextAlign.Start,
                 )
             }
 
@@ -92,11 +92,12 @@ fun BTDeviceMenuScreen(
             // 기본 혈압계 설정 버튼
             TextButton(
                 onClick = {
-                    val newType = if (selectedBloodPressureMonitor == SharedPreferencesManager.BloodPressureMonitorType.BPBIO320) {
-                        SharedPreferencesManager.BloodPressureMonitorType.BP170B
-                    } else {
-                        SharedPreferencesManager.BloodPressureMonitorType.BPBIO320
-                    }
+                    val newType =
+                        if (selectedBloodPressureMonitor == SharedPreferencesManager.BloodPressureMonitorType.BPBIO320) {
+                            SharedPreferencesManager.BloodPressureMonitorType.BP170B
+                        } else {
+                            SharedPreferencesManager.BloodPressureMonitorType.BPBIO320
+                        }
                     onBloodPressureMonitorChange(newType)
                 }
             ) {
@@ -124,16 +125,16 @@ fun BTDeviceMenuScreen(
         //25년형 혈압계 연결 상태
         if (isBP170BConnected) {
             StyledText(
-                stringResource(R.string.bt_device_management_bp_connected),
-                TextStyle.Success,
-                TextAlign.Start,
+                text = stringResource(R.string.bt_device_management_bp_connected),
+                style = TextStyle.Success,
+                textAlign = TextAlign.Start,
                 modifier = Modifier.padding(horizontal = 40.dp),
             )
         } else {
             StyledText(
-                stringResource(R.string.bt_device_management_bp_disconnected),
-                TextStyle.Error,
-                TextAlign.Start,
+                text = stringResource(R.string.bt_device_management_bp_disconnected),
+                style = TextStyle.Error,
+                textAlign = TextAlign.Start,
                 modifier = Modifier.padding(horizontal = 40.dp),
             )
         }
@@ -149,16 +150,16 @@ fun BTDeviceMenuScreen(
         //악력계 연결 상태
         if (isInGripConnected) {
             StyledText(
-                stringResource(R.string.bt_device_management_dynamometer_connected),
-                TextStyle.Success,
-                TextAlign.Start,
+                text = stringResource(R.string.bt_device_management_dynamometer_connected),
+                style = TextStyle.Success,
+                textAlign = TextAlign.Start,
                 modifier = Modifier.padding(horizontal = 40.dp),
             )
         } else {
             StyledText(
-                stringResource(R.string.bt_device_management_dynamometer_disconnected),
-                TextStyle.Error,
-                TextAlign.Start,
+                text = stringResource(R.string.bt_device_management_dynamometer_disconnected),
+                style = TextStyle.Error,
+                textAlign = TextAlign.Start,
                 modifier = Modifier.padding(horizontal = 40.dp),
             )
         }

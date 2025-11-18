@@ -63,15 +63,17 @@ fun GripStrengthInProgressScreen(
                 accent = stringResource(R.string.grip_strength_left_hand_ready_text2),
                 suffix = stringResource(R.string.grip_strength_left_hand_ready_text3),
             )
+
             GripStrengthInspectionState.RightHandReady -> AccentedText(
                 prefix = "",
                 accent = stringResource(R.string.grip_strength_right_hand_ready_text2),
                 suffix = stringResource(R.string.grip_strength_right_hand_ready_text3),
             )
-            GripStrengthInspectionState.RightHandCompleted -> StyledText(stringResource(R.string.grip_strength_right_hand_completed_text))
-            GripStrengthInspectionState.LeftHandCompleted -> StyledText(stringResource(R.string.grip_strength_left_hand_completed_text))
-            GripStrengthInspectionState.RightHand -> StyledText(stringResource(R.string.grip_strength_right_hand_instruction_tts))
-            GripStrengthInspectionState.LeftHand -> StyledText(stringResource(R.string.grip_strength_left_hand_instruction_tts))
+
+            GripStrengthInspectionState.RightHandCompleted -> StyledText(text = stringResource(R.string.grip_strength_right_hand_completed_text))
+            GripStrengthInspectionState.LeftHandCompleted -> StyledText(text = stringResource(R.string.grip_strength_left_hand_completed_text))
+            GripStrengthInspectionState.RightHand -> StyledText(text = stringResource(R.string.grip_strength_right_hand_instruction_tts))
+            GripStrengthInspectionState.LeftHand -> StyledText(text = stringResource(R.string.grip_strength_left_hand_instruction_tts))
             else -> Unit
         }
 
@@ -88,12 +90,14 @@ fun GripStrengthInProgressScreen(
                     onClick = { onEvent(GripInProgressEvent.StartPressed) },
                 )
             }
+
             GripStrengthInspectionState.RightHand, GripStrengthInspectionState.LeftHand -> {
                 Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     StyledText(text = "${state.countdown}", style = TextStyle.BigNumber)
                 }
                 Spacer(modifier = Modifier.weight(1f))
             }
+
             GripStrengthInspectionState.RightHandCompleted -> {
                 AccentedText(
                     prefix = stringResource(R.string.grip_strength_right_hand_value),
@@ -103,6 +107,7 @@ fun GripStrengthInProgressScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
             }
+
             GripStrengthInspectionState.LeftHandCompleted -> {
                 AccentedText(
                     prefix = stringResource(R.string.grip_strength_left_hand_value),
@@ -130,7 +135,10 @@ private fun Preview_RightReady() {
 @Composable
 private fun Preview_RightMeasuring() {
     GripStrengthInProgressScreen(
-        state = GripInProgressUiState(testState = GripStrengthInspectionState.RightHand, countdown = 7),
+        state = GripInProgressUiState(
+            testState = GripStrengthInspectionState.RightHand,
+            countdown = 7
+        ),
         onEvent = {},
     )
 }
@@ -140,7 +148,10 @@ private fun Preview_RightMeasuring() {
 @Composable
 private fun Preview_RightDone() {
     GripStrengthInProgressScreen(
-        state = GripInProgressUiState(testState = GripStrengthInspectionState.RightHandCompleted, rightGripValue = 31.6),
+        state = GripInProgressUiState(
+            testState = GripStrengthInspectionState.RightHandCompleted,
+            rightGripValue = 31.6
+        ),
         onEvent = {},
     )
 }
@@ -160,7 +171,10 @@ private fun Preview_LeftReady() {
 @Composable
 private fun Preview_LeftMeasuring() {
     GripStrengthInProgressScreen(
-        state = GripInProgressUiState(testState = GripStrengthInspectionState.LeftHand, countdown = 3),
+        state = GripInProgressUiState(
+            testState = GripStrengthInspectionState.LeftHand,
+            countdown = 3
+        ),
         onEvent = {},
     )
 }
@@ -170,7 +184,10 @@ private fun Preview_LeftMeasuring() {
 @Composable
 private fun Preview_LeftDone() {
     GripStrengthInProgressScreen(
-        state = GripInProgressUiState(testState = GripStrengthInspectionState.LeftHandCompleted, leftGripValue = 28.2),
+        state = GripInProgressUiState(
+            testState = GripStrengthInspectionState.LeftHandCompleted,
+            leftGripValue = 28.2
+        ),
         onEvent = {},
     )
 }

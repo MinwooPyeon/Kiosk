@@ -144,8 +144,7 @@ fun CategoryListScreenContent(
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxHeight()
-                        .padding(vertical = topPadding),
+                        .fillMaxHeight(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -197,8 +196,7 @@ fun CategoryListScreenContent(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
-                            .height(150.dp)
-                            .clip(RoundedCornerShape(8.dp)),
+                            .height(200.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         AdCarousel(
@@ -220,7 +218,7 @@ fun CategoryListScreenContent(
                     modifier = Modifier
                         .weight(1.6f)
                         .fillMaxHeight()
-                        .padding(horizontal = horizontalPadding, vertical = topPadding),
+                        .padding(horizontal = horizontalPadding),
                     verticalArrangement = Arrangement.Center
                 ) {
                     // 카테고리 버튼들

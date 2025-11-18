@@ -20,7 +20,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.ui.*
+import com.pixelro.nenoonkiosk.core.ui.BatteryStatus
+import com.pixelro.nenoonkiosk.core.ui.StyledText
+import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.StringProvider
 
 
@@ -37,23 +39,34 @@ fun DeviceList(
     modifier: Modifier = Modifier,
 ) {
     if (devices.isEmpty()) return
-    StyledText(StringProvider.getString(R.string.dynamometer_select_device), TextStyle.Message, modifier = Modifier.padding(top = 60.dp))
+    StyledText(
+        text = StringProvider.getString(R.string.dynamometer_select_device),
+        style = TextStyle.Message,
+        modifier = Modifier.padding(top = 60.dp)
+    )
     LazyColumn(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
-        modifier = modifier.fillMaxWidth().padding(top = 20.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp)
     ) {
         items(devices.size) { idx ->
             val device = devices[idx]
             ListItem(
                 headlineContent = {
                     StyledText(
-                        text = device.name ?: StringProvider.getString(R.string.dynamometer_unknown_device_name),
+                        text = device.name
+                            ?: StringProvider.getString(R.string.dynamometer_unknown_device_name),
                         textAlign = TextAlign.Start,
                     )
                 },
                 overlineContent = {
-                    StyledText(device.address ?: "", style = TextStyle.Hint, textAlign = TextAlign.Start)
+                    StyledText(
+                        text = device.address ?: "",
+                        style = TextStyle.Hint,
+                        textAlign = TextAlign.Start
+                    )
                 },
                 modifier = Modifier
                     .border(1.dp, colorResource(R.color.gray2), RoundedCornerShape(8.dp))
@@ -84,4 +97,6 @@ fun GripValueLine(label: String, valueKg: String, modifier: Modifier = Modifier)
 
 @Preview(apiLevel = 34)
 @Composable
-private fun CountdownPreview() { CountdownBig(7) }
+private fun CountdownPreview() {
+    CountdownBig(7)
+}

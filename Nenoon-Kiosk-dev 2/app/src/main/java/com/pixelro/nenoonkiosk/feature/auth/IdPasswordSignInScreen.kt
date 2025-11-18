@@ -47,11 +47,11 @@ import com.pixelro.nenoonkiosk.core.ui.NenoonTopBar
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
 import com.pixelro.nenoonkiosk.core.ui.ProgressIndicator
 import com.pixelro.nenoonkiosk.core.ui.StyledText
-import com.pixelro.nenoonkiosk.core.ui.TextStyle as CoreTextStyle
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import kotlinx.coroutines.launch
+import com.pixelro.nenoonkiosk.core.ui.TextStyle as CoreTextStyle
 
 @Composable
 fun IdPasswordSignInScreen(
@@ -167,7 +167,10 @@ private fun PortraitIdPasswordSignInScreen(
                     onValueChange = onPasswordChange,
                     label = stringResource(id = R.string.id_pw_sign_in_pw_hint),
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        keyboardType = KeyboardType.Password
+                    ),
                     trailingIcon = {
                         IconButton(onClick = { onPasswordVisibleChange(!passwordVisible) }) {
                             Icon(
@@ -281,7 +284,10 @@ private fun LandscapeIdPasswordSignInScreen(
                     onValueChange = onPasswordChange,
                     label = stringResource(id = R.string.id_pw_sign_in_pw_hint),
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        keyboardType = KeyboardType.Password
+                    ),
                     trailingIcon = {
                         IconButton(onClick = { onPasswordVisibleChange(!passwordVisible) }) {
                             Icon(
@@ -383,7 +389,7 @@ private fun InputTextField(
                         contentAlignment = Alignment.CenterStart,
                     ) {
                         if (value.isEmpty()) {
-                            StyledText(label, CoreTextStyle.Hint)
+                            StyledText(text = label, style = CoreTextStyle.Hint)
                         }
                         innerTextField()
                     }

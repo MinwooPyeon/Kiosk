@@ -32,13 +32,13 @@ enum class TextStyle {
 
 @Composable
 fun StyledText(
+    modifier: Modifier = Modifier,
     text: String,
     style: TextStyle = TextStyle.Message,
     textAlign: TextAlign = TextAlign.Center,
     fontWeight: FontWeight? = null,
     textDecoration: TextDecoration? = null,
     color: Color? = null,
-    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val sharedPreferences = remember { context.getSharedPreferences(NavConstants.PREFERENCE_NAME, Context.MODE_PRIVATE) }

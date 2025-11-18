@@ -215,18 +215,18 @@ private fun FaceIdSignInLayout(
         Spacer(modifier = Modifier.height(if (isLandscapeMode) 24.dp else 30.dp))
 
         if (attemptsLeft > 0) {
-            StyledText(liveFaceDetectionStatus, textAlign = TextAlign.Center)
+            StyledText(text = liveFaceDetectionStatus, textAlign = TextAlign.Center)
         }
 
         Spacer(modifier = Modifier.height(if (isLandscapeMode) 16.dp else 30.dp))
 
         if (attemptsLeft > 0) {
             StyledText(
-                faceRecognitionStatus + " (${AppConstants.FACE_ID_MAX_ATTEMPTS - attemptsLeft + 1}/${AppConstants.FACE_ID_MAX_ATTEMPTS})",
+                text = faceRecognitionStatus + " (${AppConstants.FACE_ID_MAX_ATTEMPTS - attemptsLeft + 1}/${AppConstants.FACE_ID_MAX_ATTEMPTS})",
                 textAlign = TextAlign.Center
             )
         } else {
-            StyledText(noMatchText, TextStyle.Error, textAlign = TextAlign.Center)
+            StyledText(text = noMatchText, style = TextStyle.Error, textAlign = TextAlign.Center)
         }
 
         Spacer(modifier = Modifier.height(if (isLandscapeMode) 24.dp else 60.dp))

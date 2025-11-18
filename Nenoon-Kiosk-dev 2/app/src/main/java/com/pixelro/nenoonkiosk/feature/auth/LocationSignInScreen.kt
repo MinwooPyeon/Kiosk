@@ -5,12 +5,14 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,10 +27,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -43,7 +41,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -58,6 +55,8 @@ import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.ui.AdCarousel
 import com.pixelro.nenoonkiosk.core.ui.Logo
 import com.pixelro.nenoonkiosk.core.ui.PrimaryButton
+import com.pixelro.nenoonkiosk.core.ui.StyledText
+import com.pixelro.nenoonkiosk.core.ui.TextStyle
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import com.pixelro.nenoonkiosk.feature.inspection.AdImageRepositoryEntryPoint
@@ -68,6 +67,7 @@ import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import androidx.compose.ui.text.TextStyle as ComposeTextStyle
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -247,18 +247,39 @@ private fun PortraitLocationSignInScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // 아이콘 버튼으로 변경
-                IconButton(
-                    onClick = onSignInSkip,
-                    modifier = Modifier.size(48.dp)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 20.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowForward,
-                        contentDescription = stringResource(id = R.string.start_without_signin),
-                        tint = Gray,
-                        modifier = Modifier.size(32.dp)
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .width(IntrinsicSize.Max)
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                onSignInSkip()
+                            }
+                    ) {
+                        StyledText(
+                            text = stringResource(id = R.string.start_without_signin),
+                            style = TextStyle.Message,
+                            fontWeight = FontWeight.Bold,
+                            color = Gray
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Box(
+                            modifier = Modifier
+                                .width(200.dp)
+                                .height(1.dp)
+                                .background(Gray)
+                        )
+                    }
                 }
+
             }
 
             // 하단 광고 배너 (고정)
@@ -384,17 +405,37 @@ private fun LandscapeLocationSignInScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 아이콘 버튼으로 변경
-            IconButton(
-                onClick = onSignInSkip,
-                modifier = Modifier.size(56.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 20.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowForward,
-                    contentDescription = stringResource(id = R.string.start_without_signin),
-                    tint = Gray,
-                    modifier = Modifier.size(40.dp)
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .width(IntrinsicSize.Max)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {
+                            onSignInSkip()
+                        }
+                ) {
+                    StyledText(
+                        text = stringResource(id = R.string.start_without_signin),
+                        style = TextStyle.Message,
+                        fontWeight = FontWeight.Bold,
+                        color = Gray
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Box(
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(1.dp)
+                            .background(Gray)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -430,7 +471,7 @@ private fun InputFields(
         BasicTextField(
             value = id,
             onValueChange = onIdChange,
-            textStyle = TextStyle(
+            textStyle = ComposeTextStyle(
                 fontSize = fontSize,
             ),
             decorationBox = { innerTextField ->
@@ -469,7 +510,7 @@ private fun InputFields(
             value = password,
             onValueChange = onPasswordChange,
             visualTransformation = PasswordVisualTransformation(),
-            textStyle = TextStyle(
+            textStyle = ComposeTextStyle(
                 fontSize = fontSize,
             ),
             decorationBox = { innerTextField ->

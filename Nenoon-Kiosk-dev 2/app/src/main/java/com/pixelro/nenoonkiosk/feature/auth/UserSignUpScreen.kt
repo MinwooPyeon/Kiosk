@@ -1,5 +1,6 @@
 package com.pixelro.nenoonkiosk.feature.auth
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -57,7 +58,6 @@ import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import android.graphics.Bitmap
 
 @Composable
 fun UserSignUpScreen(
@@ -217,7 +217,7 @@ private fun UserSignUpContent(
                                 modifier = Modifier.size(280.dp)
                             )
                             Spacer(modifier = Modifier.height(16.dp))
-                            StyledText(stringResource(R.string.user_signup_qr_description))
+                            StyledText(text = stringResource(R.string.user_signup_qr_description))
                         }
 
                         Spacer(modifier = Modifier.width(20.dp))
@@ -452,7 +452,10 @@ private fun UserSignUpForm(
 
             if (errorMessage != null) {
                 Spacer(modifier = Modifier.height(8.dp))
-                StyledText(errorMessage, com.pixelro.nenoonkiosk.core.ui.TextStyle.Error)
+                StyledText(
+                    text = errorMessage,
+                    style = com.pixelro.nenoonkiosk.core.ui.TextStyle.Error
+                )
             }
 
             Spacer(modifier = Modifier.height(if (isLandscapeMode) 20.dp else 30.dp))
@@ -588,7 +591,10 @@ private fun InputTextField(
                         contentAlignment = Alignment.CenterStart,
                     ) {
                         if (value.isEmpty()) {
-                            StyledText(label, com.pixelro.nenoonkiosk.core.ui.TextStyle.Hint)
+                            StyledText(
+                                text = label,
+                                style = com.pixelro.nenoonkiosk.core.ui.TextStyle.Hint
+                            )
                         }
                         innerTextField()
                     }
