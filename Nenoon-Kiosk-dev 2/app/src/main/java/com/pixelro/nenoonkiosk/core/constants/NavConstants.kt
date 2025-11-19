@@ -21,6 +21,8 @@ object NavConstants {
     const val ROUTE_BP170B_CONNECT = "BP170BConnect"
     const val ROUTE_BT_DEVICE_MANAGEMENT = "BTDeviceManagement"
     const val ROUTE_ADMIN_PAGE = "AdminPage"
+
+    const val ROUTE_ADMIN_DASHBOARD_PAGE = "AdminDashBoardPage"
     const val ROUTE_ACCOUNT_MANAGEMENT = "AccountManagement"
     const val ROUTE_FACE_UPDATE = "FaceUpdate"
     const val ROUTE_FACE_UPDATE_TERMS_OF_SERVICE = "FaceUpateTermsOfService"

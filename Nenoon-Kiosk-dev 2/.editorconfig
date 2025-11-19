@@ -1,0 +1,9 @@
+root = true
+
+[*.{kt,kts}]
+# Compose 함수는 대문자로 시작하므로 function-naming 규칙 비활성화
+ktlint_standard_function-naming = disabled
+# Backing property 언더스코어 네이밍 허용
+ktlint_standard_backing-property-naming = disabled
+# Max line length 제한 비활성화
+ktlint_standard_max-line-length = disabled

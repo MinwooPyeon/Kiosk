@@ -12,9 +12,10 @@ import com.pixelro.nenoonkiosk.R
 @Composable
 fun ProgressIndicator() {
     CircularProgressIndicator(
-        modifier = Modifier
-            .padding(20.dp)
-            .size(150.dp),
+        modifier =
+            Modifier
+                .padding(20.dp)
+                .size(150.dp),
         color = colorResource(R.color.main),
         strokeWidth = 20.dp,
     )

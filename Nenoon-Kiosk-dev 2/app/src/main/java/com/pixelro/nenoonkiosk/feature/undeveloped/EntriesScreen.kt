@@ -1,6 +1,13 @@
 package com.pixelro.nenoonkiosk.feature.undeveloped
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -11,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-//처음에 스플래시 화면
+// 처음에 스플래시 화면
 @Composable
 fun EntriesScreen() {
     val systemUiController = rememberSystemUiController()
@@ -24,21 +31,24 @@ fun EntriesScreen() {
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 20.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(start = 20.dp),
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Spacer(
-            modifier = Modifier
-                .height(20.dp)
+            modifier =
+                Modifier
+                    .height(20.dp),
         )
         Box(
-            modifier = Modifier
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ){
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+        ) {
             Text(
 //                text = StringProvider.getString(R.string.splash_description),
                 text = "기재사항",
@@ -49,20 +59,20 @@ fun EntriesScreen() {
         Text(
             text = "(1) 품목명: 암슬러 격자검사 소프트웨어",
             fontSize = 26.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
         Text(
 //                text = StringProvider.getString(R.string.splash_app_name),
             text = "(2) 모델명: Screening Charts for Macular Degeneration",
             fontSize = 26.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
 
         Text(
 //                text = StringProvider.getString(R.string.splash_app_name),
             text = "(3) 제조업허가번호: 제8253호",
             fontSize = 26.sp,
-            fontWeight = FontWeight.Light
+            fontWeight = FontWeight.Light,
         )
         Text(
 //                text = StringProvider.getString(R.string.splash_app_name),
@@ -71,26 +81,28 @@ fun EntriesScreen() {
             fontWeight = FontWeight.Light,
         )
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 20.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 20.dp),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top,
         ) {
             Text(
                 text = "① 상호: 주식회사 픽셀로",
                 fontSize = 26.sp,
-                fontWeight = FontWeight.Light
+                fontWeight = FontWeight.Light,
             )
             Spacer(
-                modifier = Modifier
-                    .height(10.dp)
+                modifier =
+                    Modifier
+                        .height(10.dp),
             )
             Text(
 //                text = StringProvider.getString(R.string.splash_app_name),
                 text = "② 주소: 경기도 성남시 분당구 야탑로205번길 26, 324호(야탑동, 성남 시니어산업혁신센터)",
                 fontSize = 26.sp,
-                fontWeight = FontWeight.Light
+                fontWeight = FontWeight.Light,
             )
         }
         Text(
@@ -100,16 +112,17 @@ fun EntriesScreen() {
             fontWeight = FontWeight.Light,
         )
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 80.dp, end = 10.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 80.dp, end = 10.dp),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top,
         ) {
             Text(
                 text = "(6) 사용목적 : 격자 형태의 표를 제시하여 시야의 중앙 및 중앙부 불규칙성을 검사하기 위해 사용하는 소프트웨어",
                 fontSize = 26.sp,
-                fontWeight = FontWeight.Light
+                fontWeight = FontWeight.Light,
             )
         }
         Text(
@@ -149,26 +162,28 @@ fun EntriesScreen() {
             fontWeight = FontWeight.Light,
         )
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 10.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top,
         ) {
             Text(
                 text = "1) 명칭 : 내눈 암슬러차트 검사",
                 fontSize = 26.sp,
-                fontWeight = FontWeight.Light
+                fontWeight = FontWeight.Light,
             )
             Spacer(
-                modifier = Modifier
-                    .height(10.dp)
+                modifier =
+                    Modifier
+                        .height(10.dp),
             )
             Text(
 //                text = StringProvider.getString(R.string.splash_app_name),
                 text = "2) 버전 : 1.0",
                 fontSize = 26.sp,
-                fontWeight = FontWeight.Light
+                fontWeight = FontWeight.Light,
             )
         }
         Text(
@@ -184,9 +199,9 @@ fun EntriesScreen() {
             fontWeight = FontWeight.Light,
         )
         Spacer(
-            modifier = Modifier
-                .height(20.dp)
+            modifier =
+                Modifier
+                    .height(20.dp),
         )
-
     }
 }

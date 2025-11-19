@@ -1,7 +1,6 @@
 package com.pixelro.nenoonkiosk.core.constants
 
 object DebugConstants {
-
     const val SKIP_SURVEY = false
 
     const val EMULATOR_MODE = false // reconfigures cameras for emulators
@@ -11,5 +10,4 @@ object DebugConstants {
 
     const val SAMPLE_SURVEY_ID = 0L
     const val PLACEHOLDER_PID = -1
-
 }

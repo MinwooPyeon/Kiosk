@@ -36,7 +36,7 @@
     <!-- 화면 보호기 화면 -->
     <string name="screensaver_description1">화면을&#160;</string>
     <string name="screensaver_description2">터치</string>
-    <string name="screensaver_description3">하시면\n시력, 황반변성, 사시, 노안조절력, 혈압, 악력, 치매, 폐나이를 측정할 수 있습니다</string>
+    <string name="screensaver_description3">하여 검사 시작</string>
 
     <!-- 권한 확인 화면 -->
     <string name="permission_requirement">앱 사용을 위해\n접근 권한 허용이 필요해요</string>
@@ -56,7 +56,7 @@
     <string name="intropage_appname">자가진단 키오스크</string>
     <string name="intropage_title">(시력, 황반변성, 사시, 노안조절력, 혈압, 악력, 치매, 폐나이)</string>
     <string name="intropage_start_button">시작</string>
-    <string name="intropage_description1">모든 눈 검사는 교정시력을 측정합니다</string>
+    <string name="intropage_description1">모든 눈 검사는 교정시력을 측정합니다.</string>
     <string name="intropage_description2">평상시의 상태로 검사를 진행해주세요</string>
 
     <!-- 문진표 작성 화면 -->
@@ -95,16 +95,16 @@
     <string name="test_list_dialog_re_button">검사 다시하기</string>
     <string name="test_list_dialog_cancel_button">취소</string>
     <string name="test_predescription_presbyopia_title1">노안 조절력 검사</string>
-    <string name="test_predescription_presbyopia_title2">\n(안구 나이 검사)</string>
+    <string name="test_predescription_presbyopia_title2">안구 나이 검사</string>
     <string name="test_predescription_short_visual_acuity_title1">시력 검사</string>
-    <string name="test_predescription_short_visual_acuity_title2">\n(근거리)</string>
+    <string name="test_predescription_short_visual_acuity_title2">근거리</string>
     <string name="test_predescription_amsler_title1">암슬러 차트 검사</string>
-    <string name="test_predescription_amsler_title2">\n(황반 변성 검사)</string>
+    <string name="test_predescription_amsler_title2">황반 변성 검사</string>
     <string name="test_predescription_mchart_title1">엠식 변형시 검사</string>
-    <string name="test_predescription_mchart_title2">\n(황반 변성 검사)</string>
+    <string name="test_predescription_mchart_title2">황반 변성 검사</string>
     <string name="test_list_screen_warning1">"모든 검사는 자가 검사로 "</string>
     <string name="test_list_screen_warning2">"의학적 소견이 아니기에 "</string>
-    <string name="test_list_screen_warning3">정확한 진단은 병원을 방문하시길 바랍니다 현재 몸 상태와 주변 환경 또는 기기에 따라 검사 결과가 달라질 수 있습니다</string>
+    <string name="test_list_screen_warning3">정확한 진단은 병원을 방문하시길 바랍니다. 현재 몸 상태와 주변 환경 또는 기기에 따라 검사 결과가 달라질 수 있습니다.</string>
 
     <!-- 목록 박스-->
     <string name="box_time_required">소요 시간</string>
@@ -148,9 +148,9 @@
     <string name="presbyopia_description2_2">\'다음\'</string>
     <string name="presbyopia_description2_3">을 누르세요</string>
     <string name="presbyopia_description3">아래의 깜빡이는 시표를 봐주세요</string>
-    <string name="presbyopia_under_25cm_description1">첫 번째 측정에서\n노안이 발견되지 않았습니다\n아래의&#160;</string>
-    <string name="presbyopia_under_25cm_description2">두 번째 측정에서\n노안이 발견되지 않았습니다\n아래의&#160;</string>
-    <string name="presbyopia_under_25cm_description3">마지막 측정에서\n노안이 발견되지 않았습니다\n아래의&#160;</string>
+    <string name="presbyopia_under_25cm_description1">노안이 발견되지 않았습니다\n아래의&#160;</string>
+    <string name="presbyopia_under_25cm_description2">노안이 발견되지 않았습니다\n아래의&#160;</string>
+    <string name="presbyopia_under_25cm_description3">노안이 발견되지 않았습니다\n아래의&#160;</string>
     <string name="presbyopia_test_start1">조절력 검사를\n시작하겠습니다</string>
     <string name="presbyopia_test_start2">두번째 검사를\n시작하겠습니다</string>
     <string name="presbyopia_test_start3">마지막 검사를\n시작하겠습니다</string>
@@ -316,13 +316,14 @@
     <string name="dementia_survey_question11">가게에서 2~3가지 물건을\n사려고 할 때 물건 이름을\n기억하기 어렵습니까?</string>
     <string name="dementia_survey_question12">가스불이나 전기불 끄는 것을\n기억하기 어렵습니까?</string>
     <string name="dementia_survey_question13">자주 사용하는 전화번호(자신\n혹은 자녀의 집)를 기억하기\n어렵습니까?</string>
-    <string name="dementia_result_instruction">6점 이상 시 정확한 진단을 해보는 것을 추천드립니다</string>
+    <string name="dementia_result_instruction">6점 이상 시 정확한 진단을 해보는 것을 추천드립니다.</string>
     <string name="dementia_result_wording1">"자가진단 검사 결과는 "</string>
-    <string name="dementia_result_wording2">개 입니다</string>
-    <string name="dementia_result_wording3">운동과 외부 사회 활동을 유지하시고 치매예방수칙 333을 잘 실천하셔서 치매를 예방하세요.</string>
+    <string name="dementia_result_wording2">개</string>
+    <string name="dementia_result_wording3">운동과 외부 사회 활동을 유지하셔서 치매를 예방하세요.</string>
     <string name="dementia_result_wording4">가까운 보건소나 치매안심센터를 방문하셔서 더 정확한 치매검진을 받아보시기 바랍니다.</string>
     <string name="dementia_result_selection1">치매예방수칙 333 자세히 보기</string>
     <string name="dementia_result_selection2">중앙치매센터 홈페이지</string>
+    <string name="dementia_result_caution_needed">주의 필요</string>
     <string name="eye_test">AI눈건강자가진단</string>
     <string name="dementia_test">치매 자가진단</string>
     <string name="call">가족 연결</string>
@@ -555,12 +556,12 @@
     <string name="grip_strength_left_hand_instruction_tts">왼손을 힘껏 쥐어 주세요.</string>
     <string name="grip_strength_left_hand_completed_tts">왼손 악력 검사가 끝났습니다. 결과를 불러옵니다.</string>
 
-    <string name="grip_strength_right_hand_ready_text1"></string>
+    <string name="grip_strength_right_hand_ready_text1">당신의&#160;로 악력계를 잡으세요</string>
     <string name="grip_strength_right_hand_ready_text2">오른손</string>
     <string name="grip_strength_right_hand_ready_text3">으로 악력계를 잡고 준비해 주세요.</string>
     <string name="grip_strength_right_hand_completed_text">오른손 측정 완료.</string>
     <string name="grip_strength_right_hand_rest_text">다음은 왼손 악력 측정입니다.</string>
-    <string name="grip_strength_left_hand_ready_text1"></string>
+    <string name="grip_strength_left_hand_ready_text1">당신의&#160;로 악력계를 잡으세요</string>
     <string name="grip_strength_left_hand_ready_text2">왼손</string>
     <string name="grip_strength_left_hand_ready_text3">으로 악력계를 잡고 준비해 주세요.</string>
     <string name="grip_strength_left_hand_completed_text">왼손 악력 검사가 끝났습니다.</string>
@@ -634,9 +635,7 @@
     <string name="lung_age_test">폐나이 측정</string>
     <string name="blood_pressure_and_grip_strength">혈압, 악력</string>
     <string name="test_predescription_blood_pressure_title1">혈압 검사</string>
-    <string name="test_predescription_blood_pressure_title2"></string>
     <string name="test_predescription_grip_strength_title1">악력 검사</string>
-    <string name="test_predescription_grip_strength_title2"></string>
     <string name="dynamometer_disconnected_tts">악력계 연결이 끊어졌습니다.</string>
     <string name="dynamometer_connected_tts">악력계가 연결되었습니다. 악력 검사 시작 버튼을 눌러주세요.</string>
     <string name="qr_code_issue_button_text">로그인용 QR 코드 발급</string>
@@ -648,7 +647,7 @@
     <string name="qr_print_fail">QR 코드 인쇄 실패</string>
     <string name="qr_generation_fail">QR 코드 생성 실패</string>
     <string name="qr_not_signed_in">로그인된 사용자가 없습니다. QR 코드를 발급할 수 없습니다.</string>
-    <string name="id_pw_sign_in">아이디 / 패스워드 로그인</string>
+    <string name="id_pw_sign_in">비밀번호 로그인</string>
 
     <string name="admin_page">관리자 페이지</string>
 
@@ -662,6 +661,10 @@
     <string name="personal_info_table_column3">1년</string>
     <string name="personal_info_checkbox_description">※\t위의 개인정보 수집·이용에 대한 동의를 거부할 권리가 있습니다.\n\t\t그러나, 동의를 거부할 경우 회원가입 서비스 이용에 제한을 받을 수 있습니다.</string>
     <string name="personal_info_checkbox_question">⇨\t위와 같이 개인정보를 수집·이용하는데 동의하십니까?</string>
+
+    <string name="password_login_button">비밀번호\n로그인</string>
+    <string name="qr_login_button">QR\n로그인</string>
+    <string name="face_login_button">얼굴인식\n로그인</string>
 
     <string name="sensitive_info_table_label">▶ 민감정보 수집·이용 내역</string>
     <string name="sensitive_info_table_column1">눈건강, 폐나이, 혈압, 악력</string>
@@ -722,7 +725,7 @@
     <string name="default_user_name">사용자</string>
     <string name="qr_sign_in_login_success">%1$s님 로그인 성공!</string>
 
-    <string name="cross_eye_test">사위,부등상시 검사</string>
+    <string name="cross_eye_test">사위, 부등상시 검사</string>
     <string name="phoria_test">사위 검사</string>
     <string name="aniseikonia_test">부등상시 검사</string>
     <string name="red_green_filter_glass_prompt">오른쪽에 적색, 왼쪽에 녹색이 위치하도록 적녹필터 안경을 착용해주세요.</string>
@@ -824,7 +827,7 @@
     <string name="start">시작하기</string>
 
     <string name="tts_bp170b_device_check">혈압계를 탐색 중입니다. 잠시만 기다려주세요.</string>
-    <string name="tts_bp170b_turn_off_device_initialization">혈압계 초기화가 필요합니다. 혈압계의 시작/정지 버튼을 한번만 눌러주세요.</string>
+    <string name="tts_bp170b_turn_off_device_initialization">혈압계 초기화가 필요합니다.\n혈압계의 시작/정지 버튼을 한번만 눌러주세요.</string>
     <string name="tts_bp170b_standby_instructions">혈압계를 왼팔에 착용해주세요. 착용 후 혈압계의 시작/정지 버튼을 눌러주세요.</string>
     <string name="tts_bp170b_connected_message">혈압계가 연결되었습니다. 측정을 시작할 준비가 되었습니다.</string>
     <string name="tts_bp170b_connection_failed">혈압계 연결에 실패하였습니다. 다시 시도해 주세요.</string>
@@ -1027,6 +1030,9 @@
     <string name="sawi_result_general_disclaimer">내눈 앱의 모든 눈 검사는 자가 검사로 의학적 소견이 아니기에 정확한 판단과 진단은 병원을 방문하여 의사와 상담하시길 바랍니다. 내 눈의 상태와 주변 환경 또는 기기에 따라 검사 결과가 달라질 수 있습니다.</string>
     <string name="sawi_result_print_button">결과 프린트하기</string>
     <string name="sawi_result_back_to_main_button">메인 메뉴로 돌아가기</string>
+    <string name="fudo_result_right_eye_larger_format">오른쪽 눈의 망막상 크기가 %.1f%% 더 큽니다.</string>
+    <string name="fudo_result_left_eye_larger_format">왼쪽 눈의 망막상 크기가 %.1f%% 더 큽니다.</string>
+    <string name="printing_in_progress">결과를 프린트하고 있습니다.</string>
     <string name="sawi_result_normal_range_vertical">(0 ~ 0.5△)</string>
     <string name="sawi_result_normal">정상</string>
 
@@ -1038,4 +1044,68 @@
     <string name="tts_sawi_adjustment">화면에 보이는 십자가를 원의 중심에 오도록 옮겨주세요.</string>
     <string name="tts_fudo_adjustment">양쪽 반원의 크기를 같게 조절한 후, 크기가 같아지면 다음을 눌러주세요.</string>
     <string name="tts_result_screen">검사가 완료되었습니다. 결과 프린트하기 버튼을 눌러 결과를 인쇄 해주세요.</string>
+
+    <!-- TTS -->
+    <string name="one">일</string>
+    <string name="two">이</string>
+    <string name="three">삼</string>
+    <string name="four">사</string>
+    <string name="five">오</string>
+    <string name="six">육</string>
+    <string name="seven">칠</string>
+    <string name="eight">팔</string>
+    <string name="nine">구</string>
+
+    <!-- 변형 표현 -->
+    <string name="two_alt">둘</string>
+    <string name="three_alt">셋</string>
+    <string name="four_alt">넷</string>
+    <string name="five_alt">다섯</string>
+    <string name="six_alt">여섯</string>
+    <string name="seven_alt">일곱</string>
+
+    <!-- "Don't know" phrases -->
+    <string name="dont_know_1">모르겠</string>
+    <string name="dont_know_2">모름</string>
+    <string name="dont_know_3">몰라</string>
+    <string name="dont_know_4">안보여</string>
+    <string name="dont_know_5">안 보여</string>
+    <string name="dont_know_6">안보임</string>
+    <string name="dont_know_7">안 보임</string>
+    <string name="dont_know_8">안보입니다</string>
+    <string name="dont_know_9">안 보입니다</string>
+    <string name="dont_know_10">안보인다</string>
+    <string name="dont_know_11">안 보인다</string>
+
+    <!-- 관리자 대시보드 -->
+    <string name="admin_dashboard">관리자 대시보드</string>
+    <string name="admin_ad_management">광고 관리</string>
+    <string name="admin_password_management">비밀번호 관리</string>
+    <string name="admin_exit">관리자 나가기</string>
+    <string name="admin_exit_confirm_title">관리자 나가기</string>
+    <string name="admin_exit_confirm_message">정말 나가시겠습니까?</string>
+    <string name="admin_confirm">확인</string>
+    <string name="admin_cancel">취소</string>
+    <string name="admin_ad_image_management">광고 이미지 관리</string>
+    <string name="admin_ad_image_description">광고에 사용할 이미지를 관리하고 선택하세요</string>
+    <string name="admin_select_ad_location">광고 위치를 선택해주세요</string>
+    <string name="admin_test_list_screen">검사리스트 화면</string>
+    <string name="admin_test_list_subtitle">혈압, 눈, 사시 등</string>
+    <string name="admin_badge_image">이미지</string>
+    <string name="admin_screensaver">스크린세이버</string>
+    <string name="admin_screensaver_subtitle">터치하세요 화면</string>
+    <string name="admin_badge_video">동영상</string>
+    <string name="admin_ad_location_preview">광고 표시영역</string>
+    <string name="admin_ad_image_list">광고 이미지 목록</string>
+    <string name="admin_add">추가</string>
+    <string name="admin_delete">삭제</string>
+    <string name="admin_reorder">순서 변경</string>
+    <string name="admin_password">관리자 비밀번호</string>
+    <string name="admin_password_description">관리자 비밀번호를 변경할 수 있습니다</string>
+    <string name="admin_password_coming_soon">비밀번호 관리 화면 (구현 예정)</string>
+
+    <!-- 블루투스 기기 관리 -->
+    <string name="change_default_blood_pressure_monitor">기본 혈압계 변경</string>
+    <string name="default_blood_pressure_monitor">기본</string>
+
 </resources>

@@ -10,6 +10,7 @@ android {
     namespace 'com.pixelro.nenoonkiosk'
     compileSdk 36
 
+
     defaultConfig {
         applicationId "com.pixelro.nenoonkiosk"
         minSdk 26
@@ -21,12 +22,25 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        // local.properties에서 관리자 비밀번호 가져오기
+        Properties localProperties = new Properties()
+        def localPropertiesFile = rootProject.file('local.properties')
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.withInputStream { localProperties.load(it) }
+        }
+        def adminPassword = localProperties.getProperty('admin.password') ?: '0000'
+        buildConfigField "String", "DEFAULT_ADMIN_PASSWORD", "\"${adminPassword}\""
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
         }
     }
     compileOptions {
@@ -36,9 +50,17 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+
+    // 다국어
+    androidResources {
+        generateLocaleConfig = true
+    }
+    
     buildFeatures {
         compose true
+        buildConfig true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.13"
     }
@@ -63,6 +85,8 @@ dependencies {
     implementation("androidx.test:core-ktx:1.7.0")
     implementation 'com.android.identity:identity-doctypes-jvm:202411.1'
     implementation 'androidx.compose.material3:material3'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
@@ -74,8 +98,9 @@ dependencies {
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
 
-    // Navigation
-    implementation("androidx.navigation:navigation-compose:2.9.5")
+    // Navigation3
+    implementation("androidx.navigation3:navigation3-runtime:1.0.0-alpha04")
+    implementation("androidx.navigation3:navigation3-ui:1.0.0-alpha04")
 
     // Animated Navigation
     implementation("com.google.accompanist:accompanist-navigation-animation:0.32.0")
@@ -108,6 +133,10 @@ dependencies {
     // glide
     implementation("com.github.bumptech.glide:compose:1.0.0-alpha.1")
 
+    // Coil for AsyncImage
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("io.coil-kt:coil-video:2.7.0") // 동영상 썸네일 자동 추출
+
     // material3
     implementation("androidx.compose.material3:material3")
 
@@ -129,6 +158,9 @@ dependencies {
 
     // location
     implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // Security - EncryptedSharedPreferences (Keystore + AES-256-GCM)
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // MPAndroidChart
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
@@ -155,9 +187,26 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:0.12.0")
 
     // Hilt
-    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel-compose:1.3.0")
     implementation("com.google.dagger:hilt-android:2.56.2")
     kapt("com.google.dagger:hilt-android-compiler:2.56.2")
+
+    // Orbit MVI
+    implementation("org.orbit-mvi:orbit-core:10.0.0")
+    implementation("org.orbit-mvi:orbit-viewmodel:10.0.0")
+    implementation("org.orbit-mvi:orbit-compose:10.0.0")
+    testImplementation("org.orbit-mvi:orbit-test:10.0.0")
+
+    implementation("androidx.appcompat:appcompat:1.6.1")
+
+    implementation("androidx.compose.material:material-icons-core:1.5.4")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4") // 확장 아이콘
+
+    // --- Room ---
+//    implementation("androidx.room:room-runtime:2.6.1")
+//    implementation("androidx.room:room-ktx:2.6.1")
+//    kapt("androidx.room:room-compiler:2.6.1")
+//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
 }
 
 kapt {

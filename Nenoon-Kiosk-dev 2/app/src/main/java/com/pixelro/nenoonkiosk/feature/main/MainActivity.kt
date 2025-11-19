@@ -15,14 +15,18 @@ import android.util.SizeF
 import android.view.MotionEvent
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,6 +38,8 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -56,25 +62,31 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.pixelro.nenoonkiosk.core.receiver.NenoonDeviceAdminReceiver
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
-import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
 import com.pixelro.nenoonkiosk.core.constants.DebugConstants
-import com.pixelro.nenoonkiosk.core.constants.NavConstants
 import com.pixelro.nenoonkiosk.core.constants.GlobalValue
+import com.pixelro.nenoonkiosk.core.constants.NavConstants
+import com.pixelro.nenoonkiosk.core.manager.LicenseManager
+import com.pixelro.nenoonkiosk.core.manager.PrinterManager
 import com.pixelro.nenoonkiosk.core.manager.SharedPreferencesManager
+import com.pixelro.nenoonkiosk.core.receiver.NenoonDeviceAdminReceiver
+import com.pixelro.nenoonkiosk.feature.license.LicenseRoute
+import javax.inject.Inject
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.ui.theme.NenoonKioskTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     val viewModel: NenoonViewModel by lazy {
         ViewModelProvider(this)[NenoonViewModel::class.java]
     }
+
+    @Inject
+    lateinit var licenseManager: LicenseManager
 
     private lateinit var dpm: DevicePolicyManager
     private lateinit var adminComponentName: ComponentName
@@ -146,11 +158,13 @@ class MainActivity : ComponentActivity() {
 
     private fun checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                this, Manifest.permission.ACCESS_FINE_LOCATION,
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
+                LOCATION_PERMISSION_REQUEST_CODE,
             )
         }
     }
@@ -168,19 +182,17 @@ class MainActivity : ComponentActivity() {
         }
 
         checkLocationPermission()
-        val locale = SharedPreferencesManager.getString("language")
 
-        if (locale.isBlank()) {
-            TTS.initTTS("en")
-            viewModel.updateLanguage("en")
+        // SettingsScreen에서 설정한 언어를 AppCompatDelegate로부터 가져오기
+        val appLocale = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales()
+        val locale = if (appLocale.isEmpty) {
+            "ko-KR"
         } else {
-            TTS.initTTS(locale)
-            viewModel.updateLanguage(locale)
+            appLocale[0]?.toLanguageTag() ?: "ko-KR"
         }
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
+
+        // TTS 초기화 (initTTS에서 이미 언어 설정함)
+        TTS.initTTS(locale)
 
         val statusBarResourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
         GlobalValue.statusBarPadding = resources.getDimension(statusBarResourceId)
@@ -196,50 +208,116 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             NenoonKioskTheme {
-                val systemUiController = rememberSystemUiController()
-                systemUiController.setStatusBarColor(
-                    color = Color(0x00000000)
-                )
-                systemUiController.isNavigationBarVisible = false
-                val context = LocalContext.current
-                val configuration = LocalConfiguration.current
-                LaunchedEffect(true) {
-                    val cameraManager =
-                        context.getSystemService(CAMERA_SERVICE) as CameraManager
-                    val cameraCharacteristics =
-                        (context.getSystemService(CAMERA_SERVICE) as CameraManager).getCameraCharacteristics(
-                            cameraManager.cameraIdList[if (DebugConstants.EMULATOR_MODE) 0 else 1]
-                        )
-                    viewModel.updateLocalConfigurationValues(
-                        pixelDensity = context.resources.displayMetrics.density,
-                        screenWidthDp = configuration.screenWidthDp,
-                        screenHeightDp = configuration.screenHeightDp,
-                        focalLength = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
-                            ?.get(0) ?: 0f,
-                        lensSize = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)
-                            ?: SizeF(0f, 0f)
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = colorScheme.background
+                ) {
+                    val systemUiController = rememberSystemUiController()
+                    systemUiController.setStatusBarColor(
+                        color = Color(0x00000000),
                     )
-                }
-                val sharedPreferences = getSharedPreferences(NavConstants.PREFERENCE_NAME,
-                    MODE_PRIVATE
-                )
+                    systemUiController.isNavigationBarVisible = false
+                    val context = LocalContext.current
+                    val configuration = LocalConfiguration.current
 
-                NenoonApp()
+                    // 카메라 초기화 (안전하게 수정)
+                    LaunchedEffect(true) {
+                        val cameraManager = context.getSystemService(CAMERA_SERVICE) as CameraManager
 
-                if (showPasswordDialog) {
-                    PasswordDialog(
-                        onDismiss = { showPasswordDialog = false },
-                        onPasswordEntered = { password ->
-                            if (password == ADMIN_PASSWORD) {
-                                Toast.makeText(context, "Password correct! Shutting down application...", Toast.LENGTH_SHORT).show()
-                                showPasswordDialog = false
-
-                                Process.killProcess(Process.myPid())
+                        try {
+                            // 전면/후면 카메라 찾기
+                            val targetFacing = if (DebugConstants.EMULATOR_MODE) {
+                                CameraCharacteristics.LENS_FACING_BACK
                             } else {
-                                Toast.makeText(context, "Incorrect password", Toast.LENGTH_SHORT).show()
+                                CameraCharacteristics.LENS_FACING_FRONT
                             }
+
+                            val cameraId = cameraManager.cameraIdList.firstOrNull { id ->
+                                val characteristics = cameraManager.getCameraCharacteristics(id)
+                                characteristics.get(CameraCharacteristics.LENS_FACING) == targetFacing
+                            } ?: cameraManager.cameraIdList.firstOrNull()
+
+                            if (cameraId != null) {
+                                val cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId)
+                                viewModel.updateLocalConfigurationValues(
+                                    pixelDensity = context.resources.displayMetrics.density,
+                                    screenWidthDp = configuration.screenWidthDp,
+                                    screenHeightDp = configuration.screenHeightDp,
+                                    focalLength = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
+                                        ?.getOrNull(0) ?: 0f,
+                                    lensSize = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)
+                                        ?: SizeF(0f, 0f),
+                                )
+                            } else {
+                                Log.w("MainActivity", "No camera found, using default values")
+                                viewModel.updateLocalConfigurationValues(
+                                    pixelDensity = context.resources.displayMetrics.density,
+                                    screenWidthDp = configuration.screenWidthDp,
+                                    screenHeightDp = configuration.screenHeightDp,
+                                    focalLength = 0f,
+                                    lensSize = SizeF(0f, 0f),
+                                )
+                            }
+                        } catch (e: Exception) {
+                            Log.e("MainActivity", "Camera initialization error: ${e.message}", e)
+                            // 기본값 설정
+                            viewModel.updateLocalConfigurationValues(
+                                pixelDensity = context.resources.displayMetrics.density,
+                                screenWidthDp = configuration.screenWidthDp,
+                                screenHeightDp = configuration.screenHeightDp,
+                                focalLength = 0f,
+                                lensSize = SizeF(0f, 0f),
+                            )
                         }
-                    )
+                    }
+
+                    val sharedPreferences =
+                        getSharedPreferences(
+                            NavConstants.PREFERENCE_NAME,
+                            MODE_PRIVATE,
+                        )
+
+                    // 라이선스 검증 (앱 복제 방지)
+                    var isLicenseValid by remember { mutableStateOf(licenseManager.isLicenseValid()) }
+
+                    // Device ID 불일치 Toast (앱 복제 감지)
+                    LaunchedEffect(Unit) {
+                        if (!isLicenseValid && licenseManager.wasDeviceCloned()) {
+                            Toast.makeText(
+                                context,
+                                "다른 기기에서 실행되었습니다. 인증키를 다시 입력해주세요.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+
+                    if (!isLicenseValid) {
+                        // 라이선스 미인증 시 인증 화면 표시
+                        LicenseRoute(
+                            onLicenseActivated = {
+                                isLicenseValid = true
+                            }
+                        )
+                    } else {
+                        // 라이선스 인증 완료 시 메인 앱 실행
+                        nenoonApp()
+                    }
+
+                    if (showPasswordDialog) {
+                        PasswordDialog(
+                            onDismiss = { showPasswordDialog = false },
+                            onPasswordEntered = { password ->
+                                if (password == ADMIN_PASSWORD) {
+                                    Toast.makeText(context, "Password correct! Shutting down application...", Toast.LENGTH_SHORT).show()
+                                    showPasswordDialog = false
+
+                                    Process.killProcess(Process.myPid())
+                                } else {
+                                    Toast.makeText(context, "Incorrect password", Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -253,22 +331,24 @@ class MainActivity : ComponentActivity() {
             }
             else -> {
                 requestPermissionsLauncher.launch(
-                    arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)
+                    arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT),
                 )
             }
         }
     }
 
-    private val requestPermissionsLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        if (permissions[Manifest.permission.BLUETOOTH_SCAN] == true &&
-            permissions[Manifest.permission.BLUETOOTH_CONNECT] == true) {
-            PrinterManager.startBluetoothScan(this)
-        } else {
-            Log.e("MainActivity", "Bluetooth permissions were denied.")
+    private val requestPermissionsLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions(),
+        ) { permissions ->
+            if (permissions[Manifest.permission.BLUETOOTH_SCAN] == true &&
+                permissions[Manifest.permission.BLUETOOTH_CONNECT] == true
+            ) {
+                PrinterManager.startBluetoothScan(this)
+            } else {
+                Log.e("MainActivity", "Bluetooth permissions were denied.")
+            }
         }
-    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onPause() {
@@ -291,7 +371,6 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         TTS.tts.stop()
         TTS.destroyTTS()
-        viewModel.exoPlayer.release()
         PrinterManager.disconnectPrinter()
         super.onDestroy()
     }
@@ -303,15 +382,16 @@ class MainActivity : ComponentActivity() {
             return
         }
 
-        val features = if (enable) {
-            DevicePolicyManager.LOCK_TASK_FEATURE_NONE
-        } else {
-            DevicePolicyManager.LOCK_TASK_FEATURE_HOME or
-                    DevicePolicyManager.LOCK_TASK_FEATURE_OVERVIEW or
-                    DevicePolicyManager.LOCK_TASK_FEATURE_NOTIFICATIONS or
-                    DevicePolicyManager.LOCK_TASK_FEATURE_SYSTEM_INFO or
-                    DevicePolicyManager.LOCK_TASK_FEATURE_GLOBAL_ACTIONS
-        }
+        val features =
+            if (enable) {
+                DevicePolicyManager.LOCK_TASK_FEATURE_NONE
+            } else {
+                DevicePolicyManager.LOCK_TASK_FEATURE_HOME or
+                        DevicePolicyManager.LOCK_TASK_FEATURE_OVERVIEW or
+                        DevicePolicyManager.LOCK_TASK_FEATURE_NOTIFICATIONS or
+                        DevicePolicyManager.LOCK_TASK_FEATURE_SYSTEM_INFO or
+                        DevicePolicyManager.LOCK_TASK_FEATURE_GLOBAL_ACTIONS
+            }
         dpm.setLockTaskFeatures(adminComponentName, features)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -326,10 +406,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun PasswordDialog(
     onDismiss: () -> Unit,
-    onPasswordEntered: (String) -> Unit
+    onPasswordEntered: (String) -> Unit,
 ) {
     var passwordInput by remember { mutableStateOf("") }
-    val context = LocalContext.current // Context is not used in this specific composable, but useful if you need Toast here
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -341,57 +420,68 @@ fun PasswordDialog(
                 OutlinedTextField(
                     value = passwordInput,
                     onValueChange = { passwordInput = it },
-                    label = { Text(StringProvider.getString(
-                        R.string.password)) },
+                    label = {
+                        Text(
+                            StringProvider.getString(
+                                R.string.password,
+                            ),
+                        )
+                    },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     singleLine = true,
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = colorResource(R.color.main),
-                        focusedLabelColor = colorResource(R.color.main),
-                        cursorColor = colorResource(R.color.main),
-                        backgroundColor = Color.White,
-                    ),
-                    modifier = Modifier.fillMaxWidth()
+                    colors =
+                        TextFieldDefaults.textFieldColors(
+                            focusedIndicatorColor = colorResource(R.color.main),
+                            focusedLabelColor = colorResource(R.color.main),
+                            cursorColor = colorResource(R.color.main),
+                            backgroundColor = Color.White,
+                        ),
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
         buttons = {
             Row(
-                modifier = Modifier
-                    .padding(24.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier =
+                    Modifier
+                        .padding(24.dp)
+                        .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Button(
                     onClick = {
                         onPasswordEntered(passwordInput)
                         passwordInput = ""
                     },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(R.color.error),
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(60.dp)
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(R.color.error),
+                            contentColor = Color.White,
+                        ),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(60.dp),
                 ) {
-                    Text(StringProvider.getString(R.string.enter, ))
+                    Text(StringProvider.getString(R.string.enter))
                 }
                 Spacer(modifier = Modifier.width(24.dp))
                 Button(
                     onClick = onDismiss,
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(R.color.gray1),
-                    ),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(60.dp)
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(R.color.gray1),
+                        ),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(60.dp),
                 ) {
-                    Text(StringProvider.getString(R.string.cancel, ))
+                    Text(StringProvider.getString(R.string.cancel))
                 }
             }
         },
-        properties = DialogProperties(dismissOnClickOutside = false)
+        properties = DialogProperties(dismissOnClickOutside = false),
     )
 }

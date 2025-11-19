@@ -4,7 +4,10 @@ import android.graphics.Bitmap
 import android.util.Base64
 import java.io.ByteArrayOutputStream
 
-fun bitmapToBase64(bitmap: Bitmap?, quality: Int = 100): String? {
+fun bitmapToBase64(
+    bitmap: Bitmap?,
+    quality: Int = 100,
+): String? {
     if (bitmap == null) return null
     val byteArrayOutputStream = ByteArrayOutputStream()
     bitmap.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream)

@@ -8,7 +8,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.pixelro.nenoonkiosk.R
 
-
 val defaultFont =
     FontFamily(
         Font(R.font.koddi_regular, FontWeight.Normal),
@@ -45,7 +44,7 @@ val buttonTextStyle =
     TextStyle(
         fontFamily = defaultFont,
         fontWeight = FontWeight.Bold,
-        fontSize = 38.sp,
+        fontSize = 34.sp,
         letterSpacing = 0.5.sp,
     )
 
@@ -61,7 +60,7 @@ val topBackButtonTextStyle =
     TextStyle(
         fontFamily = defaultFont,
         fontWeight = FontWeight.Normal,
-        fontSize = 36.sp,
+        fontSize = 28.sp,
         letterSpacing = 0.5.sp,
     )
 
@@ -103,5 +102,3 @@ val Typography =
                 letterSpacing = 0.5.sp,
             ),
     )
-
-
