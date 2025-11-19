@@ -58,33 +58,33 @@
 
 > **시력 검사**
 
-![스크린샷](/ScreenShot/시력검사.png) 
+![스크린샷](./Screenshot/시력검사.png) 
 
 > **근거리 시력 검사** 
 
-![스크린샷](/ScreenShot/근거리시력검사.png)  
+![스크린샷](./Screenshot/근거리시력검사.png)  
 
 > **원거리 시력 검사** 
 
-![스크린샷](/ScreenShot/원거리시력검사.png)
+![스크린샷](./Screenshot/원거리시력검사.png)
 
 > **근거리 검사 결과 확인** 
 
-![스크린샷](/ScreenShot/근거리시력검사결과.png)  
+![스크린샷](./Screenshot/근거리시력검사결과.png)  
 
 > **원거리 검사 결과 확인**
 
-![스크린샷](/ScreenShot/원거리시력검사결과.png) 
+![스크린샷](./Screenshot/원거리시력검사결과.png) 
 
 ## Web Front
 
 > **관리자 대시보드**
 
-   ![스크린샷](/ScreenShot/관리자대시보드.png) 
+   ![스크린샷](./Screenshot/관리자대시보드.png) 
 
 > **관리자 대시보드 진입**
 
- ![스크린샷](/ScreenShot/관리자대시보드진입.png) 
+ ![스크린샷](./Screenshot/관리자대시보드진입.png) 
 
 ## ⚙️ 기술 스택
 
