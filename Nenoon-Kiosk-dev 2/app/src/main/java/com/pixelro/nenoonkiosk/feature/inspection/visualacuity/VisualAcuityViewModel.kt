@@ -5,8 +5,12 @@ import android.speech.tts.TextToSpeech
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pixelro.nenoonkiosk.R
-import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
+import com.pixelro.nenoonkiosk.core.util.STT
+import com.pixelro.nenoonkiosk.core.util.stt.SttConfig
+import com.pixelro.nenoonkiosk.feature.inspection.visualacuity.result.VisualAcuityInspectionResult
+import com.pixelro.nenoonkiosk.feature.inspection.InspectionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,12 +18,21 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import android.util.Log
+
+enum class VisualAcuitySttState {
+    Inactive,
+    ShortDigit,
+    LongDigit,
+}
 
 @HiltViewModel
-class VisualAcuityViewModel @Inject constructor(
-    application: Application
+class VisualAcuityViewModel
+@Inject
+constructor(
+    application: Application,
 ) : AndroidViewModel(application) {
-
+    private var inspectionType: InspectionType = InspectionType.ShortDistanceVisualAcuity
     private val _isMeasuringDistanceContentVisible = MutableStateFlow(true)
     val isMeasuringDistanceContentVisible: StateFlow<Boolean> = _isMeasuringDistanceContentVisible
     private val _isCoveredEyeCheckingContentVisible = MutableStateFlow(false)
@@ -32,38 +45,104 @@ class VisualAcuityViewModel @Inject constructor(
     val isLeftEye: StateFlow<Boolean> = _isLeftEye
     private var leftEyeSightValue = 1
     private var rightEyeSightValue = 1
-    private var _randomList = MutableStateFlow(mutableListOf(0))
-    val randomList: StateFlow<MutableList<Int>> = _randomList
+    private val _randomList = MutableStateFlow<List<Int>>(listOf(0))
+    val randomList: StateFlow<List<Int>> = _randomList
     private var _ansNum = MutableStateFlow(0)
     val ansNum: StateFlow<Int> = _ansNum
+    private val _sttState = MutableStateFlow(VisualAcuitySttState.Inactive)
+    val sttState: StateFlow<VisualAcuitySttState> = _sttState
+    private val _sttSessionActive = MutableStateFlow(false)
+    val sttSessionActive: StateFlow<Boolean> = _sttSessionActive
+    private val _sttHadSpeech = MutableStateFlow(false)
+    val sttHadSpeech: StateFlow<Boolean> = _sttHadSpeech
     private var wrongCount = 0f
 
     fun updateIsMeasuringDistanceContentVisible(visible: Boolean) {
         _isMeasuringDistanceContentVisible.update { visible }
+        if (visible) {
+            _sttState.update { VisualAcuitySttState.Inactive }
+            _sttSessionActive.update { false }
+            _sttHadSpeech.update { false }
+            STT.stopContinuousListening()
+        }
     }
 
     fun updateIsVisualAcuityContentVisible(visible: Boolean) {
         _isVisualAcuityContentVisible.update { visible }
+        val targetState =
+            when (inspectionType) {
+                InspectionType.LongDistanceVisualAcuity -> VisualAcuitySttState.LongDigit
+                else -> VisualAcuitySttState.ShortDigit
+            }
+        _sttState.update { if (visible) targetState else VisualAcuitySttState.Inactive }
+        if (!visible) {
+            STT.stopContinuousListening()
+        }
     }
 
-    private var sightHistory = mutableMapOf(
-        1 to Pair(0, 0),
-        2 to Pair(0, 0),
-        3 to Pair(0, 0),
-        4 to Pair(0, 0),
-        5 to Pair(0, 0),
-        6 to Pair(0, 0),
-        7 to Pair(0, 0),
-        8 to Pair(0, 0),
-        9 to Pair(0, 0),
-        10 to Pair(0, 0)
-    )
+    fun onSttSessionStateChanged(active: Boolean, hadSpeech: Boolean) {
+        _sttSessionActive.update { active }
+        _sttHadSpeech.update { hadSpeech }
+    }
+
+    fun startVoiceRecognition(onResult: (String) -> Unit) {
+        if (_sttSessionActive.value) return
+        if (_sttState.value != VisualAcuitySttState.ShortDigit &&
+            _sttState.value != VisualAcuitySttState.LongDigit
+        ) {
+            return
+        }
+
+        STT.setStateObserver { active, hadSpeech ->
+            onSttSessionStateChanged(active, hadSpeech)
+        }
+        
+        _sttHadSpeech.update { false }
+        STT.enableVisualAcuityNumberHints(boost = 180)
+
+        STT.startContinuousListening(
+            language = "ko-KR",
+            onResult = { result ->
+                _sttHadSpeech.update { true }
+                onResult(result)
+            },
+            onError = { _ ->
+            },
+            onReady = {
+                Log.d("VisualAcuityVM", "STT onReady callback invoked")
+            },
+            restartDelayOnResultMs = SttConfig.Recognition.AUTO_RESTART_DELAY_MS,
+            restartDelayOnErrorMs = SttConfig.Recognition.AUTO_RESTART_DELAY_MS + 250L,
+            shortUtterance = true,
+            autoStopTimeoutMs = SttConfig.Recognition.DEFAULT_AUTO_STOP_TIMEOUT_MS,
+        )
+    }
+
+    fun cancelVoiceRecognition() {
+        STT.stopContinuousListening()
+        // setStateObserver가 상태를 업데이트하므로 여기서는 업데이트하지 않음
+    }
+
+    private var sightHistory =
+        mutableMapOf(
+            1 to Pair(0, 0),
+            2 to Pair(0, 0),
+            3 to Pair(0, 0),
+            4 to Pair(0, 0),
+            5 to Pair(0, 0),
+            6 to Pair(0, 0),
+            7 to Pair(0, 0),
+            8 to Pair(0, 0),
+            9 to Pair(0, 0),
+            10 to Pair(0, 0),
+        )
 
     fun processAnswerSelected(
         idx: Int,
         handleWrong: (Float) -> Unit,
-        toResultScreen: () -> Unit
+        toResultScreen: () -> Unit,
     ) {
+        Log.d("VisualAcuityVM", "processAnswerSelected idx=$idx, ansNum=${ansNum.value}, randomList=${randomList.value}")
         var isEnd = false
         /**
          * choose number
@@ -73,10 +152,11 @@ class VisualAcuityViewModel @Inject constructor(
              * if correct
              */
             if (ansNum.value == _randomList.value[idx]) {
-                sightHistory[_sightLevel.value] = Pair(
-                    sightHistory[_sightLevel.value]!!.first + 1,
-                    sightHistory[_sightLevel.value]!!.second
-                )
+                sightHistory[_sightLevel.value] =
+                    Pair(
+                        sightHistory[_sightLevel.value]!!.first + 1,
+                        sightHistory[_sightLevel.value]!!.second,
+                    )
                 /**
                  * if first trial
                  */
@@ -91,7 +171,7 @@ class VisualAcuityViewModel @Inject constructor(
                             isEnd = true
                             moveToNextStep(
                                 handleWrong,
-                                toResultScreen
+                                toResultScreen,
                             )
                         }
                     } else {
@@ -105,10 +185,11 @@ class VisualAcuityViewModel @Inject constructor(
             else {
                 wrongCount++
                 handleWrong(wrongCount / (wrongCount + 1f))
-                sightHistory[_sightLevel.value] = Pair(
-                    sightHistory[_sightLevel.value]!!.first,
-                    sightHistory[_sightLevel.value]!!.second + 1
-                )
+                sightHistory[_sightLevel.value] =
+                    Pair(
+                        sightHistory[_sightLevel.value]!!.first,
+                        sightHistory[_sightLevel.value]!!.second + 1,
+                    )
             }
         }
         /**
@@ -117,10 +198,11 @@ class VisualAcuityViewModel @Inject constructor(
         else {
             wrongCount++
             handleWrong(wrongCount / (wrongCount + 1f))
-            sightHistory[_sightLevel.value] = Pair(
-                sightHistory[_sightLevel.value]!!.first,
-                sightHistory[_sightLevel.value]!!.second + 1
-            )
+            sightHistory[_sightLevel.value] =
+                Pair(
+                    sightHistory[_sightLevel.value]!!.first,
+                    sightHistory[_sightLevel.value]!!.second + 1,
+                )
         }
         /**
          * if 3rd trial
@@ -140,7 +222,7 @@ class VisualAcuityViewModel @Inject constructor(
                         isEnd = true
                         moveToNextStep(
                             handleWrong,
-                            toResultScreen
+                            toResultScreen,
                         )
                     }
                 } else {
@@ -155,9 +237,10 @@ class VisualAcuityViewModel @Inject constructor(
                     handleWrong(1.2f)
                     delay(500)
                     isEnd = true
+                    Log.d("VisualAcuityVM", "moveToNextStep triggered (wrong)")
                     moveToNextStep(
                         handleWrong,
-                        toResultScreen
+                        toResultScreen,
                     )
                 }
             }
@@ -165,8 +248,8 @@ class VisualAcuityViewModel @Inject constructor(
         if (!isEnd) updateRandomList()
     }
 
-    fun getVisualAcuityTestResult(): VisualAcuityTestResult {
-        return VisualAcuityTestResult(
+    fun getVisualAcuityInspectionResult(): VisualAcuityInspectionResult {
+        return VisualAcuityInspectionResult(
             leftEyeSightValue,
             rightEyeSightValue,
         )
@@ -174,65 +257,82 @@ class VisualAcuityViewModel @Inject constructor(
 
     private fun moveToNextStep(
         handleWrong: (Float) -> Unit,
-        toResultScreen: () -> Unit
+        toResultScreen: () -> Unit,
     ) {
+        Log.d("VisualAcuityVM", "moveToNextStep leftEye=${_isLeftEye.value}")
         wrongCount = 0f
         handleWrong(0.1f)
         if (_isLeftEye.value) {
-            sightHistory = mutableMapOf(
-                1 to Pair(0, 0),
-                2 to Pair(0, 0),
-                3 to Pair(0, 0),
-                4 to Pair(0, 0),
-                5 to Pair(0, 0),
-                6 to Pair(0, 0),
-                7 to Pair(0, 0),
-                8 to Pair(0, 0),
-                9 to Pair(0, 0),
-                10 to Pair(0, 0)
-            )
+            sightHistory =
+                mutableMapOf(
+                    1 to Pair(0, 0),
+                    2 to Pair(0, 0),
+                    3 to Pair(0, 0),
+                    4 to Pair(0, 0),
+                    5 to Pair(0, 0),
+                    6 to Pair(0, 0),
+                    7 to Pair(0, 0),
+                    8 to Pair(0, 0),
+                    9 to Pair(0, 0),
+                    10 to Pair(0, 0),
+                )
             leftEyeSightValue = _sightLevel.value
+            _isMeasuringDistanceContentVisible.update { true }
+            _isVisualAcuityContentVisible.update { false }
+            _sttState.update { VisualAcuitySttState.Inactive }
+            STT.stopContinuousListening()
+            STT.setStateObserver { active, hadSpeech ->
+                onSttSessionStateChanged(active, hadSpeech)
+            }
+            _isLeftEye.update { false }
         } else {
             rightEyeSightValue = _sightLevel.value
+            STT.stopContinuousListening()
+            STT.setStateObserver { active, hadSpeech ->
+                onSttSessionStateChanged(active, hadSpeech)
+            }
+            _isVisualAcuityContentVisible.update { false }
+            toResultScreen()
+            return
         }
         viewModelScope.launch {
             delay(450)
             _sightLevel.update { 1 }
         }
-        _isVisualAcuityContentVisible.update { false }
-        if (!_isLeftEye.value) {
-            TTS.speechTTS(StringProvider.getString(R.string.tts_end, ), TextToSpeech.QUEUE_ADD)
-            toResultScreen()
-        } else {
-            TTS.speechTTS(StringProvider.getString(
-                R.string.tts_right_align), TextToSpeech.QUEUE_ADD)
-            _isMeasuringDistanceContentVisible.update { true }
-            _isLeftEye.update { false }
-        }
     }
 
     private fun updateRandomList() {
-        _randomList.update { mutableListOf() }
-//        var ranNum = (2..11).random()
-        var ranNum = (2..7).random()
-        for (i in 1..3) {
-            while (ranNum in randomList.value) {
-//                ranNum = (2..11).random()
-                ranNum = (2..7).random()
+        val previous = _randomList.value
+        var attempts = 0
+        var candidates: List<Int>
+        do {
+            candidates =
+                buildList {
+                    val used = mutableSetOf<Int>()
+                    repeat(3) {
+                        var value: Int
+                        do {
+                            value = (2..7).random()
+                        } while (!used.add(value))
+                        add(value)
+                    }
+                }
+            attempts++
+        } while (candidates == previous && attempts < 10)
+        _randomList.value = candidates
+
+        val prevNum = _ansNum.value
+        var newNum = candidates.random()
+        if (candidates.size > 1) {
+            val iterator = candidates.iterator()
+            while (newNum == prevNum && iterator.hasNext()) {
+                newNum = iterator.next()
             }
-            _randomList.update {
-                it.add(ranNum)
-                it
+            if (newNum == prevNum) {
+                newNum = candidates.first()
             }
         }
-        val prevNum = ansNum.value
-        _ansNum.update {
-            var newNum = randomList.value[(0..2).random()]
-            while (prevNum == newNum) {
-                newNum = randomList.value[(0..2).random()]
-            }
-            newNum
-        }
+        _ansNum.value = newNum
     }
 
     fun init() {
@@ -242,20 +342,43 @@ class VisualAcuityViewModel @Inject constructor(
         updateRandomList()
         leftEyeSightValue = 1
         rightEyeSightValue = 1
-        sightHistory = mutableMapOf(
-            1 to Pair(0, 0),
-            2 to Pair(0, 0),
-            3 to Pair(0, 0),
-            4 to Pair(0, 0),
-            5 to Pair(0, 0),
-            6 to Pair(0, 0),
-            7 to Pair(0, 0),
-            8 to Pair(0, 0),
-            9 to Pair(0, 0),
-            10 to Pair(0, 0)
-        )
+        sightHistory =
+            mutableMapOf(
+                1 to Pair(0, 0),
+                2 to Pair(0, 0),
+                3 to Pair(0, 0),
+                4 to Pair(0, 0),
+                5 to Pair(0, 0),
+                6 to Pair(0, 0),
+                7 to Pair(0, 0),
+                8 to Pair(0, 0),
+                9 to Pair(0, 0),
+                10 to Pair(0, 0),
+            )
         _isMeasuringDistanceContentVisible.update { true }
         _isCoveredEyeCheckingContentVisible.update { false }
         _isVisualAcuityContentVisible.update { false }
+        _sttState.update { VisualAcuitySttState.Inactive }
+        STT.stopContinuousListening()
+        STT.setStateObserver { active, hadSpeech ->
+            onSttSessionStateChanged(active, hadSpeech)
+        }
+    }
+
+    fun setInspectionType(type: InspectionType) {
+        inspectionType = type
+        if (_isVisualAcuityContentVisible.value) {
+            val targetState =
+                when (inspectionType) {
+                    InspectionType.LongDistanceVisualAcuity -> VisualAcuitySttState.LongDigit
+                    else -> VisualAcuitySttState.ShortDigit
+                }
+            _sttState.update { targetState }
+        }
+    }
+
+    override fun onCleared() {
+        STT.setStateObserver(null)
+        super.onCleared()
     }
 }

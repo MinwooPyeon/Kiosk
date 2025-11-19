@@ -1,0 +1,242 @@
+package com.harang.data.util
+
+import android.content.Context
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.provider.MediaStore
+import android.provider.OpenableColumns
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class FileManager @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
+
+    /**
+     * Bitmap 이미지를 앱 내부 저장소에 저장하고 파일 경로를 반환합니다.
+     * @param bitmap 저장할 이미지의 Bitmap 객체
+     * @param childPath 저장할 하위 폴더 이름 (예: "ad_images")
+     * @param fileName 저장할 파일 이름 (확장자 제외)
+     * @return 저장된 파일의 절대 경로. 실패 시 null을 반환합니다.
+     */
+    fun saveBitmapToInternalStorage(bitmap: Bitmap, childPath: String, fileName: String): String? {
+        val directory = context.getDir(childPath, Context.MODE_PRIVATE)
+        if (!directory.exists()) {
+            directory.mkdirs()
+        }
+
+        val file = File(directory, "$fileName.jpg")
+
+        return try {
+            FileOutputStream(file).use { fos ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+            }
+            file.absolutePath // 저장된 파일의 전체 경로 반환
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+
+    /**
+     * assets 폴더의 이미지를 앱 내부 저장소로 복사하고 파일 경로를 반환합니다.
+     * @param assetFileName assets 폴더의 파일 이름 (예: "ad_lens.png")
+     * @param childPath 저장할 하위 폴더 이름 (예: "ad_images")
+     * @param outputFileName 저장할 파일 이름 (확장자 제외)
+     * @return 저장된 파일의 절대 경로. 실패 시 null을 반환합니다.
+     */
+    fun copyAssetToInternalStorage(assetFileName: String, childPath: String, outputFileName: String): String? {
+        return try {
+            val inputStream = context.assets.open(assetFileName)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream.close()
+
+            val directory = context.getDir(childPath, Context.MODE_PRIVATE)
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+
+            val file = File(directory, "$outputFileName.jpg")
+            FileOutputStream(file).use { fos ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+            }
+            file.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    /**
+     * assets 폴더의 비디오를 앱 내부 저장소로 복사하고 파일 경로를 반환합니다.
+     * @param assetFileName assets 폴더의 파일 이름 (예: "ad_sub.mp4")
+     * @param childPath 저장할 하위 폴더 이름 (예: "ad_videos")
+     * @param outputFileName 저장할 파일 이름 (확장자 포함)
+     * @return 저장된 파일의 절대 경로. 실패 시 null을 반환합니다.
+     */
+    fun copyAssetVideoToInternalStorage(assetFileName: String, childPath: String, outputFileName: String): String? {
+        return try {
+            val inputStream = context.assets.open(assetFileName)
+
+            val directory = context.getDir(childPath, Context.MODE_PRIVATE)
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+
+            val file = File(directory, outputFileName)
+            FileOutputStream(file).use { fos ->
+                inputStream.copyTo(fos)
+            }
+            inputStream.close()
+
+            file.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    /**
+     * raw 폴더의 리소스를 앱 내부 저장소로 복사하고 파일 경로를 반환합니다.
+     * @param rawResourceName raw 리소스 이름 (예: "ad_sub")
+     * @param childPath 저장할 하위 폴더 이름 (예: "ad_videos")
+     * @param outputFileName 저장할 파일 이름 (확장자 포함)
+     * @return 저장된 파일의 절대 경로. 실패 시 null을 반환합니다.
+     */
+    fun copyRawResourceToInternalStorage(rawResourceName: String, childPath: String, outputFileName: String): String? {
+        return try {
+            val resourceId = context.resources.getIdentifier(rawResourceName, "raw", context.packageName)
+            if (resourceId == 0) {
+                return null
+            }
+
+            val inputStream = context.resources.openRawResource(resourceId)
+
+            val directory = context.getDir(childPath, Context.MODE_PRIVATE)
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+
+            val file = File(directory, outputFileName)
+            FileOutputStream(file).use { fos ->
+                inputStream.copyTo(fos)
+            }
+            inputStream.close()
+
+            file.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    /**
+     * MIME 타입에 따라 timestamp 기반의 고유한 파일명을 생성합니다.
+     * @param mimeType MIME 타입 (예: "image/jpeg", "video/mp4")
+     * @return timestamp 기반 파일명
+     */
+    private fun generateUniqueFileName(mimeType: String?): String {
+        val extension = when {
+            mimeType?.startsWith("image/") == true -> when {
+                mimeType.contains("png") -> "png"
+                mimeType.contains("jpeg") || mimeType.contains("jpg") -> "jpg"
+                else -> "jpg"
+            }
+            mimeType?.startsWith("video/") == true -> when {
+                mimeType.contains("mp4") -> "mp4"
+                mimeType.contains("3gp") -> "3gp"
+                mimeType.contains("avi") -> "avi"
+                else -> "mp4"
+            }
+            else -> "dat"
+        }
+        return "${System.currentTimeMillis()}.$extension"
+    }
+
+    /**
+     * Uri로부터 미디어(이미지 또는 동영상)를 읽어 내부 저장소에 저장하고 파일 경로를 반환합니다.
+     * 파일명은 timestamp 기반으로 자동 생성되어 중복을 방지합니다.
+     * @param uri 갤러리 등에서 선택한 미디어의 Uri
+     * @param childPath 저장할 하위 폴더 이름 (예: "ad_images")
+     * @return Pair<파일 경로, 파일명>. 실패 시 null을 반환합니다.
+     */
+    fun saveUriToInternalStorage(uri: Uri, childPath: String): Pair<String, String>? {
+        return try {
+            val mimeType = context.contentResolver.getType(uri)
+            val fileName = generateUniqueFileName(mimeType)
+
+            when {
+                // 이미지인 경우: Bitmap으로 변환 후 저장
+                mimeType?.startsWith("image/") == true -> {
+                    val inputStream = context.contentResolver.openInputStream(uri)
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    inputStream?.close()
+
+                    val directory = context.getDir(childPath, Context.MODE_PRIVATE)
+                    if (!directory.exists()) {
+                        directory.mkdirs()
+                    }
+
+                    val file = File(directory, fileName)
+
+                    FileOutputStream(file).use { fos ->
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                    }
+
+                    Pair(file.absolutePath, fileName)
+                }
+                // 동영상인 경우: 파일 스트림으로 직접 복사
+                mimeType?.startsWith("video/") == true -> {
+                    val directory = context.getDir(childPath, Context.MODE_PRIVATE)
+                    if (!directory.exists()) {
+                        directory.mkdirs()
+                    }
+
+                    val file = File(directory, fileName)
+
+                    context.contentResolver.openInputStream(uri)?.use { input ->
+                        FileOutputStream(file).use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+
+                    Pair(file.absolutePath, fileName)
+                }
+                else -> null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    /**
+     * 주어진 경로의 파일을 삭제합니다.
+     * @param filePath 삭제할 파일의 절대 경로
+     * @return 파일 삭제 성공 여부
+     */
+    fun deleteFile(filePath: String?): Boolean {
+        if (filePath.isNullOrEmpty()) return false
+
+        return try {
+            val file = File(filePath)
+            if (file.exists()) {
+                file.delete()
+            } else {
+                // 파일이 존재하지 않아도, 목적(파일 없음)은 달성되었으므로 true 반환 가능
+                true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+}

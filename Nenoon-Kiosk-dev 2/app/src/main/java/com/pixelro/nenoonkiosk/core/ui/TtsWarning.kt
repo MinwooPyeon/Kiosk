@@ -32,9 +32,8 @@ import kotlinx.coroutines.flow.update
 @Composable
 fun TtsWarning(
     active: MutableStateFlow<Boolean>,
-    duration: Long = 2000L
+    duration: Long = 2000L,
 ) {
-
     val showDialog by active.collectAsState()
 
     LaunchedEffect(showDialog) {
@@ -47,50 +46,54 @@ fun TtsWarning(
     if (showDialog) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0,0,0,63))
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(Color(0, 0, 0, 63)),
         ) {
             Text(
-                modifier = Modifier
-                    .padding(start = 40.dp, end = 40.dp, bottom = 360.dp)
-                    .border(
-                        border = BorderStroke(2.dp, Color(0xFF000000)),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .background(
-                        color = Color(0xFFFFFFFF),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(20.dp)
-                    .fillMaxWidth(),
-                text = buildAnnotatedString {
-                    append(
-                        StringProvider.getString(
-                            R.string.dialog_description2_announcement1
+                modifier =
+                    Modifier
+                        .padding(start = 40.dp, end = 40.dp, bottom = 360.dp)
+                        .border(
+                            border = BorderStroke(2.dp, Color(0xFF000000)),
+                            shape = RoundedCornerShape(8.dp),
                         )
-                    )
-                    withStyle(
-                        style = SpanStyle(
-                            color = Color(0xff1d71e1),
-                            fontWeight = FontWeight.Bold
+                        .background(
+                            color = Color(0xFFFFFFFF),
+                            shape = RoundedCornerShape(8.dp),
                         )
-                    ) {
+                        .padding(20.dp)
+                        .fillMaxWidth(),
+                text =
+                    buildAnnotatedString {
                         append(
                             StringProvider.getString(
-                                R.string.dialog_description2_announcement2
+                                R.string.dialog_description2_announcement1,
+                            ),
+                        )
+                        withStyle(
+                            style =
+                                SpanStyle(
+                                    color = Color(0xff1d71e1),
+                                    fontWeight = FontWeight.Bold,
+                                ),
+                        ) {
+                            append(
+                                StringProvider.getString(
+                                    R.string.dialog_description2_announcement2,
+                                ),
                             )
+                        }
+                        append(
+                            StringProvider.getString(
+                                R.string.dialog_description2_announcement3,
+                            ),
                         )
-                    }
-                    append(
-                        StringProvider.getString(
-                            R.string.dialog_description2_announcement3
-                        )
-                    )
-                },
+                    },
                 fontSize = 40.sp,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     }

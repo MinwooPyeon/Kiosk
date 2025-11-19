@@ -32,10 +32,14 @@
     <string name="toast_input_id_pw">Please check your ID and password</string>
     <string name="toast_check_wifi">Please check if you are connected to Wi-Fi</string>
 
+    <string name="password_login_button">Password\nLogin</string>
+    <string name="qr_login_button">QR\nLogin</string>
+    <string name="face_login_button">Face\nRecognition</string>
+
     <!-- 화면 보호기 화면 -->
-    <string name="screensaver_description1">"  "</string>
+    <string name="screensaver_description1">&#160;</string>
     <string name="screensaver_description2">Touch the screen</string>
-    <string name="screensaver_description3">\n to start the test"</string>
+    <string name="screensaver_description3">to start the test"</string>
 
     <!-- 권한 확인 화면 -->
     <string name="permission_requirement">Access permission is required to use the application</string>
@@ -55,8 +59,8 @@
     <string name="intropage_appname">Self-Diagnosis Kiosk</string>
     <string name="intropage_title">(Eyesight, macular degeneration, strabismus, presbyopia adjustment, blood pressure, grip strength, dementia, and lung age)</string>
     <string name="intropage_start_button">START</string>
-    <string name="intropage_description1">NENOON measures corrected vision</string>
-    <string name="intropage_description2">Please proceed with the test under daily conditions</string>
+    <string name="intropage_description1">NENOON measures corrected vision.</string>
+    <string name="intropage_description2">Please proceed with the test under daily conditions.</string>
 
     <!-- 문진표 작성 화면 -->
     <string name="back">Back</string>
@@ -94,13 +98,13 @@
     <string name="test_list_dialog_re_button">Retry</string>
     <string name="test_list_dialog_cancel_button">Cancel</string>
     <string name="test_predescription_presbyopia_title1">Presbyopia Test</string>
-    <string name="test_predescription_presbyopia_title2"></string>
-    <string name="test_predescription_short_visual_acuity_title1">Short Distance\nVisual Acuity Test</string>
-    <string name="test_predescription_short_visual_acuity_title2"></string>
+    <string name="test_predescription_presbyopia_title2">Eye age test</string>
+    <string name="test_predescription_short_visual_acuity_title1">Short Distance Visual Acuity Test</string>
+    <string name="test_predescription_short_visual_acuity_title2">Near distance</string>
     <string name="test_predescription_amsler_title1">Amsler Grid Test</string>
-    <string name="test_predescription_amsler_title2"></string>
+    <string name="test_predescription_amsler_title2">Macular degeneration test</string>
     <string name="test_predescription_mchart_title1">M-CHART Test</string>
-    <string name="test_predescription_mchart_title2"></string>
+    <string name="test_predescription_mchart_title2">Macular degeneration test</string>
     <string name="test_list_screen_warning1">"Examinations in the this application are self-examination and "</string>
     <string name="test_list_screen_warning2">not medical findings,</string>
     <string name="test_list_screen_warning3">" so please visit a hospital and consult a doctor for an accurate diagnosis Test results may vary depending on your current condition, surrounding environment, or device"</string>
@@ -134,11 +138,11 @@
     <!--    <string name="presbyopia_video_guide">The following is a guide video</string>-->
     <string name="presbyopia_video_guide_1">The following is a&#160;</string>
     <string name="presbyopia_video_guide_2">guide video</string>
-    <string name="presbyopia_video_guide_3"></string>
+    <string name="presbyopia_video_guide_3">"is "</string>
     <!--    <string name="presbyopia_video_guide_above">The video above is a guide video</string>-->
     <string name="presbyopia_video_guide_above_1">The video above is a&#160;</string>
     <string name="presbyopia_video_guide_above_2">guide video</string>
-    <string name="presbyopia_video_guide_above_3"></string>
+    <string name="presbyopia_video_guide_above_3">is</string>
     <!--    <string name="presbyopia_description1">Adjust the distance to 75 to 85cm from the screen</string>-->
     <string name="presbyopia_description1_1">Adjust the distance to&#160;</string>
     <string name="presbyopia_description1_3">&#160;from the screen</string>
@@ -163,7 +167,7 @@
     <string name="measuring_distance_description4_cover_right">Please cover your right eye</string>
     <string name="measuring_distance_description5_face_center">Align your face within the picture</string>
     <string name="measuring_distance_description6_start">Adjust the distance to</string>
-    <string name="measuring_distance_description6_end"></string>
+    <string name="measuring_distance_description6_end">"Please adjust to "</string>
     <string name="measuring_distance_start_button">Start</string>
 
     <!-- Dialog -->
@@ -172,7 +176,7 @@
     <string name="dialog_description1_pickup3">&#160;is used for this test</string>
     <string name="dialog_description2_announcement1">Please listen to the instructions&#160;</string>
     <string name="dialog_description2_announcement2">&#160;until the end</string>
-    <string name="dialog_description2_announcement3"></string>
+    <string name="dialog_description2_announcement3">Please listen</string>
     <string name="dialog_description3_distance_further">Please go a little further</string>
     <string name="dialog_description4_closer">Please come a little closer</string>
     <string name="confirm">Confirmed</string>
@@ -203,7 +207,7 @@
     <string name="mchart_test_description_2">straight&#160;</string>
     <string name="mchart_test_description_3">or&#160;</string>
     <string name="mchart_test_description_4">curved</string>
-    <string name="mchart_test_description_5"></string>
+    <string name="mchart_test_description_5">Select how it appears</string>
     <string name="mchart_test_content_straight">Straight line</string>
     <string name="mchart_test_content_bent">Curved line</string>
 
@@ -319,8 +323,9 @@
     <string name="dementia_result_wording2"></string>
     <string name="dementia_result_wording3">Prevent dementia by maintaining exercise and social activities, and practicing the Dementia Prevention Guidelines 333</string>
     <string name="dementia_result_wording4">It is recommended that you visit a nearby health center or dementia relief center for a more accurate dementia checkup</string>
-    <string name="dementia_result_selection1">Read more the Dementia Prevention Guidelines 333</string>
+    <string name="dementia_result_selection1">Read more the Dementia Prevention Guidelines</string>
     <string name="dementia_result_selection2">Korean National Institute of Dementia website</string>
+    <string name="dementia_result_caution_needed">Attention required</string>
     <string name="eye_test">AI Eye Health Test</string>
     <string name="dementia_test">Dementia Self-Diagnosis</string>
     <string name="call">Videotelephony</string>
@@ -625,9 +630,7 @@
     <string name="lung_age_test">Lung Age Test</string>
     <string name="blood_pressure_and_grip_strength">Blood Pressure, Grip Strength</string>
     <string name="test_predescription_blood_pressure_title1">Blood Pressure Test</string>
-    <string name="test_predescription_blood_pressure_title2"></string>
     <string name="test_predescription_grip_strength_title1">Grip Strength Test</string>
-    <string name="test_predescription_grip_strength_title2"></string>
 
     <string name="location_signin">Organization Sign-In</string>
 
@@ -824,7 +827,7 @@
     <string name="start">Start</string>
 
     <string name="tts_bp170b_device_check">Searching for blood pressure monitor. Please wait a moment.</string>
-    <string name="tts_bp170b_turn_off_device_initialization">Blood pressure monitor initialization is required. Please press the start/stop button once.</string>
+    <string name="tts_bp170b_turn_off_device_initialization">Blood pressure monitor initialization is required.\nPlease press the start/stop button once.</string>
     <string name="tts_bp170b_standby_instructions">Please put the blood pressure monitor on your left arm. After wearing, press the start/stop button on the monitor.</string>
     <string name="tts_bp170b_connected_message">The blood pressure measurement has started. Please do not move or speak..</string>
     <string name="tts_bp170b_connection_failed">Failed to connect to the blood pressure monitor. Please try again.</string>
@@ -1042,4 +1045,68 @@ to the center of the circle.</string>
     <string name="tts_sawi_adjustment">Please move the cross on the screen to the center of the circle.</string>
     <string name="tts_fudo_adjustment">After adjusting the size of the two semicircles to be equal, press next when they are the same size.</string>
     <string name="tts_result_screen">The test is complete. Please press the print result button to print your results.</string>
+
+    <!-- TTS Numbers -->
+    <string name="one">one</string>
+    <string name="two">two</string>
+    <string name="three">three</string>
+    <string name="four">four</string>
+    <string name="five">five</string>
+    <string name="six">six</string>
+    <string name="seven">seven</string>
+    <string name="eight">eight</string>
+    <string name="nine">nine</string>
+
+    <!-- Alternative expressions -->
+    <string name="two_alt">two</string>
+    <string name="three_alt">three</string>
+    <string name="four_alt">four</string>
+    <string name="five_alt">five</string>
+    <string name="six_alt">six</string>
+    <string name="seven_alt">seven</string>
+
+    <!-- "Don't know" phrases -->
+    <string name="dont_know_1">don\'t know</string>
+    <string name="dont_know_2">unknown</string>
+    <string name="dont_know_3">don\'t know</string>
+    <string name="dont_know_4">can\'t see</string>
+    <string name="dont_know_5">can\'t see</string>
+    <string name="dont_know_6">not visible</string>
+    <string name="dont_know_7">not visible</string>
+    <string name="dont_know_8">can\'t see it</string>
+    <string name="dont_know_9">can\'t see it</string>
+    <string name="dont_know_10">not visible</string>
+    <string name="dont_know_11">not visible</string>
+
+    <!-- Admin Dashboard -->
+    <string name="admin_dashboard">Admin Dashboard</string>
+    <string name="admin_ad_management">Ad Management</string>
+    <string name="admin_password_management">Password Management</string>
+    <string name="admin_exit">Exit Admin</string>
+    <string name="admin_exit_confirm_title">Exit Admin</string>
+    <string name="admin_exit_confirm_message">Are you sure you want to exit?</string>
+    <string name="admin_confirm">Confirm</string>
+    <string name="admin_cancel">Cancel</string>
+    <string name="admin_ad_image_management">Ad Image Management</string>
+    <string name="admin_ad_image_description">Manage and select images to use for advertisements</string>
+    <string name="admin_select_ad_location">Please select ad location</string>
+    <string name="admin_test_list_screen">Test List Screen</string>
+    <string name="admin_test_list_subtitle">Blood Pressure, Eye, Strabismus, etc.</string>
+    <string name="admin_badge_image">Image</string>
+    <string name="admin_screensaver">Screensaver</string>
+    <string name="admin_screensaver_subtitle">Touch screen</string>
+    <string name="admin_badge_video">Video</string>
+    <string name="admin_ad_location_preview">Ad Display Area</string>
+    <string name="admin_ad_image_list">Ad Image List</string>
+    <string name="admin_add">Add</string>
+    <string name="admin_delete">Delete</string>
+    <string name="admin_reorder">Reorder</string>
+    <string name="admin_password">Administrator Password</string>
+    <string name="admin_password_description">You can change the administrator password</string>
+    <string name="admin_password_coming_soon">Password Management Screen (Coming Soon)</string>
+
+    <!-- Bluetooth Device Management -->
+    <string name="change_default_blood_pressure_monitor">Change default blood pressure monitor</string>
+    <string name="default_blood_pressure_monitor">Default</string>
+
 </resources>

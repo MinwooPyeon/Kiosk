@@ -30,7 +30,10 @@ object PrinterManager {
     }
 
     // 업데이트 프린터 정보
-    private fun updatePrinter(name: String, address: String) {
+    private fun updatePrinter(
+        name: String,
+        address: String,
+    ) {
         _printerName.update { name }
         _printerMacAddress.update { address }
         Log.d("PrinterManager", "Printer updated: Name: $name, Address: $address")
@@ -50,41 +53,53 @@ object PrinterManager {
     private fun setupBluetoothPrinter(context: Context) {
         val bluetoothManager = ContextCompat.getSystemService(context, BluetoothManager::class.java) as BluetoothManager
 
-        printerScanController = NPrinterScanController(context, object : INPrinterScanControllerCallback {
-            override fun deviceFound(printer: NPrinter) {
-                Log.d("PrinterManager", "Device found callback triggered.")
-                val deviceName = printer.getName()
-                val deviceHardwareAddress = printer.getMacAddress()
-                val type = printer.getType()
-                Log.d("PrinterManager", "Device found: $deviceName, $deviceHardwareAddress, Type: $type")
+        printerScanController =
+            NPrinterScanController(
+                context,
+                object : INPrinterScanControllerCallback {
+                    override fun deviceFound(printer: NPrinter) {
+                        Log.d("PrinterManager", "Device found callback triggered.")
+                        val deviceName = printer.getName()
+                        val deviceHardwareAddress = printer.getMacAddress()
+                        val type = printer.getType()
+                        Log.d("PrinterManager", "Device found: $deviceName, $deviceHardwareAddress, Type: $type")
 
-                if (deviceHardwareAddress != null && deviceName != null && deviceHardwareAddress.contains("74:F0:7D")) {
-                    updatePrinter(deviceName, deviceHardwareAddress)
-                    printerType = type
-                    Log.d("PrinterManager", "Printer matched: $type, $deviceName, $deviceHardwareAddress")
+                        if (deviceHardwareAddress != null && deviceName != null && deviceHardwareAddress.contains("74:F0:7D")) {
+                            updatePrinter(deviceName, deviceHardwareAddress)
+                            printerType = type
+                            Log.d("PrinterManager", "Printer matched: $type, $deviceName, $deviceHardwareAddress")
 
-                    nPrinterController = NPrinterController(context, object : INPrinterControllerCallback {
-                        override fun disconnected() {
-                            Log.d("PrinterManager", "Printer disconnected")
+                            nPrinterController =
+                                NPrinterController(
+                                    context,
+                                    object : INPrinterControllerCallback {
+                                        override fun disconnected() {
+                                            Log.d("PrinterManager", "Printer disconnected")
+                                        }
+
+                                        override fun printProgress(
+                                            index: Int,
+                                            total: Int,
+                                            result: Int,
+                                        ) {
+                                            Log.d("PrinterManager", "Print progress: $index/$total, result: $result")
+                                        }
+
+                                        override fun printComplete(result: Int) {
+                                            Log.d("PrinterManager", "Print complete, result: $result")
+                                        }
+                                    },
+                                )
+
+                            val printer = NPrinter(type, deviceName, deviceHardwareAddress)
+                            Log.d("PrinterManager", "Connecting to printer: $deviceHardwareAddress")
+                            nPrinterController?.connect(printer)
+                        } else {
+                            Log.d("PrinterManager", "Printer not matched: $deviceName, $deviceHardwareAddress")
                         }
-
-                        override fun printProgress(index: Int, total: Int, result: Int) {
-                            Log.d("PrinterManager", "Print progress: $index/$total, result: $result")
-                        }
-
-                        override fun printComplete(result: Int) {
-                            Log.d("PrinterManager", "Print complete, result: $result")
-                        }
-                    })
-
-                    val printer = NPrinter(type, deviceName, deviceHardwareAddress)
-                    Log.d("PrinterManager", "Connecting to printer: $deviceHardwareAddress")
-                    nPrinterController?.connect(printer)
-                } else {
-                    Log.d("PrinterManager", "Printer not matched: $deviceName, $deviceHardwareAddress")
-                }
-            }
-        })
+                    }
+                },
+            )
 
         // Bluetooth 권한 확인 및 스캔 시작
         startBluetoothScan(context)
@@ -93,7 +108,8 @@ object PrinterManager {
     // Start scanning for Bluetooth printers
     fun startBluetoothScan(context: Context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
+            ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
+        ) {
             printerScanController?.startScan()
             Log.d("PrinterManager", "Bluetooth scan started")
         } else {

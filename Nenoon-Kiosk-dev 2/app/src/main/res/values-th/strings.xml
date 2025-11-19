@@ -1,0 +1,1113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 아이콘 -->
+    <string name="app_name">Nenoons Kiosk+</string>
+
+    <!-- 스플래시 화면 -->
+    <string name="splash_description">โซลูชันการตรวจสุขภาพตาและชีพจรรวม</string>
+    <string name="splash_app_name">Nenoons Kiosk+</string>
+
+    <!-- 토스트 메시지 -->
+    <string name="check_id_password">กรุณาตรวจสอบชื่อผู้ใช้และรหัสผ่านของคุณ</string>
+    <string name="check_wifi">กรุณาตรวจสอบว่ามีการเชื่อมต่อ Wi-Fi แล้วหรือไม่</string>
+    <string name="check_id">กรุณากรอกชื่อผู้ใช้ของคุณ</string>
+    <string name="check_password">กรุณากรอกรหัสผ่านของคุณ</string>
+    <string name="ans_question">กรุณาตอบแบบสอบถาม</string>
+    <string name="cant_find_fitcare">ไม่พบแอป Fitcare Heartool</string>
+    <string name="allow_system">ได้รับอนุญาตให้เปลี่ยนการตั้งค่าระบบแล้ว</string>
+    <string name="not_allow_system">ไม่ได้รับอนุญาตให้เปลี่ยนการตั้งค่าระบบ</string>
+    <string name="allow_bluetooth">ได้รับอนุญาตให้ใช้บลูทูธแล้ว</string>
+    <string name="not_allow_bluetooth">ไม่ได้รับอนุญาตให้ใช้บลูทูธ</string>
+    <string name="allow_camera">ได้รับอนุญาตให้ใช้กล้องแล้ว</string>
+    <string name="not_allow_camera">ไม่ได้รับอนุญาตให้ใช้กล้อง</string>
+    <string name="not_exist_print">ไม่พบเครื่องพิมพ์ที่เชื่อมต่อ</string>
+
+    <string name="password_login_button">รหัสผ่าน\nเข้าสู่ระบบ</string>
+    <string name="qr_login_button">QR\nเข้าสู่ระบบ</string>
+    <string name="face_login_button">ใบหน้า\nเข้าสู่ระบบ</string>
+
+    <!-- 로그인 화면 -->
+    <string name="id_input">กรุณากรอกชื่อผู้ใช้ของคุณ</string>
+    <string name="pw_input">กรุณากรอกรหัสผ่านของคุณ</string>
+    <string name="start_without_signin">เริ่มต้นโดยไม่ต้องเข้าสู่ระบบ</string>
+    <string name="signin">เข้าสู่ระบบ</string>
+    <string name="toast_input_id">กรุณากรอกชื่อผู้ใช้ของคุณ</string>
+    <string name="toast_input_pw">กรุณากรอกรหัสผ่านของคุณ</string>
+    <string name="toast_input_id_pw">กรุณาตรวจสอบชื่อผู้ใช้และรหัสผ่านของคุณ</string>
+    <string name="toast_check_wifi">กรุณาตรวจสอบว่ามีการเชื่อมต่อ Wi-Fi แล้วหรือไม่</string>
+
+    <!-- 화면 보호기 화면 -->
+    <string name="screensaver_description1">แตะที่&#160;</string>
+    <string name="screensaver_description2">หน้าจอ</string>
+    <string name="screensaver_description3">เพื่อเริ่มการตรวจสอบ</string>
+
+    <!-- 권한 확인 화면 -->
+    <string name="permission_requirement">เพื่อใช้งานแอป จำเป็นต้องอนุญาตสิทธิ์การเข้าถึง</string>
+    <string name="permission_nextpage">ต้องตั้งค่าสิทธิ์ทั้งหมดจึงจะไปยังหน้าถัดไปได้\nหากยังไม่ได้เลือก จะเข้าสู่หน้าการตั้งค่าโดยอัตโนมัติ</string>
+    <string name="permission_setting_change">การเปลี่ยนการตั้งค่าระบบ</string>
+    <string name="permission_camera">สิทธิ์การใช้กล้อง</string>
+    <string name="permission_bluetooth">สิทธิ์การใช้บลูทูธ</string>
+    <string name="permission_bluetooth_service">บริการบลูทูธ</string>
+    <string name="permission_location">บริการระบุตำแหน่ง</string>
+    <string name="permission_setting_change_detail">ใช้สำหรับเล่นวิดีโอหน้าจอพัก</string>
+    <string name="permission_camera_detail">ใช้สำหรับการวัดระยะทาง</string>
+    <string name="permission_bluetooth_detail">ใช้สำหรับเชื่อมต่อเครื่องพิมพ์</string>
+    <string name="permission_bluetooth_service_detail">ใช้สำหรับตรวจสอบบลูทูธเพื่อเชื่อมต่อเครื่องพิมพ์</string>
+    <string name="permission_location_detail">ใช้สำหรับการใช้งานบลูทูธ</string>
+
+    <!-- 첫 시작 화면 -->
+    <string name="intropage_appname">คีออสก์ตรวจสุขภาพด้วยตนเอง</string>
+    <string name="intropage_title">(สายตา, จอประสาทตาเสื่อม, ตาเหล่, การปรับโฟกัสสายตา, ความดันโลหิต, แรงบีบมือ, ภาวะสมองเสื่อม, อายุปอด)</string>
+    <string name="intropage_start_button">เริ่มต้น</string>
+    <string name="intropage_description1">การตรวจสายตาทั้งหมดจะวัดสายตาหลังการแก้ไข</string>
+    <string name="intropage_description2">โปรดทำการตรวจในสภาพปกติของคุณ</string>
+
+    <!-- 문진표 작성 화면 -->
+    <string name="back">ย้อนกลับ</string>
+    <string name="survey_title">แบบสอบถาม</string>
+    <string name="survey_age">อายุ</string>
+    <string name="survey_under9">อายุต่ำกว่า 9 ปี</string>
+    <string name="survey_10s">อายุ 10–19 ปี</string>
+    <string name="survey_20s">อายุ 20–29 ปี</string>
+    <string name="survey_30s">อายุ 30–39 ปี</string>
+    <string name="survey_40s">อายุ 40–49 ปี</string>
+    <string name="survey_50s">อายุ 50–59 ปี</string>
+    <string name="survey_60s">อายุ 60–69 ปี</string>
+    <string name="survey_above70">อายุ 70 ปีขึ้นไป</string>
+    <string name="survey_sex">เพศ</string>
+    <string name="survey_male">ชาย</string>
+    <string name="survey_female">หญิง</string>
+    <string name="survey_glasses">สวมแว่นตาหรือไม่</string>
+    <string name="yes">ใช่</string>
+    <string name="no">ไม่ใช่</string>
+    <string name="survey_surgery">เคยผ่าตัดตาหรือไม่</string>
+    <string name="survey_none">ไม่มี</string>
+    <string name="survey_lasik_lasek">เลสิค / เลสิก</string>
+    <string name="survey_cataract">ต้อกระจก</string>
+    <string name="survey_etc">อื่น ๆ</string>
+    <string name="survey_diabetes">เป็นโรคเบาหวานหรือไม่</string>
+
+    <!-- 검사 목록 화면 -->
+    <string name="navigation_tosurvey_button">กลับไปหน้าหลัก</string>
+    <string name="test_list_tittle">รายการตรวจ</string>
+    <string name="test_list_description">เลือกการตรวจที่คุณต้องการ</string>
+    <string name="test_list_dialog_warning1">การตรวจนี้เสร็จสิ้นแล้ว\n</string>
+    <string name="test_list_dialog_warning2">\nหากยังไม่ได้ตอบแบบสอบถาม\nเพื่อความถูกต้องของผลตรวจ โปรดเลือก\n</string>
+    <string name="test_list_dialog_warning3">\nด้านล่าง\n\nหากต้องการตรวจซ้ำ โปรดเลือก&#160;</string>
+    <string name="test_list_dialog_warning4">ด้านล่าง</string>
+    <string name="test_list_dialog_re_button">ตรวจใหม่อีกครั้ง</string>
+    <string name="test_list_dialog_cancel_button">ยกเลิก</string>
+
+    <string name="test_predescription_presbyopia_title1">การตรวจการปรับโฟกัสสายตา</string>
+    <string name="test_predescription_presbyopia_title2">การตรวจอายุของดวงตา</string>
+    <string name="test_predescription_short_visual_acuity_title1">การตรวจสายตา</string>
+    <string name="test_predescription_short_visual_acuity_title2">ระยะใกล้</string>
+    <string name="test_predescription_amsler_title1">การตรวจแผ่นตาราง Amsler</string>
+    <string name="test_predescription_amsler_title2">การตรวจจอประสาทตาเสื่อม</string>
+    <string name="test_predescription_mchart_title1">การตรวจการบิดเบือนของภาพ(M-Chart)</string>
+    <string name="test_predescription_mchart_title2">การตรวจจอประสาทตาเสื่อม</string>
+
+    <string name="test_list_screen_warning1">"การตรวจสายตาทั้งหมดเป็นการตรวจด้วยตนเอง "</string>
+    <string name="test_list_screen_warning2">"ไม่ใช่การวินิจฉัยทางการแพทย์ "</string>
+    <string name="test_list_screen_warning3">ผลการตรวจอาจแตกต่างกันตามสภาพดวงตา สภาพแวดล้อม หรืออุปกรณ์ โปรดไปพบแพทย์เพื่อการวินิจฉัยที่แม่นยำ</string>
+
+    <!-- 목록 박스-->
+    <string name="box_time_required">เวลาที่ใช้</string>
+    <string name="box_approximate">&#160;</string>
+    <string name="box_minute">นาที</string>
+
+    <!-- 설정 화면 -->
+    <string name="settings_title">การตั้งค่า</string>
+    <string name="settings_terms">ข้อตกลงในการใช้บริการ</string>
+    <string name="settings_language">ภาษา</string>
+    <string name="settings_senior">หน้ารายการสำหรับผู้สูงอายุ</string>
+    <string name="settings_signout">ออกจากระบบ</string>
+    <string name="setting_software_info">ข้อมูลซอฟต์แวร์</string>
+
+    <!-- 검사 화면 -->
+    <string name="presbyopia_name">การตรวจการปรับโฟกัสสายตา (การตรวจอายุของดวงตา)</string>
+    <string name="presbyopia_name2">การตรวจการปรับโฟกัส</string>
+    <string name="visual_acuity_name">การตรวจสายตา</string>
+    <string name="short_visual_acuity_name1">การตรวจสายตาระยะใกล้</string>
+    <string name="short_visual_acuity_name2">การตรวจสายตาระยะใกล้</string>
+    <string name="long_visual_acuity_name">การตรวจสายตาระยะไกล</string>
+    <string name="children_visual_acuity_name">การตรวจสายตาสำหรับเด็ก</string>
+    <string name="macular_degeneration_name">การตรวจจอประสาทตาเสื่อม</string>
+    <string name="amsler_grid_name">การตรวจตาราง Amsler</string>
+    <string name="mchart_name">การตรวจการบิดเบือนของภาพ (M-Chart)</string>
+
+    <!-- 노안 조절력 검사 -->
+    <string name="presbyopia_video_guide_1">วิดีโอแนะนำ</string>
+    <string name="presbyopia_video_guide_2">วิธีการตรวจ</string>
+    <string name="presbyopia_video_guide_3">นี้</string>
+    <string name="presbyopia_video_guide_above_1">วิดีโอด้านบนเป็น</string>
+    <string name="presbyopia_video_guide_above_2">วิดีโอแนะนำวิธีการตรวจ</string>
+    <string name="presbyopia_video_guide_above_3">ค่ะ/ครับ</string>
+    <string name="presbyopia_description1_1">โปรดปรับระยะห่างจากหน้าจอประมาณ</string>
+    <string name="presbyopia_description1_3">\n75–85 เซนติเมตร</string>
+    <string name="presbyopia_description2_1">ค่อย ๆ ขยับเข้ามาข้างหน้า หากภาพชัดหรือเริ่มเบลอ โปรดหยุดและกดปุ่ม</string>
+    <string name="presbyopia_description2_2">\'ถัดไป\'</string>
+    <string name="presbyopia_description2_3">ด้านล่าง</string>
+    <string name="presbyopia_description3">โปรดมองที่สัญลักษณ์กระพริบด้านล่าง</string>
+    <string name="presbyopia_under_25cm_description1">ไม่พบภาวะสายตายาวใน\nการตรวจครั้งแรก\nโปรดเลือก&#160;</string>
+    <string name="presbyopia_under_25cm_description2">ไม่พบภาวะสายตายาวใน\nการตรวจครั้งที่สอง\nโปรดเลือก&#160;</string>
+    <string name="presbyopia_under_25cm_description3">ไม่พบภาวะสายตายาวใน\nการตรวจครั้งสุดท้าย\nโปรดเลือก&#160;</string>
+    <string name="presbyopia_test_start1">เริ่มการตรวจการปรับโฟกัสสายตา</string>
+    <string name="presbyopia_test_start2">เริ่มการตรวจครั้งที่สอง</string>
+    <string name="presbyopia_test_start3">เริ่มการตรวจครั้งสุดท้าย</string>
+    <string name="test_screen_current_distance">"ระยะปัจจุบัน: "</string>
+    <string name="next">ถัดไป</string>
+
+    <!-- 거리 조절 화면 -->
+    <string name="measuring_distance_description1">โปรดกดปุ่ม ‘เริ่มการตรวจ’ ด้านล่าง</string>
+    <string name="measuring_distance_description2">โปรดตรวจสอบระยะทางในขณะปิดตาข้างหนึ่ง</string>
+    <string name="measuring_distance_description3_cover_left">โปรดปิดตาซ้ายด้วยที่ปิดตา</string>
+    <string name="measuring_distance_description4_cover_right">โปรดปิดตาขวาด้วยที่ปิดตา</string>
+    <string name="measuring_distance_description5_face_center">โปรดจัดใบหน้าให้อยู่ตรงกลางภาพ</string>
+    <string name="measuring_distance_description6_start">โปรดปรับระยะให้เป็น</string>
+    <string name="measuring_distance_description6_end">ตามที่กำหนด</string>
+    <string name="measuring_distance_start_button">เริ่มการตรวจ</string>
+
+    <!-- Dialog -->
+    <string name="dialog_description1_pickup1">โปรดใช้ที่ปิดตาพิเศษของเรา\n</string>
+    <string name="dialog_description1_pickup2">ที่ปิดตา</string>
+    <string name="dialog_description1_pickup3">กรุณาหยิบขึ้นมา</string>
+    <string name="dialog_description2_announcement1">กรุณาฟังคำแนะนำเสียง\n</string>
+    <string name="dialog_description2_announcement2">จนจบ</string>
+    <string name="dialog_description2_announcement3">&#160;ค่ะ/ครับ</string>
+    <string name="dialog_description3_distance_further">กรุณาถอยออกไปอีกเล็กน้อย</string>
+    <string name="dialog_description4_closer">กรุณาเข้ามาใกล้อีกเล็กน้อย</string>
+    <string name="confirm">รับทราบแล้ว</string>
+
+    <!-- 근거리 시력 검사 -->
+    <string name="visual_acuity_warning">โปรดเลือกภาพด้านล่างที่มองเห็นเหมือนกับภาพด้านบน</string>
+    <string name="visual_acuity_description">เลือกสัญลักษณ์ด้านล่างที่เหมือนกับภาพตัวอย่างด้านบน</string>
+    <string name="visual_acuity_undefinable">มองไม่เห็น</string>
+
+    <!-- 암슬러 차트 검사 -->
+    <string name="amsler_description1_blink">โปรดมองที่จุดกระพริบ</string>
+    <string name="amsler_description2_distortion_1">เลือกบริเวณที่เห็นมืดหรือบิดเบี้ยว</string>
+    <string name="amsler_description2_distortion_2">ได้เลย</string>
+    <string name="amsler_description2_distortion_3">\nหากไม่เห็นความผิดปกติ</string>
+    <string name="amsler_description2_distortion_4">&#160;โปรดกดปุ่ม “เสร็จสิ้น”</string>
+    <string name="amsler_description3_center">โปรดมองที่จุดสีดำตรงกลาง</string>
+    <string name="amsler_description4_gmp">มองที่จุดสีดำตรงกลาง แล้วแตะบริเวณที่เห็นผิดปกติหรือบิดเบี้ยว\nหากเลือกครบหรือไม่พบความผิดปกติ โปรดกดปุ่ม ‘เสร็จสิ้น’ ด้านล่าง</string>
+    <string name="amsler_description4_gmp_1">มองที่จุดสีดำตรงกลาง แล้วแตะบริเวณที่เห็นผิดปกติหรือ</string>
+    <string name="amsler_description4_gmp_2">บิดเบี้ยวบนหน้าจอ</string>
+    <string name="amsler_description4_gmp_3">หากเลือกครบหรือไม่พบความผิดปกติ</string>
+    <string name="amsler_description4_gmp_4">โปรดกดปุ่ม ‘เสร็จสิ้น’ ด้านล่าง</string>
+    <string name="amsler_complete_button">เสร็จสิ้น</string>
+
+    <!-- M-chart 검사 -->
+    <string name="mchart_test_description_1">โปรดเลือกว่ารูปเส้นด้านล่างดูเป็น&#160;</string>
+    <string name="mchart_test_description_2">เส้นตรง</string>
+    <string name="mchart_test_description_3">หรือไม่\n</string>
+    <string name="mchart_test_description_4">เส้นโค้ง</string>
+    <string name="mchart_test_description_5">ตามที่คุณมองเห็น</string>
+    <string name="mchart_test_content_straight">เส้นตรง</string>
+    <string name="mchart_test_content_bent">เส้นโค้ง</string>
+
+    <!-- 검사 결과 화면 -->
+    <string name="result_toast_no_printer">ไม่พบเครื่องพิมพ์ที่เชื่อมต่อ</string>
+    <string name="presbyopia_result_title">ผลการตรวจการปรับโฟกัสสายตา</string>
+    <string name="short_visual_acuity_result_title">ผลการตรวจสายตาระยะใกล้</string>
+    <string name="long_visual_acuity_result_title">ผลการตรวจสายตาระยะไกล</string>
+    <string name="children_visual_acuity_result_title">ผลการตรวจสายตาสำหรับเด็ก</string>
+    <string name="amsler_grid_result_title">ผลการตรวจตาราง Amsler</string>
+    <string name="mchart_result_title">ผลการตรวจการบิดเบือนของภาพ (M-Chart)</string>
+    <string name="result_button1_print">พิมพ์ผลการตรวจ</string>
+    <string name="result_button2_back">กลับไปที่รายการตรวจ</string>
+    <string name="result_dementia_back">กลับไปที่รายการตรวจ</string>
+
+    <!-- 노안 조절력 검사 결과 -->
+    <string name="presbyopia_result_description1_normal">ไม่พบอาการสายตายาวตามอายุ</string>
+    <string name="presbyopia_result_description">อายุของดวงตาน้อยกว่า 40 ปี</string>
+    <string name="presbyopia_result_description2_eye_age">อายุของดวงตาประมาณ&#160;</string>
+    <string name="presbyopia_result_description3_under45">ไม่เกิน 45 ปี</string>
+    <string name="presbyopia_result_sub_description">สามารถมองเห็นวัตถุได้ชัดเจนแม้ในระยะต่ำกว่า 25 ซม.</string>
+    <string name="presbyopia_result_description_normal">ค่ะ/ครับ</string>
+    <string name="presbyopia_result_description1_abnormal">อาจมีความไม่สะดวกในชีวิตประจำวันเนื่องจากอาการสายตายาวตามอายุ</string>
+    <string name="presbyopia_result_description_abnormal_1">อาจมีความไม่สะดวกในชีวิตประจำวัน</string>
+    <string name="presbyopia_result_description_abnormal_2">เนื่องจากอาการสายตายาวตามอายุ</string>
+    <string name="presbyopia_result_description2_abnormal">ปี</string>
+    <string name="presbyopia_result_description3_abnormal">โดยประมาณ</string>
+    <string name="presbyopia_result_sub_description1_approximate">ประมาณ</string>
+    <string name="presbyopia_result_sub_description2_blur">ซม. หรือน้อยกว่านี้ วัตถุอาจดูเบลอได้</string>
+
+    <!-- 근거리 시력 검사 결과 -->
+    <string name="test_result_normal_case">ในกรณีที่ไม่มีความผิดปกติ</string>
+    <string name="test_result_normal_bottom">หากดวงตาไม่มีความผิดปกติ จะได้ผลลัพธ์ดังต่อไปนี้</string>
+    <string name="visual_acuity_result_description_higher">สายตาซ้าย · ขวา 0.7 ขึ้นไป</string>
+    <string name="test_result_my_result">ผลลัพธ์ของฉัน</string>
+    <string name="test_result_left">ซ้าย</string>
+    <string name="test_result_right">ขวา</string>
+
+    <!-- 암슬러 차트 검사 결과 -->
+    <string name="test_result_normal_right">ไม่พบความผิดปกติ</string>
+
+    <!-- M-chart 검사 결과 -->
+    <string name="mchart_result_left_right">ซ้าย · ขวา</string>
+    <string name="mchart_result_vertical">แนวตั้ง</string>
+    <string name="mchart_result_horizontal">แนวนอน</string>
+
+    <!-- TTS -->
+    <string name="tts_wait_for_result">โปรดรอสักครู่ ขณะกำลังประมวลผลผลการตรวจ</string>
+
+    <!-- TTS presbyopia-->
+    <string name="tts_presbyopia_test_start1">เริ่มการตรวจการปรับโฟกัสสายตา</string>
+    <string name="tts_presbyopia_test_start2">เริ่มการตรวจครั้งที่สอง</string>
+    <string name="tts_presbyopia_test_start3">เริ่มการตรวจครั้งสุดท้าย</string>
+    <string name="tts_presbyopia_test_adjustment">โปรดปรับระยะห่างจากหน้าจอให้อยู่ระหว่าง 40–50 เซนติเมตร</string>
+    <string name="tts_presbyopia_test_guide_video">ต่อไปเป็นวิดีโอแนะนำวิธีการตรวจ</string>
+    <string name="tts_presbyopia_test_slowly_like_video">ค่อย ๆ ขยับเข้ามาข้างหน้า หากภาพชัดหรือเริ่มเบลอ โปรดหยุดและกดปุ่ม ‘ถัดไป’ ด้านล่าง</string>
+    <string name="tts_presbyopia_test_slowly">ค่อย ๆ ขยับเข้ามาข้างหน้า หากภาพชัดหรือเริ่มเบลอ โปรดหยุดและกดปุ่ม ‘ถัดไป’ ด้านล่าง</string>
+    <string name="tts_presbyopia_test_start_after">เริ่มการตรวจ</string>
+    <string name="tts_presbyopia_test_no_problem1">ไม่พบอาการสายตายาวตามอายุในการตรวจครั้งแรก\nโปรดกดปุ่ม ‘ถัดไป’ ด้านล่าง</string>
+    <string name="tts_presbyopia_test_no_problem2">ไม่พบอาการสายตายาวตามอายุในการตรวจครั้งที่สอง\nโปรดกดปุ่ม ‘ถัดไป’ ด้านล่าง</string>
+    <string name="tts_presbyopia_test_no_problem3">ไม่พบอาการสายตายาวตามอายุในการตรวจครั้งสุดท้าย\nโปรดกดปุ่ม ‘ถัดไป’ ด้านล่าง</string>
+
+    <!-- TTS measure distance -->
+    <string name="tts_dialog">ในการตรวจนี้จะใช้ที่ปิดตาพิเศษตามภาพด้านล่าง โปรดยกที่ปิดตาขึ้นมา</string>
+    <string name="tts_right_eye">เริ่มการตรวจตาขวา</string>
+    <string name="tts_align_middle_center">โปรดมองที่หน้าจอและจัดใบหน้าให้อยู่ตรงกลางของภาพ</string>
+    <string name="tts_cover_right_eye">โปรดปิดตาขวาด้วยที่ปิดตา</string>
+    <string name="tts_cover_left_eye">โปรดปิดตาซ้ายด้วยที่ปิดตา</string>
+    <string name="tts_cover_distance">โปรดตรวจสอบระยะทางในขณะปิดตาข้างหนึ่ง</string>
+    <string name="tts_start_button">โปรดกดปุ่ม ‘เริ่มการตรวจ’ ด้านล่าง</string>
+    <string name="tts_right_align">จะเริ่มการตรวจตาขวา โปรดมองที่หน้าจอและจัดใบหน้าให้อยู่ตรงกลางของภาพ</string>
+
+    <!--TTS short visualacuitytest-->
+    <string name="tts_short_visualacuity">เริ่มการตรวจ โปรดเลือกจากสัญลักษณ์สามภาพด้านล่างว่าภาพใดเหมือนกับภาพตัวอย่างด้านบน หากมองไม่ชัด โปรดกดปุ่ม ‘มองไม่เห็น’ ด้านล่าง</string>
+
+    <!--TTS Amsler Grid-->
+    <string name="tts_blink">โปรดมองที่จุดกระพริบตรงกลางของตาราง</string>
+    <string name="tts_description">โปรดแตะบริเวณที่เห็นบิดเบี้ยวหรือเป็นสีดำ หากเลือกครบหรือไม่พบความผิดปกติ โปรดกดปุ่ม ‘เสร็จสิ้น’ ด้านล่าง</string>
+    <string name="tts_start">เริ่มการตรวจ</string>
+    <string name="tts_end">การตรวจเสร็จสิ้น โปรดรอสักครู่ขณะกำลังแสดงผลลัพธ์</string>
+
+    <!--TTS MChart-->
+    <string name="tts_straight_or_bent">โปรดมองที่เส้นตรงด้านล่าง แล้วเลือกว่ามองเห็นเป็นเส้นตรงหรือเส้นโค้ง</string>
+
+    <!--프린터-->
+    <string name="printer_left_eye">ตาซ้าย</string>
+    <string name="printer_right_eye">ตาขวา</string>
+    <string name="printer_problem">ผิดปกติ</string>
+    <string name="printer_horizontal_normal">แนวตั้ง: ปกติ</string>
+    <string name="printer_horizontal_problem">แนวตั้ง: ผิดปกติ</string>
+    <string name="printer_vertical_normal">แนวนอน: ปกติ</string>
+    <string name="printer_vertical_problem">แนวนอน: ผิดปกติ</string>
+    <string name="printer_distance">ระยะทาง:</string>
+    <string name="printer_age">อายุ:</string>
+
+    <!-- 치매 자가진단 -->
+    <string name="dementia_title">แบบทดสอบคัดกรองภาวะสมองเสื่อม (SMCQ)</string>
+    <string name="dementia_survey_question0">คุณคิดว่าความจำของคุณมีปัญหาหรือไม่?</string>
+    <string name="dementia_survey_question1">คุณคิดว่าความจำของคุณแย่ลงกว่าเมื่อ 10 ปีก่อนหรือไม่?</string>
+    <string name="dementia_survey_question2">คุณคิดว่าความจำของคุณแย่กว่าคนวัยเดียวกันหรือไม่?</string>
+    <string name="dementia_survey_question3">คุณรู้สึกไม่สะดวกในการใช้ชีวิตประจำวันเนื่องจากความจำลดลงหรือไม่?</string>
+    <string name="dementia_survey_question4">คุณลำบากในการจำเหตุการณ์ที่เพิ่งเกิดขึ้นหรือไม่?</string>
+    <string name="dementia_survey_question5">คุณจำบทสนทนาที่พูดไปเมื่อไม่กี่วันก่อนได้ยากหรือไม่?</string>
+    <string name="dementia_survey_question6">คุณจำการนัดหมายที่ทำไว้เมื่อไม่กี่วันก่อนได้ยากหรือไม่?</string>
+    <string name="dementia_survey_question7">คุณจำชื่อของคนสนิทได้ยากหรือไม่?</string>
+    <string name="dementia_survey_question8">คุณจำได้ยากว่าวางของไว้ที่ไหนหรือไม่?</string>
+    <string name="dementia_survey_question9">คุณจำสถานที่ที่เคยวางของไว้ก่อนหน้านี้ได้ยากหรือไม่?</string>
+    <string name="dementia_survey_question10">คุณเคยหลงทางบริเวณใกล้บ้านหรือไม่?</string>
+    <string name="dementia_survey_question11">เมื่อจะซื้อของ 2–3 อย่างที่ร้าน คุณจำชื่อสิ่งของเหล่านั้นได้ยากหรือไม่?</string>
+    <string name="dementia_survey_question12">คุณจำได้ยากว่าปิดเตาแก๊สหรือไฟฟ้าหรือยัง?</string>
+    <string name="dementia_survey_question13">คุณจำหมายเลขโทรศัพท์ที่ใช้บ่อย (เช่น บ้านของคุณหรือบุตร) ได้ยากหรือไม่?</string>
+    <string name="dementia_result_instruction">หากได้คะแนน 6 คะแนนขึ้นไป แนะนำให้เข้ารับการวินิจฉัยอย่างละเอียด</string>
+    <string name="dementia_result_wording1">"ผลการทดสอบคัดกรองภาวะสมองเสื่อมคือ "</string>
+    <string name="dementia_result_wording2">คะแนน</string>
+    <string name="dementia_result_wording3">ควรรักษาการออกกำลังกายและการเข้าสังคมภายนอก พร้อมปฏิบัติตามหลักการป้องกันสมองเสื่อม 3-3-3 อย่างสม่ำเสมอ</string>
+    <string name="dementia_result_wording4">โปรดไปที่สถานีอนามัยใกล้บ้านหรือศูนย์ดูแลโรคสมองเสื่อมเพื่อรับการตรวจวินิจฉัยที่ละเอียดมากขึ้น</string>
+    <string name="dementia_result_selection1">ดูรายละเอียดหลักการป้องกันสมองเสื่อม 3-3-3</string>
+    <string name="dementia_result_selection2">เว็บไซต์ศูนย์โรคสมองเสื่อมแห่งชาติ</string>
+    <string name="dementia_result_caution_needed">ต้องระวัง</string>
+    <string name="eye_test">การตรวจสุขภาพดวงตาด้วย AI</string>
+    <string name="dementia_test">แบบทดสอบคัดกรองภาวะสมองเสื่อม</string>
+    <string name="call">ติดต่อครอบครัว</string>
+    <string name="dementia_result_title">ผลการทดสอบคัดกรองภาวะสมองเสื่อม</string>
+    <string name="submit">ส่งคำตอบ</string>
+
+    <!--닥터피트니스안경-->
+    <string name="explore_presbyopia_glasses">แว่นตาออกกำลังกายดวงตา\nสำหรับการปรับโฟกัสสายตา</string>
+    <string name="wear_the_glasses">โปรดสวมแว่นตาสำหรับสายตายาวที่จัดเตรียมไว้ แล้วเลือกหัวข้อที่ต้องการ</string>
+    <string name="presbyopia_glasses">แว่นตาออกกำลังกายดวงตาเพื่อการปรับโฟกัส</string>
+    <string name="concentration_glasses">แว่นตาออกกำลังกายดวงตาเพื่อเพิ่มสมาธิ</string>
+    <string name="concentration_glasses_title">แว่นตาออกกำลังกายดวงตาเพื่อเพิ่มสมาธิ</string>
+    <string name="presbyopia_glasses_result_title">ผลการออกกำลังกายดวงตาด้วยแว่นตาการปรับโฟกัส</string>
+    <string name="concentration_glasses_result_title">ผลการออกกำลังกายดวงตาด้วยแว่นตาเพิ่มสมาธิ</string>
+    <string name="within_40cm">โปรดเข้ามาใกล้หน้าจอในระยะไม่เกิน 40 ซม.</string>
+    <string name="read_between">\nจัดแนวลายเส้นให้ขนานกับตัวอักษร แล้วอ่านข้อความระหว่างเส้น</string>
+    <string name="compare_and_test">โปรดลองเปรียบเทียบระหว่างสวมแว่นตาและไม่สวมแว่นตา</string>
+    <string name="presbyopia_glasses_chart">ตารางการตรวจการปรับโฟกัสดวงตา</string>
+    <string name="not_visiable_test_complete">มองไม่เห็น (การตรวจเสร็จสิ้น)</string>
+    <string name="next_stage">ขั้นตอนถัดไป</string>
+    <string name="source">แหล่งที่มา: ใบตรวจสายตาระยะใกล้จากร้านแว่นตา</string>
+    <string name="stage">ขั้นตอน</string>
+    <string name="test_complete">การตรวจเสร็จสิ้น</string>
+    <string name="experience_glasses">\nคุณรู้สึกถึงประสิทธิภาพของแว่นตาออกกำลังกายดวงตาหรือไม่?</string>
+    <string name="consistently_wear">โปรดสวมแว่นตาสำหรับสายตายาวอย่างต่อเนื่อง\nเพื่อเสริมสร้างความสามารถในการปรับโฟกัสดวงตา</string>
+    <string name="retest">ตรวจอีกครั้ง</string>
+    <string name="to_beginning">กลับไปที่รายการตรวจ</string>
+    <string name="square_frame">\nโปรดลองอ่านข้อความช้า ๆ ภายในกรอบสี่เหลี่ยม</string>
+    <string name="feel_more_immersive">\nคุณจะรู้สึกว่าตัวอักษรชัดเจนขึ้นและมีสมาธิมากขึ้น</string>
+    <string name="concentration_test_chart">ตารางการตรวจสมาธิ</string>
+    <string name="test_over">การตรวจเสร็จสิ้น</string>
+    <string name="chart_en">ตารางภาษาอังกฤษ</string>
+    <string name="chart_ko">ตารางภาษาเกาหลี</string>
+    <!--NEW-->
+    <string name="blood_pressure_monitor_initial_instruction">"เริ่มการเชื่อมต่อเครื่องวัดความดันโลหิต"</string>
+    <string name="blood_pressure_monitor_disconnected">"การเชื่อมต่อกับเครื่องวัดความดันโลหิตถูกตัด กรุณาลองเชื่อมต่ออีกครั้ง"</string>
+    <string name="blood_pressure_monitor_connected">"เครื่องวัดความดันโลหิตเชื่อมต่อแล้ว โปรดกดปุ่มเริ่มต้น"</string>
+    <string name="blood_pressure_monitor_connection_failed">"การเชื่อมต่อกับเครื่องวัดความดันโลหิตล้มเหลว\nกรุณาลองอีกครั้ง"</string>
+    <string name="blood_pressure_monitor_title">การจัดการเครื่องวัดความดันโลหิต</string>
+    <string name="blood_pressure_monitor_image_content_description">เครื่องวัดความดันโลหิต</string>
+    <string name="blood_pressure_monitor_standby_instruction1">"หากต้องการเริ่มการเชื่อมต่อเครื่องวัดความดันโลหิต\n"</string>
+    <string name="blood_pressure_monitor_standby_instruction2">"ปุ่มเริ่มการเชื่อมต่อ"</string>
+    <string name="blood_pressure_monitor_standby_instruction3">"โปรดกดปุ่มนี้"</string>
+    <string name="blood_pressure_monitor_start_connection">เริ่มการเชื่อมต่อ</string>
+    <string name="blood_pressure_monitor_searching_device">กำลังพยายามเชื่อมต่อเครื่องวัดความดันโลหิต BP170B...</string>
+    <string name="blood_pressure_monitor_retry_connection">ลองเชื่อมต่ออีกครั้ง</string>
+    <string name="blood_pressure_monitor_connecting">กำลังเชื่อมต่อเครื่องวัดความดันโลหิต...</string>
+    <string name="blood_pressure_monitor_device_connected">เชื่อมต่อกับเครื่องวัดความดันโลหิตแล้ว</string>
+    <string name="blood_pressure_monitor_disconnect">ยกเลิกการเชื่อมต่อ</string>
+    <string name="blood_pressure_monitor_connection_error">เกิดข้อผิดพลาดในการเชื่อมต่อเครื่องวัดความดันโลหิต!</string>
+    <string name="blood_pressure_monitor_error_message">ข้อผิดพลาด: %1$s</string>
+    <string name="blood_pressure_monitor_try_again">ลองอีกครั้ง</string>
+    <string name="blood_pressure_monitor_systolic">ความดันตัวบน</string>
+    <string name="blood_pressure_monitor_diastolic">ความดันตัวล่าง</string>
+    <string name="blood_pressure_monitor_heart_rate">อัตราการเต้นของหัวใจ</string>
+    <string name="blood_pressure_monitor_select_device">กรุณาเลือกเครื่องวัดความดันโลหิต:</string>
+    <string name="test_instructions">คำแนะนำการตรวจ:</string>
+
+    <string name="dynamometer_initial_instruction">"นี่คือหน้าจอการเชื่อมต่อเครื่องวัดแรงบีบมือ โปรดกดปุ่มเริ่มการเชื่อมต่อ"</string>
+    <string name="dynamometer_searching_tts">"กำลังค้นหาเครื่องวัดแรงบีบมือ โปรดกดปุ่มเปิดเครื่องบนอุปกรณ์"</string>
+    <string name="dynamometer_connection_error_tts">"การเชื่อมต่อล้มเหลว โปรดลองอีกครั้ง"</string>
+    <string name="dynamometer_back_button_content_description">ปุ่มย้อนกลับ</string>
+    <string name="dynamometer_title">การจัดการเครื่องวัดแรงบีบมือ</string>
+    <string name="dynamometer_image_content_description">เครื่องวัดแรงบีบมือ</string>
+    <string name="dynamometer_standby_instruction1">"หากต้องการเริ่มการเชื่อมต่อเครื่องวัดแรงบีบมือ\n"</string>
+    <string name="dynamometer_standby_instruction2">"ปุ่มเริ่มการเชื่อมต่อ"</string>
+    <string name="dynamometer_standby_instruction3">"โปรดกดปุ่มนี้"</string>
+    <string name="dynamometer_start_connection">เริ่มการเชื่อมต่อ</string>
+    <string name="dynamometer_select_device">กรุณาเลือกเครื่องวัดแรงบีบมือ:</string>
+    <string name="dynamometer_unknown_device_name">อุปกรณ์ที่ไม่รู้จัก</string>
+    <string name="dynamometer_connecting">กำลังเชื่อมต่อเครื่องวัดแรงบีบมือ...</string>
+    <string name="dynamometer_searching">กำลังค้นหาเครื่องวัดแรงบีบมือ...\nโปรดกดปุ่มเปิดเครื่องบนอุปกรณ์</string>
+    <string name="dynamometer_not_connected_instruction">"ยังไม่ได้เชื่อมต่อกับเครื่องวัดแรงบีบมือ\nโปรดเปิดเครื่องก่อน"</string>
+    <string name="dynamometer_retry_connection">ลองเชื่อมต่ออีกครั้ง</string>
+    <string name="dynamometer_device_connected1">เชื่อมต่อกับเครื่องวัดแรงบีบมือแล้ว\n</string>
+    <string name="dynamometer_device_connected2">โปรดกดปุ่มเริ่มการทดสอบแรงบีบมือ&#160;</string>
+    <string name="dynamometer_device_connected3">เพื่อเริ่มต้น</string>
+    <string name="dynamometer_disconnect">ยกเลิกการเชื่อมต่อ</string>
+    <string name="dynamometer_complete_connection">เชื่อมต่อสำเร็จ</string>
+    <string name="dynamometer_connection_error">เกิดข้อผิดพลาดในการเชื่อมต่อเครื่องวัดแรงบีบมือ!</string>
+    <string name="dynamometer_connection_error_details">อุปกรณ์ไม่ได้เชื่อมต่อหรือเกิดปัญหาการสื่อสาร</string>
+    <string name="dynamometer_try_again">ลองอีกครั้ง</string>
+
+    <string name="bt_device_management_title">การจัดการอุปกรณ์บลูทูธ</string>
+    <string name="bt_device_management_bp_connected">เชื่อมต่อเครื่องวัดความดันโลหิตแล้ว</string>
+    <string name="bt_device_management_bp_disconnected">ยังไม่ได้เชื่อมต่อเครื่องวัดความดันโลหิต</string>
+    <string name="bt_device_management_manage_bp">การจัดการเครื่องวัดความดันโลหิต</string>
+    <string name="bt_device_management_dynamometer_connected">เชื่อมต่อเครื่องวัดแรงบีบมือแล้ว</string>
+    <string name="bt_device_management_dynamometer_disconnected">ยังไม่ได้เชื่อมต่อเครื่องวัดแรงบีบมือ</string>
+    <string name="bt_device_management_manage_dynamometer">การจัดการเครื่องวัดแรงบีบมือ</string>
+
+    <string name="user_sign_in">เข้าสู่ระบบส่วนบุคคล</string>
+
+    <string name="default_sign_in_manage_bt_devices">การจัดการอุปกรณ์บลูทูธ</string>
+    <string name="default_sign_in_qr_login">เข้าสู่ระบบด้วย QR</string>
+    <string name="default_sign_in_face_recognition">เข้าสู่ระบบด้วยการจดจำใบหน้า</string>
+    <string name="default_sign_in_sign_up">สมัครสมาชิก</string>
+    <string name="id_pw_sign_in">เข้าสู่ระบบด้วย ID / รหัสผ่าน</string>
+
+    <string name="qr_sign_in_title">เข้าสู่ระบบด้วย QR</string>
+    <string name="qr_sign_in_scan_instruction">โปรดแสดงรหัส QR สำหรับเข้าสู่ระบบ</string>
+    <string name="qr_sign_in_scanned_success">สแกนรหัส QR แล้ว โปรดกดปุ่มเข้าสู่ระบบ</string>
+    <string name="qr_sign_in_invalid_qr">รหัส QR ไม่ถูกต้อง โปรดลองสแกนอีกครั้ง</string>
+    <string name="qr_sign_in_invalid_qr_toast">รหัส QR ไม่ถูกต้อง</string>
+    <string name="qr_sign_in_camera_permission_error">ไม่สามารถเปิดกล้องได้ โปรดตรวจสอบสิทธิ์การใช้งาน</string>
+    <string name="qr_sign_in_scanned_info_header">ข้อมูลที่สแกนได้</string>
+    <string name="qr_sign_in_id_label">รหัสผู้ใช้:</string>
+    <string name="qr_sign_in_password_label">รหัสผ่าน:</string>
+    <string name="qr_sign_in_rescan_button">สแกนอีกครั้ง</string>
+    <string name="qr_sign_in_login_button">เข้าสู่ระบบ</string>
+    <string name="qr_sign_in_login_processing">กำลังดำเนินการเข้าสู่ระบบ...</string>
+    <string name="qr_sign_in_no_scanned_info_toast">ยังไม่มีข้อมูลที่สแกน โปรดสแกนรหัส QR ก่อน</string>
+    <string name="qr_sign_in_login_success_toast">เข้าสู่ระบบสำเร็จ!</string>
+
+    <string name="signin_vm_face_detection_status_looking">กำลังค้นหาใบหน้า...</string>
+    <string name="signin_vm_validation_password_length">กรุณากรอกรหัสผ่านอย่างน้อย 8 ตัวอักษร และไม่เกิน 32 ตัวอักษร</string>
+    <string name="signin_vm_validation_password_mismatch">รหัสผ่านไม่ตรงกัน</string>
+    <string name="signin_vm_validation_email_invalid">กรุณากรอกที่อยู่อีเมลที่ถูกต้อง</string>
+    <string name="signin_vm_signup_validation_fill_all">กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วนและถูกต้อง</string>
+    <string name="signin_vm_signup_face_enrollment_required">จำเป็นต้องลงทะเบียนใบหน้าเพื่อสมัครสมาชิก</string>
+    <string name="signin_vm_face_processing">กำลังประมวลผลข้อมูลใบหน้า...</string>
+    <string name="signin_vm_face_enrollment_ready">พร้อมสำหรับการลงทะเบียนใบหน้า!</string>
+    <string name="signin_vm_face_extraction_failed_retry">ไม่สามารถดึงข้อมูลใบหน้าได้ กรุณาลองอีกครั้ง</string>
+    <string name="signin_vm_face_recognition_failed_no_valid_face">การจดจำใบหน้าล้มเหลว: ไม่พบใบหน้าที่ถูกต้อง</string>
+    <string name="signin_vm_face_processing_error">เกิดข้อผิดพลาดระหว่างประมวลผลใบหน้า</string>
+    <string name="signin_vm_face_recognition_error">เกิดข้อผิดพลาดระหว่างการจดจำใบหน้า: %1$s</string>
+    <string name="signin_vm_face_recognizing">กำลังจดจำใบหน้า...</string>
+    <string name="signin_vm_face_info_extraction_failed">ไม่สามารถดึงข้อมูลที่ใช้สำหรับการจดจำใบหน้าได้</string>
+    <string name="signin_vm_login_success">เข้าสู่ระบบสำเร็จ!\nยินดีต้อนรับ, %1$s!</string>
+    <string name="signin_vm_face_no_match">ไม่พบใบหน้าที่ตรงกัน กรุณาลองอีกครั้ง</string>
+    <string name="signin_vm_face_registration_in_progress">กำลังลงทะเบียนข้อมูลใบหน้า...</string>
+    <string name="signin_vm_face_registration_error_id_exists">ข้อผิดพลาด: รหัสผู้ใช้ \'%1$s\' ได้รับการลงทะเบียนแล้ว</string>
+    <string name="signin_vm_face_registration_success">ลงทะเบียนใบหน้าสำเร็จแล้ว!</string>
+    <string name="signin_vm_face_registration_extraction_failed">ไม่สามารถลงทะเบียนได้เนื่องจากการดึงข้อมูลใบหน้าล้มเหลว</string>
+
+    <string name="face_id_sign_in_title">หน้าจอ&#160;</string>
+
+    <string name="pulmonary_function_test">การวัดอายุปอด</string>
+    <string name="pulmonary_function_test_result">ผลการวัดอายุปอด</string>
+    <string name="pulmonary_capacity_label">ความจุปอด</string>
+    <string name="pulmonary_power_label">กำลังปอด</string>
+    <string name="pulmonary_status_label">สภาพปอด</string>
+    <string name="pulmonary_age_label">อายุปอด</string>
+    <string name="pulmonary_age_format">%s ปี</string>
+    <string name="pulmonary_age_short_format">%s ปี</string>
+
+    <string name="pdf_print_job_name">ผลการตรวจ Nenoon Kiosk+</string>
+    <string name="pdf_print_write_failed">การสร้างเอกสารล้มเหลว: %1$s</string>
+    <string name="pdf_print_failed_generic">การพิมพ์ล้มเหลว</string>
+    <string name="pdf_overall_result_title">ผลรวมทั้งหมด</string>
+    <string name="pdf_label_name">ชื่อ:&#160;</string>
+    <string name="pdf_label_age">อายุ:&#160;</string>
+    <string name="pdf_label_date">วันที่:&#160;</string>
+    <string name="pdf_qr_code_label">รหัส QR สำหรับเข้าสู่ระบบ</string>
+    <string name="pdf_test_not_conducted">ยังไม่ได้ทำการตรวจ</string>
+
+    <string name="pdf_visual_acuity_title">ผลการตรวจสายตา (ซ้าย/ขวา)</string>
+    <string name="pdf_left_eye">ตาซ้าย</string>
+    <string name="pdf_right_eye">ตาขวา</string>
+    <string name="pdf_va_range_normal">0.8 ขึ้นไป</string>
+    <string name="pdf_va_interp_normal">อยู่ในเกณฑ์ปกติ ไม่มีหรือมีอาการสายตายาวระยะเริ่มต้นเพียงเล็กน้อย</string>
+    <string name="pdf_va_recomm_normal">แนะนำให้ตรวจสุขภาพตาเป็นประจำ และดูแลลดอาการล้าของดวงตาในชีวิตประจำวัน</string>
+    <string name="pdf_va_range_mild">0.5 ~ 0.7</string>
+    <string name="pdf_va_interp_mild">สายตาสั้นระดับเล็กน้อย หรืออาจมีแนวโน้มสายตายาว/การปรับโฟกัสลดลง</string>
+    <string name="pdf_va_recomm_mild">พิจารณาใช้แว่นตาหรือแว่นขยาย ปรับสภาพแสงและทำแบบฝึกหัดบริหารสายตา</string>
+    <string name="pdf_va_range_moderate">0.4 หรือน้อยกว่า</string>
+    <string name="pdf_va_interp_moderate">มีโอกาสเป็นสายตาอ่อนปานกลางถึงรุนแรง หรือมีการดำเนินของภาวะสายตายาวตามอายุ</string>
+    <string name="pdf_va_recomm_moderate">ควรเข้ารับการตรวจโดยจักษุแพทย์ พร้อมใช้เครื่องช่วยการมองเห็นและปรับสภาพแวดล้อมให้เหมาะสม</string>
+
+    <string name="pdf_blood_pressure_title">ค่าความดันโลหิต</string>
+    <string name="pdf_systolic">ความดันตัวบน</string>
+    <string name="pdf_diastolic">ความดันตัวล่าง</string>
+    <string name="pdf_pulse_rate">อัตราการเต้นของหัวใจ</string>
+    <string name="pdf_bp_range_normal">ไม่เกิน 120/80 mmHg</string>
+    <string name="pdf_bp_interp_normal">ความดันโลหิตปกติ</string>
+    <string name="pdf_bp_recomm_normal">รักษาพฤติกรรมการดำเนินชีวิตในปัจจุบัน และตรวจวัดความดันโลหิตเป็นประจำ</string>
+    <string name="pdf_bp_range_prehypertension">121–139 / 81–89 mmHg</string>
+    <string name="pdf_bp_interp_prehypertension">ระยะก่อนความดันโลหิตสูง (ความดันขอบเขต)</string>
+    <string name="pdf_bp_recomm_prehypertension">ควรลดการบริโภคโซเดียม ออกกำลังกายสม่ำเสมอ และจัดการความเครียดเพื่อปรับปรุงพฤติกรรมการใช้ชีวิต</string>
+    <string name="pdf_bp_range_hypertension">140/90 mmHg ขึ้นไป</string>
+    <string name="pdf_bp_interp_hypertension">สงสัยว่าความดันโลหิตสูง หรืออยู่ในภาวะความดันโลหิตสูง</string>
+    <string name="pdf_bp_recomm_hypertension">แนะนำให้ไปพบแพทย์เพื่อตรวจวินิจฉัยอย่างละเอียด และอาจต้องใช้ยาร่วมรักษาตามคำแนะนำของแพทย์</string>
+    <string name="pdf_bp_tip">หมายเหตุ: การจัดประเภททั่วไปอ้างอิงตามสมาคมความดันโลหิตสูงแห่งเกาหลีและองค์การอนามัยโลก (WHO)</string>
+
+    <string name="pdf_grip_strength_title">แรงบีบมือ</string>
+    <string name="pdf_left_hand">มือซ้าย</string>
+    <string name="pdf_right_hand">มือขวา</string>
+    <string name="pdf_gs_range_normal">ชาย: 35กก. ขึ้นไป / หญิง: 25กก. ขึ้นไป</string>
+    <string name="pdf_gs_interp_normal">อยู่ในช่วงกำลังกล้ามเนื้อปกติ</string>
+    <string name="pdf_gs_recomm_normal">แนะนำให้ออกกำลังกายแบบเวทเบา ๆ และคาร์ดิโอร่วมกันเพื่อรักษากำลังกล้ามเนื้อ</string>
+    <string name="pdf_gs_range_mild">ชาย: 30–34กก. / หญิง: 20–24กก.</string>
+    <string name="pdf_gs_interp_mild">อาจเริ่มมีแนวโน้มกำลังกล้ามเนื้อลดลง</string>
+    <string name="pdf_gs_recomm_mild">ควรบริหารมือและแขน เช่น บีบลูกบอลหรือใช้อุปกรณ์ยกน้ำหนักขนาดเล็กเพื่อเพิ่มความแข็งแรง</string>
+    <string name="pdf_gs_range_moderate">ชาย: ต่ำกว่า 29กก. / หญิง: ต่ำกว่า 19กก.</string>
+    <string name="pdf_gs_interp_moderate">อาจมีภาวะกล้ามเนื้ออ่อนแรง หรือเสี่ยงต่อภาวะกล้ามเนื้อลดลง (Sarcopenia)</string>
+    <string name="pdf_gs_recomm_moderate">ควรเข้าร่วมโปรแกรมการออกกำลังกายเฉพาะทาง หรือรับการตรวจกล้ามเนื้อโดยละเอียด และรักษากิจกรรมในชีวิตประจำวันให้ต่อเนื่อง</string>
+    <string name="pdf_gs_tip">หมายเหตุ: อ้างอิงตามค่าเฉลี่ยแรงบีบมือของชาวเกาหลี</string>
+    <string name="pdf_normal">ปกติ</string>
+    <string name="pdf_abnormal">ผิดปกติ</string>
+
+    <string name="pdf_pulmonary_age_title">อายุปอด</string>
+    <string name="pdf_age_unit">ปี</string>
+    <string name="pdf_pf_range_normal">เท่ากับหรือน้อยกว่าอายุจริง</string>
+    <string name="pdf_pf_interp_normal">การทำงานของปอดอยู่ในเกณฑ์ดี</string>
+    <string name="pdf_pf_recomm_normal">รักษาสภาพปัจจุบัน หลีกเลี่ยงการสูบบุหรี่ และแนะนำให้ออกกำลังกายแบบคาร์ดิโออย่างสม่ำเสมอ</string>
+    <string name="pdf_pf_range_mild">มากกว่าอายุจริง 5–10 ปี</string>
+    <string name="pdf_pf_interp_mild">อาจมีแนวโน้มการทำงานของปอดลดลงเล็กน้อย</string>
+    <string name="pdf_pf_recomm_mild">แนะนำให้เริ่มฝึกการหายใจ (เช่น หายใจทางท้อง หรือเป่าลูกโป่ง) และออกกำลังกายแบบคาร์ดิโอเป็นประจำ</string>
+    <string name="pdf_pf_range_moderate">มากกว่าอายุจริง 11 ปีขึ้นไป</string>
+    <string name="pdf_pf_interp_moderate">อาจมีการทำงานของปอดลดลง หรือมีความเสี่ยงต่อโรคปอด</string>
+    <string name="pdf_pf_recomm_moderate">ควรปรึกษาผู้เชี่ยวชาญทางการแพทย์ งดสูบบุหรี่ทันที และทำการฝึกปอดเพื่อเพิ่มสมรรถภาพการหายใจ</string>
+    <string name="pdf_pf_tip">หมายเหตุ: การตรวจเป่าลมหายใจ (Spirometry) เป็นวิธีที่ให้ค่าประมาณการทำงานของปอดเบื้องต้น สำหรับการวินิจฉัยที่แม่นยำควรตรวจเพิ่มเติมที่สถานพยาบาล</string>
+
+    <string name="pdf_macular_degeneration_title">จอประสาทตาเสื่อม (Macular Degeneration)</string>
+    <string name="pdf_md_range_normal">ไม่มีการบิดเบือน / จุดดำ / จุดบอด (ปกติ)</string>
+    <string name="pdf_md_interp_normal">ไม่พบสัญญาณผิดปกติของจอประสาทตา</string>
+    <string name="pdf_md_recomm_normal">ควรตรวจด้วยตนเองทุก 6 เดือนถึง 1 ปี และป้องกันแสงสีฟ้า (Blue Light) เพื่อดูแลสุขภาพดวงตา</string>
+    <string name="pdf_md_range_mild">มีการบิดเบือนหรือภาพพร่าเล็กน้อย</string>
+    <string name="pdf_md_interp_mild">อาจอยู่ในระยะเริ่มต้นของภาวะจอประสาทตาเสื่อม หรือมีความผิดปกติเล็กน้อยบริเวณจุดรับภาพ</string>
+    <string name="pdf_md_recomm_mild">อยู่ในระยะเริ่มต้นของการเปลี่ยนแปลง แนะนำให้เข้ารับการตรวจ OCT (การถ่ายภาพตัดขวางจอประสาทตา) โดยจักษุแพทย์</string>
+    <string name="pdf_md_range_moderate">มีการบิดเบือนของเส้น จุดบอด หรือความพร่ากลางจอประสาทตาชัดเจน</string>
+    <string name="pdf_md_interp_moderate">อาจเป็นภาวะจอประสาทตาเสื่อมระดับปานกลางถึงรุนแรง หรือโรคของจอประสาทตาอื่น ๆ</string>
+    <string name="pdf_md_recomm_moderate">ควรไปพบจักษุแพทย์ทันที เพื่อตรวจวินิจฉัยอย่างละเอียดและพิจารณาการรักษา (เช่น เพื่อแยกโรคจอประสาทตาเสื่อมชนิดเปียก)</string>
+    <string name="pdf_md_present">มี</string>
+    <string name="pdf_md_absent">ไม่มี</string>
+    <string name="pdf_md_tip">หมายเหตุ: ใช้เครื่องมือ Amsler Grid หรือ M-Chart ในการตรวจด้วยตนเองหรือคัดกรองเบื้องต้น</string>
+
+    <string name="grip_strength_test_instruction_tts">โปรดไปที่เครื่องวัดแรงบีบมือและทำการวัดแรงบีบ</string>
+    <string name="grip_strength_start_test">เริ่มการทดสอบแรงบีบมือ</string>
+
+    <string name="grip_strength_ready_instruction_tts">โปรดเตรียมตัวสำหรับการวัดแรงบีบมือ</string>
+    <string name="grip_strength_right_hand_instruction_tts">โปรดบีบมือขวาให้เต็มแรง</string>
+    <string name="grip_strength_right_hand_completed_tts">การวัดมือขวาเสร็จสิ้นแล้ว โปรดพักสักครู่</string>
+    <string name="grip_strength_left_hand_instruction_tts">โปรดบีบมือซ้ายให้เต็มแรง</string>
+    <string name="grip_strength_left_hand_completed_tts">การวัดแรงบีบมือซ้ายเสร็จสิ้น กำลังดึงข้อมูลผลลัพธ์...</string>
+
+    <string name="grip_strength_right_hand_ready_text1">โปรดถือเครื่องวัดแรงบีบด้วย&#160;</string>
+    <string name="grip_strength_right_hand_ready_text2">มือขวา</string>
+    <string name="grip_strength_right_hand_ready_text3">และเตรียมพร้อมสำหรับการวัด</string>
+    <string name="grip_strength_right_hand_completed_text">การวัดมือขวาเสร็จสิ้น</string>
+    <string name="grip_strength_right_hand_rest_text">ต่อไปจะเป็นการวัดแรงบีบมือซ้าย</string>
+    <string name="grip_strength_left_hand_ready_text1">โปรดถือเครื่องวัดแรงบีบด้วย&#160;</string>
+    <string name="grip_strength_left_hand_ready_text2">มือซ้าย</string>
+    <string name="grip_strength_left_hand_ready_text3">และเตรียมพร้อมสำหรับการวัด</string>
+    <string name="grip_strength_left_hand_completed_text">การวัดแรงบีบมือซ้ายเสร็จสิ้นแล้ว</string>
+
+    <string name="grip_strength_countdown_start_text">จะเริ่มการวัดในอีกไม่กี่วินาที</string>
+    <string name="grip_strength_hold_instruction_text">โปรดจับที่ด้ามเครื่องวัดให้แน่นตามตำแหน่งที่กำหนด และคงแรงไว้</string>
+    <string name="grip_strength_rest_instruction_text">พักสักครู่</string>
+    <string name="grip_strength_next_left_hand_text">ต่อไปจะเป็นการวัดแรงบีบมือซ้าย</string>
+    <string name="grip_strength_fetching_results_text">กำลังดึงผลลัพธ์...</string>
+
+    <string name="grip_strength_right_hand_value">แรงบีบมือขวา:&#160;</string>
+    <string name="grip_strength_left_hand_value">แรงบีบมือซ้าย:&#160;</string>
+
+    <!--미분류-->
+    <string name="lung_age_test">การวัดอายุปอด</string>
+    <string name="blood_pressure_and_grip_strength">ความดันโลหิตและแรงบีบมือ</string>
+    <string name="test_predescription_blood_pressure_title1">การตรวจวัดความดันโลหิต</string>
+    <string name="test_predescription_grip_strength_title1">การตรวจวัดแรงบีบมือ</string>
+    <string name="dynamometer_disconnected_tts">การเชื่อมต่อกับเครื่องวัดแรงบีบมือถูกตัดขาด</string>
+    <string name="dynamometer_connected_tts">เชื่อมต่อเครื่องวัดแรงบีบมือเรียบร้อยแล้ว โปรดกดปุ่มเริ่มการทดสอบแรงบีบมือ</string>
+    <string name="cancel">ยกเลิก</string>
+    <string name="enter">ยืนยัน</string>
+    <string name="password">รหัสผ่าน</string>
+    <string name="qr_code_issue_button_text">ออก QR โค้ดสำหรับเข้าสู่ระบบ</string>
+
+    <string name="close_button_description">ปุ่มปิด</string>
+    <string name="qr_print_success">พิมพ์รหัส QR สำเร็จ</string>
+    <string name="qr_print_fail">การพิมพ์รหัส QR ล้มเหลว</string>
+    <string name="qr_generation_fail">การสร้างรหัส QR ล้มเหลว</string>
+    <string name="qr_not_signed_in">ยังไม่มีผู้ใช้เข้าสู่ระบบ ไม่สามารถออก QR โค้ดได้</string>
+
+    <string name="visual_acuity_result_normal_heading">ไม่พบความผิดปกติ</string>
+    <string name="visual_acuity_result_normal_body">โปรดดูแลสุขภาพดวงตาอย่างต่อเนื่อง</string>
+    <string name="visual_acuity_result_abnormal_heading">สงสัยว่ามีอาการผิดปกติ</string>
+    <string name="visual_acuity_result_abnormal_body">ควรปรึกษาผู้เชี่ยวชาญด้านสายตา</string>
+
+    <string name="amsler_result_normal_heading">ไม่พบความผิดปกติ</string>
+    <string name="amsler_result_normal_body">โปรดดูแลสุขภาพดวงตาอย่างต่อเนื่อง</string>
+    <string name="amsler_result_abnormal_heading">สงสัยว่ามีอาการผิดปกติ</string>
+    <string name="amsler_result_abnormal_body">ควรปรึกษาผู้เชี่ยวชาญด้านสายตา</string>
+
+    <string name="mchart_result_normal_heading">ไม่พบความผิดปกติ</string>
+    <string name="mchart_result_normal_body">โปรดดูแลสุขภาพดวงตาอย่างต่อเนื่อง</string>
+    <string name="mchart_result_abnormal_heading">สงสัยว่ามีอาการผิดปกติ</string>
+    <string name="mchart_result_abnormal_body">ควรปรึกษาผู้เชี่ยวชาญด้านสายตา</string>
+
+    <string name="bp_result_normal_heading">ค่าความดันโลหิตอยู่ในช่วงที่แนะนำ</string>
+    <string name="bp_result_normal_body">คุณกำลังอยู่ในสภาวะที่ดี โปรดรักษานิสัยสุขภาพที่ดีต่อไป</string>
+    <string name="bp_result_pre_hypertension_heading">ผลการวัดแสดงว่าความดันโลหิตค่อนข้างสูงกว่าค่ามาตรฐานเล็กน้อย</string>
+    <string name="bp_result_pre_hypertension_body">ขอแนะนำให้ปรับพฤติกรรมการใช้ชีวิตเพื่อป้องกันภาวะความดันโลหิตสูง ดังนี้</string>
+    <string name="bp_result_pre_hypertension_tip1">รับประทานอาหารรสไม่เค็ม</string>
+    <string name="bp_result_pre_hypertension_tip2">บริโภคผักและผลไม้เป็นประจำ</string>
+    <string name="bp_result_pre_hypertension_tip3">หลีกเลี่ยงการสูบบุหรี่และดื่มแอลกอฮอล์ในปริมาณมาก</string>
+    <string name="bp_result_pre_hypertension_tip4">ออกกำลังกายเบา ๆ เช่น การเดิน</string>
+    <string name="bp_result_hypertension_heading">ค่าความดันโลหิตที่วัดได้อยู่ในระดับสูง</string>
+    <string name="bp_result_hypertension_body">โดยทั่วไปค่าดังกล่าวควรได้รับคำปรึกษาและการดูแลจากผู้เชี่ยวชาญทางการแพทย์</string>
+
+    <string name="grip_strength_m_30s_label">ค่าเฉลี่ยแรงบีบมือของผู้ชายอายุต่ำกว่า 30 ปี</string>
+    <string name="grip_strength_m_30s_value">47.3กก.</string>
+    <string name="grip_strength_m_40_50s_label">ค่าเฉลี่ยแรงบีบมือของผู้ชายอายุ 40–50 ปี</string>
+    <string name="grip_strength_m_40_50s_value">45.5กก.</string>
+    <string name="grip_strength_m_60s_label">ค่าเฉลี่ยแรงบีบมือของผู้ชายอายุ 60 ปีขึ้นไป</string>
+    <string name="grip_strength_m_60s_value">40.9กก.</string>
+    <string name="grip_strength_w_30s_label">ค่าเฉลี่ยแรงบีบมือของผู้หญิงอายุต่ำกว่า 30 ปี</string>
+    <string name="grip_strength_w_30s_value">27.4กก.</string>
+    <string name="grip_strength_w_40_50s_label">ค่าเฉลี่ยแรงบีบมือของผู้หญิงอายุ 40–50 ปี</string>
+    <string name="grip_strength_w_40_50s_value">26.8กก.</string>
+    <string name="grip_strength_w_60s_label">ค่าเฉลี่ยแรงบีบมือของผู้หญิงอายุ 60 ปีขึ้นไป</string>
+    <string name="grip_strength_w_60s_value">25.2กก.</string>
+    <string name="grip_strength_result_body">※ ตารางด้านบนอ้างอิงจากค่ามาตรฐานเฉลี่ยตามอายุที่จัดทำโดยกระทรวงวัฒนธรรม กีฬา และการท่องเที่ยวของเกาหลี แนะนำให้รักษากำลังกล้ามเนื้อและสุขภาพอย่างสม่ำเสมอ</string>
+
+    <string name="location_signin">เข้าสู่ระบบสำหรับหน่วยงาน</string>
+
+    <string name="account_management_title">การจัดการบัญชีผู้ใช้</string>
+    <string name="qr_code_user_name">รหัส QR สำหรับเข้าสู่ระบบของคุณ %1$s:</string>
+    <string name="qr_code_image_description">รหัส QR ที่สร้างขึ้น</string>
+    <string name="not_signed_in_message">ยังไม่ได้เข้าสู่ระบบ</string>
+    <string name="qr_code_print_button">พิมพ์รหัส QR</string>
+    <string name="face_enroll_button_text">ลงทะเบียน/ลงทะเบียนใหม่ใบหน้า</string>
+
+    <string name="captured_face_image_description">ภาพใบหน้าที่บันทึกไว้</string>
+    <string name="face_enrollment_success">การจดจำใบหน้าสำเร็จ</string>
+    <string name="enroll_my_face_button">ลงทะเบียนใบหน้าของฉัน</string>
+    <string name="cancel_button">ยกเลิก</string>
+
+    <string name="admin_page">หน้าผู้ดูแลระบบ</string>
+
+    <string name="terms_of_service_title_primary">Nenoon Vital Plus</string>
+    <string name="terms_of_service_title_secondary">แบบฟอร์มความยินยอมในการเก็บและใช้ข้อมูลส่วนบุคคลและข้อมูลอ่อนไหวเพื่อการให้บริการ</string>
+    <string name="terms_of_service_description">บริษัท พิกเซลโล จำกัด มีความประสงค์ที่จะเก็บและใช้ข้อมูลส่วนบุคคลและข้อมูลอ่อนไหวของท่านตามรายละเอียดด้านล่าง เพื่อให้บริการจัดการข้อมูลสุขภาพอย่างต่อเนื่อง โปรดอ่านรายละเอียดอย่างรอบคอบก่อนตัดสินใจให้ความยินยอม</string>
+
+    <string name="personal_info_table_label">▶ รายละเอียดการเก็บและใช้ข้อมูลส่วนบุคคล</string>
+    <string name="personal_info_table_column1">อายุ, เพศ</string>
+    <string name="personal_info_table_column2">ผลการตรวจและการจัดการสถานะสุขภาพ</string>
+    <string name="personal_info_table_column3">1 ปี</string>
+    <string name="personal_info_checkbox_description">※ ท่านมีสิทธิ์ที่จะปฏิเสธการให้ความยินยอมในการเก็บและใช้ข้อมูลส่วนบุคคลข้างต้น\n\tอย่างไรก็ตาม หากปฏิเสธ อาจไม่สามารถใช้บริการสมัครสมาชิกได้</string>
+    <string name="personal_info_checkbox_question">⇨ ท่านยินยอมให้เก็บและใช้ข้อมูลส่วนบุคคลตามที่ระบุข้างต้นหรือไม่?</string>
+
+    <string name="sensitive_info_table_label">▶ รายละเอียดการเก็บและใช้ข้อมูลอ่อนไหว</string>
+    <string name="sensitive_info_table_column1">สุขภาพตา, อายุปอด, ความดันโลหิต, แรงบีบมือ</string>
+    <string name="sensitive_info_table_column2">ผลการตรวจและการจัดการสถานะสุขภาพ</string>
+    <string name="sensitive_info_table_column3">6 เดือน</string>
+    <string name="sensitive_info_checkbox_description">※ ท่านมีสิทธิ์ที่จะปฏิเสธการให้ความยินยอมในการเก็บและใช้ข้อมูลอ่อนไหวข้างต้น\n\tอย่างไรก็ตาม หากปฏิเสธ อาจไม่สามารถใช้บริการสมัครสมาชิกได้</string>
+    <string name="sensitive_info_checkbox_question">⇨ ท่านยินยอมให้เก็บและใช้ข้อมูลอ่อนไหวตามที่ระบุข้างต้นหรือไม่?</string>
+
+    <string name="button_agree">ยินยอม</string>
+    <string name="button_back">ย้อนกลับ</string>
+    <string name="table_header_item">รายการ</string>
+    <string name="table_header_purpose">วัตถุประสงค์การเก็บและใช้ข้อมูล</string>
+    <string name="table_header_period">ระยะเวลาเก็บรักษาและใช้ข้อมูล</string>
+    <string name="checkbox_agree">ยินยอม</string>
+    <string name="checkbox_disagree">ไม่ยินยอม</string>
+
+    <string name="face_id_terms_title_primary">Nenoon Vital Plus</string>
+    <string name="face_id_terms_title_secondary">แบบฟอร์มความยินยอมในการเก็บและใช้ข้อมูลส่วนบุคคลสำหรับข้อมูลใบหน้า (ข้อมูลชีวภาพ)</string>
+    <string name="face_id_terms_description">บริษัท พิกเซลโล จำกัด ให้ความสำคัญต่อการคุ้มครองข้อมูลส่วนบุคคลของท่าน ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคลและกฎระเบียบที่เกี่ยวข้อง จึงขอรับความยินยอมในการเก็บและใช้ข้อมูลใบหน้า (ข้อมูลชีวภาพ) ตามรายละเอียดต่อไปนี้ โปรดอ่านอย่างรอบคอบก่อนเลือกให้ความยินยอม</string>
+
+    <string name="face_id_table_label">▶ รายละเอียดการเก็บและใช้ข้อมูลส่วนบุคคล</string>
+    <string name="face_id_table_column1">ภาพถ่ายใบหน้า และข้อมูลชีวมาตรเพื่อการระบุตัวตน\nที่สร้าง/สกัดจากภาพดังกล่าว\n(ข้อมูลใบหน้า)</string>
+    <string name="face_id_table_column2">การระบุตัวและยืนยันตัวตน,\nการควบคุมการเข้าออก, การให้บริการ เป็นต้น</string>
+    <string name="face_id_table_column3">เก็บและใช้ข้อมูลจนกว่าจะบรรลุวัตถุประสงค์\nเมื่อบรรลุวัตถุประสงค์แล้วจะทำลายทันที\nทั้งนี้ หากกฎหมายกำหนดระยะเวลาเก็บรักษาไว้ต่างหาก\nจะเก็บรักษาตามระยะเวลาที่กฎหมายกำหนด</string>
+
+    <string name="face_id_checkbox_description">※ ท่านมีสิทธิ์ที่จะปฏิเสธการให้ความยินยอมในการเก็บและใช้ข้อมูลส่วนบุคคลข้างต้น\n\tอย่างไรก็ตาม หากปฏิเสธ อาจไม่สามารถใช้บริการที่อ้างอิงกับข้อมูลใบหน้า (ข้อมูลชีวภาพ) ได้</string>
+    <string name="face_id_checkbox_question">⇨ ท่านยินยอมให้เก็บและใช้ข้อมูลส่วนบุคคลตามที่ระบุข้างต้นหรือไม่?</string>
+
+    <string name="face_id_disclaimer_1">※ แบบฟอร์มความยินยอมฉบับนี้จัดทำขึ้นโดยอ้างอิงจาก “พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล” (มาตรา 15, 21, 22, 23) และกฎกระทรวงที่เกี่ยวข้อง (มาตรา 18)\n\tรวมถึงแนวทางการคุ้มครองข้อมูลชีวภาพของคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล (กันยายน 2021)</string>
+    <string name="face_id_disclaimer_2">※ แบบฟอร์มนี้มีวัตถุประสงค์เพื่อยืนยันว่าท่านได้รับทราบอย่างเพียงพอและให้ความยินยอมโดยสมัครใจในการเก็บและใช้ข้อมูลใบหน้า (ข้อมูลชีวภาพ)\n\tข้อมูลใบหน้า (ข้อมูลชีวภาพ) ถือเป็นข้อมูลอ่อนไหวตาม “พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล” ซึ่งจำเป็นต้องได้รับความยินยอมแยกต่างหาก</string>
+
+    <string name="signup_terms_title_primary">Nenoon Vital Plus</string>
+    <string name="signup_terms_title_secondary">แบบฟอร์มความยินยอมในการเก็บและใช้ข้อมูลส่วนบุคคลและข้อมูลอ่อนไหวสำหรับการสมัครสมาชิกและการใช้บริการ</string>
+    <string name="signup_terms_description">บริษัท พิกเซลโล จำกัด มีความประสงค์ที่จะเก็บและใช้ข้อมูลส่วนบุคคลและข้อมูลอ่อนไหวของท่านตามรายละเอียดด้านล่าง เพื่อให้บริการสมัครสมาชิกและการจัดการข้อมูลสุขภาพอย่างต่อเนื่อง โปรดอ่านรายละเอียดอย่างรอบคอบก่อนให้ความยินยอม</string>
+
+    <string name="signup_personal_info_table_label">▶ รายละเอียดการเก็บและใช้ข้อมูลส่วนบุคคล</string>
+    <string name="signup_personal_info_table_column1">ชื่อ, อายุ, เพศ,\nอีเมล</string>
+    <string name="signup_personal_info_table_column2">การยืนยันตัวตนของสมาชิกและให้บริการดูผลการตรวจ</string>
+    <string name="signup_personal_info_table_column3">1 ปี</string>
+    <string name="signup_personal_info_checkbox_description">※ ท่านมีสิทธิ์ที่จะปฏิเสธการให้ความยินยอมในการเก็บและใช้ข้อมูลส่วนบุคคลข้างต้น\n\tอย่างไรก็ตาม หากปฏิเสธ อาจไม่สามารถใช้บริการสมัครสมาชิกได้</string>
+    <string name="signup_personal_info_checkbox_question">⇨ ท่านยินยอมให้เก็บและใช้ข้อมูลส่วนบุคคลตามที่ระบุข้างต้นหรือไม่?</string>
+
+    <string name="signup_sensitive_info_table_label">▶ รายละเอียดการเก็บและใช้ข้อมูลอ่อนไหว</string>
+    <string name="signup_sensitive_info_table_column1">สุขภาพตา, อายุปอด,\nความดันโลหิต, แรงบีบมือ</string>
+    <string name="signup_sensitive_info_table_column2">ผลการตรวจและการจัดการสถานะสุขภาพ</string>
+    <string name="signup_sensitive_info_table_column3">6 เดือน</string>
+    <string name="signup_sensitive_info_checkbox_description">※ ท่านมีสิทธิ์ที่จะปฏิเสธการให้ความยินยอมในการเก็บและใช้ข้อมูลอ่อนไหวข้างต้น\n\tอย่างไรก็ตาม หากปฏิเสธ อาจไม่สามารถใช้บริการสมัครสมาชิกได้</string>
+    <string name="signup_sensitive_info_checkbox_question">⇨ ท่านยินยอมให้เก็บและใช้ข้อมูลอ่อนไหวตามที่ระบุข้างต้นหรือไม่?</string>
+
+    <string name="id_pw_sign_in_title">เข้าสู่ระบบ</string>
+    <string name="id_pw_sign_in_id_hint">กรอกไอดี</string>
+    <string name="id_pw_sign_in_pw_hint">กรอกรหัสผ่าน</string>
+    <string name="id_pw_sign_in_pw_hide">ซ่อนรหัสผ่าน</string>
+    <string name="id_pw_sign_in_pw_show">แสดงรหัสผ่าน</string>
+    <string name="id_pw_sign_in_button">เข้าสู่ระบบ</string>
+
+    <string name="qr_sign_in_camera_bind_fail">ไม่สามารถเชื่อมต่อกล้องได้</string>
+    <string name="default_user_name">ผู้ใช้</string>
+    <string name="qr_sign_in_login_success">เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับ %1$s</string>
+
+    <string name="cross_eye_test">การทดสอบภาวะตาเหล่และการมองเห็นต่างขนาด</string>
+    <string name="phoria_test">การทดสอบภาวะตาเหล่ (Phoria)</string>
+    <string name="aniseikonia_test">การทดสอบภาวะการมองเห็นต่างขนาด (Aniseikonia)</string>
+    <string name="red_green_filter_glass_prompt">โปรดสวมแว่นกรองสีแดง–เขียว โดยให้สีแดงอยู่ทางขวาและสีเขียวอยู่ทางซ้าย</string>
+    <string name="tts_red_green_filter_glass_prompt">โปรดสวมแว่นกรองสีแดง–เขียว โดยให้สีแดงอยู่ทางขวาและสีเขียวอยู่ทางซ้าย</string>
+
+    <string name="face_detection_status_detected">ตรวจพบใบหน้าแล้ว: %1$s ใบหน้า</string>
+    <string name="face_detection_status_invalid_area">พื้นที่ใบหน้ามีขนาดเล็กเกินไปหรือไม่ถูกต้อง</string>
+    <string name="face_detection_status_size_issue">ตรวจจับใบหน้าไม่สำเร็จ (ปัญหาขนาดภาพ)</string>
+    <string name="face_detection_status_no_face"></string>
+    <string name="image_conversion_failed">การแปลงภาพล้มเหลว</string>
+    <string name="face_detection_error">ข้อผิดพลาดในการตรวจจับใบหน้า: %1$s</string>
+    <string name="camera_init_failed">การเริ่มต้นกล้องล้มเหลว</string>
+    <string name="unsupported_image_format_error">รูปแบบภาพไม่รองรับ: %1$s (รองรับเฉพาะ YUV_420_888)</string>
+    <string name="camera_binding_failed_log">การเชื่อมต่อกล้องล้มเหลว</string>
+
+    <string name="bp170b_step_1_title">ขั้นตอนที่ 1</string>
+    <string name="bp170b_step_1_prefix">โปรดสวมปลอกแขนของเครื่องวัดความดันโลหิต&#160;</string>
+    <string name="bp170b_step_1_accent">ที่แขนซ้าย</string>
+    <string name="bp170b_step_1_suffix">ตามคำแนะนำที่ระบุไว้บนเครื่องวัด</string>
+    <string name="bp170b_step_2_title">ขั้นตอนที่ 2</string>
+    <string name="bp170b_step_2_prefix">หลังจากสวมเสร็จแล้ว โปรดกดปุ่ม&#160;</string>
+    <string name="bp170b_step_2_accent">เริ่ม/หยุด</string>
+    <string name="bp170b_step_2_suffix">บนเครื่องวัดความดันโลหิต</string>
+    <string name="bp170b_initialization_required">จำเป็นต้องเริ่มต้นการตั้งค่าเครื่องวัดความดันโลหิตใหม่</string>
+    <string name="bp170b_turn_off_bp_monitor">โปรดปิดเครื่องวัดความดันโลหิต</string>
+
+    <string name="bp170b_measurement_completed_tts">การวัดเสร็จสิ้นแล้ว โปรดตรวจสอบผลลัพธ์</string>
+    <string name="bp170b_measurement_error_tts">เกิดข้อผิดพลาดระหว่างการวัดความดันโลหิต โปรดลองอีกครั้งหรือติดต่อผู้ดูแลระบบ</string>
+    <string name="bp170b_connection_lost_tts">การเชื่อมต่อกับเครื่องวัดความดันโลหิตถูกตัดขาด โปรดแตะหน้าจอเพื่อเริ่มใหม่อีกครั้ง</string>
+    <string name="bp170b_measuring_message">กำลังวัดความดันโลหิต\nโปรดอย่าเคลื่อนไหวหรือพูดคุยระหว่างการวัด</string>
+    <string name="bp170b_stop_test">หยุดการตรวจ</string>
+    <string name="bp170b_measurement_completed_message">การวัดเสร็จสิ้นแล้ว</string>
+    <string name="bp170b_check_results">ตรวจสอบผลลัพธ์</string>
+
+    <string name="ingrip_measurement_failed_tts">การวัดแรงบีบมือไม่สำเร็จ โปรดลองอีกครั้ง</string>
+    <string name="ingrip_error_title">การตรวจล้มเหลว</string>
+    <string name="ingrip_retest">ตรวจซ้ำ</string>
+
+    <string name="ingrip_step_1_title">ขั้นตอนที่ 1</string>
+    <string name="ingrip_step_1_instruction">โปรดยืนตรง แยกเท้าให้กว้างเท่าช่วงไหล่</string>
+    <string name="ingrip_step_2_title">ขั้นตอนที่ 2</string>
+    <string name="ingrip_step_2_prefix">เหยียดแขนทั้งสองข้างออกจากลำตัวเล็กน้อย แล้วถือเครื่องวัดแรงบีบด้วย&#160;</string>
+    <string name="ingrip_step_2_accent">มือขวา</string>
+    <string name="ingrip_step_2_suffix">ตามตำแหน่งที่กำหนด</string>
+    <string name="ingrip_step_3_title">ขั้นตอนที่ 3</string>
+    <string name="ingrip_step_3_prefix">เมื่อพร้อมแล้ว โปรดกด&#160;</string>
+    <string name="ingrip_step_3_accent">ปุ่มเริ่มบนหน้าจอคีออสก์</string>
+    <string name="ingrip_step_3_suffix">และปฏิบัติตามคำแนะนำบนหน้าจอเพื่อทำการตรวจ</string>
+    <string name="ingrip_start_test">เริ่มการตรวจ</string>
+
+    <string name="grip_strength_test">การตรวจแรงบีบมือ</string>
+    <string name="blood_pressure_test">การตรวจความดันโลหิต</string>
+
+    <string name="admin_loading_error">เกิดข้อผิดพลาดในการโหลดหน้า: %s</string>
+
+    <string name="bpbio320_instruction_start">โปรดสอดแขนเข้าไปในเครื่องวัดความดันโลหิต แล้วกดปุ่มเตรียมพร้อมสำหรับการวัด</string>
+    <string name="bpbio320_measurement_in_progress">กำลังวัดความดันโลหิต\nโปรดอย่าเคลื่อนไหวหรือพูดคุยระหว่างการวัด</string>
+    <string name="bpbio320_measurement_completed">การวัดเสร็จสิ้นแล้ว</string>
+    <string name="bpbio320_measurement_error_during">เกิดข้อผิดพลาดระหว่างการวัดความดันโลหิต\nโปรดลองอีกครั้งหรือติดต่อผู้ดูแลระบบ</string>
+    <string name="bpbio320_measurement_stop">หยุดการตรวจ</string>
+    <string name="bpbio320_check_result">ตรวจสอบผลลัพธ์</string>
+
+    <string name="bpbio320_error_message">การวัดความดันโลหิตไม่สำเร็จ โปรดลองอีกครั้ง</string>
+    <string name="bpbio320_error_title">การตรวจล้มเหลว</string>
+
+    <string name="bpbio320_instructions_step1_title">ขั้นตอนที่ 1</string>
+    <string name="bpbio320_instructions_step1_text">โปรดนั่งลงที่ด้านหน้าเครื่องวัดความดันโลหิต</string>
+    <string name="bpbio320_instructions_step2_title">ขั้นตอนที่ 2</string>
+    <string name="bpbio320_instructions_step2_prefix">โปรดสอด&#160;</string>
+    <string name="bpbio320_instructions_step2_accent">แขนขวา</string>
+    <string name="bpbio320_instructions_step2_suffix">เข้าไปในเครื่องวัดความดันตามแนวแนะนำ</string>
+    <string name="bpbio320_instructions_step3_title">ขั้นตอนที่ 3</string>
+    <string name="bpbio320_instructions_step3_prefix">เมื่อพร้อมแล้ว โปรดกด&#160;</string>
+    <string name="bpbio320_instructions_step3_accent">ปุ่มเริ่มบนหน้าจอคีออสก์</string>
+    <string name="bpbio320_instructions_step3_suffix">เพื่อเริ่มการตรวจวัด</string>
+    <string name="bpbio320_start_test_button">เริ่มการตรวจ</string>
+
+    <string name="grip_strength_result">ผลการวัดแรงบีบมือ</string>
+    <string name="blood_pressure_result">ผลการวัดความดันโลหิต</string>
+
+    <string name="user_signup_title">สมัครสมาชิก</string>
+    <string name="user_signup_input_id_hint">กรอกไอดีผู้ใช้</string>
+    <string name="user_signup_input_name_hint">กรอกชื่อ</string>
+    <string name="user_signup_input_email_hint">อีเมล (ไม่บังคับ)</string>
+    <string name="user_signup_input_password_hint">กรอกรหัสผ่าน</string>
+    <string name="user_signup_input_confirm_password_hint">ยืนยันรหัสผ่าน</string>
+    <string name="user_signup_password_hide_cd">ซ่อนรหัสผ่าน</string>
+    <string name="user_signup_password_show_cd">แสดงรหัสผ่าน</string>
+    <string name="user_signup_face_enrollment_button">ลงทะเบียนใบหน้าเพื่อเข้าสู่ระบบได้สะดวกขึ้น</string>
+    <string name="user_signup_face_enrollment_complete">ลงทะเบียนใบหน้าเสร็จสมบูรณ์</string>
+    <string name="user_signup_signup_and_qr_button">สมัครสมาชิก &amp; สร้าง QR</string>
+    <string name="user_signup_error_duplicate_id">กรุณาใช้ไอดีอื่น</string>
+    <string name="user_signup_error_signup_failed">การสมัครสมาชิกไม่สำเร็จ</string>
+    <string name="user_signup_qr_description">หากบันทึกรหัส QR นี้ไว้\nจะสามารถเข้าสู่ระบบได้สะดวกยิ่งขึ้น</string>
+    <string name="user_signup_qr_image_cd">รหัส QR ที่สร้างขึ้น</string>
+    <string name="user_signup_back_button">ย้อนกลับ</string>
+
+    <string name="start">เริ่มต้น</string>
+
+    <string name="tts_bp170b_device_check">กำลังค้นหาเครื่องวัดความดันโลหิต โปรดรอสักครู่</string>
+    <string name="tts_bp170b_turn_off_device_initialization">จำเป็นต้องเริ่มต้นเครื่องวัดความดันใหม่ โปรดกดปุ่มเริ่ม/หยุดบนเครื่องเพียงหนึ่งครั้ง</string>
+    <string name="tts_bp170b_standby_instructions">โปรดสวมเครื่องวัดความดันบนแขนซ้าย จากนั้นกดปุ่มเริ่ม/หยุดบนเครื่องวัดความดัน</string>
+    <string name="tts_bp170b_connected_message">เครื่องวัดความดันเชื่อมต่อเรียบร้อยแล้ว พร้อมสำหรับการวัด</string>
+    <string name="tts_bp170b_connection_failed">การเชื่อมต่อเครื่องวัดความดันล้มเหลว โปรดลองอีกครั้ง</string>
+
+    <string name="tts_bpbio320_instructions">โปรดนั่งหน้าตัวเครื่องวัดความดัน จากนั้นสอดแขนขวาเข้าไปในเครื่องตามแนวแนะนำ เมื่อพร้อมแล้วให้กดปุ่มเริ่มบนหน้าจอคีออสก์</string>
+    <string name="tts_ingrip_instructions">โปรดยืนตรง แยกเท้าให้กว้างเท่าช่วงไหล่ จากนั้นเหยียดแขนทั้งสองออกจากลำตัวเล็กน้อย แล้วถือเครื่องวัดแรงบีบด้วยมือขวา เมื่อพร้อมแล้วกดปุ่มเริ่มบนหน้าจอคีออสก์และปฏิบัติตามคำแนะนำบนหน้าจอ</string>
+
+    <string name="grip_instructions_step1_title">ขั้นตอนที่ 1</string>
+    <string name="grip_instructions_step1_text">โปรดยืนตรง แยกเท้าให้กว้างเท่าช่วงไหล่</string>
+    <string name="grip_instructions_step2_title">ขั้นตอนที่ 2</string>
+    <string name="grip_instructions_step2_prefix">เหยียดแขนทั้งสองออกจากลำตัวเล็กน้อย แล้วถือเครื่องวัดแรงบีบด้วย&#160;</string>
+    <string name="grip_instructions_step2_accent">มือขวา</string>
+    <string name="grip_instructions_step2_suffix">ตามตำแหน่งที่กำหนด</string>
+    <string name="grip_instructions_step3_title">ขั้นตอนที่ 3</string>
+    <string name="grip_instructions_step3_prefix">เมื่อพร้อมแล้ว โปรดกด&#160;</string>
+    <string name="grip_instructions_step3_accent">ปุ่มเริ่มบนหน้าจอคีออสก์</string>
+    <string name="grip_instructions_step3_suffix">และทำตามคำแนะนำบนหน้าจอเพื่อตรวจวัด</string>
+    <string name="grip_instructions_start_button">เริ่มการตรวจ</string>
+
+    <string name="grip_strength_ready_instruction_button_tts_right">โปรดถือเครื่องวัดแรงบีบด้วยมือขวา จากนั้นกดปุ่มเริ่มการวัดด้านล่างและบีบเครื่องให้แรงที่สุดเท่าที่ทำได้</string>
+    <string name="grip_strength_ready_instruction_button_tts_left">โปรดถือเครื่องวัดแรงบีบด้วยมือซ้าย จากนั้นกดปุ่มเริ่มการวัดด้านล่างและบีบเครื่องให้แรงที่สุดเท่าที่ทำได้</string>
+    <string name="grip_strength_press_button_and_squeeze_text">กดปุ่มเริ่มการวัดด้านล่าง\nแล้วบีบเครื่องวัดแรงบีบให้แรงที่สุดเท่าที่ทำได้</string>
+    <string name="grip_strength_start_button">เริ่มการวัด</string>
+    <string name="grip_strength_measuring_text">กำลังวัด...</string>
+
+    <string name="result_print_screen_result_title">ผลการตรวจ</string>
+    <string name="result_print_screen_visual_acuity_test">การตรวจสายตา</string>
+    <string name="result_print_screen_presbyopia_test">การตรวจสายตายาวตามอายุ</string>
+    <string name="result_print_screen_amsler_grid_test">การตรวจตาราง Amsler</string>
+    <string name="result_print_screen_m_chart_test">การตรวจ M-Chart</string>
+    <string name="result_print_screen_strabismus_test">การตรวจตาเข</string>
+    <string name="result_print_screen_blood_pressure_test">การตรวจความดันโลหิต</string>
+    <string name="result_print_screen_grip_strength_test">การตรวจแรงบีบมือ</string>
+    <string name="result_print_screen_dementia_survey">แบบสอบถามภาวะสมองเสื่อม</string>
+    <string name="result_print_screen_pulmonary_function_test">การตรวจอายุปอด</string>
+    <string name="result_print_screen_test_completed">การตรวจเสร็จสิ้นแล้ว</string>
+    <string name="result_print_screen_test_not_conducted">ยังไม่ได้ทำการตรวจ</string>
+    <string name="result_print_screen_coming_soon">เร็วๆ นี้</string>
+    <string name="result_print_screen_loading_results">กำลังดึงข้อมูลผลการตรวจ...</string>
+    <string name="result_print_screen_print_button">พิมพ์ผลลัพธ์</string>
+
+    <string name="pdf_range_header">ช่วงค่า</string>
+    <string name="pdf_interpretation_header">การแปลผล</string>
+    <string name="pdf_recommendation_header">คำแนะนำ</string>
+    <string name="location">หน่วยงาน</string>
+
+    <string name="survey_loading_message">กำลังตรวจสอบประวัติแบบสอบถามก่อนหน้า...</string>
+    <string name="survey_error_title">เกิดปัญหากับบัญชีผู้ใช้</string>
+    <string name="survey_error_message">โปรดเข้าสู่ระบบใหม่แล้วลองอีกครั้ง</string>
+
+    <string name="user_face_update_title">อัปเดตข้อมูลใบหน้า</string>
+    <string name="user_face_update_initial_status">โปรดหันหน้าเข้าหากล้องโดยตรง</string>
+    <string name="user_face_update_ready_status">ข้อมูลใบหน้าพร้อมแล้ว!</string>
+    <string name="user_face_update_scan_prompt">โปรดสแกนใบหน้าของคุณ</string>
+    <string name="user_face_update_retry_scan">โปรดสแกนอีกครั้ง</string>
+    <string name="user_face_update_captured_face_description">ภาพใบหน้าที่บันทึกไว้</string>
+    <string name="user_face_update_capture_button">จับภาพใบหน้า</string>
+    <string name="user_face_update_recapture_button">จับภาพใบหน้าอีกครั้ง</string>
+    <string name="user_face_update_save_button">อัปเดตข้อมูลใบหน้าของฉัน</string>
+
+    <string name="pdf_past_results_title">ผลการตรวจครั้งก่อน</string>
+    <string name="pdf_date_header">วันที่</string>
+    <string name="pdf_va_short">สายตา</string>
+    <string name="pdf_bp_short">ความดัน</string>
+    <string name="pdf_gs_short">แรงบีบมือ</string>
+    <string name="pdf_pf_short">การทำงานของปอด</string>
+    <string name="pdf_presbyopia_short">สายตายาวตามอายุ</string>
+    <string name="pdf_amsler_short">จอประสาทตา (AMD)</string>
+    <string name="pdf_mcharts_short">M-Chart</string>
+
+    <string name="user_signup_success_title">สมัครสมาชิกสำเร็จ!</string>
+    <string name="user_signup_face_enrollment_prompt">ต้องการลงทะเบียนการยืนยันตัวตนด้วยใบหน้าเพื่อเข้าสู่ระบบได้รวดเร็วยิ่งขึ้นหรือไม่?</string>
+    <string name="user_signup_enroll_face_button">ลงทะเบียนใบหน้า</string>
+    <string name="user_signup_continue_button">ดำเนินการต่อ</string>
+
+    <string name="select_test_tts">โปรดเลือกหัวข้อการตรวจ</string>
+    <string name="printing">กำลังพิมพ์...</string>
+
+    <!-- Common -->
+    <string name="common_exit">ออก</string>
+    <string name="common_back_arrow">←</string>
+    <string name="common_back_content_desc">กลับ</string>
+    <string name="common_test_guide">วิธีการตรวจ</string>
+    <string name="common_view_test_guide">ดูวิธีการตรวจ</string>
+    <string name="common_start_test">เริ่มการตรวจ</string>
+    <string name="common_next">ถัดไป</string>
+    <string name="common_confirm">ยืนยัน</string>
+    <string name="common_yes">ใช่</string>
+    <string name="common_no">ไม่ใช่</string>
+    <string name="common_step1">ขั้นตอนที่ 1</string>
+    <string name="common_step2">ขั้นตอนที่ 2</string>
+    <string name="common_step3">ขั้นตอนที่ 3</string>
+
+    <!-- GlassInstructionScreen -->
+    <string name="glass_instruction_title">คำแนะนำเกี่ยวกับการสวมแว่นตา</string>
+    <string name="glass_instruction_main_text">ขณะนี้คุณสวมแว่นตาอยู่หรือไม่?</string>
+
+    <!-- FilterInstructionScreen -->
+    <string name="filter_instruction_main_text_1">ให้สีแดงอยู่ทางขวา และสีเขียวอยู่ทางซ้าย</string>
+    <string name="filter_instruction_main_text_2">โปรดสวมแว่นกรองแสงสีแดง-เขียว</string>
+
+    <!-- SawiIntroScreen -->
+    <string name="sawi_intro_title">การทดสอบภาวะตาเหล่แฝง (Phoria)</string>
+    <string name="sawi_intro_description">ภาวะที่ตาทั้งสองข้างปกติจะอยู่ในแนวตรง แต่เมื่อปิดตาข้างหนึ่งหรือตกอยู่ในบางสถานการณ์ ตาข้างหนึ่งอาจเคลื่อนไปด้านข้างได้ ภาวะนี้เรียกว่า "ตาเหล่แฝง"</string>
+
+    <!-- FudoIntroScreen -->
+    <string name="fudo_intro_title">การทดสอบขนาดภาพที่ต่างกันระหว่างตาทั้งสองข้าง (Aniseikonia)</string>
+    <string name="fudo_intro_description">เป็นการตรวจเพื่อดูว่าภาพที่ตกกระทบบนจอประสาทตาของตาทั้งสองข้างมีขนาดต่างกันหรือไม่</string>
+
+    <!-- SawiHowToDialog -->
+    <string name="sawi_howto_title">วิธีการตรวจภาวะตาเหล่แฝง (Phoria)</string>
+    <string name="sawi_howto_step1_desc">โปรดสวมแว่นกรองแสงสีแดง-เขียว</string>
+    <string name="sawi_howto_step2_desc">หลังจากดูตำแหน่งของเครื่องหมายกากบาทบนภาพ ให้กดปุ่มที่ตรงกับตำแหน่งนั้น</string>
+    <string name="sawi_howto_step3_desc">ลากเครื่องหมายกากบาทไปยังตำแหน่งตรงกลางของวงกลมบนหน้าจอ</string>
+
+    <!-- FudoHowToDialog -->
+    <string name="fudo_howto_title">วิธีการตรวจภาวะภาพต่างขนาดระหว่างตา (Aniseikonia)</string>
+    <string name="fudo_howto_step1_desc">โปรดสวมแว่นกรองแสงสีแดง-เขียว</string>
+    <string name="fudo_howto_step2_desc">ตรวจดูภาพที่ปรากฏบนหน้าจอ จากนั้นกดปุ่ม “ถัดไป”</string>
+    <string name="fudo_howto_step3_desc">ปรับขนาดครึ่งวงกลมทั้งสองให้มีขนาดเท่ากัน แล้วกดปุ่ม “ถัดไป”</string>
+
+    <!-- SawiQuestionScreen -->
+    <string name="sawi_question_title">การตรวจภาวะตาเหล่แฝง (Phoria)</string>
+    <string name="fudo_question_title">การตรวจภาวะภาพต่างขนาดระหว่างตา (Aniseikonia)</string>
+    <string name="common_test_title">การตรวจ</string>
+    <string name="sawi_question_main_text">คุณมองเห็นภาพบนหน้าจอเป็นอย่างไร?</string>
+    <string name="sawi_question_option1">มีเครื่องหมายกากบาทอยู่ตรงกลางวงกลม</string>
+    <string name="sawi_question_option2">ไม่มีเครื่องหมายกากบาทอยู่ตรงกลางวงกลม</string>
+    <string name="sawi_question_option3">เห็นเฉพาะเครื่องหมายกากบาท</string>
+    <string name="sawi_question_option4">เห็นเฉพาะวงกลม</string>
+
+    <!-- FudoQuestionScreen -->
+    <string name="fudo_question_option1">เห็นทั้งวงกลมและเครื่องหมายกากบาท</string>
+    <string name="fudo_question_option2">เห็นเฉพาะวงกลม</string>
+    <string name="fudo_question_option3">เห็นเฉพาะเครื่องหมายกากบาท</string>
+
+    <!-- FudoAdjustmentScreen -->
+    <string name="fudo_adjustment_main_text">คุณมองเห็นครึ่งวงกลมทั้งสองข้างเป็นอย่างไร?</string>
+    <string name="fudo_adjustment_button_left_smaller">ด้านซ้ายเล็กกว่า</string>
+    <string name="fudo_adjustment_button_right_smaller">ด้านขวาเล็กกว่า</string>
+    <string name="fudo_adjustment_bottom_text">หากขนาดเท่ากันแล้ว โปรดกดปุ่ม “ถัดไป”</string>
+
+    <!-- FudoResultScreen -->
+    <string name="fudo_result_title">ผลการตรวจภาวะภาพต่างขนาดระหว่างตา (Aniseikonia)</string>
+    <string name="fudo_result_retinal_image_size_diff">ความแตกต่างของขนาดภาพบนจอประสาทตา</string>
+    <string name="fudo_result_clinical_opinion">ความเห็นทางคลินิก</string>
+    <string name="fudo_result_no_size_diff">ไม่มีความแตกต่างของขนาดภาพระหว่างตาทั้งสองข้าง</string>
+    <string name="fudo_result_normal_desc">โดยทั่วไปไม่ก่อให้เกิดอาการผิดปกติและไม่จำเป็นต้องรักษา หากระหว่างการตรวจพบความไม่สบายตา ควรปรึกษาผู้เชี่ยวชาญ</string>
+    <string name="fudo_result_right_eye_larger">ตาขวาใหญ่กว่า %1$.1f%%</string>
+    <string name="fudo_result_right_eye_larger_desc">ภาพบนจอประสาทตาขวาใหญ่กว่าด้านซ้าย</string>
+    <string name="fudo_result_left_eye_larger">ตาซ้ายใหญ่กว่า %1$.1f%%</string>
+    <string name="fudo_result_left_eye_larger_desc">ภาพบนจอประสาทตาซ้ายใหญ่กว่าด้านขวา</string>
+    <string name="fudo_result_none">ไม่มีความแตกต่างของขนาดภาพระหว่างตาทั้งสองข้าง</string>
+    <string name="fudo_result_mild_aniseikonia">ภาวะภาพต่างขนาดเล็กน้อย</string>
+    <string name="fudo_result_severe_aniseikonia">ภาวะภาพต่างขนาดรุนแรง</string>
+    <string name="fudo_result_desc_mild">อาจรู้สึกเมื่อยล้าหรือมีสมาธิลดลงเมื่อต้องใช้สายตานาน ควรพิจารณาใช้คอนแทคเลนส์ชนิดปรับขนาดภาพตามคำแนะนำของผู้เชี่ยวชาญ</string>
+    <string name="fudo_result_desc_severe">อาจเกิดอาการเห็นภาพซ้อน การรับรู้ระยะทางผิดปกติ หรือปวดศีรษะ จำเป็นต้องได้รับการตรวจและรักษาอย่างจริงจัง</string>
+
+    <!-- SawiAdjustmentScreen -->
+    <string name="sawi_adjustment_main_text">โปรดย้ายเครื่องหมายกากบาทบนหน้าจอให้มาอยู่ตรงกลางของวงกลม</string>
+
+    <!-- SawiResultScreen -->
+    <string name="sawi_result_title">ผลการตรวจภาวะตาเหล่แฝงระยะใกล้ (Near Phoria)</string>
+    <string name="sawi_result_normal_case_info">หากผลการตรวจเป็นปกติ จะแสดงผลดังตัวอย่างด้านล่าง</string>
+    <string name="sawi_result_horizontal_phoria">ตาเหล่แนวนอน</string>
+    <string name="sawi_result_vertical_phoria">ตาเหล่แนวตั้ง</string>
+    <string name="sawi_result_left_eye">ตาซ้าย</string>
+    <string name="sawi_result_right_eye">ตาขวา</string>
+    <string name="sawi_result_no_horizontal_phoria">ไม่มีภาวะตาเหล่แนวนอน</string>
+    <string name="sawi_result_no_vertical_phoria">ไม่มีภาวะตาเหล่แนวตั้ง</string>
+    <string name="sawi_result_normal_status">ปกติ</string>
+    <string name="sawi_result_normal_example">ตัวอย่างผลปกติ</string>
+    <string name="sawi_result_normal_range_exo">Exophoria (ภาวะตาออกนอก) 0 ~ 6.0△</string>
+    <string name="sawi_result_normal_range_eso">Esophoria (ภาวะตาเข้าด้านใน) 0 ~ 2.0△</string>
+    <string name="sawi_result_normal_range_exo_eso_desc">ค่าของ Exophoria และ Esophoria อยู่ในช่วงปกติ</string>
+    <string name="sawi_result_normal_range_vertical_desc">ค่าของภาวะตาเหล่แนวตั้งอยู่ในช่วงปกติ</string>
+    <string name="sawi_result_my_result">ผลการตรวจของฉัน</string>
+    <string name="sawi_result_normal_range">ช่วงค่าปกติ</string>
+    <string name="sawi_result_mild_esophoria">ภาวะตาเข้าด้านในเล็กน้อย (Mild Esophoria)</string>
+    <string name="sawi_result_severe_esophoria">ภาวะตาเข้าด้านในรุนแรง (Severe Esophoria)</string>
+    <string name="sawi_result_mild_exophoria">ภาวะตาออกด้านนอกเล็กน้อย (Mild Exophoria)</string>
+    <string name="sawi_result_severe_exophoria">ภาวะตาออกด้านนอกรุนแรง (Severe Exophoria)</string>
+    <string name="sawi_result_mild_vertical_phoria">ภาวะตาเหล่แนวตั้งเล็กน้อย (Mild Vertical Phoria)</string>
+    <string name="sawi_result_severe_vertical_phoria">ภาวะตาเหล่แนวตั้งรุนแรง (Severe Vertical Phoria)</string>
+
+    <string name="sawi_result_desc_normal_eso">ค่าภาวะตาเข้าด้านในอยู่ในช่วงปกติ</string>
+    <string name="sawi_result_desc_mild_eso">อาจมีภาวะตาเข้าด้านในเล็กน้อย</string>
+    <string name="sawi_result_desc_severe_eso">พบภาวะตาเข้าด้านใน ควรปรึกษาผู้เชี่ยวชาญ</string>
+
+    <string name="sawi_result_desc_normal_exo">ค่าภาวะตาออกด้านนอกอยู่ในช่วงปกติ</string>
+    <string name="sawi_result_desc_mild_exo">อาจมีภาวะตาออกด้านนอกเล็กน้อย</string>
+    <string name="sawi_result_desc_severe_exo">พบภาวะตาออกด้านนอก ควรปรึกษาผู้เชี่ยวชาญ</string>
+
+    <string name="sawi_result_desc_mild_vertical">อาจมีภาวะตาเหล่แนวตั้งเล็กน้อย</string>
+    <string name="sawi_result_desc_severe_vertical">พบภาวะตาเหล่แนวตั้ง ควรปรึกษาผู้เชี่ยวชาญ</string>
+
+    <string name="sawi_result_suppression_suspicion">สงสัยว่ามีการกดการมองเห็น (Suppression)</string>
+    <string name="sawi_result_desc_suppression_right">สงสัยว่าตาขวาถูกกดการมองเห็น ควรปรึกษาผู้เชี่ยวชาญ</string>
+    <string name="sawi_result_desc_suppression_left">สงสัยว่าตาซ้ายถูกกดการมองเห็น ควรปรึกษาผู้เชี่ยวชาญ</string>
+
+    <string name="sawi_result_error">ข้อผิดพลาด</string>
+    <string name="sawi_result_error_desc">ไม่สามารถระบุผลการตรวจได้</string>
+
+    <string name="sawi_result_general_disclaimer">การตรวจทั้งหมดในแอป NENUN เป็นการตรวจประเมินตนเอง ไม่ถือเป็นการวินิจฉัยทางการแพทย์ ผลลัพธ์อาจแตกต่างกันตามสภาพดวงตา สภาพแวดล้อม หรืออุปกรณ์ ควรปรึกษาแพทย์เพื่อการวินิจฉัยที่ถูกต้อง</string>
+
+    <string name="sawi_result_print_button">พิมพ์ผลการตรวจ</string>
+
+    <string name="sawi_result_back_to_main_button">กลับไปที่เมนูหลัก</string>
+    <string name="fudo_result_right_eye_larger_format">ภาพบนจอประสาทตาขวามีขนาดใหญ่กว่าประมาณ %.1f%%</string>
+    <string name="fudo_result_left_eye_larger_format">ภาพบนจอประสาทตาซ้ายมีขนาดใหญ่กว่าประมาณ %.1f%%</string>
+    <string name="printing_in_progress">กำลังพิมพ์ผลลัพธ์...</string>
+    <string name="sawi_result_normal_range_vertical">(0 ~ 0.5△)</string>
+    <string name="sawi_result_normal">ปกติ</string>
+
+    <!-- Strabismus Test TTS -->
+    <string name="tts_glass_instruction">ขณะนี้คุณสวมแว่นตาอยู่หรือไม่?</string>
+    <string name="tts_filter_instruction">โปรดสวมแว่นกรองสีแดง-เขียว โดยให้สีแดงอยู่ด้านขวา และสีเขียวอยู่ด้านซ้าย</string>
+    <string name="tts_sawi_question">คุณเห็นภาพบนหน้าจอเป็นอย่างไร? 1. เห็นกากบาทอยู่ตรงกลางวงกลม 2. เห็นกากบาทไม่อยู่ตรงกลางวงกลม 3. เห็นเฉพาะกากบาท 4. เห็นเฉพาะวงกลม</string>
+    <string name="tts_fudo_question">คุณเห็นภาพบนหน้าจอเป็นอย่างไร? 1. เห็นทั้งวงกลมและกากบาท 2. เห็นเฉพาะวงกลม 3. เห็นเฉพาะกากบาท</string>
+    <string name="tts_sawi_adjustment">โปรดย้ายกากบาทให้มาอยู่ตรงกลางของวงกลมบนหน้าจอ</string>
+    <string name="tts_fudo_adjustment">โปรดปรับครึ่งวงกลมทั้งสองข้างให้มีขนาดเท่ากัน แล้วกดปุ่มถัดไปเมื่อเท่ากันแล้ว</string>
+    <string name="tts_result_screen">การตรวจเสร็จสิ้นแล้ว โปรดกดปุ่ม "พิมพ์ผลการตรวจ" เพื่อพิมพ์ผลลัพธ์</string>
+
+    <!-- TTS ตัวเลข -->
+    <string name="one">หนึ่ง</string>
+    <string name="two">สอง</string>
+    <string name="three">สาม</string>
+    <string name="four">สี่</string>
+    <string name="five">ห้า</string>
+    <string name="six">หก</string>
+    <string name="seven">เจ็ด</string>
+    <string name="eight">แปด</string>
+    <string name="nine">เก้า</string>
+
+    <!-- การแสดงผลทางเลือก -->
+    <string name="two_alt">สอง</string>
+    <string name="three_alt">สาม</string>
+    <string name="four_alt">สี่</string>
+    <string name="five_alt">ห้า</string>
+    <string name="six_alt">หก</string>
+    <string name="seven_alt">เจ็ด</string>
+
+    <!-- วลี "ไม่รู้" -->
+    <string name="dont_know_1">ไม่รู้</string>
+    <string name="dont_know_2">ไม่ทราบ</string>
+    <string name="dont_know_3">ไม่รู้</string>
+    <string name="dont_know_4">มองไม่เห็น</string>
+    <string name="dont_know_5">มองไม่เห็น</string>
+    <string name="dont_know_6">ไม่เห็น</string>
+    <string name="dont_know_7">ไม่เห็น</string>
+    <string name="dont_know_8">ไม่ปรากฏ</string>
+    <string name="dont_know_9">ไม่ปรากฏ</string>
+    <string name="dont_know_10">มองไม่เห็น</string>
+    <string name="dont_know_11">มองไม่เห็น</string>
+
+    <!-- แดชบอร์ดผู้ดูแลระบบ -->
+    <string name="admin_dashboard">แดชบอร์ดผู้ดูแลระบบ</string>
+    <string name="admin_ad_management">การจัดการโฆษณา</string>
+    <string name="admin_password_management">การจัดการรหัสผ่าน</string>
+    <string name="admin_exit">ออกจากผู้ดูแลระบบ</string>
+    <string name="admin_exit_confirm_title">ออกจากผู้ดูแลระบบ</string>
+    <string name="admin_exit_confirm_message">คุณแน่ใจหรือไม่ว่าต้องการออก?</string>
+    <string name="admin_confirm">ยืนยัน</string>
+    <string name="admin_cancel">ยกเลิก</string>
+    <string name="admin_ad_image_management">การจัดการภาพโฆษณา</string>
+    <string name="admin_ad_image_description">จัดการและเลือกภาพที่จะใช้สำหรับโฆษณา</string>
+    <string name="admin_select_ad_location">โปรดเลือกตำแหน่งโฆษณา</string>
+    <string name="admin_test_list_screen">หน้าจอรายการการตรวจ</string>
+    <string name="admin_test_list_subtitle">ความดันโลหิต, ตา, ตาเข, ฯลฯ</string>
+    <string name="admin_badge_image">ภาพ</string>
+    <string name="admin_screensaver">โปรแกรมรักษาหน้าจอ</string>
+    <string name="admin_screensaver_subtitle">แตะหน้าจอ</string>
+    <string name="admin_badge_video">วิดีโอ</string>
+    <string name="admin_ad_location_preview">พื้นที่แสดงโฆษณา</string>
+    <string name="admin_ad_image_list">รายการภาพโฆษณา</string>
+    <string name="admin_add">เพิ่ม</string>
+    <string name="admin_delete">ลบ</string>
+    <string name="admin_reorder">เรียงลำดับใหม่</string>
+    <string name="admin_password">รหัสผ่านผู้ดูแลระบบ</string>
+    <string name="admin_password_description">คุณสามารถเปลี่ยนรหัสผ่านผู้ดูแลระบบได้</string>
+    <string name="admin_password_coming_soon">หน้าจอการจัดการรหัสผ่าน (เร็วๆ นี้)</string>
+
+    <!-- การจัดการอุปกรณ์บลูทูธ -->
+    <string name="change_default_blood_pressure_monitor">เปลี่ยนเครื่องวัดความดันโลหิตเริ่มต้น</string>
+    <string name="default_blood_pressure_monitor">ค่าเริ่มต้น</string>
+
+</resources>

@@ -1,4 +1,4 @@
-package com.pixelro.nenoonkiosk.feature.screen
+package com.pixelro.nenoonkiosk.core.ui
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +17,7 @@ import kotlinx.coroutines.delay
 fun TypewriterText(
     text: AnnotatedString,
     typingSpeedMs: Long = 20,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var displayedText by remember { mutableStateOf(AnnotatedString("")) }
 
@@ -33,6 +33,6 @@ fun TypewriterText(
         text = displayedText,
         fontSize = 26.sp,
         fontWeight = FontWeight.Medium,
-        modifier = modifier
+        modifier = modifier,
     )
 }

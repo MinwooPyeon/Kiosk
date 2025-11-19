@@ -12,7 +12,7 @@ import android.bluetooth.BluetoothProfile
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.BloodPressureTestResult
+import com.pixelro.nenoonkiosk.feature.inspection.bloodPressure.result.BloodPressureInspectionResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,10 +27,9 @@ import java.nio.charset.StandardCharsets
 import java.util.UUID
 
 object BP170BManager {
-
     private const val TAG = "com.pixelro.nenoonkiosk.bTManager.BP170B.BP170BManager"
     const val SCAN_DURATION = 60000 // In milliseconds
-    private const val STATUS_POLLING_INTERVAL_MS: Long = 1000 // Poll every 1 second
+    private const val STATUS_POLLING_INTERVAL_MS: Long = 2000 // Poll every 2 seconds
 
     private val managerScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -46,9 +45,10 @@ object BP170BManager {
     private var writeCharacteristic: BluetoothGattCharacteristic? = null
     private var readCharacteristic: BluetoothGattCharacteristic? = null
 
-    private val _connectionState = MutableStateFlow<BluetoothConnectionState>(
-        BluetoothConnectionState.DISCONNECTED
-    )
+    private val _connectionState =
+        MutableStateFlow<BluetoothConnectionState>(
+            BluetoothConnectionState.DISCONNECTED,
+        )
     val connectionState: StateFlow<BluetoothConnectionState> = _connectionState
 
     private val _dataReceived =
@@ -56,8 +56,8 @@ object BP170BManager {
     val dataReceived: StateFlow<String?> = _dataReceived
 
     // New StateFlow for parsed blood pressure results
-    private val _bloodPressureResult = MutableStateFlow<BloodPressureTestResult?>(null)
-    val bloodPressureResult: StateFlow<BloodPressureTestResult?> = _bloodPressureResult
+    private val _bloodPressureResult = MutableStateFlow<BloodPressureInspectionResult?>(null)
+    val bloodPressureResult: StateFlow<BloodPressureInspectionResult?> = _bloodPressureResult
 
     // New StateFlow to signal test completion via 0xBA command
     private val _testCompletionTrigger = MutableStateFlow(false)
@@ -68,19 +68,29 @@ object BP170BManager {
     val availableDevices: StateFlow<List<BluetoothDevice>> = _availableDevices
 
     private var isScanning = false
+
+    private val _currentDevice = MutableStateFlow<BluetoothDevice?>(null)
+    val currentDevice: StateFlow<BluetoothDevice?> = _currentDevice
+
     private var device: BluetoothDevice? = null // store connected device
+        set(value) {
+            field = value
+            _currentDevice.value = value
+        }
 
     private val _isInitialized = MutableStateFlow(false)
     val isInitialized: StateFlow<Boolean> = _isInitialized
 
     private var pollingJob: Job? = null
     private var testCompletionJob: Job? = null // Job for handling 0xBA trigger
+    private var deviceFilterJob: Job? = null // Job for continuously filtering connected devices
 
     fun init(context: Context) {
         appContext = context.applicationContext
         bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothAdapter = bluetoothManager?.adapter
         _isInitialized.value = true
+        startDeviceFilterJob()
     }
 
     @SuppressLint("MissingPermission")
@@ -89,21 +99,67 @@ object BP170BManager {
         _availableDevices.value = emptyList() // clear previous results
         Log.d(TAG, "Starting Bluetooth LE scan for BP170/BPBIO250 devices.")
         isScanning = true
-        val deviceListener = object : BluetoothAdapter.LeScanCallback {
-            override fun onLeScan(device: BluetoothDevice, rssi: Int, scanRecord: ByteArray?) {
-                if (device.name?.startsWith("BP170B") == true && !_availableDevices.value.contains(device)) {
-                    Log.d(TAG, "Found BP device: ${device.name} - ${device.address}")
-                    managerScope.launch {
-                        _availableDevices.value += device
+        val deviceListener =
+            object : BluetoothAdapter.LeScanCallback {
+                @SuppressLint("MissingPermission")
+                override fun onLeScan(
+                    device: BluetoothDevice,
+                    rssi: Int,
+                    scanRecord: ByteArray?,
+                ) {
+                    // ===== 성능 최적화 =====
+                    // 변경 전: onLeScan이 메인 스레드에서 실행되므로 getConnectionState() 호출 시 UI 블로킹 발생
+                    // 변경 후: 무거운 작업(getConnectionState)을 Dispatchers.Default로 이동하여 메인 스레드 블로킹 방지
+
+                    if (BP170BManager.device?.address == device.address) {
+                        return
+                    }
+
+                    if (device.name?.startsWith("BP170B") == true) {
+                        // 백그라운드 스레드에서 연결 상태 체크 (메인 스레드 블로킹 방지)
+                        managerScope.launch(Dispatchers.Default) {
+                            val connectionState = bluetoothManager?.getConnectionState(device, BluetoothProfile.GATT)
+                            val isConnected = connectionState == BluetoothProfile.STATE_CONNECTED ||
+                                             connectionState == BluetoothProfile.STATE_CONNECTING
+
+                            // 연결되지 않은 기기만 리스트에 추가
+                            if (!isConnected && !_availableDevices.value.any { it.address == device.address }) {
+                                Log.d(TAG, "Found BP device: ${device.name} - ${device.address}")
+                                _availableDevices.value = _availableDevices.value + device
+                            }
+                        }
+                    }
+                }
+            }
+        bluetoothAdapter?.startLeScan(deviceListener)
+        
+        // 이미 리스트에 추가된 기기가 다른 곳에서 연결되면 제거하는 용도
+        managerScope.launch {
+            while (isScanning) {
+                delay(1000) 
+                if (isScanning) {
+                    _availableDevices.value = _availableDevices.value.filter { scanDevice ->
+                        if (device?.address == scanDevice.address) {
+                            return@filter false
+                        }
+                        val state = bluetoothManager?.getConnectionState(scanDevice, BluetoothProfile.GATT) ?: BluetoothProfile.STATE_DISCONNECTED
+                        val isConnected = state == BluetoothProfile.STATE_CONNECTED || state == BluetoothProfile.STATE_CONNECTING
+                        if (isConnected) {
+                            Log.d(TAG, "Filtering out device connected elsewhere: ${scanDevice.name} - ${scanDevice.address} (state: $state)")
+                        }
+                        !isConnected
                     }
                 }
             }
         }
-        bluetoothAdapter?.startLeScan(deviceListener)
+        
         managerScope.launch {
             delay(SCAN_DURATION.toLong())
             stopScan(deviceListener)
+            filterConnectedDevices()
         }
+        
+        startDeviceFilterJob()
     }
 
     @SuppressLint("MissingPermission")
@@ -112,6 +168,45 @@ object BP170BManager {
         Log.d(TAG, "Stopping Bluetooth LE scan.")
         bluetoothAdapter?.stopLeScan(callback)
         isScanning = false
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun filterConnectedDevices() {
+        // ===== 스캔 종료 후 최종 정리 (1회만 호출) =====
+
+        _availableDevices.value = _availableDevices.value.filter { scanDevice ->
+            val state = bluetoothManager?.getConnectionState(scanDevice, BluetoothProfile.GATT) ?: BluetoothProfile.STATE_DISCONNECTED
+            val isConnected = state == BluetoothProfile.STATE_CONNECTED || state == BluetoothProfile.STATE_CONNECTING
+
+            if (isConnected) {
+                Log.d(TAG, "Removing device connected elsewhere (post-scan): ${scanDevice.name} - ${scanDevice.address} (state: $state)")
+                return@filter false
+            }
+            true
+        }
+    }
+    
+    @SuppressLint("MissingPermission")
+    private fun startDeviceFilterJob() {
+        deviceFilterJob?.cancel()
+        deviceFilterJob = managerScope.launch {
+            while (isActive) {
+                delay(1000) 
+                if (_availableDevices.value.isNotEmpty()) {
+                    _availableDevices.value = _availableDevices.value.filter { scanDevice ->
+                        if (device?.address == scanDevice.address) {
+                            return@filter false
+                        }
+                        val state = bluetoothManager?.getConnectionState(scanDevice, BluetoothProfile.GATT) ?: BluetoothProfile.STATE_DISCONNECTED
+                        val isConnected = state == BluetoothProfile.STATE_CONNECTED || state == BluetoothProfile.STATE_CONNECTING
+                        if (isConnected) {
+                            Log.d(TAG, "Removing device connected elsewhere (continuous check): ${scanDevice.name} - ${scanDevice.address} (state: $state)")
+                        }
+                        !isConnected
+                    }
+                }
+            }
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -124,281 +219,511 @@ object BP170BManager {
             }
             return
         }
+        
+        val connectionState = bluetoothManager?.getConnectionState(device, BluetoothProfile.GATT)
+        val isConnectedElsewhere = connectionState == BluetoothProfile.STATE_CONNECTED ||
+                                   connectionState == BluetoothProfile.STATE_CONNECTING
 
-        managerScope.launch {
-            _connectionState.value = BluetoothConnectionState.CONNECTING
+        if (isConnectedElsewhere) {
+            Log.w(TAG, "Device already connected elsewhere, cleaning up previous connection: ${device.name} - ${device.address} (state: $connectionState)")
+            // 기존 연결 정리
+            closeGatt()
+            // 정리 시간 대기 후 재연결 (비동기)
+            managerScope.launch {
+                delay(500)  // GATT 정리 대기
+                Log.d(TAG, "Retrying connection after cleanup: ${device.name} - ${device.address}")
+                _connectionState.value = BluetoothConnectionState.CONNECTING
+                _availableDevices.value = _availableDevices.value.filter { it.address != device.address }
+                BP170BManager.device = device
+                bluetoothGatt = device.connectGatt(appContext, true, gattCallback)
+            }
+            return
         }
+
+        // 연결 시도 시 즉시 상태 변경 및 디바이스 리스트에서 제거
+        _connectionState.value = BluetoothConnectionState.CONNECTING
+        _availableDevices.value = _availableDevices.value.filter { it.address != device.address }
         BP170BManager.device = device
-        bluetoothGatt = device.connectGatt(appContext, false, gattCallback)
+        bluetoothGatt = device.connectGatt(appContext, true, gattCallback)
     }
 
-    private val gattCallback = object : BluetoothGattCallback() {
-        @SuppressLint("MissingPermission")
-        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-            super.onConnectionStateChange(gatt, status, newState)
-            managerScope.launch {
-                when (newState) {
-                    BluetoothProfile.STATE_CONNECTED -> {
-                        Log.d(TAG, "Connected to GATT server.")
-                        _connectionState.value = BluetoothConnectionState.CONNECTED
-                        gatt?.discoverServices()
-                    }
+    private val gattCallback =
+        object : BluetoothGattCallback() {
+            @SuppressLint("MissingPermission")
+            override fun onConnectionStateChange(
+                gatt: BluetoothGatt?,
+                status: Int,
+                newState: Int,
+            ) {
+                super.onConnectionStateChange(gatt, status, newState)
+                managerScope.launch {
+                    when (newState) {
+                        BluetoothProfile.STATE_CONNECTED -> {
+                            if (status == BluetoothGatt.GATT_SUCCESS) {
+                                Log.d(TAG, "Connected to GATT server successfully.")
+                                _connectionState.value = BluetoothConnectionState.CONNECTED
+                                // 연결된 디바이스를 리스트에서 제거
+                                device?.let { connectedDevice ->
+                                    _availableDevices.value = _availableDevices.value.filter { it.address != connectedDevice.address }
+                                }
+                                gatt?.discoverServices()
+                            } else {
+                                Log.e(TAG, "Connection failed with status: $status")
+                                // 연결 실패 시 다른 앱에서 연결되었는지 확인
+                                device?.let { failedDevice ->
+                                    val currentState = bluetoothManager?.getConnectionState(failedDevice, BluetoothProfile.GATT)
+                                    val isConnectedElsewhere = currentState == BluetoothProfile.STATE_CONNECTED ||
+                                                               currentState == BluetoothProfile.STATE_CONNECTING
+                                    val mightBeConnectedElsewhere = status == 133 || status == 8 || isConnectedElsewhere
+                                    
+                                    if (mightBeConnectedElsewhere) {
+                                        // 다른 앱에서 연결된 경우 리스트에서 제거 (다른 디바이스에 표시되지 않도록)
+                                        Log.d(TAG, "Device connected elsewhere, removing from list: ${failedDevice.address} (state: $currentState, status: $status)")
+                                        _availableDevices.value = _availableDevices.value.filter { it.address != failedDevice.address }
+                                    }
+                                    // 다른 앱에서 연결되지 않은 경우는 리스트에 추가하지 않음 (재시도는 사용자가 수동으로)
+                                }
+                                _connectionState.value = BluetoothConnectionState.ERROR("Connection failed with status: $status")
+                                closeGatt()
+                                device = null
+                            }
+                        }
 
-                    BluetoothProfile.STATE_DISCONNECTED -> {
-                        Log.d(TAG, "Disconnected from GATT server.")
-                        _connectionState.value = BluetoothConnectionState.DISCONNECTED
-                        closeGatt()
-                        device = null
-                        pollingJob?.cancel() // Stop polling when disconnected
-                        testCompletionJob?.cancel() // Stop test completion observer
-                        _bloodPressureResult.value = null // Clear previous result
-                        _testCompletionTrigger.value = false // Reset trigger
-                    }
+                        BluetoothProfile.STATE_DISCONNECTED -> {
+                            Log.d(TAG, "Disconnected from GATT server. Status: $status")
+                            pollingJob?.cancel() // Stop polling when disconnected
+                            testCompletionJob?.cancel() // Stop test completion observer
+                            _bloodPressureResult.value = null // Clear previous result
+                            _testCompletionTrigger.value = false // Reset trigger
 
-                    else -> {
-                        Log.w(TAG, "Connection state changed with status $status")
-                        _connectionState.value =
-                            BluetoothConnectionState.ERROR("GATT connection error with status $status")
-                        closeGatt()
-                        device = null
-                        pollingJob?.cancel() // Stop polling on error
-                        testCompletionJob?.cancel() // Stop test completion observer
-                        _bloodPressureResult.value = null // Clear previous result
-                        _testCompletionTrigger.value = false // Reset trigger
+                            if (status != BluetoothGatt.GATT_SUCCESS) {
+                                // 에러로 끊긴 경우만 정리
+                                Log.e(TAG, "Connection failed with status: $status")
+                                // 연결 실패 시 다른 앱에서 연결되었는지 확인
+                                device?.let { failedDevice ->
+                                    val currentState = bluetoothManager?.getConnectionState(failedDevice, BluetoothProfile.GATT)
+                                    val isConnectedElsewhere = currentState == BluetoothProfile.STATE_CONNECTED ||
+                                                               currentState == BluetoothProfile.STATE_CONNECTING
+                                    val mightBeConnectedElsewhere = status == 133 || status == 8 || isConnectedElsewhere
+                                    
+                                    if (mightBeConnectedElsewhere) {
+                                        // 다른 앱에서 연결된 경우 리스트에서 제거 (다른 디바이스에 표시되지 않도록)
+                                        Log.d(TAG, "Device connected elsewhere, removing from list: ${failedDevice.address} (state: $currentState, status: $status)")
+                                        _availableDevices.value = _availableDevices.value.filter { it.address != failedDevice.address }
+                                    }
+                                    // 다른 앱에서 연결되지 않은 경우는 리스트에 추가하지 않음 (재시도는 사용자가 수동으로)
+                                }
+                                _connectionState.value = BluetoothConnectionState.ERROR("Connection failed with status: $status")
+                                closeGatt()
+                                device = null
+                            } else {
+                                // 정상 해제는 device와 gatt 유지 (자동 재연결 허용)
+                                Log.d(TAG, "Normal disconnection, keeping device for reconnection")
+                                _connectionState.value = BluetoothConnectionState.DISCONNECTED
+                                // device 유지, closeGatt() 안 함
+                            }
+                        }
+
+                        else -> {
+                            Log.w(TAG, "Connection state changed with status $status")
+                            // 연결 실패 시 다른 앱에서 연결되었는지 확인
+                            device?.let { failedDevice ->
+                                val currentState = bluetoothManager?.getConnectionState(failedDevice, BluetoothProfile.GATT)
+                                val isConnectedElsewhere = currentState == BluetoothProfile.STATE_CONNECTED ||
+                                                           currentState == BluetoothProfile.STATE_CONNECTING
+                                val mightBeConnectedElsewhere = status == 133 || status == 8 || isConnectedElsewhere
+                                
+                                if (mightBeConnectedElsewhere) {
+                                    // 다른 앱에서 연결된 경우 리스트에서 제거 (다른 디바이스에 표시되지 않도록)
+                                    Log.d(TAG, "Device connected elsewhere, removing from list: ${failedDevice.address} (state: $currentState, status: $status)")
+                                    _availableDevices.value = _availableDevices.value.filter { it.address != failedDevice.address }
+                                }
+                                // 다른 앱에서 연결되지 않은 경우는 리스트에 추가하지 않음 (재시도는 사용자가 수동으로)
+                            }
+                            _connectionState.value = BluetoothConnectionState.ERROR("GATT connection error with status $status")
+                            closeGatt()
+                            device = null
+                            pollingJob?.cancel() // Stop polling on error
+                            testCompletionJob?.cancel() // Stop test completion observer
+                            _bloodPressureResult.value = null // Clear previous result
+                            _testCompletionTrigger.value = false // Reset trigger
+                        }
                     }
                 }
             }
-        }
 
-        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-            super.onServicesDiscovered(gatt, status)
-            managerScope.launch {
-                when (status) {
-                    BluetoothGatt.GATT_SUCCESS -> {
-                        Log.i(TAG, "GATT services discovered")
-                        gatt?.getService(SERVICE_UUID)?.let { service ->
-                            writeCharacteristic = service.getCharacteristic(
-                                WRITE_CHARACTERISTIC_UUID
-                            )
-                            readCharacteristic = service.getCharacteristic(READ_CHARACTERISTIC_UUID)
-                            enableNotifications(readCharacteristic)
+            override fun onServicesDiscovered(
+                gatt: BluetoothGatt?,
+                status: Int,
+            ) {
+                super.onServicesDiscovered(gatt, status)
+                managerScope.launch {
+                    when (status) {
+                        BluetoothGatt.GATT_SUCCESS -> {
+                            Log.i(TAG, "GATT services discovered successfully")
+                            gatt?.getService(SERVICE_UUID)?.let { service ->
+                                writeCharacteristic =
+                                    service.getCharacteristic(
+                                        WRITE_CHARACTERISTIC_UUID,
+                                    )
+                                readCharacteristic = service.getCharacteristic(READ_CHARACTERISTIC_UUID)
 
-                            // Cancel any existing polling job before starting a new one
-                            pollingJob?.cancel()
-                            pollingJob = managerScope.launch {
+                                if (writeCharacteristic == null || readCharacteristic == null) {
+                                    Log.e(TAG, "Required characteristics not found. Write: $writeCharacteristic, Read: $readCharacteristic")
+                                    _connectionState.value = BluetoothConnectionState.ERROR("Required characteristics not found")
+                                    closeGatt()
+                                    return@launch
+                                }
+
+                                // Notification 활성화 (폴링은 onDescriptorWrite에서 시작됨)
+                                enableNotifications(readCharacteristic)
+                            } ?: run {
+                                Log.e(TAG, "Nordic UART Service not found")
+                                _connectionState.value =
+                                    BluetoothConnectionState.ERROR("Nordic UART Service not found")
+                            }
+                        }
+
+                        else -> {
+                            Log.w(TAG, "GATT service discovery failed with status $status")
+                            _connectionState.value =
+                                BluetoothConnectionState.ERROR("GATT service discovery failed with status $status")
+                            closeGatt()
+                        }
+                    }
+                }
+            }
+
+            /**
+             * Parses the received byte array according to the BP170/BPBIO250 communication protocol.
+             * The protocol defines a frame structure: STX, ID, BOD0, BOD1, CMD0, CMD1, Data, CheckSum, ETX.
+             *
+             * The function validates the frame structure, calculates the checksum, and interprets the data
+             * based on the command bytes (CMD0/CMD1).
+             * @param receivedBytes The byte array received from the Bluetooth characteristic.
+             * @param source A string indicating the source of the received data (e.g., "read", "change").
+             * @return A descriptive string of the parsed data, or null if parsing fails.
+             */
+            private fun parseBP170Data(
+                receivedBytes: ByteArray?,
+                source: String = "unknown",
+            ): String? {
+                if (receivedBytes == null) {
+                    Log.w(TAG, "Received $source value is null.")
+                    return null
+                }
+                
+                // 4바이트 짧은 데이터 무시 - 중간 상태 데이터이며 유효한 측정 결과가 아님
+                if (receivedBytes.size == 4) {
+                    return null
+                }
+                
+                // Minimum frame size: STX(1) + ID(1) + BOD0(1) + BOD1(1) + CMD0(1) + CMD1(1) + CheckSum(1) + ETX(1) = 8 bytes.
+                if (receivedBytes.size < 8) {
+                    Log.w(TAG, "Received $source value is too short: ${receivedBytes.size} bytes. Raw: ${receivedBytes.joinToString(" ") { String.format("%02X", it) }}")
+                    return null
+                }
+
+                // Validate STX (0x02) and ID ('B' or 0x42)
+                if (receivedBytes[0].toUByte().toInt() != 0x02 ||
+                    receivedBytes[1].toUByte().toInt() != 0x42
+                ) {
+                    Log.w(TAG, "Malformed BP170 response ($source): Missing STX or ID.")
+                    return null
+                }
+                
+                // Check for ETX (0x03) - be more flexible with position
+                val etxPosition = receivedBytes.indexOfLast { it.toUByte().toInt() == 0x03 }
+                if (etxPosition == -1) {
+                    Log.w(TAG, "Malformed BP170 response ($source): Missing ETX. Raw: ${receivedBytes.joinToString(" ") { String.format("%02X", it) }}")
+                    // Try to parse anyway for 0xBA commands which might have different ETX
+                    if (receivedBytes.size >= 6) {
+                        val cmd0 = receivedBytes[4].toUByte().toInt()
+                        if (cmd0 == 0xBA) {
+                            Log.d(TAG, "Attempting to parse 0xBA command without proper ETX")
+                            return parseBACommand(receivedBytes, source)
+                        }
+                    }
+                    return null
+                }
+
+                val bod0 = receivedBytes[2].toUByte().toInt()
+                val bod1 = receivedBytes[3].toUByte().toInt()
+                val cmd0 = receivedBytes[4].toUByte().toInt()
+                val cmd1 = receivedBytes[5].toUByte().toInt()
+                // Data bytes are between CMD1 and CheckSum.
+                val dataBytes = receivedBytes.copyOfRange(6, receivedBytes.size - 2)
+                val receivedChecksum = receivedBytes[receivedBytes.size - 2].toUByte().toInt()
+
+                // Re-calculate checksum to verify. CheckSum = (ID + Length0 + Length1 + Command0 + Command1 + Data(n)) & 0x3F + 0x0A
+                val calculatedChecksumData = byteArrayOf(0x42.toByte(), bod0.toByte(), bod1.toByte(), cmd0.toByte(), cmd1.toByte()) + dataBytes
+                var sum: Int = 0
+                for (byte in calculatedChecksumData) {
+                    sum += byte.toUByte().toInt()
+                }
+                val expectedChecksum = (sum and 0x3F) + 0x0A
+
+                if (receivedChecksum != expectedChecksum) {
+                    Log.w(
+                        TAG,
+                        "Checksum mismatch for $source. Expected: 0x${expectedChecksum.toString(
+                            16,
+                        ).uppercase()}, Received: 0x${receivedChecksum.toString(16).uppercase()}. Skipping data parsing.",
+                    )
+                    return "Checksum mismatch - data may be corrupted"
+                }
+
+                // Attempt to decode data bytes as UTF-8 string, trim to remove padding nulls/whitespace.
+                val responseDataString =
+                    try {
+                        String(dataBytes, StandardCharsets.UTF_8).trim()
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error decoding data bytes to UTF-8: ${e.message}")
+                        dataBytes.joinToString(" ") { String.format("%02X", it) } // Fallback to hex string
+                    }
+
+                // Interpret the response based on CMD0.
+                return when (cmd0) {
+                    0xB0 -> { // Response for APP Device Status check (command 0xC0)
+                        val statusCode = dataBytes.firstOrNull()?.toUByte()?.toInt()
+                        val statusMessage = when (statusCode) {
+                            0x00 -> "Status: Setting clock"
+                            0x01 -> "Status: Checking data stored in M1 (first check)"
+                            0x02 -> "Status: Checking data stored in M1 (second check)"
+                            0x03 -> "Status: Checking last measured data"
+                            0x04 -> "Status: During measurement" // This is the status for "during measurement"
+                            0x05 -> {
+                                // 측정 완료 상태 감지 - 0xBA notification을 못 받은 경우 백업용
+                                Log.d(TAG, " Measurement complete status (0x05) detected - triggering 0xC4 command")
+                                managerScope.launch {
+                                    _testCompletionTrigger.value = true
+                                }
+                                "Status: Measurement complete"
+                            }
+                            0x0E -> "Status: Device ready"
+                            0x0F -> "Status: Standby mode"
+                            0x10 -> "Status: Error state"
+                            0x11 -> "Status: Calibration mode"
+                            0x12 -> "Status: Test mode"
+                            0x13 -> "Status: Maintenance mode"
+                            0x14 -> "Status: Low battery"
+                            0x15 -> "Status: High battery"
+                            else -> "Status: Unknown (0x${statusCode?.toString(16)?.uppercase()})"
+                        }
+                        statusMessage + if (responseDataString.isNotEmpty()) ", Raw Data: $responseDataString" else ""
+                    }
+                    0xB1 -> { // Response for APP Device Error Code Check (command 0xC1)
+                        "Error Code: $responseDataString"
+                    }
+                    0xB2 -> { // Response for APP Device Time Setup (command 0xC2)
+                        "Time Setup Response: ${if (dataBytes.firstOrNull()?.toUByte()?.toInt() == 0x00) "Success" else "Failed"}" // Assuming 0x00 indicates success.
+                    }
+                    0xB4 -> { // 0xB4: 마지막 측정 데이터 조회 응답 (command 0xC4에 대한 응답)
+                        // 데이터 구조: 날짜/시간(6바이트) + 수축기혈압(2바이트) + 이완기혈압(2바이트) + 맥박(2바이트) + 결과코드(1바이트)
+                        // Year(1), Month(1), Day(1), Hour(1), Minute(1), Second(1), SBP(2), DBP(2), Pulse(2), ResultCode(1)
+                        if (dataBytes.size >= 13) { // 6 bytes for time + 2*3 bytes for BP/Pulse + 1 byte for result code = 13 bytes
+                            val systolicLE = dataBytes[6].toUByte().toInt() or (dataBytes[7].toUByte().toInt() shl 8)
+                            val diastolicLE = dataBytes[8].toUByte().toInt() or (dataBytes[9].toUByte().toInt() shl 8)
+                            val pulseRateLE = dataBytes[10].toUByte().toInt() or (dataBytes[11].toUByte().toInt() shl 8)
+                            
+                            val systolicBE = (dataBytes[6].toUByte().toInt() shl 8) or dataBytes[7].toUByte().toInt()
+                            val diastolicBE = (dataBytes[8].toUByte().toInt() shl 8) or dataBytes[9].toUByte().toInt()
+                            val pulseRateBE = (dataBytes[10].toUByte().toInt() shl 8) or dataBytes[11].toUByte().toInt()
+                            
+                            val measurementResultCode = dataBytes[12].toUByte().toInt()
+
+                            val systolic = if (systolicLE in 30..300) systolicLE else systolicBE
+                            val diastolic = if (diastolicLE in 30..300) diastolicLE else diastolicBE
+                            val pulseRate = if (pulseRateLE in 30..240) pulseRateLE else pulseRateBE
+
+                            if (systolic in 30..300 && diastolic in 30..300 && pulseRate in 30..240) {
+                                _bloodPressureResult.value = BloodPressureInspectionResult(systolic, diastolic, pulseRate)
+                                Log.d(
+                                    TAG,
+                                    "Parsed BP Result from 0xB4: SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate, ResultCode=$measurementResultCode",
+                                )
+                                "Measurement Data (0xB4): SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate, Result Code: $measurementResultCode"
+                            } else {
+                                Log.w(TAG, "0xB4 parsed values out of range: SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate")
+                                "Measurement Data (0xB4): Invalid values. SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate, Result Code: $measurementResultCode"
+                            }
+                        } else {
+                            Log.w(TAG, "0xB4 response data too short: ${dataBytes.size} bytes. Expected at least 13.")
+                            "Measurement Data (0xB4): Insufficient data. Raw: ${dataBytes.joinToString(" ") { String.format("%02X", it) }}"
+                        }
+                    }
+                    0xB5 -> { // Response for APP Device Serial Number Request (command 0xC5)
+                        "Serial Number: $responseDataString"
+                    }
+                    0xBA -> { // 0xBA: 측정 완료 신호 (Test Over) - 측정이 끝났음을 알림
+                        Log.d(TAG, "Received CMD0 0xBA (측정 완료). Attempting to decode data as single bytes with offset.")
+                        // 데이터 구조: 7번째 바이트(index 6)=수축기혈압, 8번째(index 7)=이완기혈압, 9번째(index 8)=맥박
+                        // 각 값은 10을 빼서 실제 측정값으로 변환
+                        if (dataBytes.size >= 9) { // At least 6 bytes for time + 3 bytes for SBP, DBP, Pulse
+                            val systolicRaw = dataBytes[6].toUByte().toInt()
+                            val diastolicRaw = dataBytes[7].toUByte().toInt()
+                            val pulseRateRaw = dataBytes[8].toUByte().toInt()
+
+                            val systolic = systolicRaw - 10
+                            val diastolic = diastolicRaw - 10
+                            val pulseRate = pulseRateRaw - 10
+
+                            if (systolic in 30..300 && diastolic in 30..300 && pulseRate in 30..240) {
+                                _bloodPressureResult.value = BloodPressureInspectionResult(systolic, diastolic, pulseRate)
+                                Log.d(
+                                    TAG,
+                                    "Parsed BP Result from 0xBA: SBP=$systolic (raw $systolicRaw), DBP=$diastolic (raw $diastolicRaw), Pulse=$pulseRate (raw $pulseRateRaw)",
+                                )
+
+                                managerScope.launch {
+                                    _testCompletionTrigger.value = true // Set trigger to true to also send C4
+                                }
+                                "Test Over (CMD0: 0xBA), Data Decoded: SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate. Also triggering C4 command."
+                            } else {
+                                Log.w(TAG, "0xBA parsed values out of range: SBP=$systolic (raw $systolicRaw), DBP=$diastolic (raw $diastolicRaw), Pulse=$pulseRate (raw $pulseRateRaw)")
+                                // Still trigger C4 command to get more reliable data
+                                managerScope.launch {
+                                    _testCompletionTrigger.value = true
+                                }
+                                "Test Over (CMD0: 0xBA), Data: Invalid values. SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate. Triggering C4 command."
+                            }
+                        } else {
+                            Log.w(TAG, "0xBA response data too short for BP results: ${dataBytes.size} bytes. Expected at least 9.")
+                            managerScope.launch {
+                                _testCompletionTrigger.value = true // Still trigger C4 even if 0xBA data is short
+                            }
+                            "Test Over (CMD0: 0xBA), Data: Insufficient data for BP results. Raw: ${dataBytes.joinToString(
+                                " ",
+                            ) { String.format("%02X", it) }}. Triggering C4 command."
+                        }
+                    }
+                    // Add more command responses as needed from the protocol document
+                    else -> {
+                        "Unknown Command (CMD0: 0x${cmd0.toString(
+                            16,
+                        ).uppercase()}, CMD1: 0x${cmd1.toString(16).uppercase()}), Data: $responseDataString"
+                    }
+                }
+            }
+            
+            private fun parseBACommand(receivedBytes: ByteArray, source: String): String? {
+                Log.d(TAG, "Parsing 0xBA command: ${receivedBytes.joinToString(" ") { String.format("%02X", it) }}")
+                
+                if (receivedBytes.size >= 9) {
+                    // Try to find blood pressure data in the byte array
+                    // Look for reasonable values in different positions
+                    for (i in 6 until receivedBytes.size - 1) {
+                        val systolicRaw = receivedBytes[i].toUByte().toInt()
+                        val diastolicRaw = receivedBytes[i + 1].toUByte().toInt()
+                        val pulseRaw = receivedBytes[i + 2].toUByte().toInt()
+                        
+                        val systolic = systolicRaw - 10
+                        val diastolic = diastolicRaw - 10
+                        val pulse = pulseRaw - 10
+                        
+                        if (systolic in 30..300 && diastolic in 30..300 && pulse in 30..240) {
+                            _bloodPressureResult.value = BloodPressureInspectionResult(systolic, diastolic, pulse)
+                            Log.d(TAG, "Parsed 0xBA BP Result: SBP=$systolic (raw $systolicRaw), DBP=$diastolic (raw $diastolicRaw), Pulse=$pulse (raw $pulseRaw)")
+                            
+                            managerScope.launch {
+                                _testCompletionTrigger.value = true
+                            }
+                            return "0xBA BP Result: SBP=$systolic, DBP=$diastolic, Pulse=$pulse"
+                        }
+                    }
+                }
+                
+                // If no valid BP data found, still trigger C4 command
+                managerScope.launch {
+                    _testCompletionTrigger.value = true
+                }
+                return "0xBA command received but no valid BP data found"
+            }
+
+            override fun onCharacteristicRead(
+                gatt: BluetoothGatt?,
+                characteristic: BluetoothGattCharacteristic,
+                status: Int,
+            ) {
+                super.onCharacteristicRead(gatt, characteristic, status)
+                managerScope.launch {
+                    when (status) {
+                        BluetoothGatt.GATT_SUCCESS -> {
+                            val parsedData = parseBP170Data(characteristic.value, "read")
+                            _dataReceived.value = parsedData
+                        }
+                        BluetoothGatt.GATT_FAILURE -> {
+                            Log.w(TAG, "Characteristic read failed with status $status")
+                            _connectionState.value =
+                                BluetoothConnectionState.ERROR("Characteristic read failed with status $status")
+                        }
+                    }
+                }
+            }
+
+            override fun onCharacteristicChanged(
+                gatt: BluetoothGatt?,
+                characteristic: BluetoothGattCharacteristic,
+            ) {
+                super.onCharacteristicChanged(gatt, characteristic)
+                managerScope.launch {
+                    val rawBytes = characteristic.value
+                    //Log.d(TAG, "onCharacteristicChanged - Raw bytes: ${rawBytes?.joinToString(" ") { String.format("%02X", it) }}")
+                    val data = parseBP170Data(rawBytes, "change")
+                    // null이 아닐 때만 업데이트 (4바이트 중간 데이터 무시)
+                    if (data != null) {
+                        _dataReceived.value = data
+                        Log.d(TAG, "Parsed data: $data")
+                        Log.d(TAG, "Current bloodPressureResult: ${_bloodPressureResult.value}")
+                    }
+                }
+            }
+
+            override fun onDescriptorWrite(
+                gatt: BluetoothGatt?,
+                descriptor: BluetoothGattDescriptor?,
+                status: Int,
+            ) {
+                super.onDescriptorWrite(gatt, descriptor, status)
+                managerScope.launch {
+                    if (status == BluetoothGatt.GATT_SUCCESS) {
+                        Log.d(TAG, "✅ Notifications enabled successfully, starting polling and testCompletionJob")
+
+                        // BLE 안정화를 위한 딜레이 (notification 활성화 직후 데이터 수신 안정화)
+                        delay(500)
+
+                        _connectionState.value = BluetoothConnectionState.CONNECTED
+
+                        // Notification 활성화 완료 후 폴링 시작
+                        pollingJob?.cancel()
+                        pollingJob =
+                            managerScope.launch {
+                                Log.d(TAG, "✅ Polling job started")
                                 while (isActive && connectionState.value == BluetoothConnectionState.CONNECTED) {
-                                    sendDeviceStatusCheckCommand() // Poll for general status
+                                    sendDeviceStatusCheckCommand()
                                     delay(STATUS_POLLING_INTERVAL_MS)
                                 }
                             }
 
-                            // Start observing _testCompletionTrigger
-                            testCompletionJob?.cancel()
-                            testCompletionJob = managerScope.launch {
+                        // 측정 완료 트리거 감시 시작
+                        testCompletionJob?.cancel()
+                        testCompletionJob =
+                            managerScope.launch {
+                                Log.d(TAG, "✅ testCompletionJob started - waiting for 0xBA trigger")
                                 _testCompletionTrigger.filter { it }.collect {
-                                    Log.d(TAG, "0xBA command received. Sending command to fetch last measured data (0xC4).")
+                                    Log.d(TAG, "🔔 0xBA trigger activated. Sending command to fetch last measured data (0xC4).")
                                     sendLastMeasuredDataCommand()
-                                    _testCompletionTrigger.value = false // Reset trigger after sending command
+                                    _testCompletionTrigger.value = false
                                 }
                             }
-
-                        } ?: run {
-                            Log.e(TAG, "Nordic UART Service not found")
-                            _connectionState.value =
-                                BluetoothConnectionState.ERROR("Nordic UART Service not found")
-                        }
-                    }
-
-                    else -> {
-                        Log.w(TAG, "GATT service discovery failed with status $status")
-                        _connectionState.value =
-                            BluetoothConnectionState.ERROR("GATT service discovery failed with status $status")
-                        closeGatt()
-                    }
-                }
-            }
-        }
-
-        /**
-         * Parses the received byte array according to the BP170/BPBIO250 communication protocol.
-         * The protocol defines a frame structure: STX, ID, BOD0, BOD1, CMD0, CMD1, Data, CheckSum, ETX.
-         *
-         * The function validates the frame structure, calculates the checksum, and interprets the data
-         * based on the command bytes (CMD0/CMD1).
-         * @param receivedBytes The byte array received from the Bluetooth characteristic.
-         * @param source A string indicating the source of the received data (e.g., "read", "change").
-         * @return A descriptive string of the parsed data, or null if parsing fails.
-         */
-        private fun parseBP170Data(receivedBytes: ByteArray?, source: String = "unknown"): String? {
-            // Minimum frame size: STX(1) + ID(1) + BOD0(1) + BOD1(1) + CMD0(1) + CMD1(1) + CheckSum(1) + ETX(1) = 8 bytes.
-            if (receivedBytes == null || receivedBytes.size < 8) {
-                Log.w(TAG, "Received $source value is null or too short.")
-                return null
-            }
-
-            // Validate STX (0x02), ID ('B' or 0x42), and ETX (0x03).
-            if (receivedBytes[0].toUByte().toInt() != 0x02 ||
-                receivedBytes[1].toUByte().toInt() != 0x42 ||
-                receivedBytes[receivedBytes.size - 1].toUByte().toInt() != 0x03
-            ) {
-                Log.w(TAG, "Malformed BP170 response ($source): Missing STX, ID, or ETX.")
-                return null
-            }
-
-            val bod0 = receivedBytes[2].toUByte().toInt()
-            val bod1 = receivedBytes[3].toUByte().toInt()
-            val cmd0 = receivedBytes[4].toUByte().toInt()
-            val cmd1 = receivedBytes[5].toUByte().toInt()
-            // Data bytes are between CMD1 and CheckSum.
-            val dataBytes = receivedBytes.copyOfRange(6, receivedBytes.size - 2)
-            val receivedChecksum = receivedBytes[receivedBytes.size - 2].toUByte().toInt()
-
-            // Re-calculate checksum to verify. CheckSum = (ID + Length0 + Length1 + Command0 + Command1 + Data(n)) & 0x3F + 0x0A
-            val calculatedChecksumData = byteArrayOf(0x42.toByte(), bod0.toByte(), bod1.toByte(), cmd0.toByte(), cmd1.toByte()) + dataBytes
-            var sum: Int = 0
-            for (byte in calculatedChecksumData) {
-                sum += byte.toUByte().toInt()
-            }
-            val expectedChecksum = (sum and 0x3F) + 0x0A
-
-            if (receivedChecksum != expectedChecksum) {
-                Log.w(TAG, "Checksum mismatch for $source. Expected: 0x${expectedChecksum.toString(16).uppercase()}, Received: 0x${receivedChecksum.toString(16).uppercase()}")
-                // Decide if you want to proceed with parsing corrupted data or return null.
-                // For now, we log and proceed.
-            }
-
-            // Attempt to decode data bytes as UTF-8 string, trim to remove padding nulls/whitespace.
-            val responseDataString = try {
-                String(dataBytes, StandardCharsets.UTF_8).trim()
-            } catch (e: Exception) {
-                Log.e(TAG, "Error decoding data bytes to UTF-8: ${e.message}")
-                dataBytes.joinToString(" ") { String.format("%02X", it) } // Fallback to hex string
-            }
-
-            // Interpret the response based on CMD0.
-            return when (cmd0) {
-                0xB0 -> { // Response for APP Device Status check (command 0xC0)
-                    when (dataBytes.firstOrNull()?.toUByte()?.toInt()) {
-                        0x00 -> "Status: Setting clock"
-                        0x01 -> "Status: Checking data stored in M1 (first check)"
-                        0x02 -> "Status: Checking data stored in M1 (second check)"
-                        0x03 -> "Status: Checking last measured data"
-                        0x04 -> "Status: During measurement" // This is the status for "during measurement"
-                        0x05 -> {
-                            "Status: Measurement complete"
-                        }
-                        else -> "Status: Unknown (CMD0: 0xB0, Data: ${dataBytes.firstOrNull()?.toUByte()?.toInt()?.toString(16)?.uppercase()})"
-                    } + if (responseDataString.isNotEmpty()) ", Raw Data: $responseDataString" else ""
-                }
-                0xB1 -> { // Response for APP Device Error Code Check (command 0xC1)
-                    "Error Code: $responseDataString"
-                }
-                0xB2 -> { // Response for APP Device Time Setup (command 0xC2)
-                    "Time Setup Response: ${if (dataBytes.firstOrNull()?.toUByte()?.toInt() == 0x00) "Success" else "Failed"}" // Assuming 0x00 indicates success.
-                }
-                0xB4 -> { // Response for APP Device Check Last measured data (command 0xC4)
-                    // Data structure for 0xB4: Year(1), Month(1), Day(1), Hour(1), Minute(1), Second(1)
-                    // Systolic BP (2 bytes), Diastolic BP (2 bytes), Pulse Rate (2 bytes), Measurement Result Code (1 byte)
-                    if (dataBytes.size >= 13) { // 6 bytes for time + 2*3 bytes for BP/Pulse + 1 byte for result code = 13 bytes
-                        val systolic = (dataBytes[6].toUByte().toInt() shl 8) or dataBytes[7].toUByte().toInt()
-                        val diastolic = (dataBytes[8].toUByte().toInt() shl 8) or dataBytes[9].toUByte().toInt()
-                        val pulseRate = (dataBytes[10].toUByte().toInt() shl 8) or dataBytes[11].toUByte().toInt()
-                        val measurementResultCode = dataBytes[12].toUByte().toInt()
-
-                        _bloodPressureResult.value =
-                            BloodPressureTestResult(systolic, diastolic, pulseRate)
-                        Log.d(TAG, "Parsed BP Result from 0xB4: SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate, ResultCode=$measurementResultCode")
-                        "Measurement Data (0xB4): SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate, Result Code: $measurementResultCode"
                     } else {
-                        Log.w(TAG, "0xB4 response data too short: ${dataBytes.size} bytes. Expected at least 13.")
-                        "Measurement Data (0xB4): Insufficient data. Raw: ${dataBytes.joinToString(" ") { String.format("%02X", it) }}"
-                    }
-                }
-                0xB5 -> { // Response for APP Device Serial Number Request (command 0xC5)
-                    "Serial Number: $responseDataString"
-                }
-                0xBA -> { // New: Response when cmd0 is 0xBA (assuming it means test is over AND carries data)
-                    Log.d(TAG, "Received CMD0 0xBA. Attempting to decode data as single bytes with offset.")
-                    // User specified: 7th byte (index 6) is systolic, 8th (index 7) is diastolic, 9th (index 8) is pulse.
-                    // Each value should be subtracted by 10 after converting to decimal.
-                    if (dataBytes.size >= 9) { // At least 6 bytes for time + 3 bytes for SBP, DBP, Pulse
-                        val systolicRaw = dataBytes[6].toUByte().toInt()
-                        val diastolicRaw = dataBytes[7].toUByte().toInt()
-                        val pulseRateRaw = dataBytes[8].toUByte().toInt()
-
-                        val systolic = systolicRaw - 10
-                        val diastolic = diastolicRaw - 10
-                        val pulseRate = pulseRateRaw - 10
-
-                        _bloodPressureResult.value =
-                            BloodPressureTestResult(systolic, diastolic, pulseRate)
-                        Log.d(TAG, "Parsed BP Result from 0xBA: SBP=$systolic (raw $systolicRaw), DBP=$diastolic (raw $diastolicRaw), Pulse=$pulseRate (raw $pulseRateRaw)")
-
-                        managerScope.launch {
-                            _testCompletionTrigger.value = true // Set trigger to true to also send C4
-                        }
-                        "Test Over (CMD0: 0xBA), Data Decoded: SBP=$systolic, DBP=$diastolic, Pulse=$pulseRate. Also triggering C4 command."
-
-                    } else {
-                        Log.w(TAG, "0xBA response data too short for BP results: ${dataBytes.size} bytes. Expected at least 9.")
-                        managerScope.launch {
-                            _testCompletionTrigger.value = true // Still trigger C4 even if 0xBA data is short
-                        }
-                        "Test Over (CMD0: 0xBA), Data: Insufficient data for BP results. Raw: ${dataBytes.joinToString(" ") { String.format("%02X", it) }}. Triggering C4 command."
-                    }
-                }
-                // Add more command responses as needed from the protocol document
-                else -> {
-                    "Unknown Command (CMD0: 0x${cmd0.toString(16).uppercase()}, CMD1: 0x${cmd1.toString(16).uppercase()}), Data: $responseDataString"
-                }
-            }
-        }
-
-        override fun onCharacteristicRead(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic,
-            status: Int
-        ) {
-            super.onCharacteristicRead(gatt, characteristic, status)
-            managerScope.launch {
-                when (status) {
-                    BluetoothGatt.GATT_SUCCESS -> {
-                        val parsedData = parseBP170Data(characteristic.value, "read")
-                        _dataReceived.value = parsedData
-                    }
-                    BluetoothGatt.GATT_FAILURE -> {
-                        Log.w(TAG, "Characteristic read failed with status $status")
+                        Log.e(TAG, "❌ Descriptor write failed, status: $status")
                         _connectionState.value =
-                            BluetoothConnectionState.ERROR("Characteristic read failed with status $status")
+                            BluetoothConnectionState.ERROR("Descriptor write failed, status: $status")
                     }
                 }
             }
         }
-
-        override fun onCharacteristicChanged(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic,
-        ) {
-            super.onCharacteristicChanged(gatt, characteristic)
-            managerScope.launch {
-                val data = parseBP170Data(characteristic.value, "change")
-                _dataReceived.value = data
-            }
-        }
-
-        override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
-            super.onDescriptorWrite(gatt, descriptor, status)
-            managerScope.launch {
-                if (status == BluetoothGatt.GATT_SUCCESS) {
-                    Log.d(TAG, "Descriptor write success")
-                } else {
-                    Log.e(TAG, "Descriptor write failed, status: $status")
-                    _connectionState.value =
-                        BluetoothConnectionState.ERROR("Descriptor write failed, status: $status")
-                }
-            }
-        }
-    }
 
     @SuppressLint("MissingPermission")
     private fun enableNotifications(characteristic: BluetoothGattCharacteristic?) {
@@ -426,7 +751,11 @@ object BP170BManager {
      * @param data The optional data payload for the command.
      * @return A ByteArray representing the complete command frame.
      */
-    private fun createBP170Command(cmd0: Byte, cmd1: Byte, data: ByteArray = byteArrayOf()): ByteArray {
+    private fun createBP170Command(
+        cmd0: Byte,
+        cmd1: Byte,
+        data: ByteArray = byteArrayOf(),
+    ): ByteArray {
         val id: Byte = 0x42 // 'B'
         val commandAndDataLength = 2 + data.size // CMD0, CMD1 (2 bytes) + Data bytes (n bytes)
 
@@ -475,6 +804,7 @@ object BP170BManager {
         if (bluetoothGatt == null) return
         bluetoothGatt?.disconnect()
         closeGatt()
+        device = null
         _connectionState.value = BluetoothConnectionState.DISCONNECTED
         pollingJob?.cancel() // Stop polling
         testCompletionJob?.cancel() // Stop test completion observer
@@ -491,11 +821,26 @@ object BP170BManager {
     }
 
     /**
+     * 새로운 측정을 위해 측정 데이터를 초기화합니다.
+     * 이전 혈압 측정 결과와 트리거를 초기화합니다.
+     * StateFlow 업데이트를 보장하기 위해 임시 값을 거쳐 null로 설정합니다.
+     */
+    fun resetMeasurement() {
+        // StateFlow의 null → null 업데이트 문제 방지: 임시 더미 값 → null
+        if (_bloodPressureResult.value == null) {
+            _bloodPressureResult.value = BloodPressureInspectionResult(0, 0, 0)
+        }
+        _bloodPressureResult.value = null
+        _testCompletionTrigger.value = false
+        // _dataReceived는 장치 상태 메시지(Device ready, During measurement 등)를 담고 있으므로
+        // 화면 전환 로직에 필요하여 초기화하지 않음
+    }
+
+    /**
      * Sends the APP Device Status Check command (CMD0: 0xC0, CMD1: 0x00).
      * This command checks the current status of the device (e.g., setting clock, during measurement).
      */
     fun sendDeviceStatusCheckCommand() {
-        Log.d(TAG, "Sending APP Device Status Check command (0xC0)")
         writeCommand(createBP170Command(0xC0.toByte(), 0x00.toByte()))
     }
 
@@ -513,7 +858,14 @@ object BP170BManager {
      * This command sets the current time on the device.
      * The data payload should be 6 bytes: Year, Month, Day, Hour, Minute, Second.
      */
-    fun sendTimeSetupCommand(year: Byte, month: Byte, day: Byte, hour: Byte, minute: Byte, second: Byte) {
+    fun sendTimeSetupCommand(
+        year: Byte,
+        month: Byte,
+        day: Byte,
+        hour: Byte,
+        minute: Byte,
+        second: Byte,
+    ) {
         Log.d(TAG, "Sending APP Device Time Setup command (0xC2)")
         val timeData = byteArrayOf(year, month, day, hour, minute, second)
         writeCommand(createBP170Command(0xC2.toByte(), 0x00.toByte(), timeData))
@@ -539,8 +891,11 @@ object BP170BManager {
 
     sealed class BluetoothConnectionState {
         object DISCONNECTED : BluetoothConnectionState()
+
         object CONNECTING : BluetoothConnectionState()
+
         object CONNECTED : BluetoothConnectionState()
+
         data class ERROR(val message: String) : BluetoothConnectionState()
     }
 }

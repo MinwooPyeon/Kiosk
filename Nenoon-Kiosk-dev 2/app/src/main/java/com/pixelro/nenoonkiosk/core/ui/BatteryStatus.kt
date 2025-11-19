@@ -22,41 +22,53 @@ fun BatteryStatus(
     hidden: Boolean = false,
     binaryMode: Boolean = true,
 ) {
-    val batteryIcons = intArrayOf(
-        R.drawable.battery_0_bar,
-        R.drawable.battery_1_bar,
-        R.drawable.battery_2_bar,
-        R.drawable.battery_3_bar,
-        R.drawable.battery_4_bar,
-        R.drawable.battery_5_bar,
-        R.drawable.battery_6_bar,
-        R.drawable.battery_full,
-    )
+    val batteryIcons =
+        intArrayOf(
+            R.drawable.battery_0_bar,
+            R.drawable.battery_1_bar,
+            R.drawable.battery_2_bar,
+            R.drawable.battery_3_bar,
+            R.drawable.battery_4_bar,
+            R.drawable.battery_5_bar,
+            R.drawable.battery_6_bar,
+            R.drawable.battery_full,
+        )
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .alpha(if (hidden) 0f else 1f)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .alpha(if (hidden) 0f else 1f),
     ) {
-
-        Text(text =
-            if (batteryLevel == null) "..."
-            else if (binaryMode && batteryLevel > 0) "✓"
-            else if (binaryMode) "!"
-            else "${batteryLevel}%",
-            fontSize = 64.sp
+        Text(
+            text =
+                if (batteryLevel == null) {
+                    "..."
+                } else if (binaryMode && batteryLevel > 0) {
+                    "✓"
+                } else if (binaryMode) {
+                    "!"
+                } else {
+                    "$batteryLevel%"
+                },
+            fontSize = 64.sp,
         )
 
         Icon(
-            painter = painterResource(
-                if (batteryLevel != null && binaryMode && batteryLevel > 0) batteryIcons[7]
-                else if (binaryMode) batteryIcons[0]
-                else batteryIcons[((batteryLevel ?: 0) * 0.07f).toInt()]
-            ),
+            painter =
+                painterResource(
+                    if (batteryLevel != null && binaryMode && batteryLevel > 0) {
+                        batteryIcons[7]
+                    } else if (binaryMode) {
+                        batteryIcons[0]
+                    } else {
+                        batteryIcons[((batteryLevel ?: 0) * 0.07f).toInt()]
+                    },
+                ),
             contentDescription = null,
-            modifier = Modifier.size(64.dp)
+            modifier = Modifier.size(64.dp),
         )
     }
 }

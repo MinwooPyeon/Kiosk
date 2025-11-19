@@ -16,22 +16,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.constants.AppConstants
-import com.pixelro.nenoonkiosk.core.util.StringProvider
 import com.pixelro.nenoonkiosk.core.ui.Logo
+import com.pixelro.nenoonkiosk.ui.theme.White
+import com.pixelro.nenoonkiosk.ui.theme.neNoon_blue
 
-//처음에 스플래시 화면
+// 처음에 스플래시 화면
 @Composable
 fun SplashScreen() {
     val systemUiController = rememberSystemUiController()
-    
+
     DisposableEffect(true) {
         systemUiController.systemBarsDarkContentEnabled = false
         onDispose {
@@ -40,61 +42,79 @@ fun SplashScreen() {
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                color = Color(0xff1d71e1)
-            ),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(
+                    color = neNoon_blue,
+                ),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             Text(
-                text = StringProvider.getString(
-                    R.string.splash_description,
-                    
-                ),
-                color = Color(0xffffffff),
+                text =
+                    stringResource(
+                        R.string.splash_description,
+                    ),
+                color = White,
                 fontSize = 28.sp,
-                fontWeight = FontWeight.Normal
+                fontWeight = FontWeight.Normal,
             )
             Spacer(
-                modifier = Modifier
-                    .height(28.dp)
+                modifier =
+                    Modifier
+                        .height(28.dp),
             )
             Logo(true)
             Spacer(
-                modifier = Modifier
-                    .height(16.dp)
+                modifier =
+                    Modifier
+                        .height(16.dp),
             )
             Row(
                 horizontalArrangement = Arrangement.End,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 160.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(end = 160.dp),
             ) {
                 Text(
                     text = "Ver\n${AppConstants.APP_VERSION}",
                     fontSize = 20.sp,
-                    color = Color.White,
+                    color = White,
                 )
             }
         }
         Column(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier =
+                Modifier
+                    .fillMaxSize(),
             verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
-                modifier = Modifier
-                    .padding(top = 20.dp, bottom = 40.dp)
-                    .height(50.dp),
+                modifier =
+                    Modifier
+                        .padding(top = 20.dp, bottom = 40.dp)
+                        .height(50.dp),
                 painter = painterResource(id = R.drawable.pixelro_logo),
-                contentDescription = null
+                contentDescription = null,
             )
         }
     }
+}
+
+@Preview(showBackground = true, widthDp = 800, heightDp = 1280, apiLevel = 34)
+@Composable
+fun SplashScreenPreviewVertical() {
+    SplashScreen()
+}
+
+@Preview(showBackground = true, widthDp = 1280, heightDp = 800, apiLevel = 34)
+@Composable
+fun SplashScreenPreviewHorizontal() {
+    SplashScreen()
 }

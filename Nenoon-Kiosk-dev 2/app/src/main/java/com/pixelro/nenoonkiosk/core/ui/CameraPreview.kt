@@ -55,7 +55,7 @@ import androidx.compose.ui.geometry.Rect as ComposeRect
 fun CameraPreview(
     modifier: Modifier = Modifier,
     onFaceDetected: (Bitmap) -> Unit,
-    onDetectionStatus: (String) -> Unit
+    onDetectionStatus: (String) -> Unit,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -73,9 +73,10 @@ fun CameraPreview(
     }
 
     AndroidView(
-        modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(1f),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .aspectRatio(1f),
         factory = { ctx ->
             PreviewView(ctx).apply {
                 layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
@@ -84,122 +85,137 @@ fun CameraPreview(
             }.also { previewView ->
                 val cameraProvider = cameraProviderFuture.get()
 
-                val preview = Preview.Builder()
-                    .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                    .build()
-                    .also {
-                        it.setSurfaceProvider(previewView.surfaceProvider)
-                    }
+                val preview =
+                    Preview.Builder()
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                        .build()
+                        .also {
+                            it.setSurfaceProvider(previewView.surfaceProvider)
+                        }
 
-                val faceDetectorOptions = FaceDetectorOptions.Builder()
-                    .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
-                    .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
-                    .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_NONE)
-                    .setMinFaceSize(0.15f)
-                    .build()
+                val faceDetectorOptions =
+                    FaceDetectorOptions.Builder()
+                        .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
+                        .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
+                        .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_NONE)
+                        .setMinFaceSize(0.15f)
+                        .build()
 
                 val faceDetector = FaceDetection.getClient(faceDetectorOptions)
 
-                val imageAnalysis = ImageAnalysis.Builder()
-                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                    .setTargetResolution(Size(640, 480))
-                    .build()
-                    .also {
-                        it.setAnalyzer(cameraExecutor) { imageProxy ->
-                            val rotationDegrees = imageProxy.imageInfo.rotationDegrees
-                            val mediaImage = imageProxy.image
+                val imageAnalysis =
+                    ImageAnalysis.Builder()
+                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                        .setTargetResolution(Size(640, 480))
+                        .build()
+                        .also {
+                            it.setAnalyzer(cameraExecutor) { imageProxy ->
+                                val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+                                val mediaImage = imageProxy.image
 
-                            if (mediaImage != null) {
-                                val originalBitmap = imageToBitmap(mediaImage, rotationDegrees)
+                                if (mediaImage != null) {
+                                    val originalBitmap = imageToBitmap(mediaImage, rotationDegrees)
 
-                                if (originalBitmap != null) {
-                                    val inputImage = InputImage.fromBitmap(originalBitmap, 0)
+                                    if (originalBitmap != null) {
+                                        val inputImage = InputImage.fromBitmap(originalBitmap, 0)
 
-                                    faceDetector.process(inputImage)
-                                        .addOnSuccessListener { faces ->
-                                            CoroutineScope(Dispatchers.Main).launch {
-                                                if (faces.isNotEmpty()) {
-                                                    onDetectionStatus(StringProvider.getString(R.string.face_detection_status_detected, "${faces.size}"))
-                                                    val largestFace = faces.maxByOrNull { it.boundingBox.width() * it.boundingBox.height() }
-
-                                                    faceBounds.clear()
-                                                    primaryFaceBox.clear()
-
-                                                    largestFace?.let { face ->
-                                                        val bounds = face.boundingBox
-
-                                                        val scaleX = previewView.width.toFloat() / originalBitmap.width.toFloat()
-                                                        val scaleY = previewView.height.toFloat() / originalBitmap.height.toFloat()
-
-                                                        for (detectedFace in faces) {
-                                                            val detectedBounds = detectedFace.boundingBox
-                                                            faceBounds.add(
-                                                                ComposeRect(
-                                                                    detectedBounds.left * scaleX,
-                                                                    detectedBounds.top * scaleY,
-                                                                    detectedBounds.right * scaleX,
-                                                                    detectedBounds.bottom * scaleY
-                                                                )
-                                                            )
-                                                        }
-
-                                                        primaryFaceBox.add(
-                                                            ComposeRect(
-                                                                bounds.left * scaleX,
-                                                                bounds.top * scaleY,
-                                                                bounds.right * scaleX,
-                                                                bounds.bottom * scaleY
-                                                            )
+                                        faceDetector.process(inputImage)
+                                            .addOnSuccessListener { faces ->
+                                                CoroutineScope(Dispatchers.Main).launch {
+                                                    if (faces.isNotEmpty()) {
+                                                        onDetectionStatus(
+                                                            StringProvider.getString(
+                                                                R.string.face_detection_status_detected,
+                                                                "${faces.size}",
+                                                            ),
                                                         )
+                                                        val largestFace = faces.maxByOrNull { it.boundingBox.width() * it.boundingBox.height() }
 
-                                                        val cropX = max(0, bounds.left)
-                                                        val cropY = max(0, bounds.top)
-                                                        val cropWidth = min(originalBitmap.width - cropX, bounds.width())
-                                                        val cropHeight = min(originalBitmap.height - cropY, bounds.height())
+                                                        faceBounds.clear()
+                                                        primaryFaceBox.clear()
 
-                                                        if (cropWidth > 0 && cropHeight > 0) {
-                                                            val croppedBitmap = Bitmap.createBitmap(
-                                                                originalBitmap,
-                                                                cropX,
-                                                                cropY,
-                                                                cropWidth,
-                                                                cropHeight
+                                                        largestFace?.let { face ->
+                                                            val bounds = face.boundingBox
+
+                                                            val scaleX = previewView.width.toFloat() / originalBitmap.width.toFloat()
+                                                            val scaleY = previewView.height.toFloat() / originalBitmap.height.toFloat()
+
+                                                            for (detectedFace in faces) {
+                                                                val detectedBounds = detectedFace.boundingBox
+                                                                faceBounds.add(
+                                                                    ComposeRect(
+                                                                        detectedBounds.left * scaleX,
+                                                                        detectedBounds.top * scaleY,
+                                                                        detectedBounds.right * scaleX,
+                                                                        detectedBounds.bottom * scaleY,
+                                                                    ),
+                                                                )
+                                                            }
+
+                                                            primaryFaceBox.add(
+                                                                ComposeRect(
+                                                                    bounds.left * scaleX,
+                                                                    bounds.top * scaleY,
+                                                                    bounds.right * scaleX,
+                                                                    bounds.bottom * scaleY,
+                                                                ),
                                                             )
-                                                            onFaceDetected(croppedBitmap)
-                                                        } else {
-                                                            onDetectionStatus(StringProvider.getString(R.string.face_detection_status_invalid_area))
-                                                        }
-                                                    } ?: onDetectionStatus(StringProvider.getString(R.string.face_detection_status_size_issue))
-                                                } else {
-                                                    onDetectionStatus(StringProvider.getString(R.string.face_detection_status_no_face))
-                                                    faceBounds.clear()
-                                                    primaryFaceBox.clear()
+
+                                                            val cropX = max(0, bounds.left)
+                                                            val cropY = max(0, bounds.top)
+                                                            val cropWidth = min(originalBitmap.width - cropX, bounds.width())
+                                                            val cropHeight = min(originalBitmap.height - cropY, bounds.height())
+
+                                                            if (cropWidth > 0 && cropHeight > 0) {
+                                                                val croppedBitmap =
+                                                                    Bitmap.createBitmap(
+                                                                        originalBitmap,
+                                                                        cropX,
+                                                                        cropY,
+                                                                        cropWidth,
+                                                                        cropHeight,
+                                                                    )
+                                                                onFaceDetected(croppedBitmap)
+                                                            } else {
+                                                                onDetectionStatus(StringProvider.getString(R.string.face_detection_status_invalid_area))
+                                                            }
+                                                        } ?: onDetectionStatus(StringProvider.getString(R.string.face_detection_status_size_issue))
+                                                    } else {
+                                                        onDetectionStatus(StringProvider.getString(R.string.face_detection_status_no_face))
+                                                        faceBounds.clear()
+                                                        primaryFaceBox.clear()
+                                                    }
+                                                    originalBitmap.recycle()
+                                                    imageProxy.close()
                                                 }
+                                            }
+                                            .addOnFailureListener { e ->
+                                                CoroutineScope(Dispatchers.Main).launch {
+                                                    onDetectionStatus(
+                                                        StringProvider.getString(
+                                                            R.string.face_detection_error,
+                                                            e.message ?: "Unknown error",
+                                                        ),
+                                                    )
+                                                }
+                                                Log.e("CameraPreview", "Face detection failed", e)
                                                 originalBitmap.recycle()
                                                 imageProxy.close()
                                             }
-                                        }
-                                        .addOnFailureListener { e ->
-                                            CoroutineScope(Dispatchers.Main).launch {
-                                                onDetectionStatus(StringProvider.getString(R.string.face_detection_error, e.message ?: "Unknown error"))
-                                            }
-                                            Log.e("CameraPreview", "Face detection failed", e)
-                                            originalBitmap.recycle()
-                                            imageProxy.close()
-                                        }
+                                    } else {
+                                        onDetectionStatus(StringProvider.getString(R.string.image_conversion_failed))
+                                        imageProxy.close()
+                                    }
                                 } else {
-                                    onDetectionStatus(StringProvider.getString(R.string.image_conversion_failed))
                                     imageProxy.close()
                                 }
-                            } else {
-                                imageProxy.close()
                             }
                         }
-                    }
 
-                val cameraSelector = CameraSelector.Builder()
-                    .requireLensFacing(CameraSelector.LENS_FACING_FRONT)
-                    .build()
+                val cameraSelector =
+                    CameraSelector.Builder()
+                        .requireLensFacing(CameraSelector.LENS_FACING_FRONT)
+                        .build()
 
                 try {
                     cameraProvider.unbindAll()
@@ -208,48 +224,61 @@ fun CameraPreview(
                         lifecycleOwner,
                         cameraSelector,
                         preview,
-                        imageAnalysis
+                        imageAnalysis,
                     )
                 } catch (exc: Exception) {
                     Log.e("CameraPreview", "Camera binding failed", exc)
                     onDetectionStatus(StringProvider.getString(R.string.camera_init_failed))
                 }
             }
-        }
+        },
     )
 
     Canvas(modifier = Modifier.fillMaxSize()) {
-        val mlKitPaint = Paint().apply {
-            color = Color.GREEN
-            style = Paint.Style.STROKE
-            strokeWidth = 5f
-        }
+        val mlKitPaint =
+            Paint().apply {
+                color = Color.GREEN
+                style = Paint.Style.STROKE
+                strokeWidth = 5f
+            }
 
         faceBounds.forEach { rect ->
             drawIntoCanvas { canvas ->
                 canvas.nativeCanvas.drawRect(
-                    rect.left, rect.top, rect.right, rect.bottom, mlKitPaint
+                    rect.left,
+                    rect.top,
+                    rect.right,
+                    rect.bottom,
+                    mlKitPaint,
                 )
             }
         }
 
-        val primaryFacePaint = Paint().apply {
-            color = Color.BLUE
-            style = Paint.Style.STROKE
-            strokeWidth = 10f
-        }
+        val primaryFacePaint =
+            Paint().apply {
+                color = Color.BLUE
+                style = Paint.Style.STROKE
+                strokeWidth = 10f
+            }
 
         primaryFaceBox.forEach { rect ->
             drawIntoCanvas { canvas ->
                 canvas.nativeCanvas.drawRect(
-                    rect.left, rect.top, rect.right, rect.bottom, primaryFacePaint
+                    rect.left,
+                    rect.top,
+                    rect.right,
+                    rect.bottom,
+                    primaryFacePaint,
                 )
             }
         }
     }
 }
 
-private fun imageToBitmap(image: Image, rotationDegrees: Int): Bitmap? {
+private fun imageToBitmap(
+    image: Image,
+    rotationDegrees: Int,
+): Bitmap? {
     if (image.format != ImageFormat.YUV_420_888) {
         Log.e("CameraPreview", "Unsupported image format")
         return null
@@ -280,16 +309,16 @@ private fun imageToBitmap(image: Image, rotationDegrees: Int): Bitmap? {
 
     matrix.postScale(-1f, 1f, originalBitmap.width / 2f, originalBitmap.height / 2f)
 
-
-    val rotatedBitmap = Bitmap.createBitmap(
-        originalBitmap,
-        0,
-        0,
-        originalBitmap.width,
-        originalBitmap.height,
-        matrix,
-        true
-    )
+    val rotatedBitmap =
+        Bitmap.createBitmap(
+            originalBitmap,
+            0,
+            0,
+            originalBitmap.width,
+            originalBitmap.height,
+            matrix,
+            true,
+        )
     originalBitmap.recycle()
     return rotatedBitmap
 }

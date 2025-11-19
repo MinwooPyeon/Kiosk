@@ -27,29 +27,29 @@ fun IconTextButton(
     iconId: Int,
     text: String,
 ) {
-
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(shape = RoundedCornerShape(8.dp))
-            .border(border = BorderStroke(1.dp, Color(0xffc3c3c3)), shape = RoundedCornerShape(8.dp))
-            .clickable {
-                onClick()
-            },
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(shape = RoundedCornerShape(8.dp))
+                .border(border = BorderStroke(1.dp, Color(0xffc3c3c3)), shape = RoundedCornerShape(8.dp))
+                .clickable {
+                    onClick()
+                },
+        contentAlignment = Alignment.Center,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 modifier = Modifier.size(28.dp),
                 painter = painterResource(id = iconId),
                 contentDescription = "",
-                tint = Color.Black
+                tint = Color.Black,
             )
             Text(
                 modifier = Modifier.padding(20.dp),
                 text = text,
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
         }
     }

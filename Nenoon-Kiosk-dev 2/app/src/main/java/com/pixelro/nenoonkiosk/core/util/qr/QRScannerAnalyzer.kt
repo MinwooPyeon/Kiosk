@@ -11,9 +11,8 @@ import com.google.zxing.common.HybridBinarizer
 import java.nio.ByteBuffer
 
 class QRScannerAnalyzer(
-    private val onQrCodeScanned: (String) -> Unit
+    private val onQrCodeScanned: (String) -> Unit,
 ) : ImageAnalysis.Analyzer {
-
     private val reader = MultiFormatReader()
 
     @SuppressLint("UnsafeOptInUsageError")
@@ -26,16 +25,18 @@ class QRScannerAnalyzer(
         val width = imageProxy.width
         val height = imageProxy.height
 
-        val source = PlanarYUVLuminanceSource(
-            yBytes,
-            width,
-            height,
-            0,
-            0,
-            width,
-            height,
-            false // Invert colors if necessary, usually false
-        )
+        val source =
+            PlanarYUVLuminanceSource(
+                yBytes,
+                width,
+                height,
+                0,
+                0,
+                width,
+                height,
+                false,
+                // Invert colors if necessary, usually false
+            )
 
         val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
 
