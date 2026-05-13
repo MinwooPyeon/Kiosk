@@ -89,7 +89,7 @@ fun InspectionResultRoute(
 
     // TTS + 서버전송
     LaunchedEffect(surveyId, testType, testResult, userData?.accessToken) {
-        TTS.tts.stop()
+        TTS.stopTTS()
         TTS.speechTTS(StringProvider.getString(R.string.tts_end), TextToSpeech.QUEUE_ADD)
         delay(2000)
         showLoading = false

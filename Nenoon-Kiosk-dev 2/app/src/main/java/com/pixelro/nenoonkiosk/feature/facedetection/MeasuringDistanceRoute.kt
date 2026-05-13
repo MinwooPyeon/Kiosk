@@ -75,7 +75,7 @@ fun MeasuringDistanceRoute(
     if (
         isOccluderPickedTTSDone &&
         !isFaceDetectedTTSDone &&
-        !TTS.tts.isSpeaking
+        !TTS.isSpeaking
     ) {
         if (isLeftEye) {
             TTS.speechTTS(
@@ -90,7 +90,7 @@ fun MeasuringDistanceRoute(
         isFaceDetectedTTSDone &&
         isFaceDetected &&
         !isEyeCoveredTTSDone &&
-        !TTS.tts.isSpeaking
+        !TTS.isSpeaking
     ) {
         faceDetectionViewModel.updateIsEyeCoveredTTSDone(true)
         when (isLeftEye) {
@@ -114,7 +114,7 @@ fun MeasuringDistanceRoute(
             false -> isLeftEyeCovered
         } &&
         !isDistanceMeasuredTTSDone &&
-        !TTS.tts.isSpeaking
+        !TTS.isSpeaking
     ) {
         faceDetectionViewModel.updateIsDistanceMeasuredTTSDone(true)
         TTS.speechTTS(
@@ -127,7 +127,7 @@ fun MeasuringDistanceRoute(
         isDistanceMeasuredTTSDone &&
         isDistanceOK == 1 &&
         !isPressStartButtonTTSDone &&
-        !TTS.tts.isSpeaking
+        !TTS.isSpeaking
     ) {
         faceDetectionViewModel.updateIsPressStartButtonTTSDone(true)
         TTS.speechTTS(
@@ -140,8 +140,8 @@ fun MeasuringDistanceRoute(
         measuringDistanceContentVisibleState = measuringDistanceContentVisibleState,
         toNextContent = toNextContent,
         onStartButtonClick = {
-            if (TTS.tts.isSpeaking) {
-                TTS.tts.stop()
+            if (TTS.isSpeaking) {
+                TTS.stopTTS()
             }
             toNextContent()
         },

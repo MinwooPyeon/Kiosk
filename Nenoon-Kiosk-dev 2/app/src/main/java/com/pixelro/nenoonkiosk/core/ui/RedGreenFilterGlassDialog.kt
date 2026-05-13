@@ -1,7 +1,6 @@
 package com.pixelro.nenoonkiosk.core.ui
 
 import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.pixelro.nenoonkiosk.R
 import com.pixelro.nenoonkiosk.core.util.StringProvider
+import com.pixelro.nenoonkiosk.core.util.TTS
 import com.pixelro.nenoonkiosk.core.util.isLandscape
 import com.pixelro.nenoonkiosk.feature.survey.model.SurveyGlass
 import com.pixelro.nenoonkiosk.ui.theme.White
@@ -45,35 +45,20 @@ fun RedGreenFilterGlassDialog(
     onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
     wearsGlasses: SurveyGlass,
-    tts: TextToSpeech,
 ) {
     var isTtsFinished by remember { mutableStateOf(false) }
 
     DisposableEffect(Unit) {
-        val listener =
-            object : UtteranceProgressListener() {
-                override fun onStart(utteranceId: String?) {}
-
-                override fun onDone(utteranceId: String?) {
-                    if (utteranceId == "red_green_filter_glass_prompt") {
-                        isTtsFinished = true
-                    }
-                }
-
-                override fun onError(utteranceId: String?) {}
-            }
-        tts.setOnUtteranceProgressListener(listener)
+        TTS.setOnDoneListener { isTtsFinished = true }
         onDispose {
-            tts.setOnUtteranceProgressListener(null)
+            TTS.clearOnDoneListener()
         }
     }
 
     LaunchedEffect(Unit) {
-        tts.speak(
+        TTS.speechTTS(
             StringProvider.getString(R.string.tts_red_green_filter_glass_prompt),
             TextToSpeech.QUEUE_FLUSH,
-            null,
-            "red_green_filter_glass_prompt",
         )
     }
 

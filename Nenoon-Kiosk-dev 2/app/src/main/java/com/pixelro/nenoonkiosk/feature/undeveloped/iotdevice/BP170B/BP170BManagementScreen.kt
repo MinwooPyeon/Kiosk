@@ -126,7 +126,7 @@ fun BP170BConnectionScreen(
             TTS.speechTTS("장치 연결을 해제합니다.", TextToSpeech.QUEUE_ADD)
         },
         onBack = {
-            TTS.tts.stop()
+            TTS.stopTTS()
             navController.popBackStack(NavConstants.ROUTE_BT_DEVICE_MANAGEMENT, false)
         },
     )

@@ -1,12 +1,10 @@
 package com.pixelro.nenoonkiosk.feature.strabismus
 
-import android.os.Build
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -56,9 +54,7 @@ fun PhoriaAndAniseikoniaScreen(
     var showDescription by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT) {
-            TTS.tts.stop()
-        }
+        TTS.stopTTS()
     }
 
     val transition = rememberInfiniteTransition(label = "desc-bounce")
@@ -163,7 +159,6 @@ fun PhoriaAndAniseikoniaScreen(
                 onEvent(PhoriaAniseikoniaEvent.ConfirmFilterDialog)
             },
             wearsGlasses = ui.surveyGlass,
-            tts = TTS.tts
         )
     }
 

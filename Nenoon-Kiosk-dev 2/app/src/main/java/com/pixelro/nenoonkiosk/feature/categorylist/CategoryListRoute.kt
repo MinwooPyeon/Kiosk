@@ -32,7 +32,7 @@ fun CategoryListRoute(
     val isDescriptionShowing = remember { mutableStateOf(true) }
     LaunchedEffect(!isPreview) {
         if (!isPreview) {
-            TTS.tts.stop()
+            TTS.stopTTS()
             while (true) {
                 delay(5000)
                 for (i in 1..3) {

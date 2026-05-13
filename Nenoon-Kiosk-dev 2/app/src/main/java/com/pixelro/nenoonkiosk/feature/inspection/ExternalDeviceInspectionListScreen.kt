@@ -118,7 +118,7 @@ fun ExternalDeviceInspectionListScreen(
         )
     val isDescriptionShowing = remember { mutableStateOf(true) }
     LaunchedEffect(true) {
-        TTS.tts.stop()
+        TTS.stopTTS()
         TTS.speechTTS(StringProvider.getString(R.string.select_test_tts), TextToSpeech.QUEUE_ADD)
         while (true) {
             delay(5000)

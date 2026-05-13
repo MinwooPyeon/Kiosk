@@ -46,7 +46,7 @@ class PresbyopiaViewModel
          * TTS
          */
         fun checkCondition(dist: Float) {
-            val isTTSSpeaking = try { TTS.tts.isSpeaking } catch (e: Exception) { false }
+            val isTTSSpeaking = try { TTS.isSpeaking } catch (e: Exception) { false }
             if (!isTTSSpeaking) {
                 when (_testState.value) {
                     TestState.Started -> {

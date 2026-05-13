@@ -32,7 +32,7 @@ fun InspectionScreenRoute(
             InspectionType.Presbyopia_Glasses, InspectionType.Concentration_Glasses ->
                 navController.popBackStack(NavConstants.ROUTE_EXERCISE_LIST, false)
             else -> {
-                TTS.tts.stop()
+                TTS.stopTTS()
                 navController.popBackStack(NavConstants.ROUTE_TEST_LIST, false)
             }
         }
@@ -64,7 +64,7 @@ fun InspectionScreenRoute(
                 InspectionType.Presbyopia_Glasses, InspectionType.Concentration_Glasses ->
                     navController.popBackStack(NavConstants.ROUTE_EXERCISE_LIST, false)
                 else -> {
-                    TTS.tts.stop()
+                    TTS.stopTTS()
                     navController.popBackStack(NavConstants.ROUTE_TEST_LIST, false)
                 }
             }

@@ -125,7 +125,7 @@ fun PresbyopiaInspectionRoute(
             }
         },
         isTTSSpeaking = try {
-            TTS.tts.isSpeaking
+            TTS.isSpeaking
         } catch (e: Exception) {
             false
         },

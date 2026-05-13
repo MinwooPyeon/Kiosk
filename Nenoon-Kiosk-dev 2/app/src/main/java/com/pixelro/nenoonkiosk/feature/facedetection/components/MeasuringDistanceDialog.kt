@@ -192,8 +192,8 @@ fun MeasuringDistanceDialog(
                                 shape = RoundedCornerShape(8.dp),
                             )
                             .clickable {
-                                if (TTS.tts.isSpeaking) {
-                                    TTS.tts.stop()
+                                if (TTS.isSpeaking) {
+                                    TTS.stopTTS()
                                 }
                                 faceDetectionViewModel.updateIsOccluderPickedTTSDone(true)
                                 onDismissRequest()

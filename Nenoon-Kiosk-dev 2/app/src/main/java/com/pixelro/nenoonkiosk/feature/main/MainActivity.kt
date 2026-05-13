@@ -369,7 +369,7 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onDestroy() {
-        TTS.tts.stop()
+        TTS.stopTTS()
         TTS.destroyTTS()
         PrinterManager.disconnectPrinter()
         super.onDestroy()

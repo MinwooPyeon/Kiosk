@@ -64,7 +64,7 @@ fun ExerciseListScreen(
     val isDescriptionShowing = remember { mutableStateOf(true) }
     LaunchedEffect(true) {
 //        exoPlayer.release()
-        TTS.tts.stop()
+        TTS.stopTTS()
         while (true) {
             delay(5000)
             pagerState.animateScrollToPage(

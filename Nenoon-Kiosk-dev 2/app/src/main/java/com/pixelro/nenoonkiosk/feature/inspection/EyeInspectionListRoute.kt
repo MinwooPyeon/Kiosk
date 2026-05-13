@@ -57,7 +57,7 @@ fun EyeTestInspectionRoute(
 
     // TTS 중단
     LaunchedEffect(Unit) {
-        TTS.tts.stop()
+        TTS.stopTTS()
     }
 
     // CoroutineScope for blinking
