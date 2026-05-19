@@ -13,6 +13,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.RawResourceDataSource
 import com.harang.data.model.dto.User
 import com.harang.data.repository.SignInRepository
+import com.harang.data.util.Result
 import com.mangoslab.nemonicsdk.NPrintInfo
 import com.mangoslab.nemonicsdk.NPrinter
 import com.mangoslab.nemonicsdk.constants.NPrinterType
@@ -76,6 +77,13 @@ constructor(
 
     private val _enrollmentSuccess = MutableStateFlow(false)
     val enrollmentSuccess: StateFlow<Boolean> = _enrollmentSuccess.asStateFlow()
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    fun clearErrorMessage() {
+        _errorMessage.update { null }
+    }
 
     private val _isFaceEnrollmentDataReady = MutableStateFlow(false)
     val isFaceEnrollmentDataReady: StateFlow<Boolean> = _isFaceEnrollmentDataReady.asStateFlow()
@@ -179,51 +187,77 @@ constructor(
             return false
         }
 
-        val signedInUserData =
-            if (AppConstants.MANAGE_USERS_INTERNALLY) {
-                SharedPreferencesManager.checkUserAccount(id, password)
-            } else {
-                signInRepository.userSignIn(id, password)
-            }
-
-        return if (signedInUserData?.accessToken != null) {
-            try {
-                val newUserData = signInRepository.getUserProfile(signedInUserData.accessToken!!)
-
-                if (newUserData == null) {
+        if (AppConstants.MANAGE_USERS_INTERNALLY) {
+            val signedInUserData = SharedPreferencesManager.checkUserAccount(id, password)
+                ?: return false
+            if (signedInUserData.accessToken != null) {
+                return try {
+                    when (val profileResult = signInRepository.getUserProfile(signedInUserData.accessToken!!)) {
+                        is Result.Success -> {
+                            _isUserSignedIn.update { true }
+                            updateIsSignedIn(true)
+                            _userId.update { id }
+                            _userData.update {
+                                profileResult.data.copy(
+                                    password = password,
+                                    accessToken = signedInUserData.accessToken,
+                                    refreshToken = signedInUserData.refreshToken,
+                                )
+                            }
+                            _accountQrCode.value = generateQrCode(id, password)
+                            true
+                        }
+                        is Result.Error -> {
+                            _errorMessage.update { profileResult.message }
+                            false
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("SignInViewModel", "Sign in failed: ", e)
                     false
-                } else {
-                    _isUserSignedIn.update { true }
-                    updateIsSignedIn(true)
-                    _userId.update { id }
-                    _userData.update {
-                        newUserData?.copy(
-                            password = password,
-                            accessToken = signedInUserData.accessToken,
-                            refreshToken = signedInUserData.refreshToken,
-                        )
-                    }
-
-                    if (AppConstants.MANAGE_USERS_INTERNALLY) {
-                        _accountQrCode.value = generateQrCode(id, password)
-                    } else {
-                        _accountQrCode.value = getQrCode()
-                    }
-
-                    true
                 }
-            } catch (e: Exception) {
-                Log.e("SignInViewModel", "Sign in failed: ", e)
+            } else {
+                _isUserSignedIn.update { true }
+                updateIsSignedIn(true)
+                _userId.update { id }
+                _userData.update { signedInUserData.copy(id = id, password = password) }
+                return true
+            }
+        }
+
+        return when (val signInResult = signInRepository.userSignIn(id, password)) {
+            is Result.Success -> {
+                val user = signInResult.data
+                try {
+                    when (val profileResult = signInRepository.getUserProfile(user.accessToken!!)) {
+                        is Result.Success -> {
+                            _isUserSignedIn.update { true }
+                            updateIsSignedIn(true)
+                            _userId.update { id }
+                            _userData.update {
+                                profileResult.data.copy(
+                                    password = password,
+                                    accessToken = user.accessToken,
+                                    refreshToken = user.refreshToken,
+                                )
+                            }
+                            _accountQrCode.value = getQrCode()
+                            true
+                        }
+                        is Result.Error -> {
+                            _errorMessage.update { profileResult.message }
+                            false
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("SignInViewModel", "Sign in failed: ", e)
+                    false
+                }
+            }
+            is Result.Error -> {
+                _errorMessage.update { signInResult.message }
                 false
             }
-        } else if (signedInUserData != null) {
-            _isUserSignedIn.update { true }
-            updateIsSignedIn(true)
-            _userId.update { id }
-            _userData.update { signedInUserData.copy(id = id, password = password) }
-            true
-        } else {
-            false
         }
     }
 
@@ -311,34 +345,37 @@ constructor(
                 ""
             } else if (_locationId.value != null) {
                 val qrCode = generateQrCode(id, password)
-                if (qrCode != null) {
-                    val qrUrl = signInRepository.updateQrCode(
-                        bitmapToFile(
-                            getApplication(),
-                            qrCode,
-                            "qr-image.jpg"
-                        )
-                    )
-                    if (qrUrl != null) {
-                        val res =
-                            signInRepository.userSignUp(
+                if (qrCode == null) {
+                    null
+                } else {
+                    when (val qrUrlResult = signInRepository.updateQrCode(
+                        bitmapToFile(getApplication(), qrCode, "qr-image.jpg")
+                    )) {
+                        is Result.Success -> {
+                            when (val signUpResult = signInRepository.userSignUp(
                                 id = id,
                                 pw = password,
                                 name = name,
                                 email = if (email.isNullOrBlank()) AppConstants.DEFAULT_EMAIL else email,
                                 pid = 0L,
                                 vector = tempFaceEmbedding.contentToString(),
-                                qrUrl = qrUrl,
-                            )
-                        if (res != null) {
-                            tempAccessToken = res
+                                qrUrl = qrUrlResult.data,
+                            )) {
+                                is Result.Success -> {
+                                    tempAccessToken = signUpResult.data
+                                    signUpResult.data
+                                }
+                                is Result.Error -> {
+                                    _enrollmentMessage.update { signUpResult.message }
+                                    null
+                                }
+                            }
                         }
-                        res
-                    } else {
-                        null
+                        is Result.Error -> {
+                            _enrollmentMessage.update { qrUrlResult.message }
+                            null
+                        }
                     }
-                } else {
-                    null
                 }
             } else {
                 null
@@ -460,51 +497,53 @@ constructor(
         }
 
         if (!AppConstants.MANAGE_USERS_INTERNALLY) {
-            val signedInUserData = signInRepository.userSignInWithFace(
+            return when (val faceSignInResult = signInRepository.userSignInWithFace(
                 embedding.contentToString(),
                 AppConstants.FACE_ID_THRESHOLD
-            )
-
-            return if (signedInUserData?.accessToken != null) {
-                try {
-                    val newUserData =
-                        signInRepository.getUserProfile(signedInUserData.accessToken!!)
-
-                    if (newUserData == null) {
-                        false
-                    } else {
-                        _isUserSignedIn.update { true }
-                        _userId.update { newUserData!!.id }
-                        _userData.update {
-                            newUserData.copy(
-                                accessToken = signedInUserData.accessToken,
-                                refreshToken = signedInUserData.refreshToken,
-                            )
+            )) {
+                is Result.Success -> {
+                    val user = faceSignInResult.data
+                    try {
+                        when (val profileResult = signInRepository.getUserProfile(user.accessToken!!)) {
+                            is Result.Success -> {
+                                val profile = profileResult.data
+                                _isUserSignedIn.update { true }
+                                _userId.update { profile.id }
+                                _userData.update {
+                                    profile.copy(
+                                        accessToken = user.accessToken,
+                                        refreshToken = user.refreshToken,
+                                    )
+                                }
+                                _faceDetectionStatus.update {
+                                    StringProvider.getString(
+                                        R.string.signin_vm_login_success,
+                                        profile.name ?: StringProvider.getString(R.string.default_user_name),
+                                    )
+                                }
+                                delay(1500)
+                                updateIsSignedIn(true)
+                                _isProcessingFace.update { false }
+                                _accountQrCode.value = getQrCode()
+                                true
+                            }
+                            is Result.Error -> {
+                                _errorMessage.update { profileResult.message }
+                                _isProcessingFace.update { false }
+                                false
+                            }
                         }
-                        _faceDetectionStatus.update {
-                            StringProvider.getString(
-                                R.string.signin_vm_login_success,
-                                newUserData?.name
-                                    ?: StringProvider.getString(R.string.default_user_name),
-                            )
-                        }
-
-                        delay(1500)
-                        updateIsSignedIn(true)
+                    } catch (e: Exception) {
+                        Log.e("SignInViewModel", "Sign in failed: ", e)
                         _isProcessingFace.update { false }
-
-                        _accountQrCode.value = getQrCode()
-
-                        true
+                        false
                     }
-                } catch (e: Exception) {
-                    Log.e("SignInViewModel", "Sign in failed: ", e)
+                }
+                is Result.Error -> {
+                    _errorMessage.update { faceSignInResult.message }
                     _isProcessingFace.update { false }
                     false
                 }
-            } else {
-                _isProcessingFace.update { false }
-                false
             }
         } else {
             var recognizedUser: String? = null
@@ -564,16 +603,26 @@ constructor(
                 return true
             } else {
                 if (_userData.value != null && _userData.value?.accessToken != null) {
-                    signInRepository.userUpdateFace(
+                    val result = signInRepository.userUpdateFace(
                         _userData.value?.accessToken!!,
                         tempFaceEmbedding.contentToString()
                     )
+                    if (result is Result.Error) {
+                        _enrollmentMessage.update { result.message }
+                        _enrollmentSuccess.update { false }
+                        return false
+                    }
                 } else if (tempAccessToken != null) {
-                    signInRepository.userUpdateFace(
+                    val result = signInRepository.userUpdateFace(
                         tempAccessToken!!,
                         tempFaceEmbedding.contentToString()
                     )
                     tempAccessToken = null
+                    if (result is Result.Error) {
+                        _enrollmentMessage.update { result.message }
+                        _enrollmentSuccess.update { false }
+                        return false
+                    }
                 } else {
                     return false
                 }
@@ -634,13 +683,22 @@ constructor(
     }
 
     suspend fun getQrCode(): Bitmap? {
-        return if (_userData.value != null && !_userData.value?.accessToken.isNullOrEmpty()) {
-            signInRepository.getQrUrl(_userData.value!!.accessToken!!)?.let { url ->
-                val temp = signInRepository.getQrCode(url.substringAfter("api/v1/users/qr-image/"))
-                temp
+        val accessToken = _userData.value?.accessToken?.takeIf { it.isNotEmpty() } ?: return null
+        return when (val urlResult = signInRepository.getQrUrl(accessToken)) {
+            is Result.Success -> {
+                val filename = urlResult.data.substringAfter("api/v1/users/qr-image/")
+                when (val bitmapResult = signInRepository.getQrCode(filename)) {
+                    is Result.Success -> bitmapResult.data
+                    is Result.Error -> {
+                        _errorMessage.update { bitmapResult.message }
+                        null
+                    }
+                }
             }
-        } else {
-            null
+            is Result.Error -> {
+                _errorMessage.update { urlResult.message }
+                null
+            }
         }
     }
 
